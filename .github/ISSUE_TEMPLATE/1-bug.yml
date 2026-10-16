@@ -1,0 +1,31 @@
+name: Bug report
+description: Something on the page doesn't work or looks wrong.
+labels: [bug]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Page address
+      description: Copy the full address from your browser. It contains your filters, so it shows exactly what you saw.
+      placeholder: https://el8ted.github.io/gwentdecksearch/?lang=en#f=MO&l=201743
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead? Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Firefox 140 on Windows 11, Safari on iPhone…
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where are you using it?
+      options:
+        - The website
+        - The downloaded zip (opened from my computer)

@@ -1,0 +1,92 @@
+name: Release
+
+# Push a tag named after the data date to publish: the live site, and a GitHub Release with the offline zip.
+#   git tag 2026-10-16 && git push origin 2026-10-16
+# A second release of the same data adds a suffix: 2026-10-16.2
+on:
+  push:
+    tags: ['20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*']
+
+# One release at a time; a newer tag waits rather than cancelling a deploy halfway.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    needs: checks
+    runs-on: ubuntu-latest
+    outputs:
+      decks: ${{ steps.data.outputs.decks }}
+      scraped: ${{ steps.data.outputs.scraped }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # The tag names the data, so a release can't be labelled with a date its data isn't from.
+      - id: data
+        run: |
+          scraped=$(node -p "require('./data/decks.json').scrapedAt")
+          decks=$(node -p "require('./data/decks.json').decks.length")
+          tag=${GITHUB_REF_NAME}
+          if [ "${tag:0:10}" != "${scraped:0:10}" ]; then
+            echo "::error::Tag $tag doesn't match the data date ${scraped:0:10} (UTC). Tag ${scraped:0:10} instead."
+            exit 1
+          fi
+          echo "scraped=$scraped" >> "$GITHUB_OUTPUT"
+          echo "decks=$decks" >> "$GITHUB_OUTPUT"
+      - run: pnpm build
+      - name: Zip for offline use
+        run: |
+          cp -r dist gwent-deck-search
+          zip -qr "gwent-deck-search-${GITHUB_REF_NAME}.zip" gwent-deck-search
+      - uses: actions/upload-artifact@v7
+        with:
+          name: zip
+          path: gwent-deck-search-*.zip
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v5
+
+  release:
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: zip
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          DECKS: ${{ needs.build.outputs.decks }}
+          SCRAPED: ${{ needs.build.outputs.scraped }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" gwent-deck-search-*.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "$DECKS decks, data as of ${SCRAPED:0:16} UTC.
+
+          **Use it online:** https://el8ted.github.io/gwentdecksearch/
+
+          **Use it offline:** download the zip below, unzip it and open \`gwent-deck-search/index.html\` in your browser."

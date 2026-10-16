@@ -1,0 +1,59 @@
+import { BUDGETS, type Budget, type FilterState } from './filter.ts'
+import { type CardType, FACTIONS, type Faction, SOURCES, type Source } from './types.ts'
+
+/** The state when nothing is selected. */
+export const EMPTY_STATE: FilterState = {
+  factions: [],
+  sources: [],
+  budgets: [],
+  cards: [],
+  match: 'all',
+}
+
+/**
+ * Serializes filters into a URL hash, omitting defaults so the URL stays short.
+ *
+ * @param state - Current filters
+ * @returns Hash including the leading `#`, or `''` when nothing is selected
+ */
+export function encodeState(state: FilterState): string {
+  const params = new URLSearchParams()
+  if (state.match === 'any') params.set('k', 'any')
+  if (state.factions.length) params.set('f', state.factions.join(','))
+  if (state.sources?.length) params.set('src', state.sources.join(','))
+  if (state.budgets?.length) params.set('b', state.budgets.join(','))
+  if (state.leader !== undefined) params.set('l', String(state.leader))
+  if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
+  if (state.cards.length) params.set('c', state.cards.join(','))
+  const query = params.toString()
+  return query ? `#${query}` : ''
+}
+
+/**
+ * Parses a URL hash back into filters.
+ *
+ * Hashes come from bookmarks and may predate a data refresh, so unknown factions or card IDs are
+ * dropped rather than rejected, as is a leader or stratagem ID that isn't one.
+ *
+ * @param hash - `location.hash`, with or without `#`
+ * @param typeOf - A card's type in the current dataset, or `undefined` if it isn't there
+ * @returns Parsed filters; defaults for anything missing or invalid
+ */
+export function decodeState(hash: string, typeOf: (id: number) => CardType | undefined): FilterState {
+  const params = new URLSearchParams(hash.replace(/^#/, ''))
+  const ids = (key: string, type?: CardType) =>
+    (params.get(key) ?? '')
+      .split(',')
+      .filter(Boolean)
+      .map(Number)
+      .filter((id) => Number.isInteger(id) && (type ? typeOf(id) === type : typeOf(id) !== undefined))
+  return {
+    match: params.get('k') === 'any' ? 'any' : 'all',
+    factions: (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction)),
+    budgets: (params.get('b') ?? '').split(',').filter((b): b is Budget => BUDGETS.includes(b as Budget)),
+    sources: (params.get('src') ?? '').split(',').filter((s): s is Source => SOURCES.includes(s as Source)),
+    leader: ids('l', 'leader')[0],
+    stratagem: ids('s', 'stratagem')[0],
+    cards: [...new Set(ids('c'))],
+  }
+}

@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+data/cache
+.playwright-mcp
+.pi
+.idea
+test-results
+playwright-report

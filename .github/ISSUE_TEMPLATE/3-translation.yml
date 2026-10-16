@@ -1,0 +1,39 @@
+name: Translation
+description: Wrong or awkward wording in your language, or help with a new language.
+labels: [translation]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The interface was machine-translated and needs native speakers. If you're comfortable editing a file, a pull
+        request is the fastest route: see [CONTRIBUTING.md](https://github.com/el8ted/gwentdecksearch/blob/main/CONTRIBUTING.md).
+        Card names and official Gwent terms come from playgwent.com and can't be changed here.
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language
+      options:
+        - Deutsch
+        - English
+        - Español
+        - Français
+        - Italiano
+        - 日本語
+        - 한국어
+        - Polski
+        - Português (Brasil)
+        - Русский
+        - 简体中文
+    validations:
+      required: true
+  - type: textarea
+    id: wording
+    attributes:
+      label: Current and suggested wording
+      description: Where it appears, what it says now, and what it should say.
+      placeholder: |
+        Where: the button above the deck list
+        Now: …
+        Better: …
+    validations:
+      required: true

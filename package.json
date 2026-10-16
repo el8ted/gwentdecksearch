@@ -1,0 +1,45 @@
+{
+  "name": "gwent-deck-search",
+  "version": "1.0.0",
+  "description": "Static SPA for filtering curated Gwent decks by leader, stratagem and cards",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "scrape": "node scripts/cards.ts && node scripts/decks.ts && node scripts/build-data.ts",
+    "build:data": "node scripts/build-data.ts",
+    "scrape:cards": "node scripts/cards.ts",
+    "scrape:decks": "node scripts/decks.ts",
+    "typecheck": "tsc",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "pnpm build && playwright test",
+    "screenshots": "node scripts/screenshots.ts",
+    "readmes": "node scripts/readme-stubs.ts",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
+  },
+  "keywords": [],
+  "author": "el8ted",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.11.2",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.11.2",
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "^5.0.4",
+    "consola": "^3.4.2",
+    "tsdown": "^0.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  },
+  "private": true
+}

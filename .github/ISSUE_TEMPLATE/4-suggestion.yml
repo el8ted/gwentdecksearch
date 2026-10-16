@@ -1,0 +1,35 @@
+name: Suggest a feature or deck source
+description: An idea for the page, or a deck list worth including.
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - Feature or improvement
+        - New deck source
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What and why
+      description: What would you like, and what would it help you do?
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Deck source link (new sources only)
+      description: The author's deck list, and their channel if they have one.
+  - type: dropdown
+    id: consent
+    attributes:
+      label: Does the author agree to their decks being included? (new sources only)
+      description: Deck lists are only added with their author's permission.
+      options:
+        - I am the author
+        - The author has agreed
+        - Not asked yet
+        - Not applicable

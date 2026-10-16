@@ -1,0 +1,72 @@
+/** Card types as reported by playgwent. */
+export type CardType = 'leader' | 'stratagem' | 'unit' | 'special' | 'artifact'
+
+/** Faction codes; `NE` is neutral. */
+export type Faction = 'MO' | 'NG' | 'NR' | 'SK' | 'ST' | 'SY' | 'NE'
+
+/** Every playable faction, in display order (neutral excluded: no deck has a neutral leader). */
+export const FACTIONS: readonly Faction[] = ['MO', 'NG', 'NR', 'SK', 'ST', 'SY']
+
+/**
+ * Where a deck was listed, in display order: Community first, then deck-list authors alphabetically.
+ * (Which source names a shared deck is decided separately, by entry order in scripts/lib/entries.ts.)
+ */
+export const SOURCES = ['community', 'shinmiri2'] as const
+
+/** A deck source. */
+export type Source = (typeof SOURCES)[number]
+
+/** Display names for {@link Source}. */
+export const SOURCE_NAMES: Record<Source, string> = {
+  community: 'Community',
+  shinmiri2: 'Shinmiri2',
+}
+
+/** A card as used by the app. */
+export interface Card {
+  name: string
+  type: CardType
+  faction: Faction
+  /** Second faction of a dual-faction card (e.g. Tatterwing: SY + MO); such cards fit either faction's decks. */
+  secondaryFaction?: Faction
+  /** Base power; units only. */
+  power?: number
+  /** Card cost; for a leader, the bonus added to the 150 provision limit (current, from playgwent's card search). */
+  provisions: number
+}
+
+/** playgwent's deck totals, which are current. */
+export interface DeckStats {
+  scraps: number
+  cards: number
+  units: number
+  /** Provisions used, excluding the leader. */
+  provisions: number
+}
+
+/** One deck list. Alternate versions are separate records sharing a `name`. */
+export interface Deck {
+  name: string
+  /** playgwent deck hash. */
+  id: string
+  url: string
+  /** When the guide was last edited (ISO time); guides only, as a sheet deck has no meaningful date. */
+  updated?: string
+  stats: DeckStats
+  /** The source's own name and language, when that wasn't English (shown to visitors using that language). */
+  original?: { lang: string; name: string }
+  /** Every source listing this deck, in {@link SOURCES} order. */
+  sources: Source[]
+  /** Community guides only: playgwent votes and author. */
+  votes?: number
+  author?: string
+  /** `[cardId, copies]`, including the leader and stratagem. */
+  cards: [cardId: number, copies: number][]
+}
+
+/** The generated dataset shipped with the app. */
+export interface Dataset {
+  scrapedAt: string
+  cards: Record<number, Card>
+  decks: Deck[]
+}

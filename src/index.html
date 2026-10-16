@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gwent Deck Search</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply saved display settings before first paint (mirrors src/display.ts; the app re-applies them).
+      try {
+        const p = JSON.parse(localStorage.getItem('gwent-deck-search:display') || '{}')
+        const sizes = [87.5, 100, 112.5, 125, 150]
+        const t = p.theme === 'dark' || p.theme === 'light' ? p.theme : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        const el = document.documentElement
+        el.dataset.theme = t
+        el.dataset.contrast = p.contrast === 'high' ? 'high' : 'standard'
+        el.dataset.cvd = String(p.cvd === true)
+        el.style.fontSize = `${sizes[p.text] ?? 100}%`
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <!-- Buttons, not #links: the hash holds the filters, so jumping to #results would clear them. -->
+    <nav class="skip" data-i18n-label="skip.label">
+      <button type="button" class="clear" data-skip="cards" data-i18n="skip.cards">Skip to card search</button>
+      <button type="button" class="clear" data-skip="results" data-i18n="skip.results">Skip to results</button>
+      <button type="button" class="clear" data-skip="panel" data-i18n="skip.panel">Skip to card frequency</button>
+    </nav>
+    <header class="topbar">
+      <h1>Gwent <span>Deck Search</span></h1>
+      <p class="meta" id="meta"></p>
+      <details class="display langmenu" id="langmenu">
+        <summary class="lang-summary" data-i18n-label="language.button">
+          <svg class="globe" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.5" />
+            <path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5M12 2.5C9.4 5.3 8.1 8.5 8.1 12s1.3 6.7 3.9 9.5" />
+          </svg>
+          <span id="lang-current">English</span>
+        </summary>
+        <fieldset class="display-panel lang-panel" id="lang-panel" data-i18n-label="language.button"></fieldset>
+      </details>
+      <button type="button" class="credits-open" id="shortcuts-open" aria-haspopup="dialog" aria-keyshortcuts="?" data-i18n-label="help.title" data-i18n-title="help.title">?</button>
+      <button type="button" class="credits-open" id="credits-open" aria-haspopup="dialog" data-i18n="credits.button">Credits</button>
+      <details class="display" id="display">
+        <summary data-i18n-label="display.settings">Aa <span class="display-word" data-i18n="display.button">Display</span></summary>
+        <div class="display-panel">
+          <fieldset class="setting">
+            <legend class="setting-label" data-i18n="display.textSize">Text size</legend>
+            <div class="seg">
+              <button type="button" id="text-down" data-i18n-label="display.smaller">A−</button>
+              <output id="text-size" aria-live="polite">100%</output>
+              <button type="button" id="text-up" data-i18n-label="display.larger">A+</button>
+            </div>
+          </fieldset>
+          <fieldset class="setting">
+            <legend class="setting-label" data-i18n="display.theme">Theme</legend>
+            <div class="seg">
+              <button type="button" data-pref="theme" data-value="system" data-i18n="display.system">System</button>
+              <button type="button" data-pref="theme" data-value="dark" data-i18n="display.dark">Dark</button>
+              <button type="button" data-pref="theme" data-value="light" data-i18n="display.light">Light</button>
+            </div>
+          </fieldset>
+          <fieldset class="setting">
+            <legend class="setting-label" data-i18n="display.contrast">Contrast</legend>
+            <div class="seg">
+              <button type="button" data-pref="contrast" data-value="standard" data-i18n="display.standard">Standard</button>
+              <button type="button" data-pref="contrast" data-value="high" data-i18n="display.high">High</button>
+            </div>
+          </fieldset>
+          <fieldset class="setting">
+            <legend class="setting-label" data-i18n="display.colours">Colours</legend>
+            <div class="seg">
+              <button type="button" data-pref="cvd" data-value="false" data-i18n="display.standard">Standard</button>
+              <button type="button" data-pref="cvd" data-value="true" data-i18n-title="display.cvdTip" data-i18n="display.cvd">Colour-blind safe</button>
+            </div>
+          </fieldset>
+          <button type="button" class="clear" id="display-reset" data-i18n="display.reset">Reset display</button>
+        </div>
+      </details>
+    </header>
+
+    <section class="filters" id="filters" data-i18n-label="filters.label">
+      <div class="row">
+        <span class="label" id="source-label" data-i18n="filter.source">Source</span>
+        <fieldset class="pills" id="sources" aria-labelledby="source-label"></fieldset>
+      </div>
+      <div class="row">
+        <span class="label" id="budget-label" data-i18n="filter.provisions">Provisions</span>
+        <fieldset class="pills" id="budgets" aria-labelledby="budget-label"></fieldset>
+      </div>
+      <div class="row">
+        <span class="label" id="faction-label" data-i18n="filter.faction">Faction</span>
+        <fieldset class="pills" id="factions" aria-labelledby="faction-label"></fieldset>
+      </div>
+      <div class="row">
+        <span class="label" id="leader-label" data-i18n="filter.leader">Leader</span>
+        <fieldset class="pills" id="leader" aria-labelledby="leader-label"></fieldset>
+      </div>
+      <div class="row">
+        <span class="label" id="stratagem-label" data-i18n="filter.stratagem">Stratagem</span>
+        <fieldset class="stack" id="stratagem" aria-labelledby="stratagem-label"></fieldset>
+      </div>
+      <p class="note indent" id="stratagem-note"></p>
+      <div class="row">
+        <label class="label" for="card-input" id="cards-label" data-i18n="filter.cards">Cards</label>
+        <div class="chips-box">
+          <ul class="chips" id="chips" data-i18n-label="cards.selected"></ul>
+          <div class="combo">
+            <input
+              id="card-input"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              data-i18n-placeholder="cards.placeholder"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="suggestions"
+            />
+            <div class="suggestions" id="suggestions" role="listbox" aria-labelledby="cards-label" hidden></div>
+          </div>
+        </div>
+        <fieldset class="mode match" id="match" data-i18n-label="match.label">
+          <button type="button" data-match="all" data-i18n-title="match.allTip" data-i18n="match.all">All</button>
+          <button type="button" data-match="any" data-i18n-title="match.anyTip" data-i18n="match.any">Any</button>
+        </fieldset>
+        <button type="button" class="clear" id="clear" data-i18n="clearAll">Clear all</button>
+      </div>
+    </section>
+
+    <div class="layout">
+      <main>
+        <div class="result-bar">
+          <h2 class="result-head" id="result-head" tabindex="-1" aria-live="polite">Decks</h2>
+          <button type="button" class="clear" id="dim-common" aria-pressed="false" data-i18n="results.dimCommon" data-i18n-title="results.dimCommonTip">Dim common</button>
+          <button type="button" class="clear" id="expand-all">Expand all</button>
+          <button type="button" class="clear skip-past" data-skip="panel" data-i18n="skip.pastResults">Skip past results</button>
+        </div>
+        <ol class="results" id="results"></ol>
+      </main>
+      <aside class="panel" aria-labelledby="panel-head">
+        <fieldset class="mode freq" id="freq" data-i18n-label="freq.label">
+          <button type="button" data-freq="most" data-i18n-title="freq.mostTip" data-i18n="freq.most">Most common</button>
+          <button type="button" data-freq="least" data-i18n-title="freq.leastTip" data-i18n="freq.least">Least common</button>
+        </fieldset>
+        <h2 id="panel-head">Cards</h2>
+        <ol class="bars" id="bars"></ol>
+      </aside>
+    </div>
+
+    <dialog class="credits" id="shortcuts" aria-labelledby="shortcuts-title">
+      <div class="credits-head">
+        <h2 id="shortcuts-title" data-i18n="help.title">Help</h2>
+        <button type="button" class="clear" id="shortcuts-close" data-i18n-label="help.close">✕</button>
+      </div>
+      <h3 data-i18n="help.guide">How to use it</h3>
+      <ol class="guide">
+        <li data-i18n="help.step1">Pick a faction, then a leader. In a match, start with your opponent's.</li>
+        <li data-i18n="help.step2">Type the cards you see into the Cards box (press /). Each one narrows the list.</li>
+        <li data-i18n="help.step3">Most common shows the cards the remaining decks run; Least common shows rare surprises. Click one to add it.</li>
+        <li data-i18n="help.step4">All lists decks with every card; Any lists decks with at least one, best matches first.</li>
+        <li data-i18n="help.step5">Click a deck to see its cards. ↗ opens it on playgwent.com to import.</li>
+        <li data-i18n="help.step6">Spare: room to upgrade a card. Over: costs have changed and the deck no longer fits.</li>
+        <li data-i18n="help.step7">Clear all starts over; your browser's Back button undoes it.</li>
+      </ol>
+      <p><a id="help-readme" href="https://github.com/el8ted/gwentdecksearch#readme" target="_blank" rel="noopener" data-i18n="help.readme">Full guide</a></p>
+      <h3 data-i18n="shortcuts.title">Keyboard shortcuts</h3>
+      <dl class="keys">
+        <dt><kbd>/</kbd></dt>
+        <dd data-i18n="shortcuts.cards">Jump to the card box</dd>
+        <dt><kbd>[</kbd></dt>
+        <dd data-i18n="shortcuts.filters">Jump to the filters</dd>
+        <dt><kbd>]</kbd></dt>
+        <dd data-i18n="shortcuts.panel">Jump to card frequency</dd>
+        <dt><kbd>Shift</kbd> + <kbd>Backspace</kbd></dt>
+        <dd data-i18n="shortcuts.clear">Clear all (Back undoes it)</dd>
+        <dt><kbd>?</kbd></dt>
+        <dd data-i18n="shortcuts.help">Show or hide this help</dd>
+        <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Tab</kbd></dt>
+        <dd data-i18n="shortcuts.suggestions">Move through card suggestions</dd>
+        <dt><kbd>Enter</kbd></dt>
+        <dd data-i18n="shortcuts.add">Add the highlighted card</dd>
+        <dt><kbd>Backspace</kbd></dt>
+        <dd data-i18n="shortcuts.removeLast">Remove the last card (in an empty card box)</dd>
+        <dt><kbd>Esc</kbd></dt>
+        <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help</dd>
+      </dl>
+      <p data-i18n="shortcuts.note">Shortcuts work when you're not typing in a box. Tab from the top of the page for skip links.</p>
+    </dialog>
+
+    <dialog class="credits" id="credits" aria-labelledby="credits-title">
+      <div class="credits-head">
+        <h2 id="credits-title" data-i18n="credits.title">Credits</h2>
+        <button type="button" class="clear" id="credits-close" data-i18n-label="credits.close">✕</button>
+      </div>
+      <p data-i18n="credits.intro">Deck lists belong to their authors. Please support them: follow, subscribe, drop by a stream.</p>
+      <ul class="credit-list">
+        <li>
+          <span class="credit-name">
+            <strong data-i18n="source.community">Community</strong>
+            <a href="https://www.playgwent.com/decks" data-pg="https://www.playgwent.com/decks" target="_blank" rel="noopener" data-i18n="credits.guides">Deck guides</a>
+          </span>
+        </li>
+        <li>
+          <span class="credit-name">
+            <strong>Shinmiri2</strong>
+            <a href="https://docs.google.com/spreadsheets/d/1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM/edit?gid=1592369710" target="_blank" rel="noopener" data-i18n="credits.deckList">Deck list</a>
+          </span>
+          <span class="credit-links">
+            <a href="https://www.youtube.com/@shinmiri2101" target="_blank" rel="noopener"><svg class="brand yt" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>YouTube</a>
+            <a href="https://www.twitch.tv/shinmiri2" target="_blank" rel="noopener"><svg class="brand tw" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" /></svg>Twitch</a>
+          </span>
+        </li>
+        <li>
+          <span class="credit-name">
+            <strong>GWENT: The Witcher Card Game</strong>
+            <a href="https://www.playgwent.com/" data-pg="https://www.playgwent.com/" target="_blank" rel="noopener">playgwent.com</a>
+          </span>
+        </li>
+        <li>
+          <span class="credit-name">
+            <strong>Gwent Deck Search</strong>
+            <a href="https://github.com/el8ted/gwentdecksearch/blob/main/LICENSE" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a>
+          </span>
+          <span class="credit-links">
+            <a href="https://github.com/el8ted/gwentdecksearch" target="_blank" rel="noopener"><svg class="brand gh" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3.97.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg><span data-i18n="credits.source">Source code</span></a>
+            <a href="https://github.com/el8ted/gwentdecksearch/issues/new/choose" target="_blank" rel="noopener" data-i18n="credits.report">Report a problem</a>
+            <a href="https://github.com/el8ted/gwentdecksearch/blob/main/AI.md" target="_blank" rel="noopener" data-i18n="credits.ai">AI use</a>
+          </span>
+        </li>
+      </ul>
+      <p class="credits-note">
+        <span data-i18n="credits.note">Unofficial fan project, not affiliated with or endorsed by CD PROJEKT RED. GWENT and The
+          Witcher are trademarks of CD PROJEKT S.A.</span>
+        <a href="https://www.cdprojektred.com/en/fan-content" target="_blank" rel="noopener" data-i18n="credits.guidelines">Fan Content Guidelines</a>
+      </p>
+    </dialog>
+
+    <script src="app.iife.js"></script>
+  </body>
+</html>

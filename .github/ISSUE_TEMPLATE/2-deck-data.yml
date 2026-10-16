@@ -1,0 +1,40 @@
+name: Deck data problem
+description: A deck is missing, wrong, has a dead link, or has a bad name or translation.
+labels: [data]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Decks come from their authors and are refreshed from time to time. If a deck itself needs changing, ask its
+        author; this form is for problems in how Gwent Deck Search shows it.
+  - type: input
+    id: deck
+    attributes:
+      label: Deck ID or link
+      description: The 8 characters shown on the deck (e.g. d8bdb97b), or its playgwent.com link.
+  - type: dropdown
+    id: source
+    attributes:
+      label: Source
+      options:
+        - Community (playgwent.com guides)
+        - Shinmiri2
+        - Not sure
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's wrong?
+      options:
+        - Missing deck
+        - Dead or wrong link
+        - Wrong or badly translated deck name
+        - Wrong cards, provisions or stats
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+    validations:
+      required: true
