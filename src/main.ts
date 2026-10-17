@@ -406,6 +406,9 @@ document.addEventListener('click', (e) => {
   if (!t) return
   if (t.dataset.skip) return JUMPS[t.dataset.skip]?.()?.focus()
   const { faction, source, budget, leader, stratagem, remove, add, toggle, anyStratagem, match, more } = t.dataset
+  // A card added from the panel leaves it: the card below moves into its place, so focus goes there (not the card box,
+  // which would scroll a phone back up and open its keyboard).
+  const barAt = add ? [...els.bars.querySelectorAll('[data-add]')].indexOf(t) : -1
   if (t.dataset.freq) {
     freq = t.dataset.freq as typeof freq
     renderResults()
@@ -449,6 +452,10 @@ document.addEventListener('click', (e) => {
   const key = FOCUS_KEYS.find(([k]) => t.dataset[k] !== undefined)
   if (key && !t.isConnected) {
     const [k, attr] = key
+    if (barAt >= 0) {
+      const bars = els.bars.querySelectorAll<HTMLElement>('[data-add]')
+      return (bars[Math.min(barAt, bars.length - 1)] ?? JUMPS.panel())?.focus()
+    }
     const fallback =
       k === 'anyStratagem'
         ? els.stratagem.querySelector('button')

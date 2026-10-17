@@ -45,15 +45,43 @@ test('a faction pill toggles twice by keyboard without losing focus', async ({ p
   await expect.poll(() => focused(page)).toBe(JSON.stringify({ faction: 'MO' }))
 })
 
-test('adding from a frequency bar, then removing the chip, focuses the card box', async ({ page, open }) => {
+test('adding from a frequency bar keeps focus at that place in the panel, and the page stays put', async ({
+  page,
+  open,
+}) => {
+  // Arrange: a phone-sized window, scrolled to the panel
+  await page.setViewportSize({ width: 412, height: 915 })
+  await open()
+  const bars = page.locator('#bars [data-add]')
+  await bars.nth(2).scrollIntoViewIfNeeded()
+  const id = await bars.nth(2).getAttribute('data-add')
+  const scrolled = await page.evaluate(() => scrollY)
+
+  // Act
+  await bars.nth(2).click()
+
+  // Assert
+  await expect(page.locator(`#chips [data-remove="${id}"]`)).toBeVisible()
+  // Counts change with the new filter, so the panel reorders; focus stays at the same row.
+  await expect.poll(() => bars.nth(2).evaluate((b) => b === document.activeElement)).toBe(true)
+  expect(
+    await page
+      .locator('#bars [data-add]')
+      .evaluateAll((b, id) => b.some((x) => (x as HTMLElement).dataset.add === id), id),
+  ).toBe(false)
+  expect(Math.abs((await page.evaluate(() => scrollY)) - scrolled)).toBeLessThan(80)
+})
+
+test('removing a chip focuses the card box', async ({ page, open }) => {
   // Arrange
   await open()
   const id = await page.locator('[data-add]').first().getAttribute('data-add')
-
-  // Act + Assert
   await enter(page, `[data-add="${id}"]`)
-  await expect.poll(() => focused(page)).toBe('#card-input')
+
+  // Act
   await enter(page, `#chips [data-remove="${id}"]`)
+
+  // Assert
   await expect.poll(() => focused(page)).toBe('#card-input')
   await expect(page.locator('#chips li')).toHaveCount(0)
 })
