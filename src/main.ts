@@ -113,7 +113,7 @@ function loadPack(lang: Lang): Promise<LanguagePack | undefined> {
 
 const params = new URLSearchParams(location.search)
 let loc = makeLocale(pickLanguage(params.get('lang'), readStorage(LANG_KEY), navigator.languages))
-let state: FilterState = decodeState(location.hash, (id) => data.cards[id]?.type)
+let state: FilterState = decodeState(location.hash, (id) => data.cards[id])
 // The faction pill that adding a card turned on (see addCard); a pill click makes the choice the visitor's own.
 // Not in the hash: after a reload the pill simply stays.
 let autoFaction: Faction | undefined
@@ -505,7 +505,7 @@ document.addEventListener('keydown', (e) => {
   hit[1]()
 })
 window.addEventListener('hashchange', () => {
-  state = decodeState(location.hash, (id) => data.cards[id]?.type)
+  state = decodeState(location.hash, (id) => data.cards[id])
   autoFaction = undefined
   limit = PAGE
   render()

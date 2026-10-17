@@ -5,8 +5,9 @@
  * Run: `pnpm scrape:cards`.
  */
 import { consola } from 'consola'
-import { fetchCardData, provisionChanges } from './lib/card-refresh.ts'
+import { fetchCardData } from './lib/card-refresh.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
+import { cardChanges } from './lib/release-notes.ts'
 import { markRefreshed, readJson, STORE_PATHS, writeJson } from './lib/store.ts'
 
 const get = createPoliteFetch({ 'www.playgwent.com': 1_000 })
@@ -14,7 +15,7 @@ const before = await readJson(STORE_PATHS.cards, {})
 const { cards, cardNames, terms } = await fetchCardData(get)
 
 await markRefreshed('cards')
-const changes = provisionChanges(before, cards)
+const changes = cardChanges(before, cards)
 if (changes.length) consola.info(`${changes.length} card changes:\n  ${changes.join('\n  ')}`)
 const written = [
   (await writeJson(STORE_PATHS.cards, cards)) && STORE_PATHS.cards,

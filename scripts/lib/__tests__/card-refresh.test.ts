@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fetchCardData, provisionChanges } from '../card-refresh.ts'
-import type { CatalogCard } from '../store.ts'
+import { fetchCardData } from '../card-refresh.ts'
 
 const KEYS = [
   ...[0, 1, 2, 3, 4, 5, 6].map((i) => `faction_name_${i}`),
@@ -47,21 +46,5 @@ describe('fetchCardData', () => {
     expect(data.cards[1]).toMatchObject({ name: 'L-en', type: 'leader', craftingCost: 30 })
     expect(data.cardNames.ru).toEqual({ 1: 'L-ru', 2: 'U-ru' })
     expect(data.terms.ja['faction.MO']).toBe('faction_name_1')
-  })
-})
-
-describe('provisionChanges', () => {
-  it('lists changed, new and removed cards', () => {
-    // Arrange
-    const card = (name: string, provisions: number) =>
-      ({ name, type: 'unit', faction: 'MO', provisions, craftingCost: 0, rarity: 1 }) as CatalogCard
-    const before = { 1: card('Ciri', 10), 2: card('Same', 4), 3: card('Gone', 5) }
-    const after = { 1: card('Ciri', 9), 2: card('Same', 4), 4: card('New', 6) }
-
-    // Act
-    const lines = provisionChanges(before, after)
-
-    // Assert
-    expect(lines).toEqual(['Ciri: 10 → 9', 'New: new (6)', 'Gone: removed'])
   })
 })

@@ -38,21 +38,3 @@ export async function fetchCardData(get: GetBody): Promise<CardData> {
   }
   return { cards, cardNames, terms }
 }
-
-/**
- * Lists provision changes between two catalogs, e.g. a Balance Council result.
- *
- * @param before - Previous catalog
- * @param after - New catalog
- * @returns One line per changed, added or removed card
- */
-export function provisionChanges(before: Record<number, CatalogCard>, after: Record<number, CatalogCard>): string[] {
-  const lines: string[] = []
-  for (const [id, card] of Object.entries(after)) {
-    const old = before[Number(id)]
-    if (!old) lines.push(`${card.name}: new (${card.provisions})`)
-    else if (old.provisions !== card.provisions) lines.push(`${card.name}: ${old.provisions} → ${card.provisions}`)
-  }
-  for (const [id, card] of Object.entries(before)) if (!after[Number(id)]) lines.push(`${card.name}: removed`)
-  return lines
-}

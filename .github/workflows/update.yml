@@ -48,23 +48,18 @@ jobs:
           if [ "$WHAT" != decks ]; then pnpm scrape:cards; fi
           if [ "$WHAT" != cards ]; then pnpm scrape:decks; fi
           pnpm build:data
-      # Every run moves the "data as of" time; only a change to a deck or card is worth a release.
+      # Only a deck or card change is worth a release. Fails (and emails you) if a source lost more than a quarter of
+      # its decks, e.g. a sheet made private: the live site keeps its data until someone looks.
       - id: changed
-        run: |
-          node -e "
-            const { execSync } = require('node:child_process')
-            const strip = (d) => JSON.stringify({ cards: d.cards, decks: d.decks })
-            const before = JSON.parse(execSync('git show HEAD:data/decks.json', { maxBuffer: 1e9 }))
-            const after = require('./data/decks.json')
-            console.log('changed=' + (strip(before) !== strip(after)))
-          " >> "$GITHUB_OUTPUT"
+        run: node scripts/release-notes.ts check >> "$GITHUB_OUTPUT"
       - id: publish
         if: steps.changed.outputs.changed == 'true'
         run: |
           date=$(node -p "require('./data/decks.json').scrapedAt.slice(0, 10)")
+          # Same-day releases get two-digit suffixes (.02, .03, …) so tags sort in release order.
           tag=$date
           n=2
-          while git rev-parse -q --verify "refs/tags/$tag" > /dev/null; do tag="$date.$n"; n=$((n + 1)); done
+          while git rev-parse -q --verify "refs/tags/$tag" > /dev/null; do tag=$(printf '%s.%02d' "$date" "$n"); n=$((n + 1)); done
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data

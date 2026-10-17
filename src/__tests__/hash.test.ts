@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import type { FilterState } from '../filter.ts'
 import { decodeState, EMPTY_STATE, encodeState } from '../hash.ts'
-import type { CardType } from '../types.ts'
+import type { Card } from '../types.ts'
 
-const known = new Map<number, CardType>([
-  [201743, 'leader'],
-  [202497, 'stratagem'],
-  [203123, 'unit'],
-  [202838, 'special'],
+const known = new Map<number, Pick<Card, 'type' | 'faction'>>([
+  [201743, { type: 'leader', faction: 'MO' }],
+  [202497, { type: 'stratagem', faction: 'NE' }],
+  [203123, { type: 'unit', faction: 'NE' }],
+  [202838, { type: 'special', faction: 'NE' }],
 ])
-const typeOf = (id: number) => known.get(id)
+const cardOf = (id: number) => known.get(id)
 
 describe('encodeState', () => {
   it('returns an empty hash for the empty state', () => {
@@ -45,7 +45,7 @@ describe('decodeState', () => {
     // Arrange
     const s: FilterState = {
       match: 'any',
-      factions: ['SK'],
+      factions: ['MO'],
       sources: ['community', 'metallic-danny'],
       budgets: ['spare', 'over'],
       leader: 201743,
@@ -54,7 +54,7 @@ describe('decodeState', () => {
     }
 
     // Act
-    const decoded = decodeState(encodeState(s), typeOf)
+    const decoded = decodeState(encodeState(s), cardOf)
 
     // Assert
     expect(decoded).toEqual(s)
@@ -65,7 +65,7 @@ describe('decodeState', () => {
     const hash = '#m=x&f=MO,XX&src=bogus&b=spare,huge&l=999&s=abc&c=203123,1.5,203123,7'
 
     // Act
-    const decoded = decodeState(hash, typeOf)
+    const decoded = decodeState(hash, cardOf)
 
     // Assert
     expect(decoded).toEqual({
@@ -79,12 +79,26 @@ describe('decodeState', () => {
     })
   })
 
+  it('drops a leader outside the chosen faction, but keeps one with no faction chosen', () => {
+    // Arrange: 201743 is a Monsters leader
+    const mismatched = '#f=NR&l=201743'
+    const alone = '#l=201743'
+
+    // Act
+    const [a, b] = [decodeState(mismatched, cardOf), decodeState(alone, cardOf)]
+
+    // Assert
+    expect(a.factions).toEqual(['NR'])
+    expect(a.leader).toBeUndefined()
+    expect(b.leader).toBe(201743)
+  })
+
   it('drops a leader or stratagem ID that is another kind of card', () => {
     // Arrange
     const hash = '#l=203123&s=201743'
 
     // Act
-    const decoded = decodeState(hash, typeOf)
+    const decoded = decodeState(hash, cardOf)
 
     // Assert
     expect(decoded.leader).toBeUndefined()
@@ -96,7 +110,7 @@ describe('decodeState', () => {
     const hash = ''
 
     // Act
-    const decoded = decodeState(hash, typeOf)
+    const decoded = decodeState(hash, cardOf)
 
     // Assert
     expect(decoded).toEqual({ ...EMPTY_STATE, leader: undefined, stratagem: undefined })

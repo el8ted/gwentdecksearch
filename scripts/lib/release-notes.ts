@@ -1,4 +1,4 @@
-import { type Dataset, SOURCE_NAMES, SOURCES } from '../../src/types.ts'
+import { type Card, type Dataset, SOURCE_NAMES, SOURCES } from '../../src/types.ts'
 
 const num = new Intl.NumberFormat('en')
 const signed = (n: number) => (n > 0 ? `+${num.format(n)}` : n < 0 ? `−${num.format(-n)}` : '±0')
@@ -32,6 +32,49 @@ export function fileUnreleased(changelog: string, tag: string): string {
   return `${changelog.slice(0, start)}## Unreleased\n\n## ${tag}\n\n${rest}`
 }
 
+/** A card's fields that changes are reported on. */
+type CardFields = Pick<Card, 'name' | 'type' | 'provisions' | 'power'>
+
+/**
+ * Cards added, removed, or whose provisions, leader bonus or power changed (the Balance Council's effect).
+ *
+ * @param before - Cards by ID before
+ * @param after - Cards by ID after
+ * @returns One line per change, sorted
+ */
+export function cardChanges(before: Record<number, CardFields>, after: Record<number, CardFields>): string[] {
+  const lines: string[] = []
+  for (const [id, card] of Object.entries(after)) {
+    const old = before[Number(id)]
+    if (!old) {
+      lines.push(`${card.name}: new`)
+      continue
+    }
+    const what = card.type === 'leader' ? 'provision bonus' : 'provisions'
+    if (old.provisions !== card.provisions) lines.push(`${card.name}: ${what} ${old.provisions} → ${card.provisions}`)
+    if (old.power !== undefined && card.power !== undefined && old.power !== card.power)
+      lines.push(`${card.name}: power ${old.power} → ${card.power}`)
+  }
+  for (const [id, card] of Object.entries(before)) if (!after[Number(id)]) lines.push(`${card.name}: removed`)
+  return lines.sort()
+}
+
+/**
+ * Sources that lost more than a quarter of their decks: a sheet made private or rearranged still answers, but
+ * yields no deck links, and an unattended update must not publish that.
+ *
+ * @param before - The published dataset
+ * @param after - The refreshed dataset
+ * @returns One line per shrunken source; empty if all is well
+ */
+export function shrunkSources(before: Dataset, after: Dataset): string[] {
+  const count = (data: Dataset, src: string) => data.decks.filter((d) => (d.sources as string[]).includes(src)).length
+  return SOURCES.flatMap((s) => {
+    const [was, now] = [count(before, s), count(after, s)]
+    return now < was * 0.75 ? [`${SOURCE_NAMES[s]}: ${was} → ${now} decks`] : []
+  })
+}
+
 /**
  * What changed in the data since the previous release: deck counts per source, and cards whose provisions or power
  * changed (the Balance Council's effect).
@@ -53,16 +96,9 @@ export function dataNotes(before: Dataset | undefined, after: Dataset): string {
     }),
   ]
 
-  const changes: string[] = []
-  for (const [id, card] of Object.entries(after.cards)) {
-    const old = before?.cards[Number(id)]
-    if (!old) continue
-    const what = card.type === 'leader' ? 'provision bonus' : 'provisions'
-    if (old.provisions !== card.provisions) changes.push(`${card.name}: ${what} ${old.provisions} → ${card.provisions}`)
-    if (old.power !== undefined && card.power !== undefined && old.power !== card.power)
-      changes.push(`${card.name}: power ${old.power} → ${card.power}`)
-  }
-  if (changes.length) lines.push('', '**Card changes**', '', ...changes.sort().map((c) => `- ${c}`))
+  // Cards no deck uses aren't in the dataset, so "new" and "removed" only mean a card entered or left the decks.
+  const changes = before ? cardChanges(before.cards, after.cards).filter((c) => !/: (new|removed)$/.test(c)) : []
+  if (changes.length) lines.push('', '**Card changes**', '', ...changes.map((c) => `- ${c}`))
   return lines.join('\n')
 }
 

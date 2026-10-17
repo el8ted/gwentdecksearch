@@ -50,6 +50,10 @@ moves them under the release's own heading in the changelog. Data-only releases 
 `.github/workflows/update.yml` refreshes the data and, if any deck or card changed, commits it to `main` and publishes
 a release. If nothing changed, nothing is released.
 
+**If a source loses more than a quarter of its decks, the run fails and nothing is released.** A sheet that was made
+private, renamed or rearranged still answers, but yields no deck links. GitHub emails you about the failed run; the
+live site keeps its data. Check the source, fix the parser or its address if needed, and run the update again.
+
 | What | When (UTC) |
 |---|---|
 | Decks | Saturdays at 00:17 |
@@ -100,7 +104,8 @@ date=$(node -p "require('./data/decks.json').scrapedAt.slice(0, 10)")
 git tag "$date" && git push origin "$date"
 ```
 
-If that date is already a release (the data hasn't changed), add a suffix: `2026-10-16.2`, `2026-10-16.3` and so on.
+If that date is already a release (the data hasn't changed), add a two-digit suffix: `2026-10-16.02`,
+`2026-10-16.03` and so on, so tags sort in release order.
 
 The tag starts `.github/workflows/release.yml`, which:
 

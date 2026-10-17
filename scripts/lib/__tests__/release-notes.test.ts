@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Dataset, Deck } from '../../../src/types.ts'
-import { dataNotes, fileUnreleased, releaseNotes, unreleased } from '../release-notes.ts'
+import { cardChanges, dataNotes, fileUnreleased, releaseNotes, shrunkSources, unreleased } from '../release-notes.ts'
 
 const CHANGELOG = `# Changelog
 
@@ -150,5 +150,50 @@ describe('releaseNotes', () => {
     // Assert
     expect(result.startsWith('### Data')).toBe(true)
     expect(result).toContain('https://el8ted.github.io/gwentdecksearch/')
+  })
+})
+
+describe('cardChanges', () => {
+  it('lists cost, bonus and power changes, and new and removed cards', () => {
+    // Arrange: Golden Nekker (2) leaves the catalog
+    const { 2: _, ...after } = AFTER.cards
+
+    // Act
+    const result = cardChanges(BEFORE.cards, after)
+
+    // Assert
+    expect(result).toEqual([
+      'Arachas Swarm: provision bonus 15 → 16',
+      'Chimera: power 5 → 6',
+      'Golden Nekker: removed',
+      'New Card: new',
+    ])
+  })
+})
+
+describe('shrunkSources', () => {
+  it('names a source that lost more than a quarter of its decks', () => {
+    // Arrange: a sheet that answered but yielded no deck links
+    const before = data([deck('a', ['shinmiri2']), deck('b', ['shinmiri2']), deck('c', ['community'])], {})
+    const after = data([deck('c', ['community'])], {})
+
+    // Act
+    const result = shrunkSources(before, after)
+
+    // Assert
+    expect(result).toEqual(['Shinmiri2: 2 → 0 decks'])
+  })
+
+  it('allows normal turnover', () => {
+    // Arrange: 1 of 4 decks leaves, exactly a quarter
+    const four = ['a', 'b', 'c', 'd'].map((id) => deck(id, ['community']))
+    const before = data(four, {})
+    const after = data(four.slice(1), {})
+
+    // Act
+    const result = shrunkSources(before, after)
+
+    // Assert
+    expect(result).toEqual([])
   })
 })

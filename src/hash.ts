@@ -1,5 +1,5 @@
 import { BUDGETS, type Budget, type FilterState } from './filter.ts'
-import { type CardType, FACTIONS, type Faction, SOURCES, type Source } from './types.ts'
+import { type Card, type CardType, FACTIONS, type Faction, SOURCES, type Source } from './types.ts'
 
 /** The state when nothing is selected. */
 export const EMPTY_STATE: FilterState = {
@@ -33,13 +33,18 @@ export function encodeState(state: FilterState): string {
  * Parses a URL hash back into filters.
  *
  * Hashes come from bookmarks and may predate a data refresh, so unknown factions or card IDs are
- * dropped rather than rejected, as is a leader or stratagem ID that isn't one.
+ * dropped rather than rejected, as is a leader or stratagem ID that isn't one, or a leader outside the chosen faction
+ * (the page would show that faction's leaders, none of them selected, and no decks).
  *
  * @param hash - `location.hash`, with or without `#`
- * @param typeOf - A card's type in the current dataset, or `undefined` if it isn't there
+ * @param cardOf - A card in the current dataset, or `undefined` if it isn't there
  * @returns Parsed filters; defaults for anything missing or invalid
  */
-export function decodeState(hash: string, typeOf: (id: number) => CardType | undefined): FilterState {
+export function decodeState(
+  hash: string,
+  cardOf: (id: number) => Pick<Card, 'type' | 'faction'> | undefined,
+): FilterState {
+  const typeOf = (id: number) => cardOf(id)?.type
   const params = new URLSearchParams(hash.replace(/^#/, ''))
   const ids = (key: string, type?: CardType) =>
     (params.get(key) ?? '')
@@ -47,12 +52,17 @@ export function decodeState(hash: string, typeOf: (id: number) => CardType | und
       .filter(Boolean)
       .map(Number)
       .filter((id) => Number.isInteger(id) && (type ? typeOf(id) === type : typeOf(id) !== undefined))
+  const factions = (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction))
+  const leader = ids('l', 'leader')[0]
   return {
     match: params.get('k') === 'any' ? 'any' : 'all',
-    factions: (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction)),
+    factions,
     budgets: (params.get('b') ?? '').split(',').filter((b): b is Budget => BUDGETS.includes(b as Budget)),
     sources: (params.get('src') ?? '').split(',').filter((s): s is Source => SOURCES.includes(s as Source)),
-    leader: ids('l', 'leader')[0],
+    leader:
+      leader !== undefined && factions.length && !factions.includes(cardOf(leader)?.faction as Faction)
+        ? undefined
+        : leader,
     stratagem: ids('s', 'stratagem')[0],
     cards: [...new Set(ids('c'))],
   }
