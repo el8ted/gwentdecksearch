@@ -1164,7 +1164,8 @@ h1 span {
   margin-top: 0.6rem;
   padding-left: 1.4rem;
 }
-#help-readme {
+#help-readme,
+#help-news {
   color: var(--accent);
 }
 .keys {

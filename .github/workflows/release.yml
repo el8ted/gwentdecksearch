@@ -1,29 +1,36 @@
 name: Release
 
-# Push a tag named after the data date to publish: the live site, and a GitHub Release with the offline zip.
-#   git tag 2026-10-16 && git push origin 2026-10-16
+# Publishes the live site and a GitHub Release with the offline zip, named after the data date.
+# - By hand: tag main and push the tag:  git tag 2026-10-16 && git push origin 2026-10-16
+# - Automatically: update.yml calls this after committing new data, with the tag it created.
 # A second release of the same data adds a suffix: 2026-10-16.2
 on:
   push:
     tags: ['20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]*']
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
 
-# One release at a time; a newer tag waits rather than cancelling a deploy halfway.
-concurrency:
-  group: release
-  cancel-in-progress: false
+env:
+  TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   checks:
     uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ inputs.tag || github.ref_name }}
 
   build:
     needs: checks
     runs-on: ubuntu-latest
-    outputs:
-      decks: ${{ steps.data.outputs.decks }}
-      scraped: ${{ steps.data.outputs.scraped }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+          # Every tag, so the notes can compare with the previous release's data.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
@@ -31,26 +38,24 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # The tag names the data, so a release can't be labelled with a date its data isn't from.
-      - id: data
-        run: |
+      - run: |
           scraped=$(node -p "require('./data/decks.json').scrapedAt")
-          decks=$(node -p "require('./data/decks.json').decks.length")
-          tag=${GITHUB_REF_NAME}
-          if [ "${tag:0:10}" != "${scraped:0:10}" ]; then
-            echo "::error::Tag $tag doesn't match the data date ${scraped:0:10} (UTC). Tag ${scraped:0:10} instead."
+          if [ "${TAG:0:10}" != "${scraped:0:10}" ]; then
+            echo "::error::Tag $TAG doesn't match the data date ${scraped:0:10} (UTC). Tag ${scraped:0:10} instead."
             exit 1
           fi
-          echo "scraped=$scraped" >> "$GITHUB_OUTPUT"
-          echo "decks=$decks" >> "$GITHUB_OUTPUT"
+      - run: node scripts/release-notes.ts notes "$TAG" > release-notes.md
       - run: pnpm build
       - name: Zip for offline use
         run: |
           cp -r dist gwent-deck-search
-          zip -qr "gwent-deck-search-${GITHUB_REF_NAME}.zip" gwent-deck-search
+          zip -qr "gwent-deck-search-$TAG.zip" gwent-deck-search
       - uses: actions/upload-artifact@v7
         with:
-          name: zip
-          path: gwent-deck-search-*.zip
+          name: release
+          path: |
+            gwent-deck-search-*.zip
+            release-notes.md
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
@@ -69,24 +74,26 @@ jobs:
         uses: actions/deploy-pages@v5
 
   release:
-    needs: [build, deploy]
+    needs: deploy
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
       - uses: actions/download-artifact@v8
         with:
-          name: zip
-      - env:
+          name: release
+      - run: gh release create "$TAG" gwent-deck-search-*.zip --title "$TAG" --notes-file release-notes.md
+        env:
           GH_TOKEN: ${{ github.token }}
-          DECKS: ${{ needs.build.outputs.decks }}
-          SCRAPED: ${{ needs.build.outputs.scraped }}
+      # File this release's changelog entries under its tag, leaving Unreleased empty for the next changes.
+      - name: Update CHANGELOG.md
         run: |
-          gh release create "$GITHUB_REF_NAME" gwent-deck-search-*.zip \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "$GITHUB_REF_NAME" \
-            --notes "$DECKS decks, data as of ${SCRAPED:0:16} UTC.
-
-          **Use it online:** https://el8ted.github.io/gwentdecksearch/
-
-          **Use it offline:** download the zip below, unzip it and open \`gwent-deck-search/index.html\` in your browser."
+          node scripts/release-notes.ts file "$TAG"
+          if git diff --quiet CHANGELOG.md; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -qm "Changelog: $TAG" CHANGELOG.md
+          git push origin main

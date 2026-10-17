@@ -1,0 +1,87 @@
+name: Update data
+
+# Refreshes the data on a schedule and, if any deck or card changed, commits it to main and publishes a release.
+# - Decks: every Saturday.
+# - Cards: around each month's end, when the Balance Council changes go live with the new season.
+# Run it by hand from the Actions tab (Run workflow) to update now.
+on:
+  schedule:
+    - cron: '17 0 * * 6'
+    - cron: '7 18,21,23 28-31 * *'
+    - cron: '7 2,6,12 1 * *'
+  workflow_dispatch:
+    inputs:
+      what:
+        description: What to refresh
+        type: choice
+        options: [decks, cards, both]
+        default: both
+
+# Never two updates at once: both would commit to main.
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.publish.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Refresh
+        env:
+          WHAT: ${{ inputs.what || (github.event.schedule == '17 0 * * 6' && 'decks' || 'cards') }}
+        run: |
+          echo "Refreshing: $WHAT"
+          if [ "$WHAT" != decks ]; then pnpm scrape:cards; fi
+          if [ "$WHAT" != cards ]; then pnpm scrape:decks; fi
+          pnpm build:data
+      # Every run moves the "data as of" time; only a change to a deck or card is worth a release.
+      - id: changed
+        run: |
+          node -e "
+            const { execSync } = require('node:child_process')
+            const strip = (d) => JSON.stringify({ cards: d.cards, decks: d.decks })
+            const before = JSON.parse(execSync('git show HEAD:data/decks.json', { maxBuffer: 1e9 }))
+            const after = require('./data/decks.json')
+            console.log('changed=' + (strip(before) !== strip(after)))
+          " >> "$GITHUB_OUTPUT"
+      - id: publish
+        if: steps.changed.outputs.changed == 'true'
+        run: |
+          date=$(node -p "require('./data/decks.json').scrapedAt.slice(0, 10)")
+          tag=$date
+          n=2
+          while git rev-parse -q --verify "refs/tags/$tag" > /dev/null; do tag="$date.$n"; n=$((n + 1)); done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          git commit -qm "Data: $tag"
+          git tag "$tag"
+          git push origin main "$tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      - if: steps.changed.outputs.changed != 'true'
+        run: echo "::notice::No deck or card changed; nothing to release."
+
+  release:
+    needs: update
+    if: needs.update.outputs.tag
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.update.outputs.tag }}
+    permissions:
+      contents: write
+      pages: write
+      id-token: write

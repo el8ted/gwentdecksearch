@@ -4,14 +4,20 @@ on:
   push:
     branches: [main, dev]
   pull_request:
-  # The release workflow runs these same checks before publishing.
+  # The release workflow runs these same checks before publishing, on the commit being released.
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ''
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
       # No `version:` input: pnpm comes from package.json "packageManager" (pnpm 12 needs action-setup >= 6.1).
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7

@@ -25,7 +25,50 @@ pnpm test:run     # unit tests
 pnpm test:e2e     # builds, then browser tests (Chromium and Firefox)
 ```
 
-## Updating the data
+## Branches
+
+- **`main`** is what's live. The scheduled updates commit new data straight to it.
+- **`dev`** is where code changes happen. Merge `main` into `dev` before starting work, so you have the latest data:
+
+  ```bash
+  git switch dev && git pull && git merge origin/main
+  ```
+
+- When `dev` is ready, merge it into `main` and [publish a release](#publishing-a-release).
+
+## Changelog
+
+Players read [CHANGELOG.md](CHANGELOG.md) and the release notes, so write for them, not for developers. With every
+change, add a line under `## Unreleased`, e.g. "Phones: the Language menu opens fully on screen (#3)." Put
+`Fixes #3` in the commit message as well: the issue closes when the commit reaches `main`.
+
+At release time the workflow puts those lines at the top of the release notes, adds what changed in the data, and
+moves them under the release's own heading in the changelog. Data-only releases have no lines of their own.
+
+## Automatic data updates
+
+`.github/workflows/update.yml` refreshes the data and, if any deck or card changed, commits it to `main` and publishes
+a release. If nothing changed, nothing is released.
+
+| What | When (UTC) |
+|---|---|
+| Decks | Saturdays at 00:17 |
+| Cards | 18:07, 21:07 and 23:07 on the 28th–31st, and 02:07, 06:07 and 12:07 on the 1st: around each month's end, when the Balance Council changes go live with the new season |
+
+GitHub may start scheduled runs some minutes late. To update now, open **Actions → Update data → Run workflow** and
+choose decks, cards or both.
+
+After an automatic update, check:
+
+- the release notes, for unexpected deck counts or card changes;
+- `data/source/translations.json`, for new machine-translated deck names to fix. Fixes go in a normal commit; the
+  scraper never overwrites them.
+- **A new leader or stratagem** shows as text until its icon is added. See [Generated files](#generated-files).
+
+GitHub turns off scheduled workflows in a public repo after 60 days without activity. If that happens, the Actions
+tab says so; turn it back on there.
+
+## Updating the data by hand
 
 ```bash
 pnpm scrape
@@ -49,7 +92,7 @@ Commit on `dev`, merge to `main`, then [release](#publishing-a-release).
 
 ## Publishing a release
 
-After the data and code you want are on `main`:
+Automatic updates publish their own releases. To release code changes, after they're on `main`:
 
 ```bash
 git switch main && git pull
@@ -57,16 +100,18 @@ date=$(node -p "require('./data/decks.json').scrapedAt.slice(0, 10)")
 git tag "$date" && git push origin "$date"
 ```
 
+If that date is already a release (the data hasn't changed), add a suffix: `2026-10-16.2`, `2026-10-16.3` and so on.
+
 The tag starts `.github/workflows/release.yml`, which:
 
 1. runs every check (the same jobs as CI);
 2. stops if the tag doesn't match the data date;
 3. builds `dist/` and deploys it to the live site;
-4. creates a GitHub Release named after the tag, with `gwent-deck-search-<tag>.zip` attached.
+4. creates a GitHub Release named after the tag, with `gwent-deck-search-<tag>.zip` attached and notes built from the
+   changelog and the data changes;
+5. moves the changelog's Unreleased lines under the tag and commits that to `main`.
 
 Follow it in the **Actions** tab. A release takes a few minutes.
-
-**Releasing again with the same data** (a code fix, say): add a suffix, `2026-10-16.2`, `2026-10-16.3` and so on.
 
 **If a release fails:** fix the problem, delete the tag and push it again:
 
