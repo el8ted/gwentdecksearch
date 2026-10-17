@@ -82,12 +82,20 @@ describe.each(files)('%s', (file) => {
   const lang = file.replace('.json', '')
   const phrases = load(file)
   const entries = Object.entries(phrases).filter(([k]) => k !== '_needsReview') as [string, Phrase][]
-  // Informational, not a test: untranslated phrases fall back to English. stderr, because vitest hides the console
-  // output of passing tests, and CONTRIBUTING promises translators this list.
   const have = new Set(entries.map(([k]) => k))
-  const untranslated = Object.keys(en).filter((k) => !have.has(k))
-  if (untranslated.length)
-    process.stderr.write(`${file}: ${untranslated.length} phrases still in English: ${untranslated.join(', ')}\n`)
+
+  // A phrase added to en.json must reach every language (machine-translated and listed under _needsReview at least),
+  // or players see English mid-page.
+  it('has every phrase in en.json', () => {
+    // Arrange
+    const keys = Object.keys(en)
+
+    // Act
+    const untranslated = keys.filter((k) => !have.has(k))
+
+    // Assert
+    expect(untranslated, `${file}: translate these (add them to _needsReview)`).toEqual([])
+  })
 
   it('is named after a supported language', () => {
     // Arrange

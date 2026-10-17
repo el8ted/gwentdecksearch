@@ -46,7 +46,8 @@ Each file maps a key to a phrase:
    see the [Unicode plural rules](https://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html)).
    `other` is always required. Chinese, Japanese and Korean need only `other`.
 4. **Reviewed a phrase?** Remove its key from the `_needsReview` list at the top of the file.
-5. **Missing phrases are fine.** Anything not in your file shows in English, so partial translations help too.
+5. **Unsure about a phrase?** Leave the machine translation and keep its key in `_needsReview`. Fixing even one phrase
+   helps.
 
 The `help.*` phrases are the quick guide in the page's **?** panel. They also make up the short README in your
 language (`docs/README.{lang}.md`), which is rebuilt from them with `pnpm readmes`. A maintainer can do that for you.
@@ -76,7 +77,7 @@ pnpm test:run
 ```
 
 The checks report unknown keys, changed or missing `{placeholders}` and invalid plural forms, naming the exact key.
-They also list which phrases are still in English.
+They also fail if a phrase in `en.json` is missing from your file.
 
 ## Fixing deck name translations
 
