@@ -58,3 +58,17 @@ test('Credits shows the version, linked to its release notes', async ({ page, op
   await expect(page.locator('#version')).toHaveText('Version dev')
   await expect(page.locator('#version')).toHaveAttribute('href', /\/releases$/)
 })
+
+test("the Fan Content Guidelines link opens CD PROJEKT RED's page in the page's language", async ({ page, open }) => {
+  // Arrange
+  await open('?lang=pt-BR')
+  const link = page.locator('#fan-content')
+
+  // Act
+  await page.locator('#credits-open').click()
+
+  // Assert
+  await expect(link).toHaveAttribute('href', 'https://www.cdprojektred.com/pt-br/fan-content')
+  await page.locator('[data-lang="en"]').evaluate((b: HTMLElement) => b.click())
+  await expect(link).toHaveAttribute('href', 'https://www.cdprojektred.com/en/fan-content')
+})

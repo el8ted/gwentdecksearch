@@ -151,6 +151,8 @@ function applyStatic() {
     loc.lang === 'en'
       ? 'https://github.com/el8ted/gwentdecksearch#readme'
       : `https://github.com/el8ted/gwentdecksearch/blob/main/docs/README.${loc.lang}.md`
+  // CDPR's site has every language we do, under the same codes in lower case (pt-br, zh-cn).
+  byId<HTMLAnchorElement>('fan-content').href = `https://www.cdprojektred.com/${loc.lang.toLowerCase()}/fan-content`
   // Size the filter label column to the longest label in this language (Russian labels are much longer).
   const filters = byId('filters')
   filters.style.setProperty('--label-width', 'max-content')
