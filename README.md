@@ -137,7 +137,7 @@ The **Provisions** filter shows only one kind.
 
 | Filter | How it works |
 |---|---|
-| **Source** | Community, Shinmiri2. Pick one or more; none picked means every source. |
+| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
 | **Provisions** | Spare, Exact, Over. None picked means any. |
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
@@ -226,6 +226,7 @@ UTC, so you can tell whether the data is from before or after the latest update.
 | Source | What it is |
 |---|---|
 | **Community** | Published deck guides on playgwent.com from the last 12 months, in every language, with votes and author. |
+| **MetallicDanny** | A Russian-language deck list ([deck list](https://docs.google.com/spreadsheets/d/1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg/edit?gid=1966172750)), including decks from the last six months of his per-patch meta reports and new-deck lists. Deck names are machine-translated into English, keeping official card names. |
 | **Shinmiri2** | A curated list of competitive decks ([deck list](https://docs.google.com/spreadsheets/d/1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM/edit?gid=1592369710)), including alternate versions and decks from the last six months of per-patch tabs. Alternates appear as separate decks with the same name. |
 
 A deck listed by more than one source appears once, with every source badge. Card lists, costs and card data come
@@ -234,7 +235,8 @@ Balance Council change.
 
 ## Credits
 
-Deck lists belong to their authors: the playgwent.com community and Shinmiri2
+Deck lists belong to their authors: the playgwent.com community, MetallicDanny
+([YouTube](https://www.youtube.com/@metallicdanny), [Twitch](https://www.twitch.tv/metallicdanny)) and Shinmiri2
 ([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)). The **Credits**
 button on the page links to them.
 

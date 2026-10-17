@@ -11,7 +11,7 @@ export const FACTIONS: readonly Faction[] = ['MO', 'NG', 'NR', 'SK', 'ST', 'SY']
  * Where a deck was listed, in display order: Community first, then deck-list authors alphabetically.
  * (Which source names a shared deck is decided separately, by entry order in scripts/lib/entries.ts.)
  */
-export const SOURCES = ['community', 'shinmiri2'] as const
+export const SOURCES = ['community', 'metallic-danny', 'shinmiri2'] as const
 
 /** A deck source. */
 export type Source = (typeof SOURCES)[number]
@@ -20,6 +20,7 @@ export type Source = (typeof SOURCES)[number]
 export const SOURCE_NAMES: Record<Source, string> = {
   community: 'Community',
   shinmiri2: 'Shinmiri2',
+  'metallic-danny': 'MetallicDanny',
 }
 
 /** A card as used by the app. */

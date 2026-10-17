@@ -672,6 +672,9 @@ h1 span {
 .s-shinmiri2 {
   --fc: #a3c94a;
 }
+.s-metallic-danny {
+  --fc: #a7b0c0;
+}
 
 .deck-src {
   display: flex;

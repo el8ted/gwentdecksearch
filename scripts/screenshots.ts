@@ -32,7 +32,7 @@ const GOLDEN_NEKKER = card('Golden Nekker')
 const FRUITS = card('Fruits of Ysgith')
 const SHIELDWALL = card('Shieldwall')
 // Decks exactly on the provision limit, so the example shows decks ready to play.
-const PAIR = [card('Queen Meve'), card('Griffin Witcher'), card('Margarita Laux-Antille')]
+const PAIR = [card('Queen Meve'), card('Griffin Witcher'), card('Margarita Laux-Antille'), card('Bloody Baron')]
 const TATTERWING = card('Tatterwing')
 const ANY_CARDS = [HIVE_MIND, GOLDEN_NEKKER, TATTERWING]
 

@@ -18,6 +18,7 @@ body:
       label: Source
       options:
         - Community (playgwent.com guides)
+        - MetallicDanny
         - Shinmiri2
         - Not sure
   - type: dropdown

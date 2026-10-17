@@ -95,6 +95,30 @@ export function parseShinmiriSheet(csv: string): DeckEntry[] {
     )
 }
 
+/**
+ * Parses a MetallicDanny sheet tab (CSV export): the "all decks" list, a meta report or a patch list.
+ *
+ * Tabs differ in layout, so each row's first playgwent link is taken with the nearest text to its left as
+ * the name. Meta reports write "Name (Leader):"; the leader is dropped, since the deck page names it and it
+ * garbles translation. Faction and leader rows have no playgwent link and are
+ * skipped (the deck page names its own leader).
+ *
+ * @param csv - CSV export of the tab
+ * @returns Entries in sheet order, names still in Russian
+ */
+export function parseSheet(csv: string): DeckEntry[] {
+  return parseCsv(csv).flatMap((row) => {
+    const at = row.findIndex((cell) => normalizeUrl(cell))
+    const name = row
+      .slice(0, Math.max(at, 0))
+      .findLast((cell) => cell.trim())
+      ?.trim()
+      .replace(/\s*\([^()]*\):$|:$/, '')
+    const url = at < 0 ? undefined : normalizeUrl(row[at])
+    return name && url ? [{ name, url, lang: 'ru', source: 'metallic-danny' as const }] : []
+  })
+}
+
 /** One tab of a public Google Sheet. */
 export interface SheetTab {
   name: string

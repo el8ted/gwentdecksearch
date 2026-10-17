@@ -88,7 +88,7 @@ describe('buildDataset', () => {
     // Arrange
     const entries = [
       entry(URL_A, { name: 'First', source: 'shinmiri2' }),
-      entry(URL_B, { name: 'Second', source: 'community', lang: 'ru' }),
+      entry(URL_B, { name: 'Second', source: 'metallic-danny', lang: 'ru' }),
       entry(URL_A, { name: 'Again', source: 'community' }),
     ]
 
@@ -96,7 +96,9 @@ describe('buildDataset', () => {
     const { dataset } = buildDataset(input({ entries, store: { [URL_A]: DECK, [URL_B]: DECK } }))
 
     // Assert
-    expect(dataset.decks.map((d) => [d.name, d.sources])).toEqual([['First', ['community', 'shinmiri2']]])
+    expect(dataset.decks.map((d) => [d.name, d.sources])).toEqual([
+      ['First', ['community', 'metallic-danny', 'shinmiri2']],
+    ])
   })
 
   it('skips decks with unknown cards, and unfetched or dead links, with warnings', () => {

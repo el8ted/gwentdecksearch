@@ -46,7 +46,7 @@ describe('decodeState', () => {
     const s: FilterState = {
       match: 'any',
       factions: ['SK'],
-      sources: ['community', 'shinmiri2'],
+      sources: ['community', 'metallic-danny'],
       budgets: ['spare', 'over'],
       leader: 201743,
       stratagem: undefined,

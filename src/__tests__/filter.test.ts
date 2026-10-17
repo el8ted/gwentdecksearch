@@ -71,7 +71,7 @@ const DATA: Dataset = {
         [11, 1],
         [101, 1],
       ],
-      ['community'],
+      ['metallic-danny'],
     ),
     deck(
       'Soldiers',
@@ -300,7 +300,7 @@ describe('singleFaction', () => {
 describe('source filtering', () => {
   it('keeps decks listed by any selected source', () => {
     // Arrange
-    const s = state({ sources: ['community'] })
+    const s = state({ sources: ['community', 'metallic-danny'] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -320,7 +320,8 @@ describe('source filtering', () => {
     expect(f.sources).toEqual(
       new Map([
         ['shinmiri2', 3],
-        ['community', 2],
+        ['metallic-danny', 1],
+        ['community', 1],
       ]),
     )
   })

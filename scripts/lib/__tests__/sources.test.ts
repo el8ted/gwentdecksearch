@@ -4,6 +4,7 @@ import {
   normalizeUrl,
   parseCsv,
   parseGuideListing,
+  parseSheet,
   parseSheetTabs,
   parseShinmiriSheet,
   patchOf,
@@ -112,6 +113,48 @@ describe('parseCsv', () => {
     expect(rows).toEqual([
       ['a', 'b, c', 'say "hi"'],
       ['multi\nline', '', 'x'],
+    ])
+  })
+})
+
+describe('parseSheet', () => {
+  it('keeps deck rows and skips header, faction and leader rows', () => {
+    // Arrange
+    const csv = [
+      ',,,,',
+      'Название колоды (и абилки),,Ссылка на колоду,Видео-гайд,',
+      'Чудовища,,,,',
+      'Панцирь (Защита),,https://gwent.one/ru/card/131101,,',
+      ',Накер Реликты,https://www.playgwent.com/ru/decks/369b,"GWENT | гайд, 13.8 - YouTube",',
+      ',Огроиды ,http://www.playgwent.com/ru/decks/guides/389873,,',
+    ].join('\n')
+
+    // Act
+    const entries = parseSheet(csv)
+
+    // Assert
+    expect(entries).toEqual([
+      { name: 'Накер Реликты', url: 'https://www.playgwent.com/decks/369b', lang: 'ru', source: 'metallic-danny' },
+      { name: 'Огроиды', url: 'https://www.playgwent.com/decks/guides/389873', lang: 'ru', source: 'metallic-danny' },
+    ])
+  })
+
+  it("reads meta report and patch tab layouts, dropping the meta report's leader", () => {
+    // Arrange
+    const csv = [
+      'Лучшие колоды патча 14.4,,,Сложность:,Видео-гайды:',
+      'Тир 1,,,,',
+      ',Мидрейндж Органика (Стая главоглазов):,https://www.playgwent.com/ru/decks/a8d4,⭐⭐,https://youtu.be/x',
+      'Накер Щиты,https://www.playgwent.com/ru/decks/be83',
+    ].join('\n')
+
+    // Act
+    const entries = parseSheet(csv)
+
+    // Assert
+    expect(entries.map((e) => [e.name, e.url])).toEqual([
+      ['Мидрейндж Органика', 'https://www.playgwent.com/decks/a8d4'],
+      ['Накер Щиты', 'https://www.playgwent.com/decks/be83'],
     ])
   })
 })

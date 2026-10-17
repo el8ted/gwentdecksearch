@@ -16,8 +16,8 @@ and may not be used commercially.
 Owned by their authors:
 
 - **playgwent.com community guides**: by the guide authors named on each deck.
-- **Shinmiri2's deck list**: used with his permission, which was given to this project only. It does not extend to
-  copies or forks; ask him directly if you want to use it.
+- **MetallicDanny's and Shinmiri2's deck lists**: used with their permission, which was given to this project only.
+  It does not extend to copies or forks; ask them directly if you want to use their lists.
 
 This covers the deck lists, deck names and their English translations in `data/` (`data/source/`, `data/decks.json`,
 `data/decklist.md`).

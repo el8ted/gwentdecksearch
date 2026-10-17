@@ -29,7 +29,7 @@ checked by the project's lint, type checks, unit tests and browser tests before 
 
 ## What isn't AI
 
-- **Deck lists** come from their authors: playgwent.com community guides and Shinmiri2's deck list.
+- **Deck lists** come from their authors: playgwent.com community guides, and MetallicDanny's and Shinmiri2's deck lists.
 - **Card names, card data, game terms, art and icons** come from playgwent.com, in all 11 languages.
 - **English translations of deck names** come from the [MyMemory](https://mymemory.translated.net/) translation
   service, with official card names kept as they are in the game. Some are corrected by hand.

@@ -5,6 +5,7 @@ import {
   type ListedGuide,
   monthsBefore,
   parseGuideListing,
+  parseSheet,
   parseSheetTabs,
   parseShinmiriSheet,
   recentTabs,
@@ -16,13 +17,20 @@ export const COMMUNITY_WINDOW_MONTHS = 12
 export const SHEET_WINDOW_MONTHS = 6
 const LISTING_PAGE = 500
 const GUIDE_API = 'https://www.playgwent.com/en/decks/api/guides'
-// Order matters: the first entry for a deck names it; display order is SOURCES, not this.
+// Order matters: the first entry for a deck names it. Shinmiri2 precedes MetallicDanny because MetallicDanny's
+// names are machine-translated from Russian; display order is SOURCES, not this.
 const SHEETS = [
   {
     source: 'shinmiri2',
     id: '1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM',
     mainGid: '1592369710',
     parse: parseShinmiriSheet,
+  },
+  {
+    source: 'metallic-danny',
+    id: '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
+    mainGid: '1966172750',
+    parse: parseSheet,
   },
 ] as const
 const sheetCsv = (id: string, gid: string) =>
