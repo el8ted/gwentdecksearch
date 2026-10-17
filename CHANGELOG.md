@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-17
+
 - MetallicDanny's deck list is included, with his permission: about 400 more decks, with names translated from Russian.
 - Phones: adding a card from Most common or Least common no longer jumps back to the card search
   ([#1](https://github.com/el8ted/gwentdecksearch/issues/1)).
