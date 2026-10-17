@@ -16,6 +16,7 @@
   "credits.source": "Source code",
   "credits.report": "Report a problem",
   "credits.ai": "AI use",
+  "credits.version": "Version {version}",
   "display.button": "Display",
   "display.settings": "Display settings",
   "display.textSize": "Text size",

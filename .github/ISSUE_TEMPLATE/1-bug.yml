@@ -10,6 +10,14 @@ body:
       placeholder: https://el8ted.github.io/gwentdecksearch/?lang=en#f=MO&l=201743
     validations:
       required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: >-
+        Shown in Credits at the top of the page. Not sure you're on the latest? Reload the page first. If you use the
+        downloaded zip, get the latest from Releases.
+      placeholder: 2026-10-16
   - type: textarea
     id: what
     attributes:

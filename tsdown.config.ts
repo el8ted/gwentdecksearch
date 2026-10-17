@@ -7,6 +7,8 @@ export default defineConfig({
   format: 'iife',
   dts: false,
   minify: true,
+  // The release tag (the release workflow sets RELEASE_TAG), shown in Credits; any other build is "dev".
+  define: { __VERSION__: JSON.stringify(process.env.RELEASE_TAG || 'dev') },
   copy: [
     'src/index.html',
     'src/styles.css',

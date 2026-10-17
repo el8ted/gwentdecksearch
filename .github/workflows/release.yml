@@ -46,6 +46,8 @@ jobs:
           fi
       - run: node scripts/release-notes.ts notes "$TAG" > release-notes.md
       - run: pnpm build
+        env:
+          RELEASE_TAG: ${{ env.TAG }}
       - name: Zip for offline use
         run: |
           cp -r dist gwent-deck-search

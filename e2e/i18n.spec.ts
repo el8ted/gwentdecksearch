@@ -46,3 +46,15 @@ test("Help's full-guide link opens the README in the page's language", async ({ 
   await page.locator('[data-lang="en"]').evaluate((b: HTMLElement) => b.click())
   await expect(link).toHaveAttribute('href', /#readme$/)
 })
+
+test('Credits shows the version, linked to its release notes', async ({ page, open }) => {
+  // Arrange
+  await open('?lang=de')
+
+  // Act
+  await page.locator('#credits-open').click()
+
+  // Assert: a local build is "dev" and links to every release
+  await expect(page.locator('#version')).toHaveText('Version dev')
+  await expect(page.locator('#version')).toHaveAttribute('href', /\/releases$/)
+})

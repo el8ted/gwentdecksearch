@@ -42,6 +42,8 @@ import { initLanguageMenu } from './ui/language-menu.ts'
 import { deckRow, sourceLabel } from './ui/results.ts'
 
 declare global {
+  // Set at build time (tsdown.config.ts).
+  const __VERSION__: string
   // Language packs register themselves here (see scripts/lib/build.ts).
   var GDS_I18N: Partial<Record<Lang, LanguagePack>> | undefined
 }
@@ -141,6 +143,9 @@ function applyStatic() {
     el.placeholder = t(el.dataset.i18nPlaceholder ?? '')
   }
   for (const el of document.querySelectorAll<HTMLAnchorElement>('[data-pg]')) el.href = loc.pg(el.dataset.pg ?? '')
+  const version = byId<HTMLAnchorElement>('version')
+  version.textContent = t('credits.version', { version: __VERSION__ })
+  version.href = `https://github.com/el8ted/gwentdecksearch/releases${__VERSION__ === 'dev' ? '' : `/tag/${__VERSION__}`}`
   // The README for this language; each one links on to the full English guide.
   byId<HTMLAnchorElement>('help-readme').href =
     loc.lang === 'en'
