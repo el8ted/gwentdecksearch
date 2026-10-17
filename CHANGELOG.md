@@ -15,6 +15,7 @@ the release tag and starts a new Unreleased section. -->
   language ([#2](https://github.com/el8ted/gwentdecksearch/issues/2)).
 - Phones: the Language and Display menus open fully on screen
   ([#3](https://github.com/el8ted/gwentdecksearch/issues/3)).
+- Phones: a deck name with no spaces no longer zooms the page out (which also switched Most common to two columns).
 - Credits shows the version you're using, linked to its release notes, and Help links to What's new.
 
 ## 2026-10-16

@@ -432,6 +432,12 @@ h1 span {
 .deck-name {
   font-weight: 600;
 }
+/* Names come from deck authors: one with a long unbroken run (e.g. "Shieldwall2111…") must wrap, not widen the page. */
+.deck-name,
+.deck-sub,
+.votes {
+  overflow-wrap: anywhere;
+}
 .deck-toggle[aria-expanded="true"] .deck-name {
   color: var(--accent);
 }
@@ -625,7 +631,8 @@ h1 span {
     margin-left: 0;
   }
   .layout {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): no single deck may stretch the column past the screen (phones then zoom the page out). */
+    grid-template-columns: minmax(0, 1fr);
   }
   .panel {
     position: static;

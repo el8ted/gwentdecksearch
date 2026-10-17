@@ -32,3 +32,23 @@ for (const id of ['langmenu', 'display']) {
     expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(412)
   })
 }
+
+test('on a phone, a deck name with no spaces wraps instead of widening the page', async ({ page, open }) => {
+  // Arrange: the real case was "Shieldwall2111…"; any name could do it, so one is planted
+  await page.setViewportSize({ width: 412, height: 915 })
+  await open()
+  const widths = () => page.evaluate(() => [document.documentElement.scrollWidth, innerWidth])
+
+  // Act
+  await page
+    .locator('#results .deck-name')
+    .first()
+    .evaluate((el) => {
+      el.textContent = `Shieldwall${'1'.repeat(80)}`
+    })
+
+  // Assert
+  const [scroll, viewport] = await widths()
+  expect(scroll).toBeLessThanOrEqual(viewport)
+  expect(await page.locator('#bars').evaluate((b) => getComputedStyle(b).gridTemplateColumns.split(' ').length)).toBe(1)
+})
