@@ -604,6 +604,7 @@ h1 span {
 
 @media (max-width: 860px) {
   .topbar {
+    position: relative;
     flex-wrap: wrap;
     gap: 0.6rem;
   }
@@ -1067,6 +1068,20 @@ h1 span {
 }
 .credits-note a {
   color: var(--accent);
+}
+
+/* On narrow screens the menus open under the header, inset from both edges: anchored to a wrapped button they ran off
+   the screen. After the rules above, which it overrides. */
+@media (max-width: 860px) {
+  .display {
+    position: static;
+  }
+  .display-panel {
+    left: 1rem;
+    right: 1rem;
+    top: calc(100% - 0.4rem);
+    width: auto;
+  }
 }
 
 /* Language menu (reuses the Display menu's popup styles) */
