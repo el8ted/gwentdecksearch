@@ -278,7 +278,8 @@ h1 span {
   border-left: 3px solid var(--fc);
   font-size: 0.9rem;
 }
-.tag {
+.tag,
+.suggestions .author {
   --fc: var(--accent);
 }
 .chip button {
@@ -678,7 +679,9 @@ h1 span {
     width: 100%;
   }
   .filters {
-    position: static;
+    /* Not sticky on phones, but still positioned: its blur makes it a layer of its own, and its z-index keeps that
+       layer (with the card suggestions in it) above the card frequency list. */
+    position: relative;
   }
   .row {
     flex-wrap: wrap;
@@ -1198,7 +1201,8 @@ h1 span {
   letter-spacing: 0.04em;
 }
 /* A tag has no cost: the # mark sits where a card's cost would. */
-.suggestions .tag .cost {
+.suggestions .tag .cost,
+.suggestions .author .cost {
   background: none;
   color: var(--muted);
 }

@@ -95,3 +95,25 @@ test.describe('a faction card selects its faction', () => {
     await expect(pill(page)).toHaveAttribute('aria-pressed', 'true')
   })
 })
+
+test('on a phone, the card suggestions stay above the card frequency list', async ({ page, open }) => {
+  // Arrange
+  await page.setViewportSize({ width: 360, height: 900 })
+  await open()
+  const input = page.locator('#card-input')
+  await input.scrollIntoViewIfNeeded()
+
+  // Act
+  await input.fill('gol')
+  await expect(page.locator('#suggestions')).toBeVisible()
+
+  // Assert: the lowest suggestion is what a tap there would hit
+  const onTop = await page
+    .locator('#suggestions [role="option"]')
+    .last()
+    .evaluate((el) => {
+      const r = el.getBoundingClientRect()
+      return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2))
+    })
+  expect(onTop).toBe(true)
+})
