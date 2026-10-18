@@ -109,6 +109,11 @@ uses at least one of them, with the decks using the most of your cards at the to
 
 ![Any mode with Hive Mind, Golden Nekker and Tatterwing: decks using at least one of them, best matches first](docs/screenshots/any-cards.png)
 
+Tags and authors make good picks here too. The Devotion tag with Shinmiri2, in Skellige, lists his Skellige Devotion
+decks: a creator you trust and a theme you like.
+
+![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](docs/screenshots/deck-to-build.png)
+
 Adding a card that belongs to one faction also picks that faction, if none is picked. Removing the card clears it
 again. Neutral cards, and cards that belong to two factions, leave the faction alone. To search across all factions,
 click the selected faction to clear it.

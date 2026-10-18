@@ -112,6 +112,12 @@ try {
   page = await open(browser, `#k=any&c=${ANY_CARDS.join(',')}`)
   await save(page, 'any-cards')
 
+  // A creator and a theme: the Devotion tag with Shinmiri2, in Skellige.
+  page = await open(browser, '#f=SK&c=devotion%2C%40shinmiri2')
+  const built = await listed(page)
+  if (built < 3 || built > 20) throw new Error(`deck-to-build: expected 3–20 decks, got ${built}; pick another example`)
+  await save(page, 'deck-to-build')
+
   // Element shots get a tall window: scrolling to them would slide the sticky filter bar over the decks.
   page = await open(browser, `#f=MO&l=${ARACHAS}&c=${GOLDEN_NEKKER}`, 1600)
   await page.locator('#results [data-toggle]').first().click()
