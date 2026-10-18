@@ -8,6 +8,8 @@ see [CONTRIBUTING.md](CONTRIBUTING.md).
 - `pnpm build` writes a self-contained site to `dist/`: `index.html`, `styles.css`, `app.iife.js` (with the deck
   data bundled in), `icons/`, `i18n/` (language packs), `LICENSE` and `NOTICE.md`. Every path is relative, so the
   same files work on GitHub Pages and opened straight from disk.
+- [data/README.md](data/README.md) explains every data file, how the build turns them into what the app ships, and
+  what each scrape warning or error means.
 - The live site is <https://el8ted.github.io/gwentdecksearch/>, deployed from this repo by GitHub Actions.
 - Each release is also a zip of `dist/` on the [Releases](https://github.com/el8ted/gwentdecksearch/releases) page,
   for offline use.
