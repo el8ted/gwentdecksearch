@@ -29,6 +29,7 @@ import zhCn from './i18n/zh-cn.json'
 import {
   createTranslator,
   LANG_KEY,
+  LANGUAGES,
   type Lang,
   type LanguagePack,
   type Locale,
@@ -60,12 +61,8 @@ const ofType = (type: Card['type']) =>
     .filter((id) => data.cards[id].type === type)
     .sort((a, b) => a - b)
 const LEADERS = ofType('leader')
-// Guide and video languages, most decks first; fixed like the other pills.
-const LANGS = (() => {
-  const counts = new Map<string, number>()
-  for (const e of decks) for (const l of e.langs) counts.set(l, (counts.get(l) ?? 0) + 1)
-  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([l]) => l)
-})()
+// Guide and video languages any deck has, in the language menu's order: fixed, like the other pills.
+const LANGS = LANGUAGES.filter((l) => decks.some((e) => e.langs.has(l)))
 const STRATAGEMS = ofType('stratagem')
 const PHRASES = { en, de, es, fr, it, ja, ko, pl, 'pt-BR': ptBR, ru, 'zh-cn': zhCn } as Partial<
   Record<Lang, Phrases>
