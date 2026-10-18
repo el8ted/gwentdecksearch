@@ -13,6 +13,8 @@ the release tag and starts a new Unreleased section. -->
 - The Cards box also finds the game's deck-builder tags: categories like Beast, Ogroid or Spell, and abilities like
   Devotion or Order. One tag each, so "Orders" and "Order" find the same one, and only tags in the remaining decks
   are suggested.
+- Cards and tags stay in the order you add them, also in shared links, so Backspace always removes the last one
+  you tried.
 
 ## 2026-10-17
 
