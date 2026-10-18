@@ -1,5 +1,6 @@
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
+import type { GuideInfo } from './guide.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
 import { TERM_KEYS } from './terms.ts'
@@ -56,6 +57,28 @@ export function glossaryFor(lang: string, input: Pick<BuildInput, 'cards' | 'car
     addTerm(glossary, name, input.cards[Number(id)]?.name)
   for (const [local, en] of Object.entries(input.categories[lang] ?? {})) addTerm(glossary, local, en)
   return glossary
+}
+
+/** Fewer distinct words than this, or mostly repeats, is padding to get past playgwent's minimum length. */
+const NOTE_WORDS = 10
+/** From this many distinct words a guide explains its deck. */
+const FULL_WORDS = 60
+// The detector's ISO codes that differ from playgwent's.
+const PLAYGWENT_LANG: Record<string, string> = { pt: 'pt-BR', zh: 'zh-cn' }
+
+/**
+ * A guide's level and language, from its measures (thresholds tuned on the October 2026 guides).
+ *
+ * @param info - Its measures
+ * @param declared - The language its author set
+ * @returns Nothing for padding; else its level, and its detected language (the declared one when unsure)
+ */
+export function guideSummary(info: GuideInfo, declared: string): Pick<Deck, 'guideLang' | 'guideLevel'> {
+  if (info.unique < NOTE_WORDS || info.unique < info.words * 0.3) return {}
+  return {
+    guideLang: info.lang ? (PLAYGWENT_LANG[info.lang] ?? info.lang) : declared,
+    guideLevel: info.unique < FULL_WORDS ? 'note' : 'full',
+  }
 }
 
 /** The app's view of a catalog card, keys in the order the dataset has always used; `tags` only the named ones. */
@@ -170,7 +193,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
         provisions: nonLeader.reduce((n, [id, k]) => n + catalog[id].provisions * k, 0),
       },
       sources: SOURCES.filter((s) => urlSources.get(entry.url)?.has(s)),
-      ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author, guideLang: entry.lang }),
+      ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
+      ...(entry.guide && stored.guide && guideSummary(stored.guide, entry.lang)),
       ...(video && { video }),
       cards: copies,
     }

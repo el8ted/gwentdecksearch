@@ -15,9 +15,11 @@ the release tag and starts a new Unreleased section. -->
   are suggested.
 - Cards and tags stay in the order you add them, also in shared links, so Backspace always removes the last one
   you tried.
-- Decks with a gameplay video from Shinmiri2's or MetallicDanny's list show a ▶ link with the video's language.
-- Community guides show the language they're written in (EN, RU, PL…) next to the deck ID.
-- A new **Guide & video** filter: **▶ Has video** shows only decks with a video (about 630), and a language keeps
+- Decks with a gameplay video show a ▶ link with the video's language: about 1,360 decks, with videos from the guide
+  itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel.
+- Community guides show the language they're actually written in (EN, RU, PL…) next to the deck ID: filled for a
+  full guide, outlined for a short note, and nothing for filler text.
+- A new **Guide & video** filter: **▶ Has video** shows only decks with a video (about 1,360), and a language keeps
   decks whose guide or video is in it.
 - MetallicDanny's badge is orchid instead of grey, easier to tell apart from the other sources.
 

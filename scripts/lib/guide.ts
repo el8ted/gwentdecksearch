@@ -19,6 +19,9 @@ export interface GuideInfo {
   lang?: string
 }
 
+// Only the site's languages: otherwise short Russian text often reads as Bulgarian or Belarusian.
+eld.setLanguageSubset(['en', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt', 'ru', 'zh'])
+
 // A Han or kana character is a word of its own; otherwise a run of letters and digits.
 const WORD = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]|[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu
 

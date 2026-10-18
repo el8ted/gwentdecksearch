@@ -113,8 +113,8 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
 | **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
-| **Language** | A community guide's language, as a short code (**EN**, **RU**, **PL**…). Hover for its name. |
-| **▶** | A gameplay video from the deck's source, with the language it's narrated in (e.g. **▶ RU**). |
+| **Language** | A community guide's language, as a short code (**EN**, **RU**, **PL**…): filled for a full guide that explains the deck, outlined for a short note. Guides that are only filler ("text text text") show none. Hover for details. |
+| **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. |
 | **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
 | **Stats** | Scraps · cards · units · provisions used / limit. |
@@ -148,7 +148,7 @@ several to combine them.
 |---|---|
 | **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
 | **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
-| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it; pick one or more. Hover for the language's name. |
+| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |

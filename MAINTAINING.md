@@ -78,12 +78,13 @@ tab says so; turn it back on there.
 pnpm scrape
 ```
 
-This runs three steps, which can also run on their own:
+This runs four steps, which can also run on their own:
 
 | Step | What it does |
 |---|---|
 | `pnpm scrape:cards` | Card data, names and game terms in all 11 languages (~33 requests). Only changes after the monthly Balance Council. |
 | `pnpm scrape:decks` | Deck links from every source, then fetches only decks not stored yet. Translates new non-English deck names (MyMemory, which has a daily quota; leftovers wait for the next run). |
+| `pnpm scrape:videos` | New uploads on Shinmiri2's YouTube channel, whose descriptions link their decks (1–2 requests). Needs `YOUTUBE_API_KEY`: a repository secret for the weekly update, and a `.env` file (`YOUTUBE_API_KEY=…`, gitignored) for local runs. Without it, videos are skipped with a warning. |
 | `pnpm build:data` | Offline. Rebuilds `data/decks.json`, `data/decklist.md` and the language packs from `data/source/`. |
 
 Then review before committing:
