@@ -3,9 +3,9 @@ import { data, expect, expectedCount, test } from './app.ts'
 test('Has video lists only decks with a video, in the link too', async ({ page, open }) => {
   // Arrange
   await open()
-  const toggle = page.locator('#has-video')
+  const toggle = page.locator('[data-video]')
   const n = expectedCount({ video: true })
-  await expect(toggle.locator('.n')).toHaveText(n.toLocaleString('en'))
+  await expect(toggle.locator('span')).toHaveText(String(n))
 
   // Act
   await toggle.click()
@@ -33,4 +33,17 @@ test("a deck row links its video and shows its guide's language", async ({ page,
   await expect(row.locator('a.video')).toHaveAttribute('href', deck.video?.url ?? '')
   await expect(row.locator('a.video')).toContainText(deck.video?.lang.split('-')[0].toUpperCase() ?? '')
   await expect(row.locator('.lang')).toHaveText(deck.guideLang?.split('-')[0].toUpperCase() ?? '')
+})
+
+test('a language pill keeps decks with a guide or video in that language', async ({ page, open }) => {
+  // Arrange
+  await open()
+
+  // Act
+  await page.locator('[data-guide-lang="ru"]').click()
+
+  // Assert
+  await expect(page).toHaveURL(/#gl=ru$/)
+  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ langs: ['ru'] })} `))
+  await expect(page.locator('[data-guide-lang="ru"]')).toHaveAttribute('aria-label', /Russian/)
 })

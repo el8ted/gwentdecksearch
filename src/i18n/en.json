@@ -37,6 +37,8 @@
   "filter.source": "Source",
   "filter.provisions": "Provisions",
   "filter.tags": "Tags",
+  "filter.media": "Guide & video",
+  "filter.langTip": "Guide or video in {lang}",
   "filter.faction": "Faction",
   "filter.leader": "Leader",
   "leader.pickFaction": "Pick a faction to choose a leader",

@@ -508,9 +508,10 @@ h1 span {
 .video:hover {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
-#has-video .n {
-  color: var(--muted);
-  font-size: 0.8rem;
+/* Guide & video pills: no faction or source colour of their own. */
+#media .pill {
+  --fc: var(--accent);
+  --fc-ink: var(--accent-ink);
 }
 
 .stats {

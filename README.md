@@ -120,8 +120,6 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 | **Stats** | Scraps · cards · units · provisions used / limit. |
 | **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
 
-**▶ Has video**, above the list, keeps only decks with a gameplay video; it shows how many there are.
-
 **Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
 out. It's most useful with two or three decks open side by side.
 
@@ -149,7 +147,8 @@ several to combine them.
 | Filter | How it works |
 |---|---|
 | **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
-| **Provisions** | Spare, Exact, Over. None picked means any. |
+| **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
+| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it; pick one or more. Hover for the language's name. |
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |

@@ -1,4 +1,5 @@
 import { BUDGETS, type Budget, type FilterState } from './filter.ts'
+import { LANGUAGES } from './i18n.ts'
 import { type Card, type CardType, FACTIONS, type Faction, SOURCES, type Source } from './types.ts'
 
 /** The state when nothing is selected. */
@@ -8,6 +9,7 @@ export const EMPTY_STATE: FilterState = {
   budgets: [],
   picks: [],
   video: false,
+  langs: [],
   match: 'all',
 }
 
@@ -24,6 +26,8 @@ export function encodeState(state: FilterState): string {
   if (state.sources?.length) params.set('src', state.sources.join(','))
   if (state.budgets?.length) params.set('b', state.budgets.join(','))
   if (state.video) params.set('v', '1')
+  // Not `lang`: that's the page language, in the query string.
+  if (state.langs?.length) params.set('gl', state.langs.join(','))
   if (state.leader !== undefined) params.set('l', String(state.leader))
   if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
   if (state.picks.length) params.set('c', state.picks.join(','))
@@ -62,6 +66,9 @@ export function decodeState(
     match: params.get('k') === 'any' ? 'any' : 'all',
     factions,
     video: params.get('v') === '1',
+    langs: [
+      ...new Set((params.get('gl') ?? '').split(',').filter((l) => (LANGUAGES as readonly string[]).includes(l))),
+    ],
     budgets: [
       ...new Set(
         (params.get('b') ?? '')

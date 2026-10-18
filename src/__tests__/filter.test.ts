@@ -79,18 +79,21 @@ const DATA: Dataset = {
       ),
       video: { url: 'https://youtu.be/AAAAAAAAAAA', lang: 'ru' },
     },
-    deck(
-      'Soldiers',
-      'c1',
-      166,
-      [
-        [2, 1],
-        [10, 1],
-        [103, 2],
-        [102, 1],
-      ],
-      ['community', 'shinmiri2'],
-    ),
+    {
+      ...deck(
+        'Soldiers',
+        'c1',
+        166,
+        [
+          [2, 1],
+          [10, 1],
+          [103, 2],
+          [102, 1],
+        ],
+        ['community', 'shinmiri2'],
+      ),
+      guideLang: 'en',
+    },
   ],
 }
 const DECKS = indexDecks(DATA)
@@ -393,6 +396,26 @@ describe('video filtering', () => {
     expect(f.videos).toBe(1)
     expect(f.factions.get('MO')).toBe(1)
     expect(ng.videos).toBe(0)
+  })
+})
+
+describe('language filtering', () => {
+  it("matches a guide's or a video's language, and counts each ignoring that filter", () => {
+    // Arrange: b2 has a Russian video, c1 an English guide
+    const s = state({ langs: ['ru'] })
+
+    // Act
+    const [ru, both, f] = [matchDecks(DECKS, s), matchDecks(DECKS, state({ langs: ['ru', 'en'] })), facets(DECKS, s)]
+
+    // Assert
+    expect(ids(ru)).toEqual(['b2'])
+    expect(ids(both)).toEqual(['b2', 'c1'])
+    expect(f.langs).toEqual(
+      new Map([
+        ['ru', 1],
+        ['en', 1],
+      ]),
+    )
   })
 })
 

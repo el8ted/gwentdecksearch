@@ -60,6 +60,12 @@ const ofType = (type: Card['type']) =>
     .filter((id) => data.cards[id].type === type)
     .sort((a, b) => a - b)
 const LEADERS = ofType('leader')
+// Guide and video languages, most decks first; fixed like the other pills.
+const LANGS = (() => {
+  const counts = new Map<string, number>()
+  for (const e of decks) for (const l of e.langs) counts.set(l, (counts.get(l) ?? 0) + 1)
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([l]) => l)
+})()
 const STRATAGEMS = ofType('stratagem')
 const PHRASES = { en, de, es, fr, it, ja, ko, pl, 'pt-BR': ptBR, ru, 'zh-cn': zhCn } as Partial<
   Record<Lang, Phrases>
@@ -71,7 +77,7 @@ const els = {
   sources: byId('sources'),
   budgets: byId('budgets'),
   dimCommon: byId<HTMLButtonElement>('dim-common'),
-  hasVideo: byId<HTMLButtonElement>('has-video'),
+  media: byId('media'),
   expandAll: byId<HTMLButtonElement>('expand-all'),
   leader: byId('leader'),
   stratagem: byId('stratagem'),
@@ -272,6 +278,15 @@ function renderFilters() {
       return `<span class="pill-group">${side === 'over' ? '' : word}${pills.join('')}${side === 'over' ? word : ''}</span>`
     })
     .join('')
+  const langName = new Intl.DisplayNames(loc.lang, { type: 'language' })
+  const video = `<button type="button" class="pill${current.videos ? '' : ' empty'}" data-video="1" aria-pressed="${!!state.video}" aria-label="${esc(t('results.hasVideo'))} (${current.videos})" title="${esc(t('results.hasVideoTip'))} (${current.videos})">▶ ${esc(t('results.hasVideo'))}<span>${current.videos}</span></button>`
+  els.media.innerHTML =
+    video +
+    LANGS.map((l) => {
+      const n = current.langs.get(l) ?? 0
+      const label = esc(t('filter.langTip', { lang: langName.of(l) ?? l }))
+      return `<button type="button" class="pill${n ? '' : ' empty'}" data-guide-lang="${l}" aria-pressed="${!!state.langs?.includes(l)}" aria-label="${label} (${n})" title="${label} (${n})">${l.split('-')[0].toUpperCase()}<span>${n}</span></button>`
+    }).join('')
   // Leaders only make sense within one faction: the selected one, else the selected leader's (from a shared link).
   const faction =
     state.factions.length === 1
@@ -360,11 +375,6 @@ function renderResults() {
   els.expandAll.textContent = t(allOpen ? 'results.collapseAll' : 'results.expandAll')
   els.expandAll.disabled = shown.length === 0
   els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
-  els.hasVideo.setAttribute('aria-pressed', String(!!state.video))
-  const videos = els.hasVideo.querySelector('.n')
-  if (videos) videos.textContent = loc.num(current.videos)
-  // Like a pill at 0: picking it would leave no decks (but a selected one can always be turned off).
-  els.hasVideo.disabled = current.videos === 0 && !state.video
   els.dimCommon.disabled = shown.length < 2
   const last = state.picks.at(-1)
   els.results.innerHTML = rows.length
@@ -433,6 +443,8 @@ const FOCUS_KEYS = [
   ['faction', 'data-faction'],
   ['source', 'data-source'],
   ['budget', 'data-budget'],
+  ['video', 'data-video'],
+  ['guideLang', 'data-guide-lang'],
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
   ['add', 'data-add'],
@@ -461,8 +473,12 @@ document.addEventListener('click', (e) => {
   if (t.dataset.freq) {
     freq = t.dataset.freq as typeof freq
     renderResults()
-  } else if (t === els.hasVideo) update({ video: !state.video })
-  else if (t === els.dimCommon) {
+  } else if (t.dataset.video) update({ video: !state.video })
+  else if (t.dataset.guideLang) {
+    const l = t.dataset.guideLang
+    const on = state.langs ?? []
+    update({ langs: on.includes(l) ? on.filter((x) => x !== l) : [...on, l] })
+  } else if (t === els.dimCommon) {
     dimCommon = !dimCommon
     renderResults()
   } else if (t === els.expandAll) {
