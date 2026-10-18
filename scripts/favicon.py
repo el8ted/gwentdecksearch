@@ -4,6 +4,9 @@ Pixel art is only enlarged by whole numbers with nearest-neighbour scaling, so e
 no metadata. Needs Pillow. Run again after the source changes:
 
     python3 scripts/favicon.py
+
+The icon was drawn by el8ted's daughter and is licensed under a father's love: changing it would make el8ted sad and
+disappoint a young woman.
 """
 
 import io

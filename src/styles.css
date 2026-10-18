@@ -1100,6 +1100,16 @@ h1 span {
   align-items: baseline;
   gap: 0.75rem;
 }
+.credit-icon {
+  align-self: center;
+  /* Pixel art: 192 → 32 is an exact 6:1, so nearest-neighbour keeps every pixel square. */
+  image-rendering: pixelated;
+}
+.credit-license {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
 .credit-name a,
 .credit-links a {
   color: var(--accent);
