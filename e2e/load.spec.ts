@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { data, expect, test } from './app.ts'
 
 test('loads from file:// with every deck listed', async ({ page, open }) => {
@@ -28,3 +30,20 @@ for (const timezoneId of ['Asia/Tokyo', 'America/New_York', 'Pacific/Kiritimati'
     })
   })
 }
+
+test('every site icon the page and its manifest link exists', async ({ page, open }) => {
+  // Arrange
+  await open()
+  const dist = join(import.meta.dirname, '..', 'dist')
+
+  // Act
+  const links = await page
+    .locator('link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="manifest"]')
+    .evaluateAll((els) => els.map((el) => el.getAttribute('href') ?? ''))
+  const manifest = JSON.parse(readFileSync(join(dist, 'manifest.webmanifest'), 'utf8'))
+  const files = [...links, ...manifest.icons.map((i: { src: string }) => i.src)]
+
+  // Assert
+  expect(links).toEqual(['favicon.ico', 'apple-touch-icon.png', 'manifest.webmanifest'])
+  expect(files.filter((f) => !existsSync(join(dist, f)))).toEqual([])
+})

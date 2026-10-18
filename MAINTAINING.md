@@ -145,6 +145,7 @@ These are committed, and rebuilt by a script when their inputs change:
 | Files | Rebuild with | When |
 |---|---|---|
 | `src/icons/s-*.webp`, `l-*.webp`, `src/art.ts` | `python3 scripts/card-art.py && pnpm check:fix` (needs Pillow) | A new leader or stratagem appears (it shows as text until then). |
+| `src/favicon/*` (site icons and `favicon.ico`) | `python3 scripts/favicon.py` (needs Pillow) | `src/favicon/source-16.png`, the 16×16 pixel-art original, changes. Larger sizes are whole-number enlargements, so keep the source 16×16. |
 | `docs/screenshots/*.png` | `pnpm build && pnpm screenshots` | The UI changes. Unchanged images are left alone. The script stops if new data breaks an example. |
 | `docs/README.{lang}.md` | `pnpm readmes` | `help.*` phrases change in `src/i18n/`. |
 | `data/decks.json`, `data/decklist.md`, `data/i18n/*.js` | `pnpm build:data` | Anything in `data/source/` changes. |

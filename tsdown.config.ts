@@ -16,6 +16,8 @@ export default defineConfig({
     'LICENSE',
     'NOTICE.md',
     { from: 'src/icons/*', to: 'dist/icons' },
+    // Site icons, at the root where browsers look for favicon.ico (the 16px source stays behind).
+    { from: 'src/favicon/!(source-16).*', to: 'dist' },
     // Language packs, loaded on demand by language.
     { from: 'data/i18n/*.js', to: 'dist/i18n' },
   ],
