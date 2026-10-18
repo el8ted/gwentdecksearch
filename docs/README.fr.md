@@ -13,10 +13,10 @@ Gwent Deck Search liste les decks publiés de GWENT: The Witcher Card Game et le
 ## Mode d'emploi
 
 1. Choisissez une faction, puis un chef. En partie, commencez par ceux de votre adversaire.
-2. Tapez les cartes que vous voyez dans la zone Cartes (touche /), ou une catégorie comme Bête ou Dévotion. Chacune réduit la liste.
+2. Tapez les cartes que vous voyez dans le champ Recherche (touche /), une catégorie comme Bête ou Dévotion, ou un auteur. Chacun réduit la liste.
 3. Plus courantes montre les cartes jouées par les decks restants ; Plus rares montre les surprises peu fréquentes. Cliquez sur une carte pour l'ajouter.
-4. Toutes liste les decks contenant chaque carte ; Au moins une liste ceux qui en contiennent au moins une, meilleures correspondances d'abord.
-5. Cliquez sur un deck pour voir ses cartes. ↗ l'ouvre sur playgwent.com pour l'importer.
+4. Toutes liste les decks contenant tout ce que vous avez ajouté ; Au moins une liste ceux qui en contiennent au moins un élément, meilleures correspondances d'abord.
+5. Cliquez sur un deck pour voir ses cartes. ↗ l'ouvre sur playgwent.com pour l'importer ; ▶ lance une vidéo de jeu, s'il y en a une.
 6. Marge : de la place pour améliorer une carte. Dépassé : les coûts ont changé et le deck ne rentre plus.
 7. Tout effacer repart de zéro ; le bouton Retour du navigateur l'annule.
 

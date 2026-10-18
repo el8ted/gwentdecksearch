@@ -13,10 +13,10 @@ Gwent Deck Search wyświetla opublikowane talie do GWINT: Wiedźmińska Gra Karc
 ## Jak korzystać
 
 1. Wybierz frakcję, potem dowódcę. W trakcie meczu zacznij od tych, których używa przeciwnik.
-2. Wpisz widziane karty w pole Karty (klawisz /) albo tag, np. Bestia lub Lojalność. Każdy wpis zawęża listę.
+2. Wpisz widziane karty w pole Szukaj (klawisz /), tag, np. Bestia lub Lojalność, albo autora. Każdy wpis zawęża listę.
 3. Najczęstsze pokazuje karty grane przez pozostałe talie; Najrzadsze pokazuje rzadkie niespodzianki. Kliknij kartę, aby ją dodać.
-4. Wszystkie pokazuje talie z każdą kartą; Dowolną pokazuje talie z co najmniej jedną, najlepsze dopasowania najpierw.
-5. Kliknij talię, aby zobaczyć jej karty. ↗ otwiera ją na playgwent.com do zaimportowania.
+4. Wszystkie pokazuje talie ze wszystkim, co dodano; Dowolną pokazuje talie z co najmniej jednym wpisem, najlepsze dopasowania najpierw.
+5. Kliknij talię, aby zobaczyć jej karty. ↗ otwiera ją na playgwent.com do importu; ▶ odtwarza film z rozgrywki, jeśli jest.
 6. Zapas: miejsce na ulepszenie karty. Przekroczone: koszty się zmieniły i talia już się nie mieści.
 7. Wyczyść wszystko zaczyna od nowa; przycisk Wstecz w przeglądarce to cofa.
 

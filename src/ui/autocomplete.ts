@@ -134,7 +134,7 @@ export function createAutocomplete({
             }
             if (typeof item === 'string') {
               return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="tag" aria-selected="${i === active}">
-              <span class="cost" aria-hidden="true">#</span><span class="sug-name">${esc(loc.tag(item))}${alt(item)} <span class="sug-kind">${esc(loc.t('filter.tags'))}</span></span>
+              <span class="cost" aria-hidden="true">#</span><span class="sug-name">${esc(loc.tag(item))}${alt(item)} <span class="sug-kind">${esc(loc.t('cards.tag'))}</span></span>
               ${count(item)}</div>`
             }
             const card = data.cards[item]

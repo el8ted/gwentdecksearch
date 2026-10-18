@@ -94,6 +94,14 @@ try {
   await page.locator('#suggestions [role="option"]').first().waitFor()
   await save(page, 'autocomplete')
 
+  // A query matching a tag, cards and authors at once.
+  page = await open(browser, '', 900)
+  await page.locator('#card-input').fill('mag')
+  await page.locator('#suggestions [data-tag^="@"]').first().waitFor()
+  if (!(await page.locator('#suggestions [data-tag="c14"]').count()))
+    throw new Error('search-tags: no Mage tag; pick another query')
+  await save(page, 'search-tags')
+
   page = await open(browser, `#f=MO&l=${ARACHAS}&c=${HIVE_MIND},${HIDEOUS_FEAST}`)
   await save(page, 'common-cards')
 
@@ -116,8 +124,11 @@ try {
   await page.locator('#dim-common').click()
   await save(page, 'dim-common', '#results')
 
-  page = await open(browser, '#f=NR&b=spare', 640)
+  page = await open(browser, '#f=NR&b=spare3,spare2,spare1', 640)
   await save(page, 'provisions')
+
+  page = await open(browser, '#v=1&gl=en', 640)
+  await save(page, 'videos')
 
   page = await open(browser, '?lang=ru#f=NR')
   await page.locator('#langmenu summary').click()

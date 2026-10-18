@@ -36,12 +36,13 @@ between matches to find a deck to build.
 ## Quick start
 
 1. Pick a **faction**, then a **leader**. In a match, start with your opponent's.
-2. Type the cards you see into the **Cards** box (press <kbd>/</kbd> to jump there), or a tag such as Beast or
-   Devotion. Each one narrows the list.
+2. Type the cards you see into the **Search** box (press <kbd>/</kbd> to jump there), a tag such as Beast or
+   Devotion, or an author. Each one narrows the list.
 3. **Most common** shows the cards the remaining decks run; **Least common** shows rare surprises. Click a card to
    add it.
-4. **All** lists decks with every card you've added; **Any** lists decks with at least one, best matches first.
-5. Click a deck to see its cards. **↗** opens it on playgwent.com, where you can import it.
+4. **All** lists decks with everything you've added; **Any** lists decks with at least one, best matches first.
+5. Click a deck to see its cards. **↗** opens it on playgwent.com, where you can import it; **▶** plays a gameplay
+   video, when there is one.
 6. **Spare** means room to upgrade a card. **Over** means card costs have changed and the deck no longer fits.
 7. **Clear all** starts over. Your browser's Back button undoes it.
 
@@ -52,7 +53,7 @@ The same steps are in the page's **?** (Help) panel, with the keyboard shortcuts
 | Area | What it's for |
 |---|---|
 | **Header** | How many decks there are and when the data was collected. Buttons for **Language**, **?** (Help), **Credits** and **Aa Display**. |
-| **Filters** | Source, Provisions, Faction, Leader, Stratagem and Cards. Each option shows how many decks match it. |
+| **Filters** | Source, Guide & video, Provisions, Faction, Leader, Stratagem and Search. Each option shows how many decks match it. |
 | **Results** (left) | The matching decks. Click one to open its card list. |
 | **Card frequency** (right) | How many of the matching decks run each card you haven't added yet. |
 
@@ -66,19 +67,24 @@ then **cards** as they're played.
 **1. Pick the faction and leader.** Leaders appear as their ability icons once a faction is picked. Hover over an
 icon to see its name; the selected leader's name is shown next to the icons.
 
-**2. Add the cards you see.** Press <kbd>/</kbd> and start typing. Suggestions show each card's provision cost and
-how many of the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd> to add.
+**2. Add the cards you see.** Press <kbd>/</kbd> and start typing in the **Search** box. Suggestions show each card's
+provision cost and how many of the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd>
+to add.
 
-**Authors** too: type a community guide author's playgwent name, or Shinmiri2 or MetallicDanny for their guides and
-their lists, to keep their decks. Case and spaces don't matter, and at most three authors are suggested, after the
-cards.
+![Typing "kiki" in the Search box suggests Kikimore cards, each with its provision cost and how many of the remaining decks run it](docs/screenshots/autocomplete.png)
 
-**Tags** work the same way: type a category like Beast, Ogroid or Spell, or an ability like Devotion or Order, to
-keep the decks with at least one such card. They're the tags of the game's deck builder, one per tag however the card
-text words it, so "Orders" or "Beasts" finds the same tag. Only tags some remaining deck has are suggested. A tag
-counts as one of your picks for **All** and **Any**, and an expanded deck highlights the cards that carry it.
+The Search box finds two more kinds of pick, shown after the cards:
 
-![Typing "kiki" in the Cards box suggests Kikimore cards, each with its provision cost and how many of the remaining decks run it](docs/screenshots/autocomplete.png)
+- **Tags** (**#**): a category like Beast, Ogroid or Spell, or an ability like Devotion or Order, keeps the decks with
+  at least one such card. They're the tags of the game's deck builder, one per tag however the card text words it, so
+  "Orders" or "Beasts" finds the same tag. An expanded deck highlights the cards that carry it.
+- **Authors** (**✎**): a community guide author's playgwent name keeps their decks. Shinmiri2 and MetallicDanny also
+  find their deck lists. Case and spaces don't matter, and at most three authors are suggested.
+
+Only tags and authors that some remaining deck has are suggested. Every pick counts for **All** and **Any**, and picks
+stay in the order you added them, so <kbd>Backspace</kbd> in the empty box removes the latest.
+
+![Typing "mag" suggests the Mage tag first, then cards whose names start with it, then authors](docs/screenshots/search-tags.png)
 
 **3. Check what the remaining decks have in common.** The **Most common** panel counts how many of the matching
 decks run each card. A card near the top is likely to show up.
@@ -117,12 +123,18 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
 | **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
+| **Links** | On the right: the guide's language, **▶** for a video, the deck ID and **↗**. On phones they get their own row under the name. |
 | **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
 | **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. |
 | **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
 | **Stats** | Scraps · cards · units · provisions used / limit. |
 | **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
+
+**Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 1,360 of them), and
+a language pill keeps decks whose guide or video is in that language: handy for finding guides you can read.
+
+![Guide & video with Has video and English picked: each deck shows ▶ EN next to its deck ID](docs/screenshots/videos.png)
 
 **Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
 out. It's most useful with two or three decks open side by side.
@@ -144,7 +156,7 @@ today's limit: **150 + the leader's bonus**.
 The **Provisions** filter narrows by how far off a deck is: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick
 several to combine them.
 
-![The Spare filter with Northern Realms: decks under the limit, each with an "N spare" badge](docs/screenshots/provisions.png)
+![The Provisions filter with every Spare step picked for Northern Realms: decks under the limit, each with an "N spare" badge](docs/screenshots/provisions.png)
 
 ## Filters
 
@@ -156,7 +168,7 @@ several to combine them.
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
-| **Cards** | **All**: decks with every card. **Any**: decks with at least one, best matches first. ✕ removes a card. |
+| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. ✕ removes a pick. |
 | **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
 
 ## Save and share a search
@@ -173,7 +185,8 @@ Your choice is remembered; on a first visit the page follows your browser's lang
 - **The rest of the interface** was machine-translated. Corrections are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Deck names** are shown as their authors wrote them when they're in your language, and machine-translated into
   English otherwise.
-- **The Cards box** finds cards by their name in your language or in English.
+- **The Search box** finds cards and tags by their name in your language or in English, and authors by their playgwent
+  name.
 - **Shared links** keep the language if `?lang=` is in the address, for example `?lang=ru`.
 
 ![The page in Russian with the language menu open](docs/screenshots/languages.png)
@@ -200,26 +213,26 @@ Press <kbd>?</kbd> on the page for this list.
 
 | Key | Action |
 |---|---|
-| <kbd>/</kbd> | Jump to the Cards box |
+| <kbd>/</kbd> | Jump to the Search box |
 | <kbd>[</kbd> | Jump to the filters |
 | <kbd>]</kbd> | Jump to card frequency (Most/Least common) |
 | <kbd>Shift</kbd>+<kbd>Backspace</kbd> | Clear all (the browser's Back undoes it) |
 | <kbd>?</kbd> | Show or hide Help |
-| <kbd>↑</kbd> <kbd>↓</kbd> or <kbd>Tab</kbd> | Move through card suggestions |
-| <kbd>Enter</kbd> | Add the highlighted card |
-| <kbd>Backspace</kbd> | Remove the last card (when the Cards box is empty) |
+| <kbd>↑</kbd> <kbd>↓</kbd> or <kbd>Tab</kbd> | Move through suggestions |
+| <kbd>Enter</kbd> | Add the highlighted suggestion |
+| <kbd>Backspace</kbd> | Remove the last pick (when the Search box is empty) |
 | <kbd>Esc</kbd> | Close suggestions, menus and Help |
 
 Shortcuts work when you aren't typing in a box. On keyboards where <kbd>/</kbd> <kbd>[</kbd> <kbd>]</kbd> are
 elsewhere (for example Russian), the keys in the US positions work. Press <kbd>Tab</kbd> at the top of the page for
-links that skip to the cards, results or card frequency.
+links that skip to the search, results or card frequency.
 
 ![The Help panel: quick guide and keyboard shortcuts](docs/screenshots/help.png)
 
 ## Common questions
 
-**No decks match.** The filters together are too narrow. Remove the last card you added (✕ on the card), or unpick
-a filter. Options that show **0** would leave no decks. **Clear all** starts over.
+**No decks match.** The filters together are too narrow. Remove the last pick you added (✕ on it), or unpick a
+filter. Options that show **0** would leave no decks. **Clear all** starts over.
 
 **I can't find the leader.** Pick a faction first; its leaders then appear as icons.
 
@@ -228,6 +241,9 @@ recent ones. If a deck should be here, [report it](https://github.com/el8ted/gwe
 
 **A deck says "+N over". Is it broken?** No. Card costs changed after it was published. Swap in a cheaper card
 before you play it.
+
+**What does the language code next to a deck mean?** The language its community guide is written in. It only says the
+guide has real text in that language, not whether the text is useful. Guides that are only filler show none.
 
 **How current is the data?** The header shows when it was collected, in UTC. Gwent updates land around midnight
 UTC, so you can tell whether the data is from before or after the latest update.
@@ -243,6 +259,9 @@ UTC, so you can tell whether the data is from before or after the latest update.
 | **MetallicDanny** | A Russian-language deck list ([deck list](https://docs.google.com/spreadsheets/d/1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg/edit?gid=1966172750)), including decks from the last six months of his per-patch meta reports and new-deck lists. Deck names are machine-translated into English, keeping official card names. |
 | **Shinmiri2** | A curated list of competitive decks ([deck list](https://docs.google.com/spreadsheets/d/1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM/edit?gid=1592369710)), including alternate versions and decks from the last six months of per-patch tabs. Alternates appear as separate decks with the same name. |
 
+Gameplay videos come from the guides themselves, from both deck lists, and from the deck links in Shinmiri2's YouTube
+video descriptions.
+
 A deck listed by more than one source appears once, with every source badge. Card lists, costs and card data come
 from playgwent.com. Provisions, scraps and card counts are worked out from current card data, so they follow every
 Balance Council change.
@@ -253,6 +272,9 @@ Deck lists belong to their authors: the playgwent.com community, MetallicDanny
 ([YouTube](https://www.youtube.com/@metallicdanny), [Twitch](https://www.twitch.tv/metallicdanny)) and Shinmiri2
 ([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)). The **Credits**
 button on the page links to them.
+
+The site icon was drawn by el8ted's daughter. It's licensed under a father's love: changing it would make el8ted sad
+and disappoint a young woman.
 
 Gwent Deck Search is built and maintained with the help of AI tools, for code and translations. [AI.md](AI.md) lists
 the tools and what they're used for.
