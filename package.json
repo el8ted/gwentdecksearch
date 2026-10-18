@@ -25,11 +25,11 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.11.2",
+      "version": "12.14.0",
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.14.0",
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
@@ -37,6 +37,7 @@
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^5.0.4",
     "consola": "^3.4.2",
+    "eld": "^2.1.0",
     "tsdown": "^0.23.1",
     "typescript": "^7.0.2",
     "vitest": "^5.0.4"

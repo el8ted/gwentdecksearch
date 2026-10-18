@@ -25,12 +25,14 @@ await writeJson(STORE_PATHS.entries, entries)
 consola.info(`${entries.length} deck links (${listed} guides listed)`)
 
 const store = await readJson<Record<string, StoredDeck>>(STORE_PATHS.decks, {})
+const texts = await readJson<Record<string, string>>(STORE_PATHS.guideText, {})
 let result: Awaited<ReturnType<typeof refreshStore>>
 try {
-  result = await refreshStore(entries, store, get)
+  result = await refreshStore(entries, store, get, texts)
 } finally {
   // Keep what was fetched even if the run stops partway.
   await writeJson(STORE_PATHS.decks, store)
+  await writeJson(STORE_PATHS.guideText, texts)
 }
 await markRefreshed('decks')
 if (result.warnings.length) consola.warn(`${result.warnings.length} warnings:\n  ${result.warnings.join('\n  ')}`)

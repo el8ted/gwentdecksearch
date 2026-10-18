@@ -92,7 +92,13 @@ describe('refreshStore', () => {
     // Arrange
     const { get, requested } = fakeGet({})
     const store: Record<string, StoredDeck> = {
-      [GUIDE_URL]: { hash: 'h1', cards: [], modified: 'x', guideModified: 'same' },
+      [GUIDE_URL]: {
+        hash: 'h1',
+        cards: [],
+        modified: 'x',
+        guideModified: 'same',
+        guide: { words: 1, unique: 1, images: 0 },
+      },
     }
 
     // Act
@@ -100,6 +106,29 @@ describe('refreshStore', () => {
 
     // Assert
     expect(requested).toEqual([])
+  })
+
+  it('refetches a guide not measured yet, storing its measures and caching its text', async () => {
+    // Arrange
+    const api = 'https://www.playgwent.com/en/decks/api/guides/7'
+    const content = {
+      ops: [{ insert: 'Mulligan bronzes.\n' }, { insert: { video: 'https://www.youtube.com/embed/NJnObo5kR34' } }],
+    }
+    const { get, requested } = fakeGet({ [api]: JSON.stringify({ deck: pgDeck('h1'), content }) })
+    const store: Record<string, StoredDeck> = {
+      [GUIDE_URL]: { hash: 'h1', cards: [], modified: 'x', guideModified: 'same' },
+    }
+    const texts: Record<string, string> = {}
+
+    // Act
+    await refreshStore([guideEntry('same')], store, get, texts)
+
+    // Assert
+    expect(requested).toEqual([api])
+    expect(store[GUIDE_URL]).toMatchObject({
+      guide: { words: 2, unique: 2, images: 0, video: 'https://youtu.be/NJnObo5kR34' },
+    })
+    expect(texts).toEqual({ [GUIDE_URL]: 'Mulligan bronzes.' })
   })
 
   it('stores a dead link as missing and retries it next run', async () => {

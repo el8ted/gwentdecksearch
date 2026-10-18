@@ -119,10 +119,14 @@ export function buildDataset(input: BuildInput): BuildOutput {
     if (!copies.some(([id]) => catalog[id].type === 'stratagem')) copies.splice(1, 0, [DEFAULT_STRATAGEM, 1])
     for (const [id] of copies) used[id] ??= appCard(catalog[id], named)
 
+    // A guide's own video (narrated, presumably, in the guide's language) comes before a list's.
+    const video: Video | undefined = stored.guide?.video
+      ? { url: stored.guide.video, lang: entry.lang }
+      : urlVideo.get(entry.url)
     const known = byHash.get(stored.hash)
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
-      known.video ??= urlVideo.get(entry.url)
+      known.video ??= video
       continue
     }
     const count = (t: Card['type']) => copies.filter(([id]) => catalog[id].type === t).length
@@ -146,7 +150,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       },
       sources: SOURCES.filter((s) => urlSources.get(entry.url)?.has(s)),
       ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author, guideLang: entry.lang }),
-      ...(urlVideo.has(entry.url) && { video: urlVideo.get(entry.url) }),
+      ...(video && { video }),
       cards: copies,
     }
     // Some guides tagged English carry Russian names.

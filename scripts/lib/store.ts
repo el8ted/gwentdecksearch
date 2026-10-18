@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import type { Card } from '../../src/types.ts'
+import type { GuideInfo } from './guide.ts'
 
 /** Card catalog entry: the app's {@link Card} plus fields only the build needs. */
 export interface CatalogCard extends Card {
@@ -11,10 +12,11 @@ export interface CatalogCard extends Card {
 /**
  * One stored deck, keyed by normalized URL. `cards` is `[cardId, copies]` exactly as fetched (the build adds the
  * default stratagem). `modified` is the deck's own date (shown as `Deck.modified`); `guideModified` is the guide
- * listing's date (the guide API's own date can lag behind it), so an edited guide can be detected. A dead link is `missing`.
+ * listing's date (the guide API's own date can lag behind it), so an edited guide can be detected. `guide` measures a
+ * guide's text (see `guideInfo`). A dead link is `missing`.
  */
 export type StoredDeck =
-  | { hash: string; cards: [number, number][]; modified: string; guideModified?: string }
+  | { hash: string; cards: [number, number][]; modified: string; guideModified?: string; guide?: GuideInfo }
   | { missing: true }
 
 /** The committed stores the refreshes write and the build reads. */
@@ -28,6 +30,8 @@ export const STORE_PATHS = {
   entries: 'data/source/entries.json',
   decks: 'data/source/deck-store.json',
   translations: 'data/source/translations.json',
+  /** Guide text by URL: local only (gitignored), for tuning guide measures without refetching. */
+  guideText: 'data/cache/guide-text.json',
   /** When each refresh last ran: `{ cards, decks }` as ISO times; the page's data date is the newer. */
   refreshed: 'data/source/refreshed.json',
 } as const

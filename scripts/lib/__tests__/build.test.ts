@@ -117,6 +117,25 @@ describe('buildDataset', () => {
     expect(b.map((d) => d.video)).toEqual([later])
   })
 
+  it("prefers a guide's own video, in the guide's language, to a list's", () => {
+    // Arrange
+    const guide = { id: 1, modified: '', votes: 0, author: 'x' }
+    const listed = { url: 'https://youtu.be/BBBBBBBBBBB', lang: 'ru' }
+    const entries = [
+      entry(URL_A, { source: 'community', lang: 'pl', guide }),
+      entry(URL_A, { source: 'metallic-danny', video: listed }),
+    ]
+    const store = {
+      [URL_A]: { ...DECK, guide: { words: 9, unique: 9, images: 0, video: 'https://youtu.be/AAAAAAAAAAA' } },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, store }))
+
+    // Assert
+    expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/AAAAAAAAAAA', lang: 'pl' })
+  })
+
   it("records a community guide's language", () => {
     // Arrange
     const entries = [

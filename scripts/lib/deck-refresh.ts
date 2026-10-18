@@ -1,33 +1,39 @@
 import type { GetBody } from './entries.ts'
 import { countCopies, extractDeck, normalizeDeck, type PgDeck } from './extract.ts'
+import { type GuideInfo, guideInfo } from './guide.ts'
 import { NotFoundError } from './polite-fetch.ts'
 import type { DeckEntry } from './sources.ts'
 import type { StoredDeck } from './store.ts'
 import { type Glossary, translateName } from './translate.ts'
 
-/** Fetches one entry's deck: a guide through the guide API, anything else as a deck page. */
-async function fetchDeck(entry: DeckEntry, get: GetBody): Promise<PgDeck> {
+/** Fetches one entry's deck: a guide through the guide API (with its text measured), anything else as a deck page. */
+async function fetchDeck(
+  entry: DeckEntry,
+  get: GetBody,
+): Promise<{ deck: PgDeck; guide?: { info: GuideInfo; text: string } }> {
   if (entry.guide) {
     const guide = JSON.parse(await get(`https://www.playgwent.com/${entry.lang}/decks/api/guides/${entry.guide.id}`))
-    return normalizeDeck(guide.deck)
+    return { deck: normalizeDeck(guide.deck), guide: guideInfo(guide.content) }
   }
-  return extractDeck(await get(entry.url.replace('playgwent.com/', `playgwent.com/${entry.lang}/`)))
+  return { deck: extractDeck(await get(entry.url.replace('playgwent.com/', `playgwent.com/${entry.lang}/`))) }
 }
 
 /**
  * Fetches the decks the store doesn't have yet, updating `store` in place (so a caller can save progress even if
  * a later fetch throws). A published deck never changes, so a stored deck is only refetched when its guide was
- * edited (the listing's `modified` moved); a dead link is retried every run.
+ * edited (the listing's `modified` moved) or hasn't been measured yet; a dead link is retried every run.
  *
  * @param entries - Current deck links
  * @param store - Deck store, updated in place
  * @param get - Fetches a body; throws {@link NotFoundError} for a dead link
+ * @param texts - Guide text by URL, updated in place (a local cache)
  * @returns How many were fetched, and warnings (dead links, a guide whose deck changed)
  */
 export async function refreshStore(
   entries: DeckEntry[],
   store: Record<string, StoredDeck>,
   get: GetBody,
+  texts: Record<string, string> = {},
 ): Promise<{ fetched: number; warnings: string[] }> {
   const warnings: string[] = []
   const seen = new Set<string>()
@@ -36,11 +42,12 @@ export async function refreshStore(
     if (seen.has(entry.url)) continue
     seen.add(entry.url)
     const old = store[entry.url]
-    const edited = old && !('missing' in old) && entry.guide && old.guideModified !== entry.guide.modified
-    if (old && !('missing' in old) && !edited) continue
+    const stale =
+      old && !('missing' in old) && entry.guide && (old.guideModified !== entry.guide.modified || !old.guide)
+    if (old && !('missing' in old) && !stale) continue
     fetched++
     try {
-      const deck = await fetchDeck(entry, get)
+      const { deck, guide } = await fetchDeck(entry, get)
       // The listing's date is what the next run compares; the guide API's own date can lag behind it.
       const guideModified = entry.guide?.modified
       if (old && !('missing' in old) && old.hash !== deck.hash) {
@@ -51,7 +58,9 @@ export async function refreshStore(
         cards: countCopies(deck.srcCardTemplates),
         modified: deck.modified,
         ...(guideModified && { guideModified }),
+        ...(guide && { guide: guide.info }),
       }
+      if (guide) texts[entry.url] = guide.text
     } catch (e) {
       if (!(e instanceof NotFoundError)) throw e
       store[entry.url] = { missing: true }
