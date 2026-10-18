@@ -69,6 +69,10 @@ icon to see its name; the selected leader's name is shown next to the icons.
 **2. Add the cards you see.** Press <kbd>/</kbd> and start typing. Suggestions show each card's provision cost and
 how many of the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd> to add.
 
+**Authors** too: type a community guide author's playgwent name, or Shinmiri2 or MetallicDanny for their guides and
+their lists, to keep their decks. Case and spaces don't matter, and at most three authors are suggested, after the
+cards.
+
 **Tags** work the same way: type a category like Beast, Ogroid or Spell, or an ability like Devotion or Order, to
 keep the decks with at least one such card. They're the tags of the game's deck builder, one per tag however the card
 text words it, so "Orders" or "Beasts" finds the same tag. Only tags some remaining deck has are suggested. A tag

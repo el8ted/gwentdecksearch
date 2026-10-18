@@ -13,6 +13,15 @@ export const EMPTY_STATE: FilterState = {
   match: 'all',
 }
 
+/** An encoded author key; `undefined` for broken encoding. */
+function decodeAuthor(text: string): string | undefined {
+  try {
+    return decodeURIComponent(text)
+  } catch {
+    return undefined
+  }
+}
+
 /**
  * Serializes filters into a URL hash, omitting defaults so the URL stays short.
  *
@@ -30,7 +39,10 @@ export function encodeState(state: FilterState): string {
   if (state.langs?.length) params.set('gl', state.langs.join(','))
   if (state.leader !== undefined) params.set('l', String(state.leader))
   if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
-  if (state.picks.length) params.set('c', state.picks.join(','))
+  // An author's key can hold any letter, so it's encoded to keep a comma in it from splitting the list.
+  const pick = (p: number | string) =>
+    typeof p === 'string' && p.startsWith('@') ? `@${encodeURIComponent(p.slice(1))}` : p
+  if (state.picks.length) params.set('c', state.picks.map(pick).join(','))
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -45,12 +57,14 @@ export function encodeState(state: FilterState): string {
  * @param hash - `location.hash`, with or without `#`
  * @param cardOf - A card in the current dataset, or `undefined` if it isn't there
  * @param isTag - Whether a tag key is in the current dataset
+ * @param isAuthor - Whether an author key is in the current dataset
  * @returns Parsed filters; defaults for anything missing or invalid
  */
 export function decodeState(
   hash: string,
   cardOf: (id: number) => Pick<Card, 'type' | 'faction'> | undefined,
   isTag: (key: string) => boolean,
+  isAuthor: (key: string) => boolean = () => false,
 ): FilterState {
   const typeOf = (id: number) => cardOf(id)?.type
   const params = new URLSearchParams(hash.replace(/^#/, ''))
@@ -84,14 +98,15 @@ export function decodeState(
         ? undefined
         : leader,
     stratagem: ids('s', 'stratagem')[0],
-    // Card IDs and tag keys share `c`, in pick order: a number is a card, anything else a tag.
+    // Card IDs, tag keys and authors share `c`, in pick order: a number is a card, `@…` an author, anything else a tag.
     picks: [
       ...new Set(
-        (params.get('c') ?? '')
-          .split(',')
-          .flatMap((p): (number | string)[] =>
-            /^\d+$/.test(p) ? (typeOf(Number(p)) ? [Number(p)] : []) : isTag(p) ? [p] : [],
-          ),
+        (params.get('c') ?? '').split(',').flatMap((p): (number | string)[] => {
+          if (/^\d+$/.test(p)) return typeOf(Number(p)) ? [Number(p)] : []
+          if (!p.startsWith('@')) return isTag(p) ? [p] : []
+          const key = decodeAuthor(p.slice(1))
+          return key !== undefined && isAuthor(key) ? [`@${key}`] : []
+        }),
       ),
     ],
   }

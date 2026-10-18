@@ -23,6 +23,11 @@ body:
     attributes:
       label: Deck source link (new sources only)
       description: The author's deck list, and their channel if they have one.
+  - type: input
+    id: playgwent-name
+    attributes:
+      label: The author's playgwent.com name (new sources only)
+      description: Exactly as it appears on their community guides, so searching for the author finds their list and their guides together.
   - type: dropdown
     id: consent
     attributes:

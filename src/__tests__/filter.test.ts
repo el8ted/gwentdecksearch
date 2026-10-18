@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  authorKey,
+  authorNames,
   budgetOf,
   budgetSide,
   cardFrequency,
@@ -93,6 +95,7 @@ const DATA: Dataset = {
         ['community', 'shinmiri2'],
       ),
       guideLang: 'en',
+      author: 'Merchant of Mirrors',
     },
   ],
 }
@@ -416,6 +419,36 @@ describe('language filtering', () => {
         ['en', 1],
       ]),
     )
+  })
+})
+
+describe('author matching', () => {
+  it("matches a guide's author, or a list's owner by their playgwent name, ignoring case", () => {
+    // Act
+    const [guide, owner] = [
+      matchDecks(DECKS, state({ picks: [`@${authorKey('merchant OF mirrors')}`] })),
+      matchDecks(DECKS, state({ picks: ['@shinmiri2'] })),
+    ]
+
+    // Assert
+    expect(ids(guide)).toEqual(['c1'])
+    expect(ids(owner)).toEqual(['a1', 'b1', 'c1'])
+  })
+
+  it("counts each author's decks and names them, list owners by their playgwent name", () => {
+    // Act
+    const [f, names] = [facets(DECKS, state()), authorNames(DECKS)]
+
+    // Assert
+    expect(f.authors).toEqual(
+      new Map([
+        ['shinmiri2', 3],
+        ['metallicdanny', 1],
+        ['merchant of mirrors', 1],
+      ]),
+    )
+    expect(names.get('merchant of mirrors')).toBe('Merchant of Mirrors')
+    expect(names.get('metallicdanny')).toBe('MetallicDanny')
   })
 })
 

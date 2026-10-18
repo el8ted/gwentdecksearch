@@ -16,6 +16,15 @@ export const SOURCES = ['community', 'metallic-danny', 'shinmiri2'] as const
 /** A deck source. */
 export type Source = (typeof SOURCES)[number]
 
+/**
+ * Each list's owner by their playgwent name, so their list and their community guides count as one author in search.
+ * A new list needs its owner's playgwent name.
+ */
+export const SOURCE_AUTHORS: Record<Exclude<Source, 'community'>, string> = {
+  shinmiri2: 'shinmiri2',
+  'metallic-danny': 'MetallicDanny',
+}
+
 /** Display names for {@link Source}. */
 export const SOURCE_NAMES: Record<Source, string> = {
   community: 'Community',

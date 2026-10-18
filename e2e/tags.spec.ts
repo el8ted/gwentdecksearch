@@ -65,3 +65,21 @@ test('chips keep pick order, and Backspace removes the latest pick, card or tag'
   await input.press('Backspace')
   await expect(page.locator('#chips li')).toHaveText(['#Beast✕'])
 })
+
+test('an author is suggested by name, spacing and case ignored, and lists their guides and lists', async ({
+  page,
+  open,
+}) => {
+  // Arrange
+  await open()
+  const input = page.locator('#card-input')
+
+  // Act
+  await input.fill('metallic d')
+  await page.locator('[data-tag="@metallicdanny"]').click()
+
+  // Assert
+  await expect(page.locator('#chips li')).toHaveText(['✎MetallicDanny✕'])
+  await expect(page).toHaveURL(/#c=%40metallicdanny$/)
+  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@metallicdanny'] })} `))
+})

@@ -22,6 +22,9 @@ the release tag and starts a new Unreleased section. -->
 - A new **Guide & video** filter: **▶ Has video** shows only decks with a video (about 1,360), and a language keeps
   decks whose guide or video is in it.
 - MetallicDanny's badge is orchid instead of grey, easier to tell apart from the other sources.
+- The Cards box also finds authors by their playgwent name: a community guide's author, or Shinmiri2 and MetallicDanny
+  for their guides and their lists together.
+- Phones: the card suggestions are no longer covered by the Most common list below them.
 
 ## 2026-10-17
 

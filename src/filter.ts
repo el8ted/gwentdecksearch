@@ -1,4 +1,4 @@
-import type { Card, Dataset, Deck, Faction, Source, TagKey } from './types.ts'
+import { type Card, type Dataset, type Deck, type Faction, SOURCE_AUTHORS, type Source, type TagKey } from './types.ts'
 
 /** Base provision limit before the leader's bonus. */
 export const BASE_PROVISIONS = 150
@@ -48,8 +48,8 @@ export interface FilterState {
   leader?: number
   stratagem?: number
   /**
-   * Cards (IDs) and deck-builder tags (keys) from the Cards box, in the order picked, so the last one is the last
-   * tried. A deck has a tag if any of its cards (leader and stratagem included) does.
+   * Cards (IDs), deck-builder tags (keys) and authors (`@` + {@link authorKey}) from the Cards box, in the order picked,
+   * so the last one is the last tried. A deck has a tag if any of its cards (leader and stratagem included) does.
    */
   picks: (number | TagKey)[]
   /** Deck must contain every pick (`all`, default) or at least one (`any`). */
@@ -68,6 +68,8 @@ export interface IndexedDeck {
   tags: Set<TagKey>
   /** The guide's and the video's languages. */
   langs: Set<string>
+  /** {@link authorKey}s: the guide's author, and the owner of each list that has the deck. */
+  authors: Set<string>
 }
 
 /** A deck's provisions against the current-patch limit. */
@@ -90,6 +92,37 @@ export interface Facets {
   /** Decks with a video. */
   videos: number
   langs: Map<string, number>
+  authors: Map<string, number>
+}
+
+/**
+ * An author's identity: their playgwent name, case ignored.
+ *
+ * @param name - A guide author, or a list owner's {@link SOURCE_AUTHORS} name
+ * @returns The name in lower case
+ */
+export function authorKey(name: string): string {
+  return name.toLowerCase()
+}
+
+/** A deck's authors: a list's owner counts too, since the list is theirs. */
+function deckAuthors(deck: Deck): string[] {
+  return [deck.author, ...deck.sources.filter((s) => s !== 'community').map((s) => SOURCE_AUTHORS[s])]
+    .filter((a) => a !== undefined)
+    .map(authorKey)
+}
+
+/**
+ * Display names by {@link authorKey}: a list owner's playgwent name, else the first guide's spelling.
+ *
+ * @param decks - Indexed decks
+ * @returns Name by key
+ */
+export function authorNames(decks: IndexedDeck[]): Map<string, string> {
+  const names = new Map(Object.values(SOURCE_AUTHORS).map((n) => [authorKey(n), n]))
+  for (const { deck } of decks)
+    if (deck.author && !names.has(authorKey(deck.author))) names.set(authorKey(deck.author), deck.author)
+  return names
 }
 
 /**
@@ -111,7 +144,7 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     const ids = new Set(deck.cards.map(([id]) => id))
     const tags = new Set([...ids].flatMap((id) => data.cards[id]?.tags ?? []))
     const langs = new Set([deck.guideLang, deck.video?.lang].filter((l) => l !== undefined))
-    return { deck, leader, stratagem, faction, budget, ids, tags, langs }
+    return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors: new Set(deckAuthors(deck)) }
   })
 }
 
@@ -151,7 +184,9 @@ export function pickedCards(picks: FilterState['picks']): number[] {
 
 /** How many of the picks a deck has. */
 function hits(e: IndexedDeck, s: FilterState): number {
-  return s.picks.filter((p) => (typeof p === 'number' ? e.ids.has(p) : e.tags.has(p))).length
+  return s.picks.filter((p) =>
+    typeof p === 'number' ? e.ids.has(p) : p.startsWith('@') ? e.authors.has(p.slice(1)) : e.tags.has(p),
+  ).length
 }
 
 /** Whether a deck has the picks: all of them, or at least one with `match: 'any'`. */
@@ -222,6 +257,7 @@ export function facets(decks: IndexedDeck[], state: FilterState): Facets {
     tags: new Map(),
     videos: 0,
     langs: new Map(),
+    authors: new Map(),
   }
   for (const e of decks) {
     if (keep(e, { factions: [] })) count(result.factions, e.faction)
@@ -234,6 +270,7 @@ export function facets(decks: IndexedDeck[], state: FilterState): Facets {
     if (!keep(e, {})) continue
     for (const id of e.ids) if (id !== e.leader && id !== e.stratagem) count(result.cards, id)
     for (const k of e.tags) count(result.tags, k)
+    for (const a of e.authors) count(result.authors, a)
   }
   return result
 }

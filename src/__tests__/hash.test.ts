@@ -11,6 +11,7 @@ const known = new Map<number, Pick<Card, 'type' | 'faction'>>([
 ])
 const cardOf = (id: number) => known.get(id)
 const isTag = (key: string) => ['c12', 'devotion'].includes(key)
+const isAuthor = (key: string) => ['avajar', 'a,b c'].includes(key)
 
 describe('encodeState', () => {
   it('returns an empty hash for the empty state', () => {
@@ -42,6 +43,18 @@ describe('encodeState', () => {
 })
 
 describe('decodeState', () => {
+  it('round-trips authors among the picks, whatever their characters, and drops unknown ones', () => {
+    // Arrange
+    const s: FilterState = { ...EMPTY_STATE, picks: [203123, '@a,b c', 'c12', '@avajar'] }
+    const hash = `${encodeState(s)}%2C%40nobody%2C%40%25E0`
+
+    // Act
+    const decoded = decodeState(hash, cardOf, isTag, isAuthor)
+
+    // Assert
+    expect(decoded.picks).toEqual([203123, '@a,b c', 'c12', '@avajar'])
+  })
+
   it('reads a pre-steps spare or over as every step on that side', () => {
     // Act
     const decoded = decodeState('#b=over,exact,over1', cardOf, isTag)

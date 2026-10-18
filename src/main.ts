@@ -2,6 +2,7 @@ import dataJson from '../data/decks.json'
 import { CARD_ART } from './art.ts'
 import { CONFIG } from './config.ts'
 import {
+  authorNames,
   BUDGETS,
   type Budget,
   budgetSide,
@@ -120,11 +121,13 @@ function loadPack(lang: Lang): Promise<LanguagePack | undefined> {
 
 const params = new URLSearchParams(location.search)
 let loc = makeLocale(pickLanguage(params.get('lang'), readStorage(LANG_KEY), navigator.languages))
+const AUTHORS = authorNames(decks)
 const readHash = () =>
   decodeState(
     location.hash,
     (id) => data.cards[id],
     (key) => Object.hasOwn(data.tags, key),
+    (key) => AUTHORS.has(key),
   )
 let state: FilterState = readHash()
 // The faction pill that adding a card turned on (see addCard); a pill click makes the choice the visitor's own.
@@ -227,7 +230,12 @@ function removePick(pick: number | string) {
 }
 
 /** A pick's name in the page language. */
-const pickName = (pick: number | string) => (typeof pick === 'number' ? loc.card(pick) : loc.tag(pick))
+const pickName = (pick: number | string) =>
+  typeof pick === 'number'
+    ? loc.card(pick)
+    : pick.startsWith('@')
+      ? (AUTHORS.get(pick.slice(1)) ?? pick)
+      : loc.tag(pick)
 
 /** A single-select pill for a leader or stratagem; clicking the selected one clears it. */
 function cardPill(attr: 'leader' | 'stratagem', id: number, counts: Map<number, number>, selected?: number) {
@@ -316,8 +324,10 @@ function renderFilters() {
   els.chips.innerHTML = state.picks
     .map((pick) => {
       const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
-      if (typeof pick === 'string')
-        return `<li class="chip tag"><span aria-hidden="true">#</span>${esc(loc.tag(pick))}${remove}</li>`
+      if (typeof pick === 'string') {
+        const mark = pick.startsWith('@') ? '✎' : '#'
+        return `<li class="chip tag"><span aria-hidden="true">${mark}</span>${esc(pickName(pick))}${remove}</li>`
+      }
       const card = data.cards[pick]
       const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
       return `<li class="chip f-${card.faction}${dual}">${esc(loc.card(pick))}${remove}</li>`
@@ -400,6 +410,8 @@ const autocomplete = createAutocomplete({
     return new Map([...current.cards].filter(([id]) => !chosen.has(id)))
   },
   tagCandidates: () => new Map([...current.tags].filter(([key]) => !state.picks.includes(key))),
+  authorCandidates: () => new Map([...current.authors].filter(([key]) => !state.picks.includes(`@${key}`))),
+  authorName: (key) => AUTHORS.get(key) ?? key,
   onPick: addPick,
   onPickTag: addPick,
   onBackspace: () => {

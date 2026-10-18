@@ -3,8 +3,15 @@ import type { Locale } from '../i18n.ts'
 import type { Dataset } from '../types.ts'
 import { esc } from './dom.ts'
 
-/** Option element ID: tag keys are slugs or `c{id}`, so they can't collide with card IDs. */
-const optionId = (item: number | string) => `sug-${typeof item === 'number' ? item : `t-${item}`}`
+/** Option element ID: tag keys are slugs or `c{id}`, so they can't collide with card IDs; author keys are encoded. */
+const optionId = (item: number | string) =>
+  `sug-${typeof item === 'number' ? item : item.startsWith('@') ? `a-${encodeURIComponent(item.slice(1))}` : `t-${item}`}`
+
+/** For matching typed text to an author: spacing and punctuation ignored, so "metallic d" finds MetallicDanny. */
+const loose = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')
+
+/** Author suggestions at most: names are many and short, so a few letters match dozens and would crowd out cards. */
+const MAX_AUTHORS = 3
 
 /** Options for {@link createAutocomplete}. */
 export interface AutocompleteOptions {
@@ -17,7 +24,12 @@ export interface AutocompleteOptions {
   candidates: () => Map<number, number>
   /** Current tag candidates as `tag key → deck count`, read like {@link candidates}. */
   tagCandidates: () => Map<string, number>
+  /** Current author candidates as `author key → deck count`, read like {@link candidates}. */
+  authorCandidates: () => Map<string, number>
+  /** An author's display name by key. */
+  authorName: (key: string) => string
   onPick: (id: number) => void
+  /** A tag key, or `@` + an author key. */
   onPickTag: (key: string) => void
   /** Backspace in an empty input. */
   onBackspace: () => void
@@ -34,7 +46,8 @@ function matchRank(name: string, q: string, loose = false): number {
  * Wires an accessible combobox for adding cards and tags. Both match by their name in the current language or in
  * English (many players know English names). Local prefix matches rank first, then local substring, then
  * English; ties go to tags, then to whatever is in more decks. A tag also matches a query that starts with its
- * name, so "Beasts" or "Orders" finds Beast or Order.
+ * name, so "Beasts" or "Orders" finds Beast or Order. Authors match from the start of their name, case and spacing
+ * ignored, and come after cards.
  *
  * @param options - Elements, data and callbacks
  * @returns `refresh()`, to re-filter after the candidates change
@@ -46,11 +59,13 @@ export function createAutocomplete({
   locale,
   candidates,
   tagCandidates,
+  authorCandidates,
+  authorName,
   onPick,
   onPickTag,
   onBackspace,
 }: AutocompleteOptions) {
-  // A number is a card ID, a string a tag key.
+  // A number is a card ID, `@…` an author, any other string a tag key.
   let items: (number | string)[] = []
   let active = 0
 
@@ -64,7 +79,9 @@ export function createAutocomplete({
     const q = input.value.trim().toLowerCase()
     if (!q) return close()
     const loc = locale()
-    const nameOf = (item: number | string) => (typeof item === 'number' ? loc.card(item) : loc.tag(item))
+    const isAuthor = (item: number | string): item is string => typeof item === 'string' && item.startsWith('@')
+    const nameOf = (item: number | string) =>
+      typeof item === 'number' ? loc.card(item) : isAuthor(item) ? authorName(item.slice(1)) : loc.tag(item)
     const englishOf = (item: number | string) => (typeof item === 'number' ? data.cards[item].name : data.tags[item])
     const scored: [item: number | string, rank: number, count: number][] = []
     const score = (item: number | string, count: number) => {
@@ -76,12 +93,30 @@ export function createAutocomplete({
     }
     for (const [key, count] of tagCandidates()) score(key, count)
     for (const [id, count] of candidates()) score(id, count)
-    const isCard = (item: number | string) => Number(typeof item === 'number')
+    const aq = loose(q)
+    const authors: typeof scored = aq
+      ? [...authorCandidates()]
+          .filter(([key]) => loose(key).startsWith(aq))
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, MAX_AUTHORS)
+          .map(([key, count]) => [`@${key}`, 0, count])
+      : []
+    const kind = (item: number | string) => (typeof item === 'number' ? 1 : isAuthor(item) ? 2 : 0)
     scored.sort(
       (a, b) =>
-        a[1] - b[1] || isCard(a[0]) - isCard(b[0]) || b[2] - a[2] || nameOf(a[0]).localeCompare(nameOf(b[0]), loc.lang),
+        a[1] - b[1] || kind(a[0]) - kind(b[0]) || b[2] - a[2] || nameOf(a[0]).localeCompare(nameOf(b[0]), loc.lang),
     )
-    items = scored.slice(0, CONFIG.maxSuggestions).map(([item]) => item)
+    // Authors after the cards that match as well, but kept in the list: a name finds nothing else.
+    const room = CONFIG.maxSuggestions - authors.length
+    const firstWeak = scored.findIndex(([, rank]) => rank > 0)
+    const strong = firstWeak < 0 ? scored.length : firstWeak
+    const shown = [
+      ...scored.slice(0, Math.min(strong, room)),
+      ...authors,
+      ...scored.slice(strong).slice(0, Math.max(room - strong, 0)),
+    ]
+    scored.push(...authors)
+    items = shown.map(([item]) => item)
     active = Math.min(active, Math.max(items.length - 1, 0))
     const counts = new Map(scored.map(([item, , c]) => [item, c]))
     const viaEnglish = new Set(scored.filter(([, rank]) => rank >= 2).map(([item]) => item))
@@ -92,6 +127,11 @@ export function createAutocomplete({
     list.innerHTML = items.length
       ? items
           .map((item, i) => {
+            if (isAuthor(item)) {
+              return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="author" aria-selected="${i === active}">
+              <span class="cost" aria-hidden="true">✎</span><span class="sug-name">${esc(nameOf(item))} <span class="sug-kind">${esc(loc.t('cards.author'))}</span></span>
+              ${count(item)}</div>`
+            }
             if (typeof item === 'string') {
               return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="tag" aria-selected="${i === active}">
               <span class="cost" aria-hidden="true">#</span><span class="sug-name">${esc(loc.tag(item))}${alt(item)} <span class="sug-kind">${esc(loc.t('filter.tags'))}</span></span>

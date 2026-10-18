@@ -95,6 +95,16 @@ Then review before committing:
 
 Commit on `dev`, merge to `main`, then [release](#publishing-a-release).
 
+## Adding a deck list
+
+Only with the author's permission (the **Suggest a feature or deck source** issue form asks). A new list needs:
+
+- an entry in `SOURCES`, `SOURCE_NAMES` and `SOURCE_AUTHORS` (`src/types.ts`). `SOURCE_AUTHORS` is the author's
+  **playgwent.com name**, exactly as on their community guides, so searching for the author finds their list and
+  their guides together;
+- the sheet in `SHEETS` (`scripts/lib/entries.ts`), with a parser in `scripts/lib/sources.ts`;
+- a colour (`.s-<source>` in `src/styles.css`) and a line under **Where the decks come from** in `README.md`.
+
 ## Publishing a release
 
 Automatic updates publish their own releases. To release code changes, after they're on `main`:
