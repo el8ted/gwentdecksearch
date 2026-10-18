@@ -4,10 +4,34 @@ import type { Card, Dataset, Deck, Faction, Source } from './types.ts'
 export const BASE_PROVISIONS = 150
 
 /** Provisions used against the limit: spare (under), exact, or over. */
-export type Budget = 'spare' | 'exact' | 'over'
+export type BudgetSide = 'spare' | 'exact' | 'over'
 
-/** Every {@link Budget}, in display order. */
-export const BUDGETS: readonly Budget[] = ['spare', 'exact', 'over']
+/** Provisions against the limit by step: 1, 2, or 3 or more spare or over. */
+export type Budget = 'spare3' | 'spare2' | 'spare1' | 'exact' | 'over1' | 'over2' | 'over3'
+
+/** Every {@link Budget}, in display order: most spare first, so Exact sits in the middle. */
+export const BUDGETS: readonly Budget[] = ['spare3', 'spare2', 'spare1', 'exact', 'over1', 'over2', 'over3']
+
+/**
+ * The step a provision delta falls in.
+ *
+ * @param delta - `limit − used`, from {@link provisionStatus}
+ * @returns Its budget, with 3 or more spare or over sharing the last step
+ */
+export function budgetOf(delta: number): Budget {
+  const step = Math.min(Math.abs(delta), 3)
+  return delta > 0 ? (`spare${step}` as Budget) : delta < 0 ? (`over${step}` as Budget) : 'exact'
+}
+
+/**
+ * Which side of the limit a budget is on.
+ *
+ * @param budget - A budget step
+ * @returns Spare, exact or over
+ */
+export function budgetSide(budget: Budget): BudgetSide {
+  return budget.replace(/\d$/, '') as BudgetSide
+}
 
 /** Everything the user has selected. */
 export interface FilterState {
@@ -30,7 +54,7 @@ export interface IndexedDeck {
   leader: number
   stratagem: number
   faction: Faction
-  /** Provision status under the current limit. */
+  /** Provision step under the current limit. */
   budget: Budget
   ids: Set<number>
 }
@@ -68,8 +92,7 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     if (leader === undefined || stratagem === undefined) throw new Error(`Deck ${deck.id} lacks a leader/stratagem`)
     // Faction comes from the leader: stratagems and many cards are neutral.
     const faction = data.cards[leader].faction
-    const { delta } = provisionStatus({ deck, leader }, data.cards)
-    const budget: Budget = delta > 0 ? 'spare' : delta < 0 ? 'over' : 'exact'
+    const budget = budgetOf(provisionStatus({ deck, leader }, data.cards).delta)
     return { deck, leader, stratagem, faction, budget, ids: new Set(deck.cards.map(([id]) => id)) }
   })
 }

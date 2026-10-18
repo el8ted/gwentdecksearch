@@ -71,7 +71,7 @@ test.describe('shortcuts', () => {
 
   test('Shift+Backspace clears all, and Back restores it', async ({ page, open }) => {
     // Arrange
-    await open('#f=SK&b=over')
+    await open('#f=SK&b=over1')
     await page.locator('[data-faction="SK"]').focus()
 
     // Act
@@ -81,7 +81,7 @@ test.describe('shortcuts', () => {
     await expect(page).not.toHaveURL(/#/)
     await expect(page.locator('#card-input')).toBeFocused()
     await page.goBack()
-    await expect(page).toHaveURL(/#f=SK&b=over$/)
+    await expect(page).toHaveURL(/#f=SK&b=over1$/)
   })
 
   test('keys typed in the card box stay in the card box', async ({ page, open }) => {

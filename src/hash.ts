@@ -57,7 +57,15 @@ export function decodeState(
   return {
     match: params.get('k') === 'any' ? 'any' : 'all',
     factions,
-    budgets: (params.get('b') ?? '').split(',').filter((b): b is Budget => BUDGETS.includes(b as Budget)),
+    budgets: [
+      ...new Set(
+        (params.get('b') ?? '')
+          .split(',')
+          // Links from before the steps say just `spare` or `over`: every step on that side.
+          .flatMap((b) => (b === 'spare' || b === 'over' ? [`${b}1`, `${b}2`, `${b}3`] : [b]))
+          .filter((b): b is Budget => BUDGETS.includes(b as Budget)),
+      ),
+    ],
     sources: (params.get('src') ?? '').split(',').filter((s): s is Source => SOURCES.includes(s as Source)),
     leader:
       leader !== undefined && factions.length && !factions.includes(cardOf(leader)?.faction as Faction)

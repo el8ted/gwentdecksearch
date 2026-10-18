@@ -1,4 +1,4 @@
-import { type IndexedDeck, provisionStatus } from '../filter.ts'
+import { budgetSide, type IndexedDeck, provisionStatus } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
@@ -79,7 +79,7 @@ export function deckRow(
   loc: Locale,
 ): string {
   const { deck } = entry
-  const state = entry.budget === 'exact' ? '' : entry.budget
+  const state = entry.budget === 'exact' ? '' : budgetSide(entry.budget)
   const name = deckName(deck, loc)
   return `<li class="deck f-${entry.faction} ${state}">
   <div class="deck-head">

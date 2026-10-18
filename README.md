@@ -129,7 +129,8 @@ today's limit: **150 + the leader's bonus**.
 | (none) | Exactly on the limit. |
 | **+N over** | The deck no longer fits: swap in something cheaper before playing it. |
 
-The **Provisions** filter shows only one kind.
+The **Provisions** filter narrows by how far off a deck is: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick
+several to combine them.
 
 ![The Spare filter with Northern Realms: decks under the limit, each with an "N spare" badge](docs/screenshots/provisions.png)
 

@@ -193,6 +193,16 @@ h1 span {
 .pill.empty {
   opacity: 0.35;
 }
+/* Provision steps: a side's word and its pills stay on one line, so phones wrap between groups. */
+.pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.pill-group-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
 /* Stratagem icon pills: the art, then a fixed-width count so every tile is the same size. */
 .pill.art {
   padding: 0.2rem 0.55rem 0.2rem 0.2rem;

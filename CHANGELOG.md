@@ -8,6 +8,9 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The Provisions filter picks how far a deck is off the limit: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Old links
+  to Spare or Over still work ([#4](https://github.com/el8ted/gwentdecksearch/issues/4)).
+
 ## 2026-10-17
 
 - MetallicDanny's deck list is included, with his permission: about 400 more decks, with names translated from Russian.

@@ -53,7 +53,7 @@ test('a budget filter matches the provision status', async ({ page, open }) => {
 
 test('Clear all empties the hash and lists every deck again', async ({ page, open }) => {
   // Arrange
-  await open('#f=NG&b=spare')
+  await open('#f=NG&b=spare1')
 
   // Act
   await page.locator('#clear').click()
@@ -66,7 +66,7 @@ test('Clear all empties the hash and lists every deck again', async ({ page, ope
 
 test('Back undoes Clear all', async ({ page, open }) => {
   // Arrange
-  await open('#f=NG&b=spare')
+  await open('#f=NG&b=spare1')
   await page.locator('#clear').click()
   await expect(page).not.toHaveURL(/#/)
 
@@ -74,10 +74,10 @@ test('Back undoes Clear all', async ({ page, open }) => {
   await page.goBack()
 
   // Assert
-  await expect(page).toHaveURL(/#f=NG&b=spare$/)
+  await expect(page).toHaveURL(/#f=NG&b=spare1$/)
   await expect(page.locator('[data-faction="NG"]')).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('#result-head')).toHaveText(
-    new RegExp(`^${expectedCount({ factions: ['NG'], budgets: ['spare'] })} `),
+    new RegExp(`^${expectedCount({ factions: ['NG'], budgets: ['spare1'] })} `),
   )
 })
 

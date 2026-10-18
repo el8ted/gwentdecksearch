@@ -41,13 +41,21 @@ describe('encodeState', () => {
 })
 
 describe('decodeState', () => {
+  it('reads a pre-steps spare or over as every step on that side', () => {
+    // Act
+    const decoded = decodeState('#b=over,exact,over1', cardOf)
+
+    // Assert
+    expect(decoded.budgets).toEqual(['over1', 'over2', 'over3', 'exact'])
+  })
+
   it('round-trips an encoded state', () => {
     // Arrange
     const s: FilterState = {
       match: 'any',
       factions: ['MO'],
       sources: ['community', 'metallic-danny'],
-      budgets: ['spare', 'over'],
+      budgets: ['spare2', 'over3'],
       leader: 201743,
       stratagem: undefined,
       cards: [203123],
@@ -62,7 +70,7 @@ describe('decodeState', () => {
 
   it('drops unknown factions, unknown IDs, junk and duplicates', () => {
     // Arrange
-    const hash = '#m=x&f=MO,XX&src=bogus&b=spare,huge&l=999&s=abc&c=203123,1.5,203123,7'
+    const hash = '#m=x&f=MO,XX&src=bogus&b=spare1,huge&l=999&s=abc&c=203123,1.5,203123,7'
 
     // Act
     const decoded = decodeState(hash, cardOf)
@@ -72,7 +80,7 @@ describe('decodeState', () => {
       match: 'all',
       factions: ['MO'],
       sources: [],
-      budgets: ['spare'],
+      budgets: ['spare1'],
       leader: undefined,
       stratagem: undefined,
       cards: [203123],

@@ -5,7 +5,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { BUDGETS } from '../filter.ts'
+import { BUDGETS, budgetSide } from '../filter.ts'
 import { LANGUAGES } from '../i18n.ts'
 import { FACTIONS } from '../types.ts'
 
@@ -67,10 +67,10 @@ describe('code', () => {
     expect(missing).toEqual([])
   })
 
-  // Built from templates (t(`faction.${f}`), t(`budget.${b}`)), so the scan above can't see them.
+  // Built from templates (t(`faction.${f}`), t(`budget.${side}`)), so the scan above can't see them.
   it('has a phrase for every faction and budget', () => {
     // Act
-    const keys = [...[...FACTIONS, 'NE'].map((f) => `faction.${f}`), ...BUDGETS.map((b) => `budget.${b}`)]
+    const keys = [...[...FACTIONS, 'NE'].map((f) => `faction.${f}`), ...BUDGETS.map((b) => `budget.${budgetSide(b)}`)]
     const missing = keys.filter((k) => !(k in en))
 
     // Assert

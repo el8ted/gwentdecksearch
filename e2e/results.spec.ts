@@ -31,10 +31,10 @@ test('a filter change starts the list over at 100', async ({ page, open }) => {
   await expect(page.locator(rows)).toHaveCount(2 * PAGE)
 
   // Act
-  await page.locator('[data-budget="over"]').click()
+  await page.locator('[data-budget="over1"]').click()
 
   // Assert
-  const n = expectedCount({ budgets: ['over'] })
+  const n = expectedCount({ budgets: ['over1'] })
   await expect(page.locator(rows)).toHaveCount(Math.min(n, PAGE))
   await expect(page.locator('[data-more]')).toHaveCount(n > PAGE ? 1 : 0)
 })

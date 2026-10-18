@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  budgetOf,
+  budgetSide,
   cardFrequency,
   type FilterState,
   facets,
@@ -327,6 +329,17 @@ describe('source filtering', () => {
   })
 })
 
+describe('budgetOf', () => {
+  it('steps 1, 2, then 3 or more on each side of exact', () => {
+    // Act
+    const steps = [-9, -3, -2, -1, 0, 1, 2, 3, 40].map(budgetOf)
+
+    // Assert
+    expect(steps).toEqual(['over3', 'over3', 'over2', 'over1', 'exact', 'spare1', 'spare2', 'spare3', 'spare3'])
+    expect(steps.map(budgetSide)).toEqual(['over', 'over', 'over', 'over', 'exact', 'spare', 'spare', 'spare', 'spare'])
+  })
+})
+
 describe('provision status filtering', () => {
   it('classifies each deck against 150 + leader bonus', () => {
     // Arrange
@@ -337,16 +350,16 @@ describe('provision status filtering', () => {
 
     // Assert
     expect(budgets).toEqual([
-      ['a1', 'over'],
+      ['a1', 'over1'],
       ['b1', 'exact'],
-      ['b2', 'spare'],
+      ['b2', 'spare3'],
       ['c1', 'exact'],
     ])
   })
 
   it('keeps decks with any selected status and counts statuses ignoring that filter', () => {
     // Arrange
-    const s = state({ budgets: ['spare', 'over'] })
+    const s = state({ budgets: ['spare3', 'over1'] })
 
     // Act
     const [result, f] = [matchDecks(DECKS, s), facets(DECKS, s)]
@@ -355,9 +368,9 @@ describe('provision status filtering', () => {
     expect(ids(result)).toEqual(['a1', 'b2'])
     expect(f.budgets).toEqual(
       new Map([
-        ['over', 1],
+        ['over1', 1],
         ['exact', 2],
-        ['spare', 1],
+        ['spare3', 1],
       ]),
     )
   })

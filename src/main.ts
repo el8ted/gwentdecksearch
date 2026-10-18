@@ -4,6 +4,7 @@ import { CONFIG } from './config.ts'
 import {
   BUDGETS,
   type Budget,
+  budgetSide,
   cardFrequency,
   type FilterState,
   facets,
@@ -238,12 +239,22 @@ function renderFilters() {
     const label = esc(sourceLabel(src, loc))
     return `<button type="button" class="pill s-${src}${n ? '' : ' empty'}" data-source="${src}" aria-pressed="${on}" title="${label} (${n})">${label}<span>${n}</span></button>`
   }).join('')
-  els.budgets.innerHTML = BUDGETS.map((b) => {
-    const n = current.budgets.get(b) ?? 0
-    const on = !!state.budgets?.includes(b)
-    const label = esc(t(`budget.${b}`))
-    return `<button type="button" class="pill b-${b}${n ? '' : ' empty'}" data-budget="${b}" aria-pressed="${on}" title="${label} (${n})">${label}<span>${n}</span></button>`
-  }).join('')
+  // Spare [3+][2][1] · [Exact] · Over [1][2][3+]: each side's word labels its steps, and a group never splits
+  // across lines on phones.
+  els.budgets.innerHTML = (['spare', 'exact', 'over'] as const)
+    .map((side) => {
+      const pills = BUDGETS.filter((b) => budgetSide(b) === side).map((b) => {
+        const n = current.budgets.get(b) ?? 0
+        const on = !!state.budgets?.includes(b)
+        const step = b === 'exact' ? '' : b.endsWith('3') ? '3+' : b.slice(-1)
+        const label = esc(step ? `${t(`budget.${side}`)} ${step}` : t('budget.exact'))
+        return `<button type="button" class="pill b-${side}${n ? '' : ' empty'}" data-budget="${b}" aria-pressed="${on}" aria-label="${label} (${n})" title="${label} (${n})">${step || label}<span>${n}</span></button>`
+      })
+      const word =
+        side === 'exact' ? '' : `<span class="pill-group-label" aria-hidden="true">${esc(t(`budget.${side}`))}</span>`
+      return `<span class="pill-group">${side === 'over' ? '' : word}${pills.join('')}${side === 'over' ? word : ''}</span>`
+    })
+    .join('')
   // Leaders only make sense within one faction: the selected one, else the selected leader's (from a shared link).
   const faction =
     state.factions.length === 1
