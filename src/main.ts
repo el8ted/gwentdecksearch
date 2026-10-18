@@ -10,6 +10,7 @@ import {
   facets,
   indexDecks,
   matchDecks,
+  pickedCards,
   sharedCards,
   singleFaction,
 } from './filter.ts'
@@ -198,39 +199,31 @@ function clearAll() {
   update({ ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined }, { push: true })
 }
 
-/** Adds a card; a faction card also selects its faction when none is selected (undone by {@link removeCard}). */
-function addCard(id: number) {
-  if (state.cards.includes(id)) return
-  const faction = singleFaction(data.cards[id])
+/**
+ * Adds a card or tag after the other picks; a faction card also selects its faction when none is selected (undone by
+ * {@link removePick}).
+ */
+function addPick(pick: number | string) {
+  if (state.picks.includes(pick)) return
+  const picks = [...state.picks, pick]
+  const faction = typeof pick === 'number' ? singleFaction(data.cards[pick]) : undefined
   if (faction && state.factions.length === 0) {
     autoFaction = faction
-    update({ cards: [...state.cards, id], factions: [faction] })
-  } else update({ cards: [...state.cards, id] })
+    update({ picks, factions: [faction] })
+  } else update({ picks })
 }
 
-/** Removes a card; a faction a card selected is cleared again once no card of that faction remains. */
-function removeCard(id: number) {
-  const cards = state.cards.filter((c) => c !== id)
-  const undo = autoFaction !== undefined && !cards.some((c) => singleFaction(data.cards[c]) === autoFaction)
+/** Removes a card or tag; a faction a card selected is cleared again once no card of that faction remains. */
+function removePick(pick: number | string) {
+  const picks = state.picks.filter((p) => p !== pick)
+  const undo =
+    autoFaction !== undefined && !pickedCards(picks).some((c) => singleFaction(data.cards[c]) === autoFaction)
   if (undo) autoFaction = undefined
-  update({ cards, ...(undo && { factions: [] }) })
+  update({ picks, ...(undo && { factions: [] }) })
 }
 
-function addTag(key: string) {
-  if (!state.tags?.includes(key)) update({ tags: [...(state.tags ?? []), key] })
-}
-
-function removeTag(key: string) {
-  update({ tags: state.tags?.filter((k) => k !== key) })
-}
-
-/** Backspace in the empty card box, and the no-results link: the last chip goes (tags are listed after cards). */
-function lastChip(): { tag: string } | { card: number } | undefined {
-  const tag = state.tags?.at(-1)
-  if (tag !== undefined) return { tag }
-  const card = state.cards.at(-1)
-  return card === undefined ? undefined : { card }
-}
+/** A pick's name in the page language. */
+const pickName = (pick: number | string) => (typeof pick === 'number' ? loc.card(pick) : loc.tag(pick))
 
 /** A single-select pill for a leader or stratagem; clicking the selected one clears it. */
 function cardPill(attr: 'leader' | 'stratagem', id: number, counts: Map<number, number>, selected?: number) {
@@ -307,19 +300,15 @@ function renderFilters() {
       ? esc(t('stratagem.caution'))
       : // Named here too: on touch screens an icon has no tooltip.
         `<strong>${esc(loc.card(state.stratagem))}</strong> · ${esc(t('stratagem.swapped'))}${others ? ` ${esc(t('stratagem.others', { n: others }))}` : ''} <button type="button" class="link" data-any-stratagem="1">${esc(t('stratagem.any'))}</button>`
-  els.chips.innerHTML = state.cards
-    .map((id) => {
-      const card = data.cards[id]
-      const name = esc(loc.card(id))
+  els.chips.innerHTML = state.picks
+    .map((pick) => {
+      const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
+      if (typeof pick === 'string')
+        return `<li class="chip tag"><span aria-hidden="true">#</span>${esc(loc.tag(pick))}${remove}</li>`
+      const card = data.cards[pick]
       const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
-      return `<li class="chip f-${card.faction}${dual}">${name}<button type="button" data-remove="${id}" aria-label="${esc(t('cards.remove', { name: loc.card(id) }))}">✕</button></li>`
+      return `<li class="chip f-${card.faction}${dual}">${esc(loc.card(pick))}${remove}</li>`
     })
-    .concat(
-      (state.tags ?? []).map(
-        (key) =>
-          `<li class="chip tag"><span aria-hidden="true">#</span>${esc(loc.tag(key))}<button type="button" data-remove-tag="${esc(key)}" aria-label="${esc(t('cards.remove', { name: loc.tag(key) }))}">✕</button></li>`,
-      ),
-    )
     .join('')
 }
 
@@ -343,11 +332,11 @@ function renderBars(rows: [number, number][], total: number) {
 function renderResults() {
   const { t } = loc
   // Cards carrying a selected tag are highlighted too, so an expanded deck shows why it matched.
-  const tags = state.tags ?? []
+  const cards = pickedCards(state.picks)
   const tagged = Object.keys(data.cards)
     .map(Number)
-    .filter((id) => data.cards[id].tags?.some((k) => tags.includes(k)))
-  const selected = new Set([...state.cards, ...tagged])
+    .filter((id) => data.cards[id].tags?.some((k) => state.picks.includes(k)))
+  const selected = new Set([...cards, ...tagged])
   const matches = matchDecks(decks, state)
   els.resultHead.textContent = t('results.count', { n: matches.length })
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
@@ -365,21 +354,20 @@ function renderResults() {
   for (const b of document.querySelectorAll<HTMLButtonElement>('[data-freq]')) {
     b.setAttribute('aria-pressed', String(b.dataset.freq === freq))
   }
-  renderBars(cardFrequency(matches, state.cards, freq), matches.length)
+  renderBars(cardFrequency(matches, cards, freq), matches.length)
   allOpen = shown.length > 0 && shown.every((id) => expanded.has(id))
   els.expandAll.textContent = t(allOpen ? 'results.collapseAll' : 'results.expandAll')
   els.expandAll.disabled = shown.length === 0
   els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
   els.dimCommon.disabled = shown.length < 2
-  const last = lastChip()
-  const undo = !last
-    ? ''
-    : 'tag' in last
-      ? `data-remove-tag="${esc(last.tag)}">${esc(t('results.removeCard', { name: loc.tag(last.tag) }))}`
-      : `data-remove="${last.card}">${esc(t('results.removeCard', { name: loc.card(last.card) }))}`
+  const last = state.picks.at(-1)
   els.results.innerHTML = rows.length
     ? rows.join('')
-    : `<li class="empty-state">${esc(t('results.none'))}${undo && ` <button type="button" class="link" ${undo}</button>`}</li>`
+    : `<li class="empty-state">${esc(t('results.none'))}${
+        last === undefined
+          ? ''
+          : ` <button type="button" class="link" data-remove="${esc(String(last))}">${esc(t('results.removeCard', { name: pickName(last) }))}</button>`
+      }</li>`
 }
 
 function render() {
@@ -395,15 +383,15 @@ const autocomplete = createAutocomplete({
   data,
   locale: () => loc,
   candidates: () => {
-    const chosen = new Set(state.cards)
+    const chosen = new Set(state.picks)
     return new Map([...current.cards].filter(([id]) => !chosen.has(id)))
   },
-  tagCandidates: () => new Map([...current.tags].filter(([key]) => !state.tags?.includes(key))),
-  onPick: addCard,
-  onPickTag: addTag,
+  tagCandidates: () => new Map([...current.tags].filter(([key]) => !state.picks.includes(key))),
+  onPick: addPick,
+  onPickTag: addPick,
   onBackspace: () => {
-    const last = lastChip()
-    if (last) 'tag' in last ? removeTag(last.tag) : removeCard(last.card)
+    const last = state.picks.at(-1)
+    if (last !== undefined) removePick(last)
   },
 })
 
@@ -441,7 +429,6 @@ const FOCUS_KEYS = [
   ['budget', 'data-budget'],
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
-  ['removeTag', 'data-remove-tag'],
   ['add', 'data-add'],
   ['anyStratagem', 'data-any-stratagem'],
   ['leader', 'data-leader'],
@@ -461,20 +448,7 @@ document.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest<HTMLElement>('button')
   if (!t) return
   if (t.dataset.skip) return JUMPS[t.dataset.skip]?.()?.focus()
-  const {
-    faction,
-    source,
-    budget,
-    leader,
-    stratagem,
-    remove,
-    removeTag: untag,
-    add,
-    toggle,
-    anyStratagem,
-    match,
-    more,
-  } = t.dataset
+  const { faction, source, budget, leader, stratagem, remove, add, toggle, anyStratagem, match, more } = t.dataset
   // A card added from the panel leaves it: the card below moves into its place, so focus goes there (not the card box,
   // which would scroll a phone back up and open its keyboard).
   const barAt = add ? [...els.bars.querySelectorAll('[data-add]')].indexOf(t) : -1
@@ -505,9 +479,8 @@ document.addEventListener('click', (e) => {
     // Exclusive: clicking switches to that faction; clicking the selected one clears it.
     autoFaction = undefined
     update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
-  } else if (remove) removeCard(Number(remove))
-  else if (untag) removeTag(untag)
-  else if (add) addCard(Number(add))
+  } else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
+  else if (add) addPick(Number(add))
   else if (toggle) {
     if (!expanded.delete(toggle)) expanded.add(toggle)
     renderResults()
@@ -529,7 +502,7 @@ document.addEventListener('click', (e) => {
     const fallback =
       k === 'anyStratagem'
         ? els.stratagem.querySelector('button')
-        : k === 'remove' || k === 'removeTag' || k === 'add'
+        : k === 'remove' || k === 'add'
           ? els.input
           : undefined
     ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(t.dataset[k] ?? '')}"]`) ?? fallback)?.focus()

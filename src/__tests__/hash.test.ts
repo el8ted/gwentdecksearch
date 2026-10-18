@@ -30,7 +30,7 @@ describe('encodeState', () => {
       factions: ['MO', 'NG'],
       leader: 201743,
       stratagem: 202497,
-      cards: [203123, 202838],
+      picks: [203123, 202838],
     }
 
     // Act
@@ -59,8 +59,7 @@ describe('decodeState', () => {
       budgets: ['spare2', 'over3'],
       leader: 201743,
       stratagem: undefined,
-      cards: [203123],
-      tags: ['devotion', 'c12'],
+      picks: ['devotion', 203123, 'c12'],
     }
 
     // Act
@@ -72,7 +71,7 @@ describe('decodeState', () => {
 
   it('drops unknown factions, unknown IDs, junk and duplicates', () => {
     // Arrange
-    const hash = '#m=x&f=MO,XX&src=bogus&b=spare1,huge&l=999&s=abc&c=203123,1.5,203123,7&t=c12,bogus,c12,'
+    const hash = '#m=x&f=MO,XX&src=bogus&b=spare1,huge&l=999&s=abc&c=203123,1.5,c12,203123,7,bogus,c12,'
 
     // Act
     const decoded = decodeState(hash, cardOf, isTag)
@@ -85,8 +84,7 @@ describe('decodeState', () => {
       budgets: ['spare1'],
       leader: undefined,
       stratagem: undefined,
-      cards: [203123],
-      tags: ['c12'],
+      picks: [203123, 'c12'],
     })
   })
 

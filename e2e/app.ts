@@ -14,7 +14,7 @@ const decks = indexDecks(data)
 
 /** How many decks the page should list for a filter state. */
 export function expectedCount(state: Partial<FilterState>): number {
-  return matchDecks(decks, { factions: [], cards: [], ...state }).length
+  return matchDecks(decks, { factions: [], picks: [], ...state }).length
 }
 
 /** A language pack as the page loads it (data/i18n/{lang}.js). */

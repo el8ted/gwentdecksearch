@@ -91,7 +91,7 @@ const DATA: Dataset = {
   ],
 }
 const DECKS = indexDecks(DATA)
-const state = (s: Partial<FilterState> = {}): FilterState => ({ factions: [], cards: [], ...s })
+const state = (s: Partial<FilterState> = {}): FilterState => ({ factions: [], picks: [], ...s })
 const ids = (decks: { deck: Deck }[]) => decks.map((e) => e.deck.id)
 
 describe('indexDecks', () => {
@@ -150,7 +150,7 @@ describe('matchDecks', () => {
 
   it('requires faction, leader, stratagem and every card to match', () => {
     // Arrange
-    const s = state({ factions: ['MO'], leader: 1, stratagem: 11, cards: [102] })
+    const s = state({ factions: ['MO'], leader: 1, stratagem: 11, picks: [102] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -161,7 +161,7 @@ describe('matchDecks', () => {
 
   it('keeps same-name alternates that both match', () => {
     // Arrange
-    const s = state({ cards: [101] })
+    const s = state({ picks: [101] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -174,7 +174,7 @@ describe('matchDecks', () => {
 describe('matchDecks card matching', () => {
   it('requires every selected card by default, sorted by name then id', () => {
     // Arrange
-    const s = state({ cards: [101, 102] })
+    const s = state({ picks: [101, 102] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -185,7 +185,7 @@ describe('matchDecks card matching', () => {
 
   it('with match any, keeps decks with at least one card, most hits first', () => {
     // Arrange
-    const s = state({ match: 'any', cards: [101, 102, 103] })
+    const s = state({ match: 'any', picks: [101, 102, 103] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -196,7 +196,7 @@ describe('matchDecks card matching', () => {
 
   it('still applies the faction filter with match any', () => {
     // Arrange
-    const s = state({ match: 'any', factions: ['NG'], cards: [101, 102] })
+    const s = state({ match: 'any', factions: ['NG'], picks: [101, 102] })
 
     // Act
     const result = matchDecks(DECKS, s)
@@ -210,8 +210,8 @@ describe('matchDecks tag matching', () => {
   it("counts a tag on any of the deck's cards, leader included", () => {
     // Act
     const [deploy, spawn] = [
-      matchDecks(DECKS, state({ tags: ['deploy'] })),
-      matchDecks(DECKS, state({ tags: ['spawn'] })),
+      matchDecks(DECKS, state({ picks: ['deploy'] })),
+      matchDecks(DECKS, state({ picks: ['spawn'] })),
     ]
 
     // Assert
@@ -221,7 +221,7 @@ describe('matchDecks tag matching', () => {
 
   it('treats tags like cards under all and any', () => {
     // Arrange
-    const wanted = { cards: [103], tags: ['c18'] }
+    const wanted = { picks: [103, 'c18'] }
 
     // Act
     const [all, any] = [matchDecks(DECKS, state(wanted)), matchDecks(DECKS, state({ ...wanted, match: 'any' }))]
@@ -233,7 +233,7 @@ describe('matchDecks tag matching', () => {
 
   it('ranks decks with more selected tags first under any', () => {
     // Act
-    const result = matchDecks(DECKS, state({ tags: ['deploy', 'c18'], match: 'any' }))
+    const result = matchDecks(DECKS, state({ picks: ['deploy', 'c18'], match: 'any' }))
 
     // Assert
     expect(ids(result)).toEqual(['a1', 'b1', 'b2', 'c1'])
@@ -243,7 +243,7 @@ describe('matchDecks tag matching', () => {
 describe('facets', () => {
   it('offers only the tags the matching decks have', () => {
     // Act
-    const f = facets(DECKS, state({ cards: [103] }))
+    const f = facets(DECKS, state({ picks: [103] }))
 
     // Assert
     expect(f.tags).toEqual(
@@ -280,8 +280,8 @@ describe('facets', () => {
 
   it('applies the any/all card match', () => {
     // Arrange
-    const all = state({ cards: [100, 103] })
-    const any = state({ match: 'any', cards: [100, 103] })
+    const all = state({ picks: [100, 103] })
+    const any = state({ match: 'any', picks: [100, 103] })
 
     // Act
     const [fAll, fAny] = [facets(DECKS, all), facets(DECKS, any)]

@@ -6,8 +6,7 @@ export const EMPTY_STATE: FilterState = {
   factions: [],
   sources: [],
   budgets: [],
-  cards: [],
-  tags: [],
+  picks: [],
   match: 'all',
 }
 
@@ -25,8 +24,7 @@ export function encodeState(state: FilterState): string {
   if (state.budgets?.length) params.set('b', state.budgets.join(','))
   if (state.leader !== undefined) params.set('l', String(state.leader))
   if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
-  if (state.cards.length) params.set('c', state.cards.join(','))
-  if (state.tags?.length) params.set('t', state.tags.join(','))
+  if (state.picks.length) params.set('c', state.picks.join(','))
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -76,7 +74,15 @@ export function decodeState(
         ? undefined
         : leader,
     stratagem: ids('s', 'stratagem')[0],
-    cards: [...new Set(ids('c'))],
-    tags: [...new Set((params.get('t') ?? '').split(',').filter(isTag))],
+    // Card IDs and tag keys share `c`, in pick order: a number is a card, anything else a tag.
+    picks: [
+      ...new Set(
+        (params.get('c') ?? '')
+          .split(',')
+          .flatMap((p): (number | string)[] =>
+            /^\d+$/.test(p) ? (typeOf(Number(p)) ? [Number(p)] : []) : isTag(p) ? [p] : [],
+          ),
+      ),
+    ],
   }
 }

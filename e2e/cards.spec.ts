@@ -16,7 +16,7 @@ test('autocomplete adds a card by keyboard, and Backspace removes it', async ({ 
   await expect(page.locator('#chips li')).toHaveCount(1)
   await expect(page.locator('#chips li')).toContainText(data.cards[id].name)
   await expect(page).toHaveURL(new RegExp(`#c=${id}$`))
-  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ cards: [id] })} `))
+  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: [id] })} `))
   await input.press('Backspace')
   await expect(page.locator('#chips li')).toHaveCount(0)
 })
@@ -26,14 +26,14 @@ test('match any lists at least as many decks as match all', async ({ page, open 
   const cards = commonNeutralCards(2)
   await open(`#c=${cards.join(',')}`)
   const head = page.locator('#result-head')
-  await expect(head).toHaveText(new RegExp(`^${expectedCount({ cards })} `))
+  await expect(head).toHaveText(new RegExp(`^${expectedCount({ picks: cards })} `))
 
   // Act
   await page.locator('[data-match="any"]').click()
 
   // Assert
-  const any = expectedCount({ cards, match: 'any' })
-  expect(any).toBeGreaterThanOrEqual(expectedCount({ cards }))
+  const any = expectedCount({ picks: cards, match: 'any' })
+  expect(any).toBeGreaterThanOrEqual(expectedCount({ picks: cards }))
   await expect(head).toHaveText(new RegExp(`^${any} `))
 })
 

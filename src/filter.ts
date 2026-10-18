@@ -43,10 +43,12 @@ export interface FilterState {
   budgets?: Budget[]
   leader?: number
   stratagem?: number
-  cards: number[]
-  /** Deck-builder tags: a deck has one if any of its cards (leader and stratagem included) does. */
-  tags?: TagKey[]
-  /** Deck must contain every selected card and tag (`all`, default) or at least one (`any`). */
+  /**
+   * Cards (IDs) and deck-builder tags (keys) from the Cards box, in the order picked, so the last one is the last
+   * tried. A deck has a tag if any of its cards (leader and stratagem included) does.
+   */
+  picks: (number | TagKey)[]
+  /** Deck must contain every pick (`all`, default) or at least one (`any`). */
   match?: 'all' | 'any'
 }
 
@@ -127,17 +129,26 @@ export function singleFaction(card: Card): Faction | undefined {
   return card.faction === 'NE' || card.secondaryFaction ? undefined : card.faction
 }
 
-/** How many of the selected cards and tags a deck has. */
-function hits(e: IndexedDeck, s: FilterState): number {
-  return s.cards.filter((id) => e.ids.has(id)).length + (s.tags ?? []).filter((k) => e.tags.has(k)).length
+/**
+ * The cards among the picks.
+ *
+ * @param picks - {@link FilterState.picks}
+ * @returns Card IDs, in pick order
+ */
+export function pickedCards(picks: FilterState['picks']): number[] {
+  return picks.filter((p) => typeof p === 'number')
 }
 
-/** Whether a deck has the selected cards and tags: all of them, or at least one with `match: 'any'`. */
+/** How many of the picks a deck has. */
+function hits(e: IndexedDeck, s: FilterState): number {
+  return s.picks.filter((p) => (typeof p === 'number' ? e.ids.has(p) : e.tags.has(p))).length
+}
+
+/** Whether a deck has the picks: all of them, or at least one with `match: 'any'`. */
 function hasCards(e: IndexedDeck, s: FilterState): boolean {
-  const wanted = s.cards.length + (s.tags?.length ?? 0)
-  if (wanted === 0) return true
+  if (s.picks.length === 0) return true
   const n = hits(e, s)
-  return s.match === 'any' ? n > 0 : n === wanted
+  return s.match === 'any' ? n > 0 : n === s.picks.length
 }
 
 function matchesBase(
@@ -155,7 +166,7 @@ function matchesBase(
 
 /**
  * Decks matching every filter, sorted by name (then ID, so same-name alternates stay together). With
- * `match: 'any'`, decks with more of the selected cards and tags come first.
+ * `match: 'any'`, decks with more of the picks come first.
  *
  * @param decks - Indexed decks
  * @param state - Current filters
