@@ -4,6 +4,7 @@ import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
 import { TERM_KEYS } from './terms.ts'
 import { addTerm, type Glossary, translateName } from './translate.ts'
+import { CHANNELS, type StoredVideo } from './youtube.ts'
 
 /** Tactical Advantage: playgwent leaves the default stratagem out of a deck's card list. */
 export const DEFAULT_STRATAGEM = 202140
@@ -22,6 +23,8 @@ export interface BuildInput {
   tags: Record<string, Record<string, string>>
   /** Per language: localized category (list) → English. */
   categories: Record<string, Record<string, string>>
+  /** YouTube uploads by channel ID, then video ID. */
+  videos: Record<string, Record<string, StoredVideo>>
   /** Per language: original deck name → English (hand-edited or machine-translated). */
   translations: Record<string, Record<string, string>>
   scrapedAt: string
@@ -95,6 +98,23 @@ export function buildDataset(input: BuildInput): BuildOutput {
     urlSources.set(e.url, (urlSources.get(e.url) ?? new Set()).add(e.source))
     if (e.video && !urlVideo.has(e.url)) urlVideo.set(e.url, e.video)
   }
+  // Channel videos by the deck code their description links (a guide link through its stored deck), newest first.
+  const codeOf = (url: string) => {
+    const s = store[url]
+    return s && !('missing' in s) ? s.hash : url.match(/\/decks\/([^/]+)$/)?.[1]
+  }
+  const channelVideo = new Map<string, Video>()
+  for (const channel of CHANNELS) {
+    const uploads = Object.entries(input.videos[channel.id] ?? {}).sort((a, b) =>
+      b[1].published.localeCompare(a[1].published),
+    )
+    for (const [id, { decks }] of uploads) {
+      for (const code of decks.map(codeOf)) {
+        if (code && !channelVideo.has(code))
+          channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
+      }
+    }
+  }
   const seen = new Set<string>()
   const glossaries = new Map<string, Glossary>()
   const tagNames = input.tags.en ?? {}
@@ -119,10 +139,11 @@ export function buildDataset(input: BuildInput): BuildOutput {
     if (!copies.some(([id]) => catalog[id].type === 'stratagem')) copies.splice(1, 0, [DEFAULT_STRATAGEM, 1])
     for (const [id] of copies) used[id] ??= appCard(catalog[id], named)
 
-    // A guide's own video (narrated, presumably, in the guide's language) comes before a list's.
+    // A guide's own video (narrated, presumably, in the guide's language) comes first, then a list's, then a channel
+    // video whose description links the same deck code.
     const video: Video | undefined = stored.guide?.video
       ? { url: stored.guide.video, lang: entry.lang }
-      : urlVideo.get(entry.url)
+      : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
     const known = byHash.get(stored.hash)
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))

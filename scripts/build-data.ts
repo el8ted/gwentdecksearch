@@ -17,6 +17,7 @@ const input: BuildInput = {
   cardNames: await readJson(STORE_PATHS.cardNames, {}),
   terms: await readJson(STORE_PATHS.terms, {}),
   tags: await readJson(STORE_PATHS.tags, {}),
+  videos: await readJson(STORE_PATHS.videos, {}),
   categories: await readJson(STORE_PATHS.categories, {}),
   translations: await readJson(STORE_PATHS.translations, {}),
   // The newer refresh: card data is current as of the monthly vote, so one date is enough.

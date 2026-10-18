@@ -24,10 +24,11 @@ export type HostDelays = Record<string, number>
  * Callers must `await` each call before the next: the throttle assumes one request in flight.
  *
  * @param delays - Minimum gap per host; unknown hosts are refused so nothing is fetched unthrottled
+ * @param headers - Extra request headers, e.g. an API key (kept out of URLs, which errors and logs print)
  * @returns `get(url)` resolving to the body as text, and `get.bytes(url)` as bytes; both throw {@link NotFoundError}
  *   for a 404
  */
-export function createPoliteFetch(delays: HostDelays) {
+export function createPoliteFetch(delays: HostDelays, headers: Record<string, string> = {}) {
   const lastRequest = new Map<string, number>()
 
   async function throttle(host: string) {
@@ -43,7 +44,10 @@ export function createPoliteFetch(delays: HostDelays) {
     for (let attempt = 0; ; attempt++) {
       await throttle(host)
       // The timeout also covers the body, so it's read inside the catch: a stalled download is retried too.
-      const got = await fetch(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(TIMEOUT_MS) })
+      const got = await fetch(url, {
+        headers: { ...headers, 'user-agent': USER_AGENT },
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      })
         .then(async (r) => ({ r, body: r.ok ? Buffer.from(await r.arrayBuffer()) : Buffer.alloc(0) }))
         .catch((e: Error) => e)
       const res = got instanceof Error ? got : got.r

@@ -42,6 +42,19 @@ describe('createPoliteFetch', () => {
     expect(fetchMock.mock.calls[0][1].headers['user-agent']).toContain('gwent-deck-search')
   })
 
+  it('sends extra headers, keeping an API key out of the URL', async () => {
+    // Arrange
+    fetchMock.mockResolvedValueOnce(respond(200, 'x'))
+    const get = createPoliteFetch(delays, { 'x-goog-api-key': 'secret' })
+
+    // Act
+    await get(URL_A)
+
+    // Assert
+    expect(fetchMock.mock.calls[0][0]).toBe(URL_A)
+    expect(fetchMock.mock.calls[0][1].headers).toMatchObject({ 'x-goog-api-key': 'secret' })
+  })
+
   it('sets a timeout on each request', async () => {
     // Arrange
     fetchMock.mockResolvedValueOnce(respond(200, 'x'))

@@ -44,6 +44,7 @@ const input = (i: Partial<BuildInput> = {}): BuildInput => ({
   cardNames: {},
   terms: {},
   tags: {},
+  videos: {},
   categories: {},
   translations: {},
   scrapedAt: '2026-10-14T00:00:00.000Z',
@@ -134,6 +135,22 @@ describe('buildDataset', () => {
 
     // Assert
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/AAAAAAAAAAA', lang: 'pl' })
+  })
+
+  it("takes a channel's newest video whose description links the deck, by link or by deck code", () => {
+    // Arrange: DECK's code is h1; the newer upload links it through another address
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: {
+        older: { published: '2026-01-01T00:00:00Z', decks: [URL_A] },
+        newer: { published: '2026-05-01T00:00:00Z', decks: ['https://www.playgwent.com/decks/h1'] },
+      },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ videos }))
+
+    // Assert
+    expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/newer', lang: 'en' })
   })
 
   it("records a community guide's language", () => {

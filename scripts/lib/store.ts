@@ -30,6 +30,8 @@ export const STORE_PATHS = {
   entries: 'data/source/entries.json',
   decks: 'data/source/deck-store.json',
   translations: 'data/source/translations.json',
+  /** YouTube uploads by channel ID, then video ID (see `refreshChannel`). */
+  videos: 'data/source/videos.json',
   /** Guide text by URL: local only (gitignored), for tuning guide measures without refetching. */
   guideText: 'data/cache/guide-text.json',
   /** When each refresh last ran: `{ cards, decks }` as ISO times; the page's data date is the newer. */
