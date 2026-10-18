@@ -19,6 +19,7 @@ the release tag and starts a new Unreleased section. -->
 - Community guides show the language they're written in (EN, RU, PL…) next to the deck ID.
 - A new **Guide & video** filter: **▶ Has video** shows only decks with a video (about 630), and a language keeps
   decks whose guide or video is in it.
+- MetallicDanny's badge is orchid instead of grey, easier to tell apart from the other sources.
 
 ## 2026-10-17
 
