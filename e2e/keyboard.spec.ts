@@ -3,7 +3,7 @@ import { expect, test } from './app.ts'
 const PANEL = '[data-freq="most"]'
 
 test.describe('skip links', () => {
-  test('the first Tab shows "Skip to card search"', async ({ page, open }) => {
+  test('the first Tab shows "Skip to search"', async ({ page, open }) => {
     // Arrange
     await open()
 
@@ -84,7 +84,7 @@ test.describe('shortcuts', () => {
     await expect(page).toHaveURL(/#f=SK&b=over1$/)
   })
 
-  test('keys typed in the card box stay in the card box', async ({ page, open }) => {
+  test('keys typed in the search box stay in the search box', async ({ page, open }) => {
     // Arrange
     await open()
     const input = page.locator('#card-input')

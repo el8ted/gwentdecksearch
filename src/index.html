@@ -22,7 +22,7 @@
   <body>
     <!-- Buttons, not #links: the hash holds the filters, so jumping to #results would clear them. -->
     <nav class="skip" data-i18n-label="skip.label">
-      <button type="button" class="clear" data-skip="cards" data-i18n="skip.cards">Skip to card search</button>
+      <button type="button" class="clear" data-skip="cards" data-i18n="skip.cards">Skip to search</button>
       <button type="button" class="clear" data-skip="results" data-i18n="skip.results">Skip to results</button>
       <button type="button" class="clear" data-skip="panel" data-i18n="skip.panel">Skip to card frequency</button>
     </nav>
@@ -106,7 +106,7 @@
       </div>
       <p class="note indent" id="stratagem-note"></p>
       <div class="row">
-        <label class="label" for="card-input" id="cards-label" data-i18n="filter.cards">Cards</label>
+        <label class="label" for="card-input" id="cards-label" data-i18n="filter.cards">Search</label>
         <div class="chips-box">
           <ul class="chips" id="chips" data-i18n-label="cards.selected"></ul>
           <div class="combo">
@@ -171,7 +171,7 @@
       <h3 data-i18n="shortcuts.title">Keyboard shortcuts</h3>
       <dl class="keys">
         <dt><kbd>/</kbd></dt>
-        <dd data-i18n="shortcuts.cards">Jump to the card box</dd>
+        <dd data-i18n="shortcuts.cards">Jump to the search box</dd>
         <dt><kbd>[</kbd></dt>
         <dd data-i18n="shortcuts.filters">Jump to the filters</dd>
         <dt><kbd>]</kbd></dt>
@@ -181,11 +181,11 @@
         <dt><kbd>?</kbd></dt>
         <dd data-i18n="shortcuts.help">Show or hide this help</dd>
         <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Tab</kbd></dt>
-        <dd data-i18n="shortcuts.suggestions">Move through card suggestions</dd>
+        <dd data-i18n="shortcuts.suggestions">Move through suggestions</dd>
         <dt><kbd>Enter</kbd></dt>
-        <dd data-i18n="shortcuts.add">Add the highlighted card</dd>
+        <dd data-i18n="shortcuts.add">Add the highlighted suggestion</dd>
         <dt><kbd>Backspace</kbd></dt>
-        <dd data-i18n="shortcuts.removeLast">Remove the last card (in an empty card box)</dd>
+        <dd data-i18n="shortcuts.removeLast">Remove the last pick (in an empty search box)</dd>
         <dt><kbd>Esc</kbd></dt>
         <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help</dd>
       </dl>

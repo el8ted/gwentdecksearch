@@ -24,6 +24,7 @@ the release tag and starts a new Unreleased section. -->
 - MetallicDanny's badge is orchid instead of grey, easier to tell apart from the other sources.
 - The Cards box also finds authors by their playgwent name: a community guide's author, or Shinmiri2 and MetallicDanny
   for their guides and their lists together.
+- The Cards box is now **Search**, since it finds cards, tags and authors.
 - Phones: the card suggestions are no longer covered by the Most common list below them.
 
 ## 2026-10-17

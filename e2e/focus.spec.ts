@@ -72,7 +72,7 @@ test('adding from a frequency bar keeps focus at that place in the panel, and th
   expect(Math.abs((await page.evaluate(() => scrollY)) - scrolled)).toBeLessThan(80)
 })
 
-test('removing a chip focuses the card box', async ({ page, open }) => {
+test('removing a chip focuses the search box', async ({ page, open }) => {
   // Arrange
   await open()
   const id = await page.locator('[data-add]').first().getAttribute('data-add')

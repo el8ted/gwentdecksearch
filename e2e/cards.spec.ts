@@ -96,7 +96,7 @@ test.describe('a faction card selects its faction', () => {
   })
 })
 
-test('on a phone, the card suggestions stay above the card frequency list', async ({ page, open }) => {
+test('on a phone, the search suggestions stay above the card frequency list', async ({ page, open }) => {
   // Arrange
   await page.setViewportSize({ width: 360, height: 900 })
   await open()
