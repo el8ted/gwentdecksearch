@@ -61,6 +61,8 @@ export function glossaryFor(lang: string, input: Pick<BuildInput, 'cards' | 'car
 
 /** Fewer distinct words than this, or mostly repeats, is padding to get past playgwent's minimum length. */
 const MIN_WORDS = 10
+/** "Mostly repeats" only judges short texts: long real guides repeat common words, so their share of new words drops. */
+const REPEAT_CHECK_WORDS = 50
 // The detector's ISO codes that differ from playgwent's.
 const PLAYGWENT_LANG: Record<string, string> = { pt: 'pt-BR', zh: 'zh-cn' }
 
@@ -73,7 +75,7 @@ const PLAYGWENT_LANG: Record<string, string> = { pt: 'pt-BR', zh: 'zh-cn' }
  * @returns Nothing for padding; else its detected language (the declared one when unsure)
  */
 export function guideSummary(info: GuideInfo, declared: string): Pick<Deck, 'guideLang'> {
-  if (info.unique < MIN_WORDS || info.unique < info.words * 0.3) return {}
+  if (info.unique < MIN_WORDS || (info.unique < REPEAT_CHECK_WORDS && info.unique < info.words * 0.3)) return {}
   return { guideLang: info.lang ? (PLAYGWENT_LANG[info.lang] ?? info.lang) : declared }
 }
 
@@ -158,10 +160,11 @@ export function buildDataset(input: BuildInput): BuildOutput {
     if (!copies.some(([id]) => catalog[id].type === 'stratagem')) copies.splice(1, 0, [DEFAULT_STRATAGEM, 1])
     for (const [id] of copies) used[id] ??= appCard(catalog[id], named)
 
-    // A guide's own video (narrated, presumably, in the guide's language) comes first, then a list's, then a channel
-    // video whose description links the same deck code.
+    const summary = entry.guide && stored.guide ? guideSummary(stored.guide, entry.lang) : {}
+    // A guide's own video (narrated, presumably, in the language the guide is written in) comes first, then a list's,
+    // then a channel video whose description links the same deck code.
     const video: Video | undefined = stored.guide?.video
-      ? { url: stored.guide.video, lang: entry.lang }
+      ? { url: stored.guide.video, lang: summary.guideLang ?? entry.lang }
       : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
     const known = byHash.get(stored.hash)
     if (known) {
@@ -190,7 +193,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       },
       sources: SOURCES.filter((s) => urlSources.get(entry.url)?.has(s)),
       ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
-      ...(entry.guide && stored.guide && guideSummary(stored.guide, entry.lang)),
+      ...summary,
       ...(video && { video }),
       cards: copies,
     }

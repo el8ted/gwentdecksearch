@@ -118,6 +118,27 @@ describe('buildDataset', () => {
     expect(b.map((d) => d.video)).toEqual([later])
   })
 
+  it("labels a guide's own video with the language the guide is written in, not the one its author set", () => {
+    // Arrange: declared Polish, written in English
+    const guide = { id: 1, modified: '', votes: 0, author: 'x' }
+    const entries = [entry(URL_A, { source: 'community', lang: 'pl', guide })]
+    const store = {
+      [URL_A]: {
+        ...DECK,
+        guide: { words: 90, unique: 70, images: 0, lang: 'en', video: 'https://youtu.be/AAAAAAAAAAA' },
+      },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, store }))
+
+    // Assert
+    expect(dataset.decks[0]).toMatchObject({
+      guideLang: 'en',
+      video: { url: 'https://youtu.be/AAAAAAAAAAA', lang: 'en' },
+    })
+  })
+
   it("prefers a guide's own video, in the guide's language, to a list's", () => {
     // Arrange
     const guide = { id: 1, modified: '', votes: 0, author: 'x' }
@@ -162,16 +183,21 @@ describe('buildDataset', () => {
     })
 
     // Act
-    const [detected, unsure, padding] = [
+    const [detected, unsure, long, padding, repeated] = [
       { words: 300, unique: 120, lang: 'pt' },
       { words: 20, unique: 18 },
+      // A long real guide: few new words per word, but far too many distinct ones to be padding.
+      { words: 1994, unique: 530, lang: 'en' },
       { words: 40, unique: 4, lang: 'en' },
+      { words: 100, unique: 12, lang: 'en' },
     ].map((g) => buildDataset(input({ entries, store: stored(g) })).dataset.decks[0])
 
     // Assert
     expect(detected).toMatchObject({ guideLang: 'pt-BR', votes: 2 })
     expect(unsure).toMatchObject({ guideLang: 'pl' })
+    expect(long).toMatchObject({ guideLang: 'en' })
     expect(padding).not.toHaveProperty('guideLang')
+    expect(repeated).not.toHaveProperty('guideLang')
   })
 
   it('skips decks with unknown cards, and unfetched or dead links, with warnings', () => {

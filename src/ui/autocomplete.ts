@@ -28,9 +28,8 @@ export interface AutocompleteOptions {
   authorCandidates: () => Map<string, number>
   /** An author's display name by key. */
   authorName: (key: string) => string
-  onPick: (id: number) => void
-  /** A tag key, or `@` + an author key. */
-  onPickTag: (key: string) => void
+  /** A card ID, a tag key, or `@` + an author key. */
+  onPick: (pick: number | string) => void
   /** Backspace in an empty input. */
   onBackspace: () => void
 }
@@ -62,7 +61,6 @@ export function createAutocomplete({
   authorCandidates,
   authorName,
   onPick,
-  onPickTag,
   onBackspace,
 }: AutocompleteOptions) {
   // A number is a card ID, `@…` an author, any other string a tag key.
@@ -153,8 +151,7 @@ export function createAutocomplete({
     input.value = ''
     active = 0
     close()
-    if (typeof item === 'number') onPick(item)
-    else onPickTag(item)
+    onPick(item)
   }
 
   input.addEventListener('input', () => {

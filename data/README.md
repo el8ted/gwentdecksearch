@@ -21,8 +21,7 @@ data/
 │   ├── videos.json         YouTube uploads that link a deck
 │   ├── translations.json   English names for non-English deck names (hand-fixable)
 │   ├── categories.json     extra glossary for translating deck names (hand-kept)
-│   ├── refreshed.json      when each refresh last ran
-│   └── gwent-deck-data.md  an early research note; not read by anything
+│   └── refreshed.json      when each refresh last ran
 ├── decks.json            OUTPUT: the dataset bundled into the app
 ├── decklist.md           OUTPUT: every deck in one table, for review
 ├── i18n/{lang}.js        OUTPUT: language packs the app loads on demand

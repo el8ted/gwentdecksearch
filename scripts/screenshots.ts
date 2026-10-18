@@ -36,9 +36,14 @@ const PAIR = [card('Queen Meve'), card('Griffin Witcher'), card('Margarita Laux-
 const TATTERWING = card('Tatterwing')
 const ANY_CARDS = [HIVE_MIND, GOLDEN_NEKKER, TATTERWING]
 
-/** Opens the page in a fresh context (no saved settings) at 1280×800, dark theme. */
+/** Opens the page in a fresh context (no saved settings) at 1280×800, dark theme, without animations. */
 async function open(browser: Browser, suffix: string, height = 800): Promise<Page> {
-  const context = await browser.newContext({ viewport: { width: 1280, height }, colorScheme: 'dark' })
+  // No transitions, so a shot never catches a pill or panel mid-fade.
+  const context = await browser.newContext({
+    viewport: { width: 1280, height },
+    colorScheme: 'dark',
+    reducedMotion: 'reduce',
+  })
   const page = await context.newPage()
   await page.goto(PAGE_URL + suffix)
   await page.locator('#results [data-toggle]').first().waitFor()
@@ -50,7 +55,10 @@ async function listed(page: Page): Promise<number> {
   return Number((await page.locator('#result-head').innerText()).match(/\d[\d,]*/)?.[0].replace(/,/g, ''))
 }
 
-/** Whether two PNGs have the same pixels, decoded by the page: runs encode identical images differently. */
+/**
+ * Whether two PNGs show the same thing, decoded by the page: runs encode identical images differently, and anti-aliased
+ * edges can differ by a shade or two between runs, so a channel may differ by up to 2 (no visible change does less).
+ */
 function samePixels(page: Page, a: Buffer, b: Buffer): Promise<boolean> {
   return page.evaluate(
     async ([a, b]) => {
@@ -63,7 +71,7 @@ function samePixels(page: Page, a: Buffer, b: Buffer): Promise<boolean> {
         return ctx.getImageData(0, 0, img.width, img.height).data
       }
       const [p, q] = await Promise.all([pixels(a), pixels(b)])
-      return p.length === q.length && p.every((v, i) => v === q[i])
+      return p.length === q.length && p.every((v, i) => Math.abs(v - q[i]) <= 2)
     },
     [a.toString('base64'), b.toString('base64')],
   )
@@ -72,6 +80,8 @@ function samePixels(page: Page, a: Buffer, b: Buffer): Promise<boolean> {
 /** Saves a screenshot, leaving the file alone when nothing visible changed so reruns don't churn git history. */
 async function save(page: Page, name: string, target?: string) {
   const path = join(OUT, `${name}.png`)
+  // Icons and art load after the page: shoot only once every image is in.
+  await page.waitForFunction(() => [...document.images].every((img) => img.complete))
   const shot = target ? await page.locator(target).screenshot() : await page.screenshot()
   const same = existsSync(path) && (await samePixels(page, shot, readFileSync(path)))
   if (!same) writeFileSync(path, shot)

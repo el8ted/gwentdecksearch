@@ -413,7 +413,6 @@ const autocomplete = createAutocomplete({
   authorCandidates: () => new Map([...current.authors].filter(([key]) => !state.picks.includes(`@${key}`))),
   authorName: (key) => AUTHORS.get(key) ?? key,
   onPick: addPick,
-  onPickTag: addPick,
   onBackspace: () => {
     const last = state.picks.at(-1)
     if (last !== undefined) removePick(last)
