@@ -73,11 +73,9 @@ function langName(lang: string, loc: Locale): string {
 
 /** The video link and the guide's language, shown before the deck ID. */
 function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): string {
-  const tip = { note: 'deck.guideNote', full: 'deck.guideFull' } as const
-  const guide =
-    deck.guideLang && deck.guideLevel
-      ? `<span class="lang guide-${deck.guideLevel}" title="${esc(loc.t(tip[deck.guideLevel], { lang: langName(deck.guideLang, loc) }))}">${esc(langCode(deck.guideLang))}</span>`
-      : ''
+  const guide = deck.guideLang
+    ? `<span class="lang" title="${esc(loc.t('deck.guideLang', { lang: langName(deck.guideLang, loc) }))}">${esc(langCode(deck.guideLang))}</span>`
+    : ''
   if (!deck.video) return guide
   const lang = langName(deck.video.lang, loc)
   return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(loc.t('deck.video', { lang }))}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}"><span aria-hidden="true">▶</span>${esc(langCode(deck.video.lang))}</a>`

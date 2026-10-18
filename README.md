@@ -113,7 +113,7 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
 | **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
-| **Language** | A community guide's language, as a short code (**EN**, **RU**, **PL**…): filled for a full guide that explains the deck, outlined for a short note. Guides that are only filler ("text text text") show none. Hover for details. |
+| **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
 | **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. |
 | **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |

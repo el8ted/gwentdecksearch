@@ -77,11 +77,10 @@ export interface Deck {
   votes?: number
   author?: string
   /**
-   * Community guides with real text only: the language it reads as (playgwent code; the author's setting when unsure),
-   * and whether it's a short note or a full guide. Padding ("text text text") has neither.
+   * Community guides with real text only: the language it reads as (playgwent code; the author's setting when unsure).
+   * Padding ("text text text") has none.
    */
   guideLang?: string
-  guideLevel?: 'note' | 'full'
   /** A gameplay video one of the sources links. */
   video?: Video
   /** `[cardId, copies]`, including the leader and stratagem. */

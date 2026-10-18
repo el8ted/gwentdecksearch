@@ -494,12 +494,6 @@ h1 span {
   border: 1px solid var(--border);
   white-space: nowrap;
 }
-/* A full guide's code is filled, so guides worth reading stand out from one-line notes. */
-.lang.guide-full {
-  color: var(--surface);
-  background: var(--muted);
-  border-color: var(--muted);
-}
 .video {
   display: inline-flex;
   align-items: center;

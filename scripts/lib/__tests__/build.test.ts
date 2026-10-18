@@ -153,7 +153,7 @@ describe('buildDataset', () => {
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/newer', lang: 'en' })
   })
 
-  it("records a guide's level and language: detected, else declared; padding has neither", () => {
+  it("records a guide's language: detected, else declared; padding has none", () => {
     // Arrange
     const guide = { id: 1, modified: '', votes: 2, author: 'x' }
     const entries = [entry(URL_A, { source: 'community', lang: 'pl', guide })]
@@ -162,17 +162,16 @@ describe('buildDataset', () => {
     })
 
     // Act
-    const [full, note, padding] = [
+    const [detected, unsure, padding] = [
       { words: 300, unique: 120, lang: 'pt' },
       { words: 20, unique: 18 },
       { words: 40, unique: 4, lang: 'en' },
     ].map((g) => buildDataset(input({ entries, store: stored(g) })).dataset.decks[0])
 
     // Assert
-    expect(full).toMatchObject({ guideLang: 'pt-BR', guideLevel: 'full', votes: 2 })
-    expect(note).toMatchObject({ guideLang: 'pl', guideLevel: 'note' })
+    expect(detected).toMatchObject({ guideLang: 'pt-BR', votes: 2 })
+    expect(unsure).toMatchObject({ guideLang: 'pl' })
     expect(padding).not.toHaveProperty('guideLang')
-    expect(padding).not.toHaveProperty('guideLevel')
   })
 
   it('skips decks with unknown cards, and unfetched or dead links, with warnings', () => {

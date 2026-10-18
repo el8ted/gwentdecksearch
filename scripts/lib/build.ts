@@ -60,25 +60,21 @@ export function glossaryFor(lang: string, input: Pick<BuildInput, 'cards' | 'car
 }
 
 /** Fewer distinct words than this, or mostly repeats, is padding to get past playgwent's minimum length. */
-const NOTE_WORDS = 10
-/** From this many distinct words a guide explains its deck. */
-const FULL_WORDS = 60
+const MIN_WORDS = 10
 // The detector's ISO codes that differ from playgwent's.
 const PLAYGWENT_LANG: Record<string, string> = { pt: 'pt-BR', zh: 'zh-cn' }
 
 /**
- * A guide's level and language, from its measures (thresholds tuned on the October 2026 guides).
+ * A guide's language, if it has real text. Whether that text is useful isn't judged: copied filler and blurbs
+ * can't be told apart from advice without reading it.
  *
  * @param info - Its measures
  * @param declared - The language its author set
- * @returns Nothing for padding; else its level, and its detected language (the declared one when unsure)
+ * @returns Nothing for padding; else its detected language (the declared one when unsure)
  */
-export function guideSummary(info: GuideInfo, declared: string): Pick<Deck, 'guideLang' | 'guideLevel'> {
-  if (info.unique < NOTE_WORDS || info.unique < info.words * 0.3) return {}
-  return {
-    guideLang: info.lang ? (PLAYGWENT_LANG[info.lang] ?? info.lang) : declared,
-    guideLevel: info.unique < FULL_WORDS ? 'note' : 'full',
-  }
+export function guideSummary(info: GuideInfo, declared: string): Pick<Deck, 'guideLang'> {
+  if (info.unique < MIN_WORDS || info.unique < info.words * 0.3) return {}
+  return { guideLang: info.lang ? (PLAYGWENT_LANG[info.lang] ?? info.lang) : declared }
 }
 
 /** The app's view of a catalog card, keys in the order the dataset has always used; `tags` only the named ones. */
