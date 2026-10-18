@@ -7,3 +7,6 @@ data/cache
 .idea
 test-results
 playwright-report
+
+# Local secrets (YOUTUBE_API_KEY), loaded by the scrape scripts
+.env
