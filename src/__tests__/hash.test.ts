@@ -57,6 +57,7 @@ describe('decodeState', () => {
       factions: ['MO'],
       sources: ['community', 'metallic-danny'],
       budgets: ['spare2', 'over3'],
+      video: true,
       leader: 201743,
       stratagem: undefined,
       picks: ['devotion', 203123, 'c12'],
@@ -71,7 +72,7 @@ describe('decodeState', () => {
 
   it('drops unknown factions, unknown IDs, junk and duplicates', () => {
     // Arrange
-    const hash = '#m=x&f=MO,XX&src=bogus&b=spare1,huge&l=999&s=abc&c=203123,1.5,c12,203123,7,bogus,c12,'
+    const hash = '#m=x&f=MO,XX&src=bogus&b=spare1,huge&l=999&s=abc&c=203123,1.5,c12,203123,7,bogus,c12,&v=yes'
 
     // Act
     const decoded = decodeState(hash, cardOf, isTag)
@@ -82,6 +83,7 @@ describe('decodeState', () => {
       factions: ['MO'],
       sources: [],
       budgets: ['spare1'],
+      video: false,
       leader: undefined,
       stratagem: undefined,
       picks: [203123, 'c12'],

@@ -1,4 +1,5 @@
-import type { Source } from '../../src/types.ts'
+import type { Source, Video } from '../../src/types.ts'
+import type { SheetLinks } from './xlsx.ts'
 
 /** One deck link from a source list. */
 export interface DeckEntry {
@@ -14,6 +15,8 @@ export interface DeckEntry {
   source: Source
   /** Community guides only. */
   guide?: { id: number; modified: string; votes: number; author: string }
+  /** A gameplay video the source links for this deck. */
+  video?: Video
 }
 
 /** A guide summary from playgwent's `/api/guides/offset/{n}/limit/{m}` listing (fields used). */
@@ -40,6 +43,21 @@ export function normalizeUrl(url: string): string | undefined {
     .trim()
     .match(/^https?:\/\/(?:www\.)?playgwent\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(decks\/\S+)$/i)?.[1]
   return path ? `https://www.playgwent.com/${path.replace(/\/+$/, '')}` : undefined
+}
+
+/**
+ * Normalizes a YouTube video link.
+ *
+ * @param url - A watch, youtu.be, embed, live or shorts link
+ * @returns `https://youtu.be/{id}`, or `undefined` if it isn't a YouTube video link
+ */
+export function youtubeUrl(url: string): string | undefined {
+  const id = url
+    .trim()
+    .match(
+      /^https?:\/\/(?:(?:www\.|m\.)?youtube\.com\/(?:watch\?(?:\S*&)?v=|embed\/|live\/|shorts\/)|youtu\.be\/)([\w-]{11})(?![\w-])/,
+    )?.[1]
+  return id && `https://youtu.be/${id}`
 }
 
 /**
@@ -79,20 +97,26 @@ export function parseCsv(text: string): string[][] {
  * Parses Shinmiri2's sheet (CSV export).
  *
  * The alternate-version column becomes its own entry with the same name, because the UI treats
- * alternates as independent decks. Rows without a link (unpublished decks) are skipped.
+ * alternates as independent decks. Rows without a link (unpublished decks) are skipped. The row's video (English)
+ * goes with the main version only: it shows that list.
  *
- * @param csv - Columns: Faction, Leader, Deck Name, Deck Link, Alternate Version, …
+ * @param csv - Columns: Faction, Leader, Deck Name, Deck Link, Alternate Version, Alternate Description, Youtube
+ *   video, …
  * @returns Entries in sheet order
  */
 export function parseShinmiriSheet(csv: string): DeckEntry[] {
   return parseCsv(csv)
     .slice(1)
-    .flatMap(([, , name = '', main = '', alt = '']) =>
-      [main, alt].flatMap((link) => {
+    .flatMap(([, , name = '', main = '', alt = '', , video = '']) => {
+      const watch = youtubeUrl(video)
+      return [main, alt].flatMap((link) => {
         const url = normalizeUrl(link)
-        return name.trim() && url ? [{ name: name.trim(), url, lang: 'en', source: 'shinmiri2' as const }] : []
-      }),
-    )
+        if (!name.trim() || !url) return []
+        const entry: DeckEntry = { name: name.trim(), url, lang: 'en', source: 'shinmiri2' }
+        if (watch && link === main) entry.video = { url: watch, lang: 'en' }
+        return [entry]
+      })
+    })
 }
 
 /**
@@ -101,13 +125,15 @@ export function parseShinmiriSheet(csv: string): DeckEntry[] {
  * Tabs differ in layout, so each row's first playgwent link is taken with the nearest text to its left as
  * the name. Meta reports write "Name (Leader):"; the leader is dropped, since the deck page names it and it
  * garbles translation. Faction and leader rows have no playgwent link and are
- * skipped (the deck page names its own leader).
+ * skipped (the deck page names its own leader). A row's video (Russian) is its first YouTube link right of the deck
+ * link, as text or as a link chip (`links`); a second one is usually another deck's.
  *
  * @param csv - CSV export of the tab
+ * @param links - The tab's hyperlinks (see `sheetLinks`)
  * @returns Entries in sheet order, names still in Russian
  */
-export function parseSheet(csv: string): DeckEntry[] {
-  return parseCsv(csv).flatMap((row) => {
+export function parseSheet(csv: string, links: SheetLinks = new Map()): DeckEntry[] {
+  return parseCsv(csv).flatMap((row, i) => {
     const at = row.findIndex((cell) => normalizeUrl(cell))
     const name = row
       .slice(0, Math.max(at, 0))
@@ -115,7 +141,15 @@ export function parseSheet(csv: string): DeckEntry[] {
       ?.trim()
       .replace(/\s*\([^()]*\):$|:$/, '')
     const url = at < 0 ? undefined : normalizeUrl(row[at])
-    return name && url ? [{ name, url, lang: 'ru', source: 'metallic-danny' as const }] : []
+    if (!name || !url) return []
+    const entry: DeckEntry = { name, url, lang: 'ru', source: 'metallic-danny' }
+    const watch = [...row.map((cell, col) => [col, cell] as const), ...(links.get(i + 1) ?? [])]
+      .filter(([col]) => col > at)
+      .sort((a, b) => a[0] - b[0])
+      .map(([, cell]) => youtubeUrl(cell))
+      .find(Boolean)
+    if (watch) entry.video = { url: watch, lang: 'ru' }
+    return [entry]
   })
 }
 

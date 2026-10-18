@@ -57,7 +57,7 @@ describe('createPoliteFetch', () => {
   it('retries when the body stalls past the timeout', async () => {
     // Arrange
     const stalled = new Response('x')
-    stalled.text = () => Promise.reject(new DOMException('The operation timed out.', 'TimeoutError'))
+    stalled.arrayBuffer = () => Promise.reject(new DOMException('The operation timed out.', 'TimeoutError'))
     fetchMock.mockResolvedValueOnce(stalled).mockResolvedValueOnce(respond(200, 'ok'))
     const get = createPoliteFetch(delays)
 

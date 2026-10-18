@@ -113,10 +113,14 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
 | **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
+| **Language** | A community guide's language, as a short code (**EN**, **RU**, **PL**…). Hover for its name. |
+| **▶** | A gameplay video from the deck's source, with the language it's narrated in (e.g. **▶ RU**). |
 | **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
 | **Stats** | Scraps · cards · units · provisions used / limit. |
 | **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
+
+**▶ Has video**, above the list, keeps only decks with a gameplay video; it shows how many there are.
 
 **Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
 out. It's most useful with two or three decks open side by side.

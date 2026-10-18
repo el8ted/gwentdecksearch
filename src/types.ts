@@ -53,6 +53,13 @@ export interface DeckStats {
   provisions: number
 }
 
+/** A gameplay video for a deck. */
+export interface Video {
+  url: string
+  /** The language it's narrated in (playgwent code, e.g. `en`, `ru`). */
+  lang: string
+}
+
 /** One deck list. Alternate versions are separate records sharing a `name`. */
 export interface Deck {
   name: string
@@ -69,6 +76,10 @@ export interface Deck {
   /** Community guides only: playgwent votes and author. */
   votes?: number
   author?: string
+  /** Community guides only: the language the guide is written in, as its author set it (playgwent code). */
+  guideLang?: string
+  /** A gameplay video one of the sources links. */
+  video?: Video
   /** `[cardId, copies]`, including the leader and stratagem. */
   cards: [cardId: number, copies: number][]
 }

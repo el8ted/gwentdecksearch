@@ -1,5 +1,5 @@
 import { LANGUAGES } from '../../src/i18n.ts'
-import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source } from '../../src/types.ts'
+import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
 import { TERM_KEYS } from './terms.ts'
@@ -89,7 +89,12 @@ export function buildDataset(input: BuildInput): BuildOutput {
   const decks: Deck[] = []
   const byHash = new Map<string, Deck>()
   const urlSources = new Map<string, Set<Source>>()
-  for (const e of entries) urlSources.set(e.url, (urlSources.get(e.url) ?? new Set()).add(e.source))
+  // A deck's video is the first one any source links, in entry order.
+  const urlVideo = new Map<string, Video>()
+  for (const e of entries) {
+    urlSources.set(e.url, (urlSources.get(e.url) ?? new Set()).add(e.source))
+    if (e.video && !urlVideo.has(e.url)) urlVideo.set(e.url, e.video)
+  }
   const seen = new Set<string>()
   const glossaries = new Map<string, Glossary>()
   const tagNames = input.tags.en ?? {}
@@ -117,6 +122,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
     const known = byHash.get(stored.hash)
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
+      known.video ??= urlVideo.get(entry.url)
       continue
     }
     const count = (t: Card['type']) => copies.filter(([id]) => catalog[id].type === t).length
@@ -139,7 +145,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
         provisions: nonLeader.reduce((n, [id, k]) => n + catalog[id].provisions * k, 0),
       },
       sources: SOURCES.filter((s) => urlSources.get(entry.url)?.has(s)),
-      ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
+      ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author, guideLang: entry.lang }),
+      ...(urlVideo.has(entry.url) && { video: urlVideo.get(entry.url) }),
       cards: copies,
     }
     // Some guides tagged English carry Russian names.

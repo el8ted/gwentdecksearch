@@ -20,7 +20,7 @@ const get = createPoliteFetch({
   'api.mymemory.translated.net': 1_000,
 })
 
-const { entries, listed } = await collectEntries(get, new Date())
+const { entries, listed } = await collectEntries(get, get.bytes, new Date())
 await writeJson(STORE_PATHS.entries, entries)
 consola.info(`${entries.length} deck links (${listed} guides listed)`)
 

@@ -15,6 +15,9 @@ the release tag and starts a new Unreleased section. -->
   are suggested.
 - Cards and tags stay in the order you add them, also in shared links, so Backspace always removes the last one
   you tried.
+- Decks with a gameplay video from Shinmiri2's or MetallicDanny's list show a ▶ link with the video's language, and
+  **▶ Has video** above the list shows only those decks (about 630).
+- Community guides show the language they're written in (EN, RU, PL…) next to the deck ID.
 
 ## 2026-10-17
 

@@ -24,7 +24,8 @@ export type HostDelays = Record<string, number>
  * Callers must `await` each call before the next: the throttle assumes one request in flight.
  *
  * @param delays - Minimum gap per host; unknown hosts are refused so nothing is fetched unthrottled
- * @returns `get(url)` resolving to the body; throws {@link NotFoundError} for a 404
+ * @returns `get(url)` resolving to the body as text, and `get.bytes(url)` as bytes; both throw {@link NotFoundError}
+ *   for a 404
  */
 export function createPoliteFetch(delays: HostDelays) {
   const lastRequest = new Map<string, number>()
@@ -35,7 +36,7 @@ export function createPoliteFetch(delays: HostDelays) {
     lastRequest.set(host, Date.now())
   }
 
-  return async function get(url: string): Promise<string> {
+  async function bytes(url: string): Promise<Buffer> {
     const host = new URL(url).host
     if (!(host in delays)) throw new Error(`No throttle configured for ${host}`)
 
@@ -43,7 +44,7 @@ export function createPoliteFetch(delays: HostDelays) {
       await throttle(host)
       // The timeout also covers the body, so it's read inside the catch: a stalled download is retried too.
       const got = await fetch(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(TIMEOUT_MS) })
-        .then(async (r) => ({ r, body: r.ok ? await r.text() : '' }))
+        .then(async (r) => ({ r, body: r.ok ? Buffer.from(await r.arrayBuffer()) : Buffer.alloc(0) }))
         .catch((e: Error) => e)
       const res = got instanceof Error ? got : got.r
       if (!(got instanceof Error) && got.r.ok) {
@@ -59,4 +60,8 @@ export function createPoliteFetch(delays: HostDelays) {
       await sleep(wait)
     }
   }
+
+  // TextDecoder, like Response.text(), drops a byte-order mark.
+  const get = async (url: string) => new TextDecoder().decode(await bytes(url))
+  return Object.assign(get, { bytes })
 }

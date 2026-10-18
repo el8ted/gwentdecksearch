@@ -102,6 +102,34 @@ describe('buildDataset', () => {
     ])
   })
 
+  it("takes a deck's first linked video from any entry for it, same link or same hash", () => {
+    // Arrange: URL_B is the same deck (hash) as URL_A
+    const later = { url: 'https://youtu.be/BBBBBBBBBBB', lang: 'ru' }
+    const sameLink = [entry(URL_A), entry(URL_A, { source: 'metallic-danny', video: later })]
+    const sameHash = [entry(URL_A), entry(URL_B, { source: 'metallic-danny', video: later })]
+    const store = { [URL_A]: DECK, [URL_B]: DECK }
+
+    // Act
+    const [a, b] = [sameLink, sameHash].map((entries) => buildDataset(input({ entries, store })).dataset.decks)
+
+    // Assert
+    expect(a.map((d) => d.video)).toEqual([later])
+    expect(b.map((d) => d.video)).toEqual([later])
+  })
+
+  it("records a community guide's language", () => {
+    // Arrange
+    const entries = [
+      entry(URL_A, { source: 'community', lang: 'pl', guide: { id: 1, modified: '', votes: 2, author: 'x' } }),
+    ]
+
+    // Act
+    const { dataset } = buildDataset(input({ entries }))
+
+    // Assert
+    expect(dataset.decks[0]).toMatchObject({ guideLang: 'pl', votes: 2 })
+  })
+
   it('skips decks with unknown cards, and unfetched or dead links, with warnings', () => {
     // Arrange
     const entries = [entry(URL_A), entry(URL_B), entry('https://www.playgwent.com/decks/cccc')]

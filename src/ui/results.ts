@@ -59,6 +59,28 @@ function decklist(entry: IndexedDeck, data: Dataset, selected: Set<number>, comm
     .join('')}</ul>`
 }
 
+/** A language's short code for a badge: `pt-BR` → `PT`. */
+const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
+
+/** A language's name in the page language (`ru` → "Russian"), or its code if the browser doesn't know it. */
+function langName(lang: string, loc: Locale): string {
+  try {
+    return new Intl.DisplayNames(loc.lang, { type: 'language' }).of(lang) ?? lang
+  } catch {
+    return lang
+  }
+}
+
+/** The video link and the guide's language, shown before the deck ID. */
+function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): string {
+  const guide = deck.guideLang
+    ? `<span class="lang" title="${esc(loc.t('deck.guideLang', { lang: langName(deck.guideLang, loc) }))}">${esc(langCode(deck.guideLang))}</span>`
+    : ''
+  if (!deck.video) return guide
+  const lang = langName(deck.video.lang, loc)
+  return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(loc.t('deck.video', { lang }))}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}"><span aria-hidden="true">▶</span>${esc(langCode(deck.video.lang))}</a>`
+}
+
 /**
  * Renders one result row.
  *
@@ -96,8 +118,8 @@ export function deckRow(
           : `<time class="updated" datetime="${esc(deck.updated)}" title="${esc(loc.t('deck.updatedTip'))}">${esc(loc.date(deck.updated))}</time>`
       }</span>
     </button>
-    <code class="deck-id" title="${esc(deck.id)}">${esc(deck.id.slice(0, 8))}</code>
-    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">↗</a>
+    <span class="deck-links">${deckLinks(deck, name, loc)}<code class="deck-id" title="${esc(deck.id)}">${esc(deck.id.slice(0, 8))}</code>
+    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">↗</a></span>
   </div>
   <div class="stats">
     ${stat('scraps', loc.t('stat.scraps'), loc.num(deck.stats.scraps))}

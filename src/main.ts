@@ -71,6 +71,7 @@ const els = {
   sources: byId('sources'),
   budgets: byId('budgets'),
   dimCommon: byId<HTMLButtonElement>('dim-common'),
+  hasVideo: byId<HTMLButtonElement>('has-video'),
   expandAll: byId<HTMLButtonElement>('expand-all'),
   leader: byId('leader'),
   stratagem: byId('stratagem'),
@@ -359,6 +360,11 @@ function renderResults() {
   els.expandAll.textContent = t(allOpen ? 'results.collapseAll' : 'results.expandAll')
   els.expandAll.disabled = shown.length === 0
   els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
+  els.hasVideo.setAttribute('aria-pressed', String(!!state.video))
+  const videos = els.hasVideo.querySelector('.n')
+  if (videos) videos.textContent = loc.num(current.videos)
+  // Like a pill at 0: picking it would leave no decks (but a selected one can always be turned off).
+  els.hasVideo.disabled = current.videos === 0 && !state.video
   els.dimCommon.disabled = shown.length < 2
   const last = state.picks.at(-1)
   els.results.innerHTML = rows.length
@@ -455,7 +461,8 @@ document.addEventListener('click', (e) => {
   if (t.dataset.freq) {
     freq = t.dataset.freq as typeof freq
     renderResults()
-  } else if (t === els.dimCommon) {
+  } else if (t === els.hasVideo) update({ video: !state.video })
+  else if (t === els.dimCommon) {
     dimCommon = !dimCommon
     renderResults()
   } else if (t === els.expandAll) {

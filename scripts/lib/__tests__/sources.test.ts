@@ -10,6 +10,7 @@ import {
   patchOf,
   recentTabs,
   tabPatch,
+  youtubeUrl,
 } from '../sources.ts'
 
 const SHINMIRI = `Faction,Leader,Deck Name,Deck Link,Alternate Version,Alternate Description,Youtube video,Last Edited,
@@ -280,5 +281,70 @@ describe('monthsBefore', () => {
 
     // Assert
     expect(d.toISOString()).toBe(expected)
+  })
+})
+
+describe('youtubeUrl', () => {
+  it('reads every YouTube link form as one short link', () => {
+    // Arrange
+    const links = [
+      'https://youtu.be/NJnObo5kR34',
+      'https://www.youtube.com/watch?v=NJnObo5kR34&t=42s',
+      'https://m.youtube.com/watch?feature=share&v=NJnObo5kR34',
+      'https://www.youtube.com/embed/NJnObo5kR34?showinfo=0',
+      'https://youtube.com/live/NJnObo5kR34',
+      ' https://www.youtube.com/shorts/NJnObo5kR34 ',
+    ]
+
+    // Act
+    const urls = links.map(youtubeUrl)
+
+    // Assert
+    expect(new Set(urls)).toEqual(new Set(['https://youtu.be/NJnObo5kR34']))
+  })
+
+  it('rejects channels, playlists, other sites and malformed IDs', () => {
+    // Act
+    const urls = [
+      'https://www.youtube.com/@shinmiri2',
+      'https://www.youtube.com/playlist?list=PL123',
+      'https://www.twitch.tv/shinmiri2',
+      'https://youtu.be/short',
+      'GWENT | гайд - YouTube',
+    ].map(youtubeUrl)
+
+    // Assert
+    expect(urls).toEqual([undefined, undefined, undefined, undefined, undefined])
+  })
+})
+
+describe('sheet videos', () => {
+  it("gives a Shinmiri2 row's video to its main version only, in English", () => {
+    // Arrange
+    const csv = `${SHINMIRI.split('\n')[0]}
+MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/5761,https://www.playgwent.com/decks/9873,,https://youtu.be/NJnObo5kR34,,`
+
+    // Act
+    const [main, alt] = parseShinmiriSheet(csv)
+
+    // Assert
+    expect(main.video).toEqual({ url: 'https://youtu.be/NJnObo5kR34', lang: 'en' })
+    expect(alt).not.toHaveProperty('video')
+  })
+
+  it("takes a MetallicDanny row's first YouTube link right of the deck, as text or a link chip, in Russian", () => {
+    // Arrange: row 2 has a chip (title in the CSV) then another deck's video; row 3 a plain link left of the deck
+    const csv = [
+      'Название,Ссылка,Видео,Ещё видео',
+      'Накер,https://www.playgwent.com/ru/decks/369b,"GWENT | гайд - YouTube",https://youtu.be/BBBBBBBBBBB',
+      'https://youtu.be/CCCCCCCCCCC,Огроиды,https://www.playgwent.com/ru/decks/3898,',
+    ].join('\n')
+    const links = new Map([[2, [[2, 'https://youtu.be/AAAAAAAAAAA'] as [number, string]]]])
+
+    // Act
+    const entries = parseSheet(csv, links)
+
+    // Assert
+    expect(entries.map((e) => e.video)).toEqual([{ url: 'https://youtu.be/AAAAAAAAAAA', lang: 'ru' }, undefined])
   })
 })

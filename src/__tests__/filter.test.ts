@@ -65,17 +65,20 @@ const DATA: Dataset = {
       [101, 2],
       [102, 1],
     ]),
-    deck(
-      'Portal',
-      'b2',
-      160,
-      [
-        [1, 1],
-        [11, 1],
-        [101, 1],
-      ],
-      ['metallic-danny'],
-    ),
+    {
+      ...deck(
+        'Portal',
+        'b2',
+        160,
+        [
+          [1, 1],
+          [11, 1],
+          [101, 1],
+        ],
+        ['metallic-danny'],
+      ),
+      video: { url: 'https://youtu.be/AAAAAAAAAAA', lang: 'ru' },
+    },
     deck(
       'Soldiers',
       'c1',
@@ -374,6 +377,22 @@ describe('source filtering', () => {
         ['community', 1],
       ]),
     )
+  })
+})
+
+describe('video filtering', () => {
+  it('keeps only decks with a video, and counts them ignoring that filter', () => {
+    // Arrange
+    const s = state({ video: true, factions: ['MO'] })
+
+    // Act
+    const [result, f, ng] = [matchDecks(DECKS, s), facets(DECKS, s), facets(DECKS, state({ factions: ['NG'] }))]
+
+    // Assert
+    expect(ids(result)).toEqual(['b2'])
+    expect(f.videos).toBe(1)
+    expect(f.factions.get('MO')).toBe(1)
+    expect(ng.videos).toBe(0)
   })
 })
 

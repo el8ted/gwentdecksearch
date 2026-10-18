@@ -35,11 +35,21 @@ describe('collectEntries', () => {
     }
 
     // Act
-    const { entries } = await collectEntries(get, new Date('2026-10-15T00:00:00Z'))
+    const getBytes = async (url: string) => {
+      requested.push(url)
+      // An empty zip: a sheet without links.
+      return Buffer.from([0x50, 0x4b, 0x05, 0x06, ...Array(18).fill(0)])
+    }
+    const { entries } = await collectEntries(get, getBytes, new Date('2026-10-15T00:00:00Z'))
 
     // Assert
     expect(entries.map((e) => e.name)).toEqual(['Guide 1', 'Guide 2'])
     expect(requested.some((u) => u.endsWith('gid=105'))).toBe(true)
     expect(requested.some((u) => u.endsWith('gid=102'))).toBe(false)
+    // Only MetallicDanny's sheet has link chips, so only its tabs are read as xlsx.
+    expect(requested.filter((u) => u.includes('format=xlsx')).map((u) => u.split('/')[5])).toEqual([
+      '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
+      '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
+    ])
   })
 })

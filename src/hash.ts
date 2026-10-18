@@ -7,6 +7,7 @@ export const EMPTY_STATE: FilterState = {
   sources: [],
   budgets: [],
   picks: [],
+  video: false,
   match: 'all',
 }
 
@@ -22,6 +23,7 @@ export function encodeState(state: FilterState): string {
   if (state.factions.length) params.set('f', state.factions.join(','))
   if (state.sources?.length) params.set('src', state.sources.join(','))
   if (state.budgets?.length) params.set('b', state.budgets.join(','))
+  if (state.video) params.set('v', '1')
   if (state.leader !== undefined) params.set('l', String(state.leader))
   if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
   if (state.picks.length) params.set('c', state.picks.join(','))
@@ -59,6 +61,7 @@ export function decodeState(
   return {
     match: params.get('k') === 'any' ? 'any' : 'all',
     factions,
+    video: params.get('v') === '1',
     budgets: [
       ...new Set(
         (params.get('b') ?? '')

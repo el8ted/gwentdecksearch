@@ -41,6 +41,8 @@ export interface FilterState {
   sources?: Source[]
   /** Provision status; empty means any. */
   budgets?: Budget[]
+  /** Only decks with a gameplay video. */
+  video?: boolean
   leader?: number
   stratagem?: number
   /**
@@ -81,6 +83,8 @@ export interface Facets {
   stratagems: Map<number, number>
   cards: Map<number, number>
   tags: Map<TagKey, number>
+  /** Decks with a video. */
+  videos: number
 }
 
 /**
@@ -153,9 +157,10 @@ function hasCards(e: IndexedDeck, s: FilterState): boolean {
 
 function matchesBase(
   e: IndexedDeck,
-  s: Pick<FilterState, 'factions' | 'sources' | 'budgets' | 'leader' | 'stratagem'>,
+  s: Pick<FilterState, 'factions' | 'sources' | 'budgets' | 'video' | 'leader' | 'stratagem'>,
 ): boolean {
   return (
+    (!s.video || e.deck.video !== undefined) &&
     (!s.sources?.length || e.deck.sources.some((src) => s.sources?.includes(src))) &&
     (!s.budgets?.length || s.budgets.includes(e.budget)) &&
     (s.factions.length === 0 || s.factions.includes(e.faction)) &&
@@ -195,7 +200,8 @@ function count<K>(map: Map<K, number>, key: K) {
  *
  * @param decks - Indexed decks
  * @param state - Current filters
- * @returns Counts per faction, source, leader, stratagem, (non-leader, non-stratagem) card and tag
+ * @returns Counts per faction, source, leader, stratagem, (non-leader, non-stratagem) card and tag, and of decks
+ *   with a video
  */
 export function facets(decks: IndexedDeck[], state: FilterState): Facets {
   const keep = (e: IndexedDeck, s: Partial<FilterState>) => matchesBase(e, { ...state, ...s }) && hasCards(e, state)
@@ -207,11 +213,13 @@ export function facets(decks: IndexedDeck[], state: FilterState): Facets {
     stratagems: new Map(),
     cards: new Map(),
     tags: new Map(),
+    videos: 0,
   }
   for (const e of decks) {
     if (keep(e, { factions: [] })) count(result.factions, e.faction)
     if (keep(e, { sources: [] })) for (const src of e.deck.sources) count(result.sources, src)
     if (keep(e, { budgets: [] })) count(result.budgets, e.budget)
+    if (e.deck.video && keep(e, { video: false })) result.videos++
     if (keep(e, { leader: undefined })) count(result.leaders, e.leader)
     if (keep(e, { stratagem: undefined })) count(result.stratagems, e.stratagem)
     if (!keep(e, {})) continue
