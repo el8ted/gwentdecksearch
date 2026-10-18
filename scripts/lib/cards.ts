@@ -13,7 +13,12 @@ export interface SearchHit {
     crafting_cost: number
     rarity: number
     power: number
-    translations: Record<string, { name: string }>
+    /** Category IDs (Beast, Spell…); names come from the builder page (see `extractTagNames`). */
+    category_names: number[]
+    /** Every ability the card text names, as slugs. */
+    keywords: string[]
+    /** `tooltip` marks abilities up as `<keyword=slug>text</keyword>`. */
+    translations: Record<string, { name: string; tooltip?: string }>
   }
 }
 
@@ -66,7 +71,37 @@ export function parseCardSearch(hits: SearchHit[]): Map<number, CatalogCard> {
     }
     if (type === 'unit') card.power = c.power
     if (c.secondary_factions[0]) card.secondaryFaction = toSecondaryFaction(c.secondary_factions[0])
+    const tags = [...new Set([...c.category_names.map((id) => `c${id}`), ...c.keywords])]
+    if (tags.length) card.tags = tags
     cards.set(c.id, card)
   }
   return cards
+}
+
+/**
+ * Ability names as a language's card text writes them, for a builder page that leaves them blank (zh-cn).
+ *
+ * The text inflects them (Order/Orders, 部署/部署：), so each slug takes its most common wording, end punctuation
+ * trimmed.
+ *
+ * @param hits - Search results requested under a language prefix
+ * @param lang - That prefix
+ * @returns Names keyed by ability slug
+ */
+export function abilityNamesFromText(hits: SearchHit[], lang: string): Record<string, string> {
+  const counts = new Map<string, Map<string, number>>()
+  for (const { _source: c } of hits) {
+    for (const [, slug, raw] of (c.translations[lang]?.tooltip ?? '').matchAll(/<keyword=(\w+)>([^<]*)<\/keyword>/g)) {
+      const text = raw.replace(/[\s:：.。]+$/u, '').trim()
+      if (!text) continue
+      const forms = counts.get(slug) ?? new Map<string, number>()
+      counts.set(slug, forms.set(text, (forms.get(text) ?? 0) + 1))
+    }
+  }
+  return Object.fromEntries(
+    [...counts].map(([slug, forms]) => [
+      slug,
+      [...forms].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0],
+    ]),
+  )
 }

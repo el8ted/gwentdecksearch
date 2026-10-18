@@ -13,7 +13,7 @@ O Gwent Deck Search lista os decks publicados de GWENT: The Witcher Card Game e 
 ## Como usar
 
 1. Escolha uma facção e depois um líder. Numa partida, comece pelos do seu oponente.
-2. Digite as cartas que você vê no campo Cartas (tecla /). Cada uma reduz a lista.
+2. Digite as cartas que você vê no campo Cartas (tecla /), ou uma tag como Fera ou Devoção. Cada uma reduz a lista.
 3. Mais comuns mostra as cartas que os decks restantes usam; Menos comuns mostra surpresas raras. Clique numa carta para adicioná-la.
 4. Todas lista os decks com todas as cartas; Alguma lista os que têm pelo menos uma, com as melhores correspondências primeiro.
 5. Clique num deck para ver as cartas. ↗ abre no playgwent.com para importar.

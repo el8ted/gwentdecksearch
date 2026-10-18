@@ -34,7 +34,15 @@ export interface Card {
   power?: number
   /** Card cost; for a leader, the bonus added to the 150 provision limit (current, from playgwent's card search). */
   provisions: number
+  /** {@link TagKey}s: the card's categories, then the abilities its text names. */
+  tags?: TagKey[]
 }
+
+/**
+ * A deck-builder tag: `c{id}` for a category (Beast, Ogroid, Spell…), or an ability's slug (`devotion`, `order`…).
+ * One key per playgwent ID, however the card text words it (Order/Orders, Coin/Coins).
+ */
+export type TagKey = string
 
 /** playgwent's deck totals, which are current. */
 export interface DeckStats {
@@ -69,5 +77,7 @@ export interface Deck {
 export interface Dataset {
   scrapedAt: string
   cards: Record<number, Card>
+  /** English name of every tag on {@link cards}. */
+  tags: Record<TagKey, string>
   decks: Deck[]
 }

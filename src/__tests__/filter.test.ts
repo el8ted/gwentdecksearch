@@ -22,14 +22,14 @@ const card = (name: string, type: Card['type'], faction: Card['faction'], provis
   provisions,
 })
 const CARDS: Dataset['cards'] = {
-  1: card('Arachas Swarm', 'leader', 'MO', 15),
+  1: { ...card('Arachas Swarm', 'leader', 'MO', 15), tags: ['spawn'] },
   2: card('Imperial Formation', 'leader', 'NG', 16),
   10: card('Enchanted Armor', 'stratagem', 'NE', 0),
   11: card('Tactical Advantage', 'stratagem', 'NE', 0),
-  100: card('Golden Nekker', 'special', 'NE', 14),
-  101: card('Chimera', 'unit', 'MO', 5),
+  100: { ...card('Golden Nekker', 'special', 'NE', 14), tags: ['deploy'] },
+  101: { ...card('Chimera', 'unit', 'MO', 5), tags: ['c18'] },
   102: card('Royal Decree', 'special', 'NE', 9),
-  103: card('Cadaverine', 'special', 'NG', 6),
+  103: { ...card('Cadaverine', 'special', 'NG', 6), tags: ['deploy', 'poison'] },
   104: { ...card('Tatterwing', 'unit', 'SY', 9), secondaryFaction: 'MO' },
   105: card('Moonlight', 'special', 'MO', 8),
 }
@@ -50,6 +50,7 @@ const deck = (
 const DATA: Dataset = {
   scrapedAt: '2026-10-13',
   cards: CARDS,
+  tags: {},
   decks: [
     deck('GN Swarm', 'a1', 166, [
       [1, 1],
@@ -205,7 +206,54 @@ describe('matchDecks card matching', () => {
   })
 })
 
+describe('matchDecks tag matching', () => {
+  it("counts a tag on any of the deck's cards, leader included", () => {
+    // Act
+    const [deploy, spawn] = [
+      matchDecks(DECKS, state({ tags: ['deploy'] })),
+      matchDecks(DECKS, state({ tags: ['spawn'] })),
+    ]
+
+    // Assert
+    expect(ids(deploy)).toEqual(['a1', 'c1'])
+    expect(ids(spawn)).toEqual(['a1', 'b1', 'b2'])
+  })
+
+  it('treats tags like cards under all and any', () => {
+    // Arrange
+    const wanted = { cards: [103], tags: ['c18'] }
+
+    // Act
+    const [all, any] = [matchDecks(DECKS, state(wanted)), matchDecks(DECKS, state({ ...wanted, match: 'any' }))]
+
+    // Assert
+    expect(ids(all)).toEqual([])
+    expect(ids(any)).toEqual(['a1', 'b1', 'b2', 'c1'])
+  })
+
+  it('ranks decks with more selected tags first under any', () => {
+    // Act
+    const result = matchDecks(DECKS, state({ tags: ['deploy', 'c18'], match: 'any' }))
+
+    // Assert
+    expect(ids(result)).toEqual(['a1', 'b1', 'b2', 'c1'])
+  })
+})
+
 describe('facets', () => {
+  it('offers only the tags the matching decks have', () => {
+    // Act
+    const f = facets(DECKS, state({ cards: [103] }))
+
+    // Assert
+    expect(f.tags).toEqual(
+      new Map([
+        ['deploy', 1],
+        ['poison', 1],
+      ]),
+    )
+  })
+
   it('counts each dimension with its own filter removed', () => {
     // Arrange
     const s = state({ leader: 1, stratagem: 11 })

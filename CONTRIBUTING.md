@@ -55,7 +55,7 @@ language (`docs/README.{lang}.md`), which is rebuilt from them with `pnpm readme
 ### What you don't need to translate
 
 **Card names and official Gwent terms** come from playgwent.com in all 11 languages and override the phrase files:
-faction names (`faction.*`), `filter.faction`, `filter.stratagem`, `filter.provisions`, `stat.scraps`, `stat.cards`
+faction names (`faction.*`), `filter.faction`, `filter.stratagem`, `filter.provisions`, `filter.tags`, `stat.scraps`, `stat.cards`
 and `stat.units`. Those entries in the phrase files are only fallbacks.
 
 **Deck names** are shown as their authors wrote them when the deck's language matches yours, and in English

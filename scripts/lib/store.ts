@@ -22,6 +22,8 @@ export const STORE_PATHS = {
   cards: 'data/source/cards.json',
   cardNames: 'data/source/card-names.json',
   terms: 'data/source/terms.json',
+  /** Per language: tag key → name (see `extractTagNames`). */
+  tags: 'data/source/tags.json',
   categories: 'data/source/categories.json',
   entries: 'data/source/entries.json',
   decks: 'data/source/deck-store.json',

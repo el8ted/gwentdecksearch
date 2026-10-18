@@ -10,6 +10,9 @@ the release tag and starts a new Unreleased section. -->
 
 - The Provisions filter picks how far a deck is off the limit: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Old links
   to Spare or Over still work ([#4](https://github.com/el8ted/gwentdecksearch/issues/4)).
+- The Cards box also finds the game's deck-builder tags: categories like Beast, Ogroid or Spell, and abilities like
+  Devotion or Order. One tag each, so "Orders" and "Order" find the same one, and only tags in the remaining decks
+  are suggested.
 
 ## 2026-10-17
 

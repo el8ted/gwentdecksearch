@@ -1,4 +1,4 @@
-import type { Card, Dataset, Deck, Faction, Source } from './types.ts'
+import type { Card, Dataset, Deck, Faction, Source, TagKey } from './types.ts'
 
 /** Base provision limit before the leader's bonus. */
 export const BASE_PROVISIONS = 150
@@ -44,7 +44,9 @@ export interface FilterState {
   leader?: number
   stratagem?: number
   cards: number[]
-  /** Deck must contain every selected card (`all`, default) or at least one (`any`). */
+  /** Deck-builder tags: a deck has one if any of its cards (leader and stratagem included) does. */
+  tags?: TagKey[]
+  /** Deck must contain every selected card and tag (`all`, default) or at least one (`any`). */
   match?: 'all' | 'any'
 }
 
@@ -57,6 +59,7 @@ export interface IndexedDeck {
   /** Provision step under the current limit. */
   budget: Budget
   ids: Set<number>
+  tags: Set<TagKey>
 }
 
 /** A deck's provisions against the current-patch limit. */
@@ -75,6 +78,7 @@ export interface Facets {
   leaders: Map<number, number>
   stratagems: Map<number, number>
   cards: Map<number, number>
+  tags: Map<TagKey, number>
 }
 
 /**
@@ -93,7 +97,9 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     // Faction comes from the leader: stratagems and many cards are neutral.
     const faction = data.cards[leader].faction
     const budget = budgetOf(provisionStatus({ deck, leader }, data.cards).delta)
-    return { deck, leader, stratagem, faction, budget, ids: new Set(deck.cards.map(([id]) => id)) }
+    const ids = new Set(deck.cards.map(([id]) => id))
+    const tags = new Set([...ids].flatMap((id) => data.cards[id]?.tags ?? []))
+    return { deck, leader, stratagem, faction, budget, ids, tags }
   })
 }
 
@@ -121,16 +127,17 @@ export function singleFaction(card: Card): Faction | undefined {
   return card.faction === 'NE' || card.secondaryFaction ? undefined : card.faction
 }
 
-/** How many of the selected cards a deck contains. */
-function hits(e: IndexedDeck, cards: number[]): number {
-  return cards.reduce((n, id) => n + (e.ids.has(id) ? 1 : 0), 0)
+/** How many of the selected cards and tags a deck has. */
+function hits(e: IndexedDeck, s: FilterState): number {
+  return s.cards.filter((id) => e.ids.has(id)).length + (s.tags ?? []).filter((k) => e.tags.has(k)).length
 }
 
-/** Whether a deck contains the selected cards: all of them, or at least one with `match: 'any'`. */
+/** Whether a deck has the selected cards and tags: all of them, or at least one with `match: 'any'`. */
 function hasCards(e: IndexedDeck, s: FilterState): boolean {
-  if (s.cards.length === 0) return true
-  const n = hits(e, s.cards)
-  return s.match === 'any' ? n > 0 : n === s.cards.length
+  const wanted = s.cards.length + (s.tags?.length ?? 0)
+  if (wanted === 0) return true
+  const n = hits(e, s)
+  return s.match === 'any' ? n > 0 : n === wanted
 }
 
 function matchesBase(
@@ -148,7 +155,7 @@ function matchesBase(
 
 /**
  * Decks matching every filter, sorted by name (then ID, so same-name alternates stay together). With
- * `match: 'any'`, decks containing more of the selected cards come first.
+ * `match: 'any'`, decks with more of the selected cards and tags come first.
  *
  * @param decks - Indexed decks
  * @param state - Current filters
@@ -161,7 +168,7 @@ export function matchDecks(decks: IndexedDeck[], state: FilterState): IndexedDec
   if (state.match !== 'any') return matched.sort(byName)
   // Counted once per deck, not once per comparison.
   return matched
-    .map((e) => [hits(e, state.cards), e] as const)
+    .map((e) => [hits(e, state), e] as const)
     .sort(([na, a], [nb, b]) => nb - na || byName(a, b))
     .map(([, e]) => e)
 }
@@ -177,7 +184,7 @@ function count<K>(map: Map<K, number>, key: K) {
  *
  * @param decks - Indexed decks
  * @param state - Current filters
- * @returns Counts per faction, source, leader, stratagem and (non-leader, non-stratagem) card
+ * @returns Counts per faction, source, leader, stratagem, (non-leader, non-stratagem) card and tag
  */
 export function facets(decks: IndexedDeck[], state: FilterState): Facets {
   const keep = (e: IndexedDeck, s: Partial<FilterState>) => matchesBase(e, { ...state, ...s }) && hasCards(e, state)
@@ -188,6 +195,7 @@ export function facets(decks: IndexedDeck[], state: FilterState): Facets {
     leaders: new Map(),
     stratagems: new Map(),
     cards: new Map(),
+    tags: new Map(),
   }
   for (const e of decks) {
     if (keep(e, { factions: [] })) count(result.factions, e.faction)
@@ -195,7 +203,9 @@ export function facets(decks: IndexedDeck[], state: FilterState): Facets {
     if (keep(e, { budgets: [] })) count(result.budgets, e.budget)
     if (keep(e, { leader: undefined })) count(result.leaders, e.leader)
     if (keep(e, { stratagem: undefined })) count(result.stratagems, e.stratagem)
-    if (keep(e, {})) for (const id of e.ids) if (id !== e.leader && id !== e.stratagem) count(result.cards, id)
+    if (!keep(e, {})) continue
+    for (const id of e.ids) if (id !== e.leader && id !== e.stratagem) count(result.cards, id)
+    for (const k of e.tags) count(result.tags, k)
   }
   return result
 }

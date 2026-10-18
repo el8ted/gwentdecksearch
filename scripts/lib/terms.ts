@@ -11,6 +11,7 @@ const OFFICIAL_TERMS: Record<string, string> = {
   faction_name_6: 'faction.SY',
   filter_faction: 'filter.faction',
   filter_type_25: 'filter.stratagem',
+  filters_tags: 'filter.tags',
   tooltip_title_provision: 'filter.provisions',
   tooltip_title_scraps: 'stat.scraps',
   tooltip_title_cards: 'stat.cards',
@@ -38,4 +39,26 @@ export function extractTerms(html: string): Record<string, string> {
     terms[key] = value.trim()
   }
   return terms
+}
+
+/**
+ * Reads tag names from a localized playgwent deck-builder page's `data-state`. playgwent's own field names are
+ * swapped: `keywords` holds categories (ID → name), `categories` holds abilities (slug → name).
+ *
+ * @param html - `https://www.playgwent.com/{lang}/decks/builder` HTML
+ * @returns Names by tag key (`c{id}` or slug); blank names (zh-cn's abilities) are left out
+ * @throws {Error} If the state or either list is missing, so a site change surfaces
+ */
+export function extractTagNames(html: string): Record<string, string> {
+  const raw = html.match(/data-state='([^']*)'/)?.[1]
+  if (!raw) throw new Error('No data-state attribute on playgwent deck builder')
+  const { keywords, categories } = JSON.parse(decodeEntities(raw))
+  if (!keywords || !categories) throw new Error('playgwent deck builder lists no tags')
+  const names: [string, unknown][] = [
+    ...Object.entries(keywords as Record<string, unknown>).map(([id, name]) => [`c${id}`, name] as [string, unknown]),
+    ...Object.entries(categories as Record<string, unknown>),
+  ]
+  return Object.fromEntries(
+    names.flatMap(([key, name]) => (typeof name === 'string' && name.trim() ? [[key, name.trim()]] : [])),
+  )
 }

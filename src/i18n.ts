@@ -33,6 +33,8 @@ export interface LanguagePack {
   /** Official playgwent terms, keyed like phrases (e.g. `faction.MO`); they override phrases. */
   terms: Record<string, string>
   cards: Record<number, string>
+  /** Deck-builder tag names by tag key. */
+  tags?: Record<string, string>
 }
 
 /**
@@ -105,6 +107,8 @@ export interface Locale {
   t: ReturnType<typeof createTranslator>
   /** Card name in this language (English until the language pack loads). */
   card: (id: number) => string
+  /** Tag name in this language (English until the language pack loads). */
+  tag: (key: string) => string
   num: (n: number) => string
   /** A date in this language, as its UTC day (like the data date, the same for everyone). */
   date: (iso: string) => string

@@ -92,6 +92,7 @@ function makeLocale(lang: Lang, pack?: LanguagePack): Locale {
     lang,
     t: createTranslator(lang, PHRASES, pack?.terms),
     card: (id) => pack?.cards[id] ?? data.cards[id]?.name ?? String(id),
+    tag: (key) => pack?.tags?.[key] ?? data.tags[key] ?? key,
     num: (n) => num.format(n),
     date: (iso) => date.format(new Date(iso)),
     pg: (url) => playgwentUrl(url, lang),
@@ -114,7 +115,13 @@ function loadPack(lang: Lang): Promise<LanguagePack | undefined> {
 
 const params = new URLSearchParams(location.search)
 let loc = makeLocale(pickLanguage(params.get('lang'), readStorage(LANG_KEY), navigator.languages))
-let state: FilterState = decodeState(location.hash, (id) => data.cards[id])
+const readHash = () =>
+  decodeState(
+    location.hash,
+    (id) => data.cards[id],
+    (key) => Object.hasOwn(data.tags, key),
+  )
+let state: FilterState = readHash()
 // The faction pill that adding a card turned on (see addCard); a pill click makes the choice the visitor's own.
 // Not in the hash: after a reload the pill simply stays.
 let autoFaction: Faction | undefined
@@ -209,6 +216,22 @@ function removeCard(id: number) {
   update({ cards, ...(undo && { factions: [] }) })
 }
 
+function addTag(key: string) {
+  if (!state.tags?.includes(key)) update({ tags: [...(state.tags ?? []), key] })
+}
+
+function removeTag(key: string) {
+  update({ tags: state.tags?.filter((k) => k !== key) })
+}
+
+/** Backspace in the empty card box, and the no-results link: the last chip goes (tags are listed after cards). */
+function lastChip(): { tag: string } | { card: number } | undefined {
+  const tag = state.tags?.at(-1)
+  if (tag !== undefined) return { tag }
+  const card = state.cards.at(-1)
+  return card === undefined ? undefined : { card }
+}
+
 /** A single-select pill for a leader or stratagem; clicking the selected one clears it. */
 function cardPill(attr: 'leader' | 'stratagem', id: number, counts: Map<number, number>, selected?: number) {
   const n = counts.get(id) ?? 0
@@ -291,6 +314,12 @@ function renderFilters() {
       const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
       return `<li class="chip f-${card.faction}${dual}">${name}<button type="button" data-remove="${id}" aria-label="${esc(t('cards.remove', { name: loc.card(id) }))}">✕</button></li>`
     })
+    .concat(
+      (state.tags ?? []).map(
+        (key) =>
+          `<li class="chip tag"><span aria-hidden="true">#</span>${esc(loc.tag(key))}<button type="button" data-remove-tag="${esc(key)}" aria-label="${esc(t('cards.remove', { name: loc.tag(key) }))}">✕</button></li>`,
+      ),
+    )
     .join('')
 }
 
@@ -313,7 +342,12 @@ function renderBars(rows: [number, number][], total: number) {
 
 function renderResults() {
   const { t } = loc
-  const selected = new Set(state.cards)
+  // Cards carrying a selected tag are highlighted too, so an expanded deck shows why it matched.
+  const tags = state.tags ?? []
+  const tagged = Object.keys(data.cards)
+    .map(Number)
+    .filter((id) => data.cards[id].tags?.some((k) => tags.includes(k)))
+  const selected = new Set([...state.cards, ...tagged])
   const matches = matchDecks(decks, state)
   els.resultHead.textContent = t('results.count', { n: matches.length })
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
@@ -337,14 +371,15 @@ function renderResults() {
   els.expandAll.disabled = shown.length === 0
   els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
   els.dimCommon.disabled = shown.length < 2
-  const last = state.cards.at(-1)
+  const last = lastChip()
+  const undo = !last
+    ? ''
+    : 'tag' in last
+      ? `data-remove-tag="${esc(last.tag)}">${esc(t('results.removeCard', { name: loc.tag(last.tag) }))}`
+      : `data-remove="${last.card}">${esc(t('results.removeCard', { name: loc.card(last.card) }))}`
   els.results.innerHTML = rows.length
     ? rows.join('')
-    : `<li class="empty-state">${esc(t('results.none'))}${
-        last === undefined
-          ? ''
-          : ` <button type="button" class="link" data-remove="${last}">${esc(t('results.removeCard', { name: loc.card(last) }))}</button>`
-      }</li>`
+    : `<li class="empty-state">${esc(t('results.none'))}${undo && ` <button type="button" class="link" ${undo}</button>`}</li>`
 }
 
 function render() {
@@ -363,10 +398,12 @@ const autocomplete = createAutocomplete({
     const chosen = new Set(state.cards)
     return new Map([...current.cards].filter(([id]) => !chosen.has(id)))
   },
+  tagCandidates: () => new Map([...current.tags].filter(([key]) => !state.tags?.includes(key))),
   onPick: addCard,
+  onPickTag: addTag,
   onBackspace: () => {
-    const last = state.cards.at(-1)
-    if (last !== undefined) removeCard(last)
+    const last = lastChip()
+    if (last) 'tag' in last ? removeTag(last.tag) : removeCard(last.card)
   },
 })
 
@@ -404,6 +441,7 @@ const FOCUS_KEYS = [
   ['budget', 'data-budget'],
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
+  ['removeTag', 'data-remove-tag'],
   ['add', 'data-add'],
   ['anyStratagem', 'data-any-stratagem'],
   ['leader', 'data-leader'],
@@ -423,7 +461,20 @@ document.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest<HTMLElement>('button')
   if (!t) return
   if (t.dataset.skip) return JUMPS[t.dataset.skip]?.()?.focus()
-  const { faction, source, budget, leader, stratagem, remove, add, toggle, anyStratagem, match, more } = t.dataset
+  const {
+    faction,
+    source,
+    budget,
+    leader,
+    stratagem,
+    remove,
+    removeTag: untag,
+    add,
+    toggle,
+    anyStratagem,
+    match,
+    more,
+  } = t.dataset
   // A card added from the panel leaves it: the card below moves into its place, so focus goes there (not the card box,
   // which would scroll a phone back up and open its keyboard).
   const barAt = add ? [...els.bars.querySelectorAll('[data-add]')].indexOf(t) : -1
@@ -455,6 +506,7 @@ document.addEventListener('click', (e) => {
     autoFaction = undefined
     update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
   } else if (remove) removeCard(Number(remove))
+  else if (untag) removeTag(untag)
   else if (add) addCard(Number(add))
   else if (toggle) {
     if (!expanded.delete(toggle)) expanded.add(toggle)
@@ -477,7 +529,7 @@ document.addEventListener('click', (e) => {
     const fallback =
       k === 'anyStratagem'
         ? els.stratagem.querySelector('button')
-        : k === 'remove' || k === 'add'
+        : k === 'remove' || k === 'removeTag' || k === 'add'
           ? els.input
           : undefined
     ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(t.dataset[k] ?? '')}"]`) ?? fallback)?.focus()
@@ -516,7 +568,7 @@ document.addEventListener('keydown', (e) => {
   hit[1]()
 })
 window.addEventListener('hashchange', () => {
-  state = decodeState(location.hash, (id) => data.cards[id])
+  state = readHash()
   autoFaction = undefined
   limit = PAGE
   render()

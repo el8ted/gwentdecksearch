@@ -7,6 +7,7 @@ export const EMPTY_STATE: FilterState = {
   sources: [],
   budgets: [],
   cards: [],
+  tags: [],
   match: 'all',
 }
 
@@ -25,6 +26,7 @@ export function encodeState(state: FilterState): string {
   if (state.leader !== undefined) params.set('l', String(state.leader))
   if (state.stratagem !== undefined) params.set('s', String(state.stratagem))
   if (state.cards.length) params.set('c', state.cards.join(','))
+  if (state.tags?.length) params.set('t', state.tags.join(','))
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -33,16 +35,18 @@ export function encodeState(state: FilterState): string {
  * Parses a URL hash back into filters.
  *
  * Hashes come from bookmarks and may predate a data refresh, so unknown factions or card IDs are
- * dropped rather than rejected, as is a leader or stratagem ID that isn't one, or a leader outside the chosen faction
+ * dropped rather than rejected (tags too), as is a leader or stratagem ID that isn't one, or a leader outside the chosen faction
  * (the page would show that faction's leaders, none of them selected, and no decks).
  *
  * @param hash - `location.hash`, with or without `#`
  * @param cardOf - A card in the current dataset, or `undefined` if it isn't there
+ * @param isTag - Whether a tag key is in the current dataset
  * @returns Parsed filters; defaults for anything missing or invalid
  */
 export function decodeState(
   hash: string,
   cardOf: (id: number) => Pick<Card, 'type' | 'faction'> | undefined,
+  isTag: (key: string) => boolean,
 ): FilterState {
   const typeOf = (id: number) => cardOf(id)?.type
   const params = new URLSearchParams(hash.replace(/^#/, ''))
@@ -73,5 +77,6 @@ export function decodeState(
         : leader,
     stratagem: ids('s', 'stratagem')[0],
     cards: [...new Set(ids('c'))],
+    tags: [...new Set((params.get('t') ?? '').split(',').filter(isTag))],
   }
 }

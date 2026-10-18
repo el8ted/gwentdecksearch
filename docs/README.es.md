@@ -13,7 +13,7 @@ Gwent Deck Search lista los mazos publicados de GWENT: The Witcher Card Game y l
 ## Cómo se usa
 
 1. Elige una facción y luego un líder. En una partida, empieza por los de tu rival.
-2. Escribe en el cuadro Cartas las cartas que veas (pulsa /). Cada una reduce la lista.
+2. Escribe en el cuadro Cartas las cartas que veas (pulsa /), o una etiqueta como Bestia o Devoción. Cada una reduce la lista.
 3. Más comunes muestra las cartas que llevan los mazos restantes; Menos comunes muestra sorpresas poco habituales. Haz clic en una para añadirla.
 4. Todas lista los mazos con todas las cartas; Alguna, los que tienen al menos una, con las mejores coincidencias primero.
 5. Haz clic en un mazo para ver sus cartas. ↗ lo abre en playgwent.com para importarlo.

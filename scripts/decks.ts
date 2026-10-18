@@ -46,6 +46,7 @@ const { dataset } = buildDataset({
   cards,
   cardNames,
   terms: {},
+  tags: {},
   categories,
   translations,
   scrapedAt: '',

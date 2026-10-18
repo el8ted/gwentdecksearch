@@ -278,6 +278,9 @@ h1 span {
   border-left: 3px solid var(--fc);
   font-size: 0.9rem;
 }
+.tag {
+  --fc: var(--accent);
+}
 .chip button {
   border: 0;
   background: none;
@@ -1136,9 +1139,21 @@ h1 span {
   color: var(--accent-ink);
   font-weight: 600;
 }
-.sug-alt {
+.sug-alt,
+.sug-kind {
   color: var(--muted);
   font-size: 0.85em;
+}
+.sug-kind {
+  margin-left: 0.3rem;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+/* A tag has no cost: the # mark sits where a card's cost would. */
+.suggestions .tag .cost {
+  background: none;
+  color: var(--muted);
 }
 
 /* Skip links: off-screen until focused (screen readers still reach them), then a bar at the top. */

@@ -1,5 +1,5 @@
 /**
- * Card refresh: refetches card data from playgwent (provisions, names, official terms) into data/source/. Cards
+ * Card refresh: refetches card data from playgwent (provisions, names, tags, official terms) into data/source/. Cards
  * only change with the monthly Balance Council vote, so most runs change nothing. Then run `pnpm build:data`.
  *
  * Run: `pnpm scrape:cards`.
@@ -12,7 +12,7 @@ import { markRefreshed, readJson, STORE_PATHS, writeJson } from './lib/store.ts'
 
 const get = createPoliteFetch({ 'www.playgwent.com': 1_000 })
 const before = await readJson(STORE_PATHS.cards, {})
-const { cards, cardNames, terms } = await fetchCardData(get)
+const { cards, cardNames, terms, tags } = await fetchCardData(get)
 
 await markRefreshed('cards')
 const changes = cardChanges(before, cards)
@@ -21,6 +21,7 @@ const written = [
   (await writeJson(STORE_PATHS.cards, cards)) && STORE_PATHS.cards,
   (await writeJson(STORE_PATHS.cardNames, cardNames)) && STORE_PATHS.cardNames,
   (await writeJson(STORE_PATHS.terms, terms)) && STORE_PATHS.terms,
+  (await writeJson(STORE_PATHS.tags, tags)) && STORE_PATHS.tags,
 ].filter(Boolean)
 consola.success(
   written.length

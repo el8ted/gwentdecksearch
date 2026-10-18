@@ -36,7 +36,8 @@ between matches to find a deck to build.
 ## Quick start
 
 1. Pick a **faction**, then a **leader**. In a match, start with your opponent's.
-2. Type the cards you see into the **Cards** box (press <kbd>/</kbd> to jump there). Each card narrows the list.
+2. Type the cards you see into the **Cards** box (press <kbd>/</kbd> to jump there), or a tag such as Beast or
+   Devotion. Each one narrows the list.
 3. **Most common** shows the cards the remaining decks run; **Least common** shows rare surprises. Click a card to
    add it.
 4. **All** lists decks with every card you've added; **Any** lists decks with at least one, best matches first.
@@ -67,6 +68,11 @@ icon to see its name; the selected leader's name is shown next to the icons.
 
 **2. Add the cards you see.** Press <kbd>/</kbd> and start typing. Suggestions show each card's provision cost and
 how many of the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd> to add.
+
+**Tags** work the same way: type a category like Beast, Ogroid or Spell, or an ability like Devotion or Order, to
+keep the decks with at least one such card. They're the tags of the game's deck builder, one per tag however the card
+text words it, so "Orders" or "Beasts" finds the same tag. Only tags some remaining deck has are suggested. A tag
+counts as one of your picks for **All** and **Any**, and an expanded deck highlights the cards that carry it.
 
 ![Typing "kiki" in the Cards box suggests Kikimore cards, each with its provision cost and how many of the remaining decks run it](docs/screenshots/autocomplete.png)
 

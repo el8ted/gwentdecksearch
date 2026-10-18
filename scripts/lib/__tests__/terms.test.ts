@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { extractTerms } from '../terms.ts'
+import { extractTagNames, extractTerms } from '../terms.ts'
 
 const page = (dict: Record<string, string>) =>
   `<div data-translations='${JSON.stringify(dict).replaceAll('"', '&quot;').replaceAll("'", '&#039;')}'></div>`
@@ -13,6 +13,7 @@ const FULL = {
   faction_name_6: 'Синдикат',
   filter_faction: 'Фракция',
   filter_type_25: 'Стратегический прием',
+  filters_tags: 'Ключевые слова',
   tooltip_title_provision: 'Стоимость найма',
   tooltip_title_scraps: 'Обрывки ',
   tooltip_title_cards: 'Карты',
@@ -32,7 +33,7 @@ describe('extractTerms', () => {
     expect(terms['faction.ST']).toBe("Скоя'таэли")
     expect(terms['stat.scraps']).toBe('Обрывки')
     expect(terms['filter.stratagem']).toBe('Стратегический прием')
-    expect(Object.keys(terms)).toHaveLength(13)
+    expect(Object.keys(terms)).toHaveLength(14)
   })
 
   it('throws when a term is missing or the attribute is absent', () => {
@@ -45,5 +46,29 @@ describe('extractTerms', () => {
     // Assert
     expect(acts[0]).toThrow('"filter_faction" missing')
     expect(acts[1]).toThrow('No data-translations')
+  })
+})
+
+describe('extractTagNames', () => {
+  const state = (s: unknown) => `<div data-state='${JSON.stringify(s).replaceAll('"', '&quot;')}'></div>`
+
+  it('keys categories as c{id} and abilities by slug, skipping blank names', () => {
+    // Arrange
+    const html = state({ keywords: { 6: 'Огроид', 12: ' Зверь ' }, categories: { devotion: 'Верность', order: '' } })
+
+    // Act
+    const names = extractTagNames(html)
+
+    // Assert
+    expect(names).toEqual({ c6: 'Огроид', c12: 'Зверь', devotion: 'Верность' })
+  })
+
+  it('throws when the state or its tag lists are missing', () => {
+    // Act
+    const acts = [() => extractTagNames('<div></div>'), () => extractTagNames(state({ keywords: {} }))]
+
+    // Assert
+    expect(acts[0]).toThrow('No data-state')
+    expect(acts[1]).toThrow('lists no tags')
   })
 })

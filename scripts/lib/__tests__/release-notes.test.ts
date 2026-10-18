@@ -26,6 +26,7 @@ const deck = (id: string, sources: Deck['sources']): Deck => ({
 const data = (decks: Deck[], cards: Dataset['cards'], scrapedAt = '2026-10-24T00:17:30.000Z'): Dataset => ({
   scrapedAt,
   cards,
+  tags: {},
   decks,
 })
 const BEFORE = data(

@@ -18,6 +18,8 @@ export interface BuildInput {
   cardNames: Record<string, Record<number, string>>
   /** Per language: phrase key → official term. */
   terms: Record<string, Record<string, string>>
+  /** Per language (English included): tag key → name. */
+  tags: Record<string, Record<string, string>>
   /** Per language: localized category (list) → English. */
   categories: Record<string, Record<string, string>>
   /** Per language: original deck name → English (hand-edited or machine-translated). */
@@ -53,8 +55,12 @@ export function glossaryFor(lang: string, input: Pick<BuildInput, 'cards' | 'car
   return glossary
 }
 
-/** The app's view of a catalog card, keys in the order the dataset has always used. */
-function appCard({ name, type, faction, provisions, power, secondaryFaction }: CatalogCard): Card {
+/** The app's view of a catalog card, keys in the order the dataset has always used; `tags` only the named ones. */
+function appCard(
+  { name, type, faction, provisions, power, secondaryFaction, tags }: CatalogCard,
+  named: Set<string>,
+): Card {
+  const known = tags?.filter((k) => named.has(k)) ?? []
   return {
     name,
     type,
@@ -62,6 +68,7 @@ function appCard({ name, type, faction, provisions, power, secondaryFaction }: C
     provisions,
     ...(power !== undefined && { power }),
     ...(secondaryFaction && { secondaryFaction }),
+    ...(known.length && { tags: known }),
   }
 }
 
@@ -85,6 +92,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
   for (const e of entries) urlSources.set(e.url, (urlSources.get(e.url) ?? new Set()).add(e.source))
   const seen = new Set<string>()
   const glossaries = new Map<string, Glossary>()
+  const tagNames = input.tags.en ?? {}
+  const named = new Set(Object.keys(tagNames))
 
   for (const entry of entries) {
     // Later entries for the same URL only add their source (collected above).
@@ -103,7 +112,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
     }
     const copies = stored.cards.map(([id, n]) => [id, n] as [number, number])
     if (!copies.some(([id]) => catalog[id].type === 'stratagem')) copies.splice(1, 0, [DEFAULT_STRATAGEM, 1])
-    for (const [id] of copies) used[id] ??= appCard(catalog[id])
+    for (const [id] of copies) used[id] ??= appCard(catalog[id], named)
 
     const known = byHash.get(stored.hash)
     if (known) {
@@ -148,6 +157,15 @@ export function buildDataset(input: BuildInput): BuildOutput {
     decks.push(deck)
   }
 
+  // A tag playgwent gives no English name for can't be offered as a search term.
+  const unnamed = new Set(
+    Object.keys(used).flatMap((id) => catalog[Number(id)].tags?.filter((k) => !named.has(k)) ?? []),
+  )
+  if (unnamed.size) warnings.push(`tags with no English name, left out: ${[...unnamed].sort().join(', ')}`)
+  const tags = Object.fromEntries(
+    [...new Set(Object.values(used).flatMap((c) => c.tags ?? []))].sort().map((k) => [k, tagNames[k]]),
+  )
+
   const packs: Record<string, string> = {}
   for (const lang of LANGUAGES.filter((l) => l !== 'en')) {
     const names = input.cardNames[lang] ?? {}
@@ -157,12 +175,16 @@ export function buildDataset(input: BuildInput): BuildOutput {
     const missingNames = Object.keys(used).filter((id) => names[Number(id)] === undefined).length
     if (missingNames) warnings.push(`${lang}: ${missingNames} cards have no localized name; using English`)
     const terms = Object.fromEntries(TERM_KEYS.map((k) => [k, input.terms[lang]?.[k]]))
-    const pack = JSON.stringify({ terms, cards: packCards })
+    const localTags = input.tags[lang] ?? {}
+    const packTags = Object.fromEntries(Object.entries(tags).map(([k, en]) => [k, localTags[k] ?? en]))
+    const missingTags = Object.keys(tags).filter((k) => localTags[k] === undefined).length
+    if (missingTags) warnings.push(`${lang}: ${missingTags} tags have no localized name; using English`)
+    const pack = JSON.stringify({ terms, cards: packCards, tags: packTags })
     packs[lang] = `;(globalThis.GDS_I18N ??= {})[${JSON.stringify(lang)}] = ${pack}\n`
   }
 
   return {
-    dataset: { scrapedAt: input.scrapedAt, cards: used, decks },
+    dataset: { scrapedAt: input.scrapedAt, cards: used, tags, decks },
     decklist: decklistMarkdown(decks, used),
     packs,
     warnings,

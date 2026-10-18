@@ -43,6 +43,7 @@ const input = (i: Partial<BuildInput> = {}): BuildInput => ({
   cards: CARDS,
   cardNames: {},
   terms: {},
+  tags: {},
   categories: {},
   translations: {},
   scrapedAt: '2026-10-14T00:00:00.000Z',
@@ -168,6 +169,21 @@ describe('buildDataset', () => {
     // Assert
     const cards = JSON.parse(packs.ru.slice(packs.ru.indexOf('] = ') + 4)).cards
     expect(cards).toEqual({ 1: 'Arachas Swarm', 10: 'Enchanted Armor', 100: 'Химера', 101: 'Golden Nekker' })
+  })
+
+  it('keeps named tags on cards, lists their English names and localizes them in packs', () => {
+    // Arrange
+    const cards = { ...CARDS, 100: { ...CARDS[100], tags: ['c12', 'mystery', 'order'] } }
+    const tags = { en: { c12: 'Beast', order: 'Order', c6: 'Ogroid' }, ru: { c12: 'Зверь' } }
+
+    // Act
+    const { dataset, packs, warnings } = buildDataset(input({ cards, tags }))
+
+    // Assert
+    expect(dataset.cards[100].tags).toEqual(['c12', 'order'])
+    expect(dataset.tags).toEqual({ c12: 'Beast', order: 'Order' })
+    expect(JSON.parse(packs.ru.slice(packs.ru.indexOf('] = ') + 4)).tags).toEqual({ c12: 'Зверь', order: 'Order' })
+    expect(warnings).toContain('tags with no English name, left out: mystery')
   })
 
   it('keeps only app fields on dataset cards', () => {

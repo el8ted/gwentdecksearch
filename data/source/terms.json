@@ -10,6 +10,7 @@
     "filter.faction": "Fraktion",
     "filter.provisions": "Rekrutierungskosten",
     "filter.stratagem": "Kriegslist",
+    "filter.tags": "Tags",
     "stat.cards": "Karten",
     "stat.scraps": "Scraps",
     "stat.units": "Einheiten"
@@ -25,6 +26,7 @@
     "filter.faction": "Facción",
     "filter.provisions": "Reclutamiento",
     "filter.stratagem": "Estratagema",
+    "filter.tags": "Etiquetas",
     "stat.cards": "Cartas",
     "stat.scraps": "Restos",
     "stat.units": "Unidades"
@@ -40,6 +42,7 @@
     "filter.faction": "Faction",
     "filter.provisions": "Recrutement",
     "filter.stratagem": "Stratagème",
+    "filter.tags": "Catégories",
     "stat.cards": "Cartes",
     "stat.scraps": "Fragments",
     "stat.units": "Unités"
@@ -55,6 +58,7 @@
     "filter.faction": "Fazione",
     "filter.provisions": "Reclutamento",
     "filter.stratagem": "Stratagemma",
+    "filter.tags": "Tag",
     "stat.cards": "Carte",
     "stat.scraps": "Componenti",
     "stat.units": "Unità"
@@ -70,6 +74,7 @@
     "filter.faction": "勢力",
     "filter.provisions": "構築コスト",
     "filter.stratagem": "ストラタジェム",
+    "filter.tags": "タグ",
     "stat.cards": "カード",
     "stat.scraps": "紙片",
     "stat.units": "ユニット"
@@ -85,6 +90,7 @@
     "filter.faction": "세력",
     "filter.provisions": "유지비",
     "filter.stratagem": "책략",
+    "filter.tags": "태그",
     "stat.cards": "카드",
     "stat.scraps": "조각",
     "stat.units": "유닛들"
@@ -100,6 +106,7 @@
     "filter.faction": "Frakcja",
     "filter.provisions": "Prowizje",
     "filter.stratagem": "Manewr Bojowy",
+    "filter.tags": "Tagi",
     "stat.cards": "Karty",
     "stat.scraps": "Fragmenty kart",
     "stat.units": "Jednostki"
@@ -115,6 +122,7 @@
     "filter.faction": "Facção",
     "filter.provisions": "Recrutamento",
     "filter.stratagem": "Estratégia",
+    "filter.tags": "Tags",
     "stat.cards": "Cartas",
     "stat.scraps": "Restos",
     "stat.units": "Unidades"
@@ -130,6 +138,7 @@
     "filter.faction": "Фракция",
     "filter.provisions": "Стоимость найма",
     "filter.stratagem": "Стратегический прием",
+    "filter.tags": "Ключевые слова",
     "stat.cards": "Карты",
     "stat.scraps": "Обрывки",
     "stat.units": "Отряды"
@@ -145,6 +154,7 @@
     "filter.faction": "阵营",
     "filter.provisions": "人口",
     "filter.stratagem": "战术牌",
+    "filter.tags": "标签",
     "stat.cards": "卡牌",
     "stat.scraps": "碎片",
     "stat.units": "单位"
