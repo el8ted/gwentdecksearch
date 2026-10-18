@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-18
+
 - The site has its own icon, drawn by el8ted's daughter: a pixel-art card and magnifier, in browser tabs, bookmarks and
   on phone home screens. She's in the Credits.
 - The Provisions filter picks how far a deck is off the limit: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Old links
