@@ -47,6 +47,19 @@ change, add a line under `## Unreleased`, e.g. "Phones: the Language menu opens 
 At release time the workflow puts those lines at the top of the release notes, adds what changed in the data, and
 moves them under the release's own heading in the changelog. Data-only releases have no lines of their own.
 
+## Before releasing a new feature
+
+Tests check that a feature works, not that players can find it. Before merging anything players will see, check each
+place they'd learn about it:
+
+- **The Search box's placeholder**, if it changes what Search takes (it has to fit a phone: measure, don't guess).
+- **Help** (`help.*` phrases): the steps and the sections. Then `pnpm readmes`, since the steps make up the translated
+  READMEs.
+- **[The guide](docs/guide.md)**: the walkthrough it belongs in, and the reference.
+- **The changelog**: a line under `## Unreleased`.
+- **Screenshots**, if it's visible: `pnpm build && pnpm screenshots`.
+- **Translations**: new or changed phrases in every language, listed under `_needsReview`.
+
 ## Automatic data updates
 
 `.github/workflows/update.yml` refreshes the data and, if any deck or card changed, commits it to `main` and publishes
