@@ -152,6 +152,18 @@ These are committed, and rebuilt by a script when their inputs change:
 | `docs/README.{lang}.md` | `pnpm readmes` | `help.*` phrases change in `src/i18n/`. |
 | `data/decks.json`, `data/decklist.md`, `data/i18n/*.js` | `pnpm build:data` | Anything in `data/source/` changes. |
 
+## Replying on Reddit
+
+When someone shares a deck on Reddit, `pnpm reddit <playgwent.com deck or guide link>` prints a short comment to paste
+in reply: the deck's gameplay video and, if it's over today's provision limit, the close decks that still fit, each
+linked into the site. It uses the local `data/decks.json`, so pull or `pnpm build:data` first.
+
+It prints nothing, and says why, when the deck has no video and fits: a reply with nothing new in it is just an ad.
+Add `--author` when you're the site's author: it ends the comment with "I made Gwent Deck Search; happy to answer
+questions." (true only for you, so it's not the default). A sentence of your own about the post reads better than any
+template.
+Post by hand, only where it helps, and check the subreddit's rules on links and self-promotion first.
+
 ## First-time setup
 
 Done once, in the repo's **Settings**:
