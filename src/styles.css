@@ -474,6 +474,10 @@ h1 span {
 }
 .open {
   display: grid;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
   place-items: center;
   width: 2rem;
   height: 2rem;
@@ -550,6 +554,12 @@ h1 span {
 .badge.over {
   background: color-mix(in srgb, var(--over) 22%, transparent);
   color: var(--over-text);
+}
+/* Cards in common with the deck a Similar list is ranked against. */
+.badge.shared {
+  margin-left: 0;
+  cursor: default;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .badge.spare {
   background: color-mix(in srgb, var(--spare) 20%, transparent);

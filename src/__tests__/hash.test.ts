@@ -145,6 +145,19 @@ describe('decodeState', () => {
     expect([decode(hash), decode('#d=dup'), decode('#d=gone')]).toEqual(['abc', 'abc', undefined])
   })
 
+  it('round-trips a similar-decks deck, dropping an unknown one', () => {
+    // Arrange
+    const listOf = (id: string) => ({ abc: 'abc', dup: 'abc' })[id]
+    const decode = (hash: string) => decodeState(hash, cardOf, isTag, () => false, listOf).near
+
+    // Act
+    const hash = encodeState({ ...EMPTY_STATE, near: 'dup' })
+
+    // Assert: the deck itself, not its card list
+    expect(hash).toBe('#n=dup')
+    expect([decode(hash), decode('#n=gone')]).toEqual(['dup', undefined])
+  })
+
   it('returns the empty state for an empty hash', () => {
     // Arrange
     const hash = ''

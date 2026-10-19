@@ -11,6 +11,7 @@ import {
   indexDecks,
   listForUrl,
   matchDecks,
+  overlap,
   provisionStatus,
   sharedCards,
   singleFaction,
@@ -592,5 +593,43 @@ describe('deck URLs', () => {
     // Assert
     expect(ids(all)).toEqual([GUIDE, TWIN])
     expect(none).toEqual([])
+  })
+})
+
+describe('similar decks', () => {
+  const [a1, b1, b2] = DECKS
+
+  it('counts shared cards with copies, leaving out leader and stratagem', () => {
+    // Act
+    const counts = [overlap(a1, b1), overlap(a1, b2), overlap(b2, a1)]
+
+    // Assert: a1 and b1 share Chimera ×2 and Royal Decree; b2 runs Chimera once
+    expect(counts).toEqual([3, 1, 1])
+  })
+
+  it('ranks the deck itself first, then by cards in common, ties by name', () => {
+    // Act
+    const ranked = matchDecks(DECKS, state({ near: 'a1' }), 0)
+
+    // Assert
+    expect(ids(ranked)).toEqual(['a1', 'b1', 'b2', 'c1'])
+  })
+
+  it('keeps only decks sharing at least minShared cards, in the counts too', () => {
+    // Act
+    const ranked = matchDecks(DECKS, state({ near: 'a1' }), 2)
+    const counts = facets(DECKS, state({ near: 'a1' }), 2)
+
+    // Assert
+    expect(ids(ranked)).toEqual(['a1', 'b1'])
+    expect([...counts.leaders]).toEqual([[1, 2]])
+  })
+
+  it('still applies the other filters', () => {
+    // Act
+    const ranked = matchDecks(DECKS, state({ near: 'a1', leader: 1, picks: [101], sources: ['metallic-danny'] }), 0)
+
+    // Assert
+    expect(ids(ranked)).toEqual(['b2'])
   })
 })

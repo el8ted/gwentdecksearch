@@ -9,4 +9,9 @@ export const CONFIG = {
   frequencyBars: 20,
   /** Card suggestions shown while typing. */
   maxSuggestions: 12,
+  /**
+   * Cards (of a deck's 25 besides leader and stratagem) another deck must share to count as similar (≈). At 15, about
+   * two in three decks find at least one, typically a handful; raise it for closer variants, lower it for more.
+   */
+  similarMinShared: 15,
 }

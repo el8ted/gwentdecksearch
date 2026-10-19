@@ -7,11 +7,13 @@ import {
   type Budget,
   budgetSide,
   cardFrequency,
+  deckBody,
   type FilterState,
   facets,
   indexDecks,
   listForUrl,
   matchDecks,
+  overlap,
   pickedCards,
   sharedCards,
   singleFaction,
@@ -142,6 +144,8 @@ let state: FilterState = readHash()
 let autoFaction: Faction | undefined
 // A pasted deck URL replaced an earlier search: say so, and that Back brings it back. Cleared with the deck filter.
 let deckReplaced = false
+// The search before ≈, which ✕ on the Similar pill restores. Not in the hash: a shared ≈ link has nothing to restore.
+let beforeNear: FilterState | undefined
 let current = facets(decks, state)
 const expanded = new Set<string>()
 // Side-panel ordering; a view choice, so it isn't stored in the URL.
@@ -213,7 +217,7 @@ function clearAll() {
   dimCommon = false
   autoFaction = undefined
   update(
-    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: undefined },
+    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: undefined, near: undefined },
     { push: true },
   )
 }
@@ -222,7 +226,46 @@ function clearAll() {
 function showDeck(list: string) {
   deckReplaced = encodeState({ ...state, match: 'all' }) !== ''
   autoFaction = undefined
-  update({ ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: list }, { push: true })
+  update(
+    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: list, near: undefined },
+    { push: true },
+  )
+}
+
+/**
+ * Ranks decks by cards in common with one, as visible filters: its leader, and only decks that fit (Spare or Exact).
+ * Picks and the other filters stay; Back, or ✕ on the Similar pill, restores the search before.
+ */
+function showNear(id: string) {
+  const target = decks.find((e) => e.deck.id === id)
+  if (!target) return
+  // ≈ from a similar list keeps the search before the first ≈, so ✕ goes all the way back.
+  if (state.near === undefined) beforeNear = state
+  deckReplaced = false
+  autoFaction = undefined
+  update(
+    {
+      near: id,
+      deck: undefined,
+      factions: [target.faction],
+      leader: target.leader,
+      stratagem: undefined,
+      budgets: BUDGETS.filter((b) => budgetSide(b) !== 'over'),
+    },
+    { push: true },
+  )
+}
+
+/** Undoes ≈: the search before it, else (opened from a link) without the leader and provision steps it sets. */
+function removeNear() {
+  const before = beforeNear
+  beforeNear = undefined
+  autoFaction = undefined
+  update(
+    before
+      ? { ...EMPTY_STATE, leader: undefined, stratagem: undefined, deck: undefined, ...before, near: undefined }
+      : { near: undefined, leader: undefined, budgets: [] },
+  )
 }
 
 function removeDeck() {
@@ -351,10 +394,15 @@ function renderFilters() {
   const deckChip = list
     ? `<li class="chip deck-pick"><span aria-hidden="true">⧉</span>${esc(t('cards.deckChip', { name: deckName(list.deck, loc) }))}<button type="button" data-remove-deck="1" aria-label="${esc(t('cards.remove', { name: deckName(list.deck, loc) }))}">✕</button></li>`
     : ''
+  const near = state.near === undefined ? undefined : decks.find((e) => e.deck.id === state.near)
+  const nearChip = near
+    ? `<li class="chip deck-pick"><span aria-hidden="true">≈</span>${esc(t('cards.nearChip', { name: deckName(near.deck, loc) }))}<button type="button" data-remove-near="1" aria-label="${esc(t('cards.remove', { name: deckName(near.deck, loc) }))}">✕</button></li>`
+    : ''
   els.deckNote.hidden = !(list && deckReplaced)
   els.deckNote.textContent = t('cards.deckReplaced')
   els.chips.innerHTML =
     deckChip +
+    nearChip +
     state.picks
       .map((pick) => {
         const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
@@ -401,7 +449,19 @@ function renderResults() {
   shown = page.map((e) => e.deck.id)
   // One deck shares everything with itself, so dimming needs at least two.
   const common = dimCommon && matches.length > 1 ? sharedCards(matches) : new Set<number>()
-  const rows = page.map((e) => deckRow(e, data, selected, expanded.has(e.deck.id), common, loc))
+  const near = state.near === undefined ? undefined : decks.find((e) => e.deck.id === state.near)
+  const size = near ? deckBody(near).reduce((n, [, c]) => n + c, 0) : 0
+  const rows = page.map((e) =>
+    deckRow(
+      e,
+      data,
+      selected,
+      expanded.has(e.deck.id),
+      common,
+      loc,
+      near && { n: overlap(near, e), of: size, self: e === near },
+    ),
+  )
   if (matches.length > limit) {
     const n = Math.min(PAGE, matches.length - limit)
     rows.push(
@@ -420,7 +480,7 @@ function renderResults() {
   const last = state.picks.at(-1)
   els.results.innerHTML = rows.length
     ? rows.join('')
-    : `<li class="empty-state">${esc(t('results.none'))}${
+    : `<li class="empty-state">${esc(t(near ? 'results.noneSimilar' : 'results.none', { n: CONFIG.similarMinShared }))}${
         last === undefined
           ? ''
           : ` <button type="button" class="link" data-remove="${esc(String(last))}">${esc(t('results.removeCard', { name: pickName(last) }))}</button>`
@@ -451,6 +511,7 @@ const autocomplete = createAutocomplete({
     const last = state.picks.at(-1)
     if (last !== undefined) removePick(last)
     else if (state.deck !== undefined) removeDeck()
+    else if (state.near !== undefined) removeNear()
   },
   deckFor: (url) => {
     const list = listForUrl(decks, url)
@@ -499,6 +560,8 @@ const FOCUS_KEYS = [
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
   ['removeDeck', 'data-remove-deck'],
+  ['removeNear', 'data-remove-near'],
+  ['near', 'data-near'],
   ['add', 'data-add'],
   ['anyStratagem', 'data-any-stratagem'],
   ['leader', 'data-leader'],
@@ -555,6 +618,8 @@ document.addEventListener('click', (e) => {
     autoFaction = undefined
     update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
   } else if (t.dataset.removeDeck) removeDeck()
+  else if (t.dataset.removeNear) removeNear()
+  else if (t.dataset.near) showNear(t.dataset.near)
   else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
   else if (add) addPick(Number(add))
   else if (toggle) {
@@ -578,9 +643,11 @@ document.addEventListener('click', (e) => {
     const fallback =
       k === 'anyStratagem'
         ? els.stratagem.querySelector('button')
-        : k === 'remove' || k === 'removeDeck' || k === 'add'
-          ? els.input
-          : undefined
+        : k === 'near'
+          ? els.resultHead
+          : k === 'remove' || k === 'removeDeck' || k === 'removeNear' || k === 'add'
+            ? els.input
+            : undefined
     ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(t.dataset[k] ?? '')}"]`) ?? fallback)?.focus()
   }
 })
@@ -617,6 +684,7 @@ document.addEventListener('keydown', (e) => {
   hit[1]()
 })
 window.addEventListener('hashchange', () => {
+  beforeNear = undefined
   state = readHash()
   autoFaction = undefined
   limit = PAGE

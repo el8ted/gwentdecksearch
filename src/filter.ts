@@ -1,3 +1,4 @@
+import { CONFIG } from './config.ts'
 import { type Card, type Dataset, type Deck, type Faction, SOURCE_AUTHORS, type Source, type TagKey } from './types.ts'
 
 /** Base provision limit before the leader's bonus. */
@@ -56,6 +57,8 @@ export interface FilterState {
   match?: 'all' | 'any'
   /** Only decks with this card list: an {@link IndexedDeck.list} ID, from a pasted deck URL. */
   deck?: string
+  /** Rank by cards in common with this deck (its ID), most first; the deck itself leads when the filters keep it. */
+  near?: string
 }
 
 /** A deck with lookups precomputed once, so filtering stays a set check per card. */
@@ -218,6 +221,34 @@ export function pickedCards(picks: FilterState['picks']): number[] {
   return picks.filter((p) => typeof p === 'number')
 }
 
+/**
+ * A deck's cards besides its leader and stratagem: the leader is matched on its own, and stratagems are swapped freely.
+ *
+ * @param e - The deck
+ * @returns `[cardId, copies]`
+ */
+export function deckBody(e: IndexedDeck): [number, number][] {
+  return e.deck.cards.filter(([id]) => id !== e.leader && id !== e.stratagem)
+}
+
+/**
+ * Cards two decks share besides leader and stratagem, copies counted: Chimera ×2 shares one with Chimera ×1.
+ *
+ * @param a - One deck
+ * @param b - The other
+ * @returns Shared card count
+ */
+export function overlap(a: IndexedDeck, b: IndexedDeck): number {
+  const copies = new Map(deckBody(b))
+  return deckBody(a).reduce((n, [id, c]) => n + Math.min(c, copies.get(id) ?? 0), 0)
+}
+
+/** Each deck's {@link overlap} with the `near` deck; `undefined` without one (or for an unknown ID). */
+function sharedWithNear(decks: IndexedDeck[], s: FilterState): Map<IndexedDeck, number> | undefined {
+  const near = s.near === undefined ? undefined : decks.find((e) => e.deck.id === s.near)
+  return near && new Map(decks.map((e) => [e, overlap(near, e)]))
+}
+
 /** How many of the picks a deck has. */
 function hits(e: IndexedDeck, s: FilterState): number {
   return s.picks.filter((p) =>
@@ -234,7 +265,10 @@ function hasCards(e: IndexedDeck, s: FilterState): boolean {
 
 function matchesBase(
   e: IndexedDeck,
-  s: Pick<FilterState, 'factions' | 'sources' | 'budgets' | 'video' | 'langs' | 'leader' | 'stratagem' | 'deck'>,
+  s: Pick<
+    FilterState,
+    'factions' | 'sources' | 'budgets' | 'video' | 'langs' | 'leader' | 'stratagem' | 'deck' | 'near'
+  >,
 ): boolean {
   return (
     (!s.video || e.deck.video !== undefined) &&
@@ -250,16 +284,33 @@ function matchesBase(
 
 /**
  * Decks matching every filter, sorted by name (then ID, so same-name alternates stay together). With
- * `match: 'any'`, decks with more of the picks come first.
+ * `match: 'any'`, decks with more of the picks come first; with `near`, only decks sharing at least `minShared` cards
+ * with that deck, most first.
  *
  * @param decks - Indexed decks
  * @param state - Current filters
+ * @param minShared - Cards a deck must share with the `near` deck ({@link overlap})
  * @returns Matching decks
  */
-export function matchDecks(decks: IndexedDeck[], state: FilterState): IndexedDeck[] {
+export function matchDecks(
+  decks: IndexedDeck[],
+  state: FilterState,
+  minShared = CONFIG.similarMinShared,
+): IndexedDeck[] {
   const byName = (a: IndexedDeck, b: IndexedDeck) =>
     a.deck.name.localeCompare(b.deck.name) || a.deck.id.localeCompare(b.deck.id)
-  const matched = decks.filter((e) => matchesBase(e, state) && hasCards(e, state))
+  const shared = sharedWithNear(decks, state)
+  const matched = decks.filter(
+    (e) => matchesBase(e, state) && hasCards(e, state) && (!shared || (shared.get(e) ?? 0) >= minShared),
+  )
+  if (shared) {
+    // The deck itself first, as the one to compare against (another deck can share all 25 with a different stratagem).
+    const rank = (e: IndexedDeck) => (e.deck.id === state.near ? Number.POSITIVE_INFINITY : (shared.get(e) ?? 0))
+    return matched
+      .map((e) => [rank(e), e] as const)
+      .sort(([na, a], [nb, b]) => nb - na || byName(a, b))
+      .map(([, e]) => e)
+  }
   if (state.match !== 'any') return matched.sort(byName)
   // Counted once per deck, not once per comparison.
   return matched
@@ -279,11 +330,14 @@ function count<K>(map: Map<K, number>, key: K) {
  *
  * @param decks - Indexed decks
  * @param state - Current filters
+ * @param minShared - As for {@link matchDecks}
  * @returns Counts per faction, source, leader, stratagem, (non-leader, non-stratagem) card, tag and guide or video
  *   language, and of decks with a video
  */
-export function facets(decks: IndexedDeck[], state: FilterState): Facets {
-  const keep = (e: IndexedDeck, s: Partial<FilterState>) => matchesBase(e, { ...state, ...s }) && hasCards(e, state)
+export function facets(decks: IndexedDeck[], state: FilterState, minShared = CONFIG.similarMinShared): Facets {
+  const shared = sharedWithNear(decks, state)
+  const keep = (e: IndexedDeck, s: Partial<FilterState>) =>
+    matchesBase(e, { ...state, ...s }) && hasCards(e, state) && (!shared || (shared.get(e) ?? 0) >= minShared)
   const result: Facets = {
     factions: new Map(),
     sources: new Map(),

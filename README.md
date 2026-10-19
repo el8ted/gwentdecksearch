@@ -132,6 +132,7 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 | **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
 | **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. |
 | **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
+| **≈** | Similar decks: see [below](#provisions-spare-exact-and-over). |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
 | **Stats** | Scraps · cards · units · provisions used / limit. |
 | **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
@@ -160,6 +161,14 @@ today's limit: **150 + the leader's bonus**.
 
 The **Provisions** filter narrows by how far off a deck is: 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick
 several to combine them.
+
+**≈ Similar decks**, on every deck, finds the decks closest to it that still fit. It picks the deck's leader and the
+Spare and Exact steps, then lists the decks sharing at least 15 of its 25 cards (leader and stratagem aside), most in
+common first (**21/25 cards in common**). The deck itself leads, marked **This deck**, whenever its provision step is
+on, so you can compare against it. Use it on an Over deck to find a playable version, or on your own deck to find
+variations; **Dim common** then fades the cards they all share, so their differences stand out. Your other picks still
+apply; turn on an Over step or clear the leader to widen the search. ✕ on the **Similar to** pill, or Back, returns to
+the search before. (Building your own copy? `similarMinShared` in `src/config.ts` sets the 15.)
 
 ![The Provisions filter with every Spare step picked for Northern Realms: decks under the limit, each with an "N spare" badge](docs/screenshots/provisions.png)
 

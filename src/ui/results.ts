@@ -90,6 +90,7 @@ function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): s
  * @param expanded - Whether the full decklist is shown
  * @param common - Cards to dim in the expanded list (selected ones keep their highlight)
  * @param loc - Locale for text, card names and links
+ * @param shared - Cards in common with the deck the list is ranked against, that deck's card count, and whether this is it
  * @returns `<li>` HTML
  */
 export function deckRow(
@@ -99,6 +100,7 @@ export function deckRow(
   expanded: boolean,
   common: Set<number>,
   loc: Locale,
+  shared?: { n: number; of: number; self: boolean },
 ): string {
   const { deck } = entry
   const state = entry.budget === 'exact' ? '' : budgetSide(entry.budget)
@@ -119,6 +121,7 @@ export function deckRow(
       }</span>
     </button>
     <span class="deck-links">${deckLinks(deck, name, loc)}<code class="deck-id" title="${esc(deck.id)}">${esc(deck.id.slice(0, 8))}</code>
+    <button type="button" class="open" data-near="${esc(deck.id)}" title="${esc(loc.t('deck.similar'))}" aria-label="${esc(loc.t('deck.similarNamed', { name }))}">≈</button>
     <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">↗</a></span>
   </div>
   <div class="stats">
@@ -126,6 +129,7 @@ export function deckRow(
     ${stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
     ${stat('helmet', loc.t('stat.units'), String(deck.stats.units))}
     ${provisionBadge(entry, data, loc)}
+    ${shared ? `<span class="badge shared">${esc(shared.self ? loc.t('deck.thisDeck') : loc.t('deck.shared', { n: shared.n, of: shared.of }))}</span>` : ''}
   </div>
   ${expanded ? decklist(entry, data, selected, common, loc) : ''}
 </li>`

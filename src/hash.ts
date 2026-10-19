@@ -44,6 +44,7 @@ export function encodeState(state: FilterState): string {
     typeof p === 'string' && p.startsWith('@') ? `@${encodeURIComponent(p.slice(1))}` : p
   if (state.picks.length) params.set('c', state.picks.map(pick).join(','))
   if (state.deck !== undefined) params.set('d', state.deck)
+  if (state.near !== undefined) params.set('n', state.near)
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -80,8 +81,10 @@ export function decodeState(
   const factions = (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction))
   const leader = ids('l', 'leader')[0]
   const deck = params.get('d')
+  const near = params.get('n')
   return {
     deck: deck ? listOf(deck) : undefined,
+    near: near && listOf(near) !== undefined ? near : undefined,
     match: params.get('k') === 'any' ? 'any' : 'all',
     factions,
     video: params.get('v') === '1',
