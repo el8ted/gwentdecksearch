@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The bug report form opens again: GitHub had rejected it since 2026-10-17.
+
 ## 2026-10-18
 
 - The site has its own icon, drawn by el8ted's daughter: a pixel-art card and magnifier, in browser tabs, bookmarks and

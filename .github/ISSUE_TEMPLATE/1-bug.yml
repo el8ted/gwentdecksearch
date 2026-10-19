@@ -17,7 +17,7 @@ body:
       description: >-
         Shown in Credits at the top of the page. Not sure you're on the latest? Reload the page first. If you use the
         downloaded zip, get the latest from Releases.
-      placeholder: 2026-10-16
+      placeholder: '2026-10-16'
   - type: textarea
     id: what
     attributes:
