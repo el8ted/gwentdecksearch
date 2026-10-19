@@ -7,8 +7,37 @@ import { esc } from './dom.ts'
 const optionId = (item: number | string) =>
   `sug-${typeof item === 'number' ? item : item.startsWith('@') ? `a-${encodeURIComponent(item.slice(1))}` : `t-${item}`}`
 
+// Letters that aren't a base letter plus an accent mark, so decomposing doesn't reach them.
+const LETTERS: Record<string, string> = {
+  ł: 'l',
+  ø: 'o',
+  đ: 'd',
+  ß: 'ss',
+  æ: 'ae',
+  œ: 'oe',
+  '’': "'",
+  '‘': "'",
+  ʼ: "'",
+}
+
+/**
+ * Text as it's matched: lower case, accents off, so "coen" finds Coën and a straight ' finds Raffard’s. Only Latin and
+ * Cyrillic accent marks (U+0300–U+036F) go: kana and hangul compare as typed.
+ *
+ * @param text - A name or the typed query
+ * @returns The folded text
+ */
+export function fold(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFC')
+    .replace(/[łøđßæœ’‘ʼ]/g, (ch) => LETTERS[ch])
+}
+
 /** For matching typed text to an author: spacing and punctuation ignored, so "metallic d" finds MetallicDanny. */
-const loose = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')
+const loose = (text: string) => fold(text).replace(/[^\p{L}\p{N}]/gu, '')
 
 /** Author suggestions at most: names are many and short, so a few letters match dozens and would crowd out cards. */
 const MAX_AUTHORS = 3
@@ -36,7 +65,7 @@ export interface AutocompleteOptions {
 
 /** How a name matches the query: 0 prefix, 1 substring, -1 not at all. `loose` also counts a query that extends the name. */
 function matchRank(name: string, q: string, loose = false): number {
-  const lower = name.toLowerCase()
+  const lower = fold(name)
   const at = lower.indexOf(q)
   return at === 0 || (loose && q.startsWith(lower)) ? 0 : at > 0 ? 1 : -1
 }
@@ -74,7 +103,7 @@ export function createAutocomplete({
   }
 
   function render() {
-    const q = input.value.trim().toLowerCase()
+    const q = fold(input.value.trim())
     if (!q) return close()
     const loc = locale()
     const isAuthor = (item: number | string): item is string => typeof item === 'string' && item.startsWith('@')

@@ -117,3 +117,15 @@ test('on a phone, the search suggestions stay above the card frequency list', as
     })
   expect(onTop).toBe(true)
 })
+
+test('plain typing finds accented names: "coen" finds Coën', async ({ page, open }) => {
+  // Arrange
+  const id = Number(Object.keys(data.cards).find((k) => data.cards[Number(k)].name === 'Coën'))
+  await open()
+
+  // Act
+  await page.locator('#card-input').fill('coen')
+
+  // Assert
+  await expect(page.locator(`#sug-${id}`)).toBeVisible()
+})

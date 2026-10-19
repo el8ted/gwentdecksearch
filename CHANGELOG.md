@@ -9,6 +9,8 @@ the release tag and starts a new Unreleased section. -->
 ## Unreleased
 
 - The bug report form opens again: GitHub had rejected it since 2026-10-17.
+- Search ignores accents: typing "coen" finds Coën, "sile" finds Síle de Tansarville, and a plain ' matches Raffard’s
+  ([#5](https://github.com/el8ted/gwentdecksearch/issues/5)).
 
 ## 2026-10-18
 
