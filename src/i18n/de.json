@@ -232,7 +232,7 @@
   },
   "stratagem.any": "Beliebige Kriegslist",
   "cards.selected": "Ausgewählte Karten, Tags und Autoren",
-  "cards.placeholder": "Karte, Tag oder Autor hinzufügen…  ( / )",
+  "cards.placeholder": "Karte, Tag, Autor oder Deck-Link…  ( / )",
   "cards.noMatch": "Keine passenden Karten, Tags oder Autoren in diesen Decks",
   "cards.deckCount": "Decks",
   "cards.author": "Autor",

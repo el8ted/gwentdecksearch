@@ -65,7 +65,7 @@
   },
   "stratagem.any": "Any stratagem",
   "cards.selected": "Selected cards, tags and authors",
-  "cards.placeholder": "Add a card, tag or author…  ( / )",
+  "cards.placeholder": "Card, tag, author or deck link…  ( / )",
   "cards.noMatch": "No matching cards, tags or authors in these decks",
   "cards.deckCount": "Decks",
   "cards.author": "Author",

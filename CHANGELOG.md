@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The Search box's hint mentions that it takes a deck link too, in every language.
+
 ## 2026-10-18.02
 
 - The bug report form opens again: GitHub had rejected it since 2026-10-17.

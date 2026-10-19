@@ -232,7 +232,7 @@
   },
   "stratagem.any": "N'importe quel stratagème",
   "cards.selected": "Cartes, catégories et auteurs choisis",
-  "cards.placeholder": "Carte, catégorie ou auteur…  ( / )",
+  "cards.placeholder": "Carte, catégorie, auteur ou lien…  ( / )",
   "cards.noMatch": "Aucune carte, catégorie ni auteur correspondant dans ces decks",
   "cards.deckCount": "Decks",
   "cards.author": "Auteur",

@@ -236,7 +236,7 @@
   },
   "stratagem.any": "Dowolny manewr bojowy",
   "cards.selected": "Wybrane karty, tagi i autorzy",
-  "cards.placeholder": "Dodaj kartę, tag lub autora…  ( / )",
+  "cards.placeholder": "Karta, tag, autor lub link…  ( / )",
   "cards.noMatch": "Brak pasujących kart, tagów ani autorów w tych taliach",
   "cards.deckCount": "Talie",
   "cards.author": "Autor",

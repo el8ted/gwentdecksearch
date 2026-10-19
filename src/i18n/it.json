@@ -232,7 +232,7 @@
   },
   "stratagem.any": "Qualsiasi stratagemma",
   "cards.selected": "Carte, tag e autori scelti",
-  "cards.placeholder": "Carta, tag o autore…  ( / )",
+  "cards.placeholder": "Carta, tag, autore o link…  ( / )",
   "cards.noMatch": "Nessuna carta, tag o autore corrispondente in questi mazzi",
   "cards.deckCount": "Mazzi",
   "cards.author": "Autore",

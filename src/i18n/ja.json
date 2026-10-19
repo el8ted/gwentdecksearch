@@ -230,7 +230,7 @@
   },
   "stratagem.any": "すべてのストラタジェム",
   "cards.selected": "選択したカード、タグ、作者",
-  "cards.placeholder": "カード、タグ、作者を追加…  ( / )",
+  "cards.placeholder": "カード、タグ、作者、デッキURL…  ( / )",
   "cards.noMatch": "これらのデッキに一致するカード、タグ、作者はありません",
   "cards.deckCount": "デッキ数",
   "cards.author": "作者",

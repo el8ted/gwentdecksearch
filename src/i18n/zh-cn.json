@@ -230,7 +230,7 @@
   },
   "stratagem.any": "任意战术牌",
   "cards.selected": "已选卡牌、标签和作者",
-  "cards.placeholder": "添加卡牌、标签或作者…  ( / )",
+  "cards.placeholder": "卡牌、标签、作者或卡组链接…  ( / )",
   "cards.noMatch": "这些卡组中没有匹配的卡牌、标签或作者",
   "cards.deckCount": "卡组数",
   "cards.author": "作者",

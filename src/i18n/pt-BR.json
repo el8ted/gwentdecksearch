@@ -232,7 +232,7 @@
   },
   "stratagem.any": "Qualquer estratégia",
   "cards.selected": "Cartas, tags e autores escolhidos",
-  "cards.placeholder": "Adicionar uma carta, tag ou autor…  ( / )",
+  "cards.placeholder": "Carta, tag, autor ou link…  ( / )",
   "cards.noMatch": "Nenhuma carta, tag ou autor correspondente nestes decks",
   "cards.deckCount": "Decks",
   "cards.author": "Autor",

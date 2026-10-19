@@ -230,7 +230,7 @@
   },
   "stratagem.any": "모든 책략",
   "cards.selected": "선택한 카드, 태그, 작성자",
-  "cards.placeholder": "카드, 태그 또는 작성자 추가…  ( / )",
+  "cards.placeholder": "카드, 태그, 작성자, 덱 링크…  ( / )",
   "cards.noMatch": "이 덱들에 일치하는 카드, 태그, 작성자가 없습니다",
   "cards.deckCount": "덱 수",
   "cards.author": "작성자",

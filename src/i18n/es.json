@@ -232,7 +232,7 @@
   },
   "stratagem.any": "Cualquier estratagema",
   "cards.selected": "Cartas, etiquetas y autores elegidos",
-  "cards.placeholder": "Añadir una carta, etiqueta o autor…  ( / )",
+  "cards.placeholder": "Carta, etiqueta, autor o enlace…  ( / )",
   "cards.noMatch": "No hay cartas, etiquetas ni autores que coincidan en estos mazos",
   "cards.deckCount": "Mazos",
   "cards.author": "Autor",
