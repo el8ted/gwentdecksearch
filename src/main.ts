@@ -17,6 +17,7 @@ import {
   pickedCards,
   sharedCards,
   singleFaction,
+  wantedPicks,
 } from './filter.ts'
 import { decodeState, EMPTY_STATE, encodeState } from './hash.ts'
 import de from './i18n/de.json'
@@ -172,6 +173,8 @@ let dimCommon = false
 // Deck rows rendered; "Show more" adds PAGE at a time so a phone isn't handed 2,000+ rows at once.
 const PAGE = CONFIG.resultsPageSize
 let limit = PAGE
+// Decks listed now, for exclude suggestions' "would remain" counts.
+let matchCount = 0
 
 /** Translates the static page: `data-i18n` (text) and `data-i18n-{title,label,placeholder}` attributes. */
 function applyStatic() {
@@ -288,28 +291,41 @@ function removeDeck() {
 }
 
 /**
- * Adds a card or tag after the other picks; a faction card also selects its faction when none is selected (undone by
- * {@link removePick}).
+ * Adds a card, tag or author after the other picks, wanted or `excluded`; a wanted faction card also selects its
+ * faction when none is selected (undone by {@link removePick}).
  */
-function addPick(pick: number | string) {
+function addPick(pick: number | string, excluded = false) {
   if (state.picks.includes(pick)) return
   const picks = [...state.picks, pick]
-  const faction = typeof pick === 'number' ? singleFaction(data.cards[pick]) : undefined
+  const excludes = excluded ? [...(state.excludes ?? []), pick] : state.excludes
+  const faction = typeof pick === 'number' && !excluded ? singleFaction(data.cards[pick]) : undefined
   // A pick searches across decks, so the pasted deck's list stops narrowing the results.
   deckReplaced = false
   if (faction && state.factions.length === 0) {
     autoFaction = faction
-    update({ picks, factions: [faction], deck: undefined })
-  } else update({ picks, deck: undefined })
+    update({ picks, excludes, factions: [faction], deck: undefined })
+  } else update({ picks, excludes, deck: undefined })
 }
 
-/** Removes a card or tag; a faction a card selected is cleared again once no card of that faction remains. */
+/** Clears the faction a card selected once no wanted card of that faction remains. */
+function undoAutoFaction(next: Pick<FilterState, 'picks' | 'excludes'>): Partial<FilterState> {
+  const keep = pickedCards(wantedPicks(next)).some((c) => singleFaction(data.cards[c]) === autoFaction)
+  if (autoFaction === undefined || keep) return {}
+  autoFaction = undefined
+  return { factions: [] }
+}
+
+/** Removes a card, tag or author. */
 function removePick(pick: number | string) {
-  const picks = state.picks.filter((p) => p !== pick)
-  const undo =
-    autoFaction !== undefined && !pickedCards(picks).some((c) => singleFaction(data.cards[c]) === autoFaction)
-  if (undo) autoFaction = undefined
-  update({ picks, ...(undo && { factions: [] }) })
+  const next = { picks: state.picks.filter((p) => p !== pick), excludes: state.excludes?.filter((p) => p !== pick) }
+  update({ ...next, ...undoAutoFaction(next) })
+}
+
+/** Switches a pick between wanted and excluded, keeping its place. */
+function flipPick(pick: number | string) {
+  const on = state.excludes ?? []
+  const next = { picks: state.picks, excludes: on.includes(pick) ? on.filter((p) => p !== pick) : [...on, pick] }
+  update({ ...next, ...undoAutoFaction(next) })
 }
 
 /** A pick's name in the page language. */
@@ -419,14 +435,18 @@ function renderFilters() {
     nearChip +
     state.picks
       .map((pick) => {
-        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
-        if (typeof pick === 'string') {
-          const mark = pick.startsWith('@') ? '✎' : '#'
-          return `<li class="chip tag"><span aria-hidden="true">${mark}</span>${esc(pickName(pick))}${remove}</li>`
-        }
+        const name = pickName(pick)
+        const excluded = !!state.excludes?.includes(pick)
+        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name }))}">✕</button>`
+        // The name toggles wanted/excluded; pressed means excluded, which the label says in words, not just the strike.
+        const mark =
+          typeof pick === 'number' ? '' : `<span aria-hidden="true">${pick.startsWith('@') ? '✎' : '#'}</span>`
+        const flip = `<button type="button" class="chip-name" data-flip="${esc(String(pick))}" aria-pressed="${excluded}" aria-label="${esc(t('cards.exclude', { name }))}" title="${esc(t(excluded ? 'cards.includeTip' : 'cards.excludeTip'))}">${mark}${esc(name)}</button>`
+        const cls = excluded ? ' excluded' : ''
+        if (typeof pick === 'string') return `<li class="chip tag${cls}">${flip}${remove}</li>`
         const card = data.cards[pick]
         const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
-        return `<li class="chip f-${card.faction}${dual}">${esc(loc.card(pick))}${remove}</li>`
+        return `<li class="chip f-${card.faction}${dual}${cls}">${flip}${remove}</li>`
       })
       .join('')
 }
@@ -451,12 +471,14 @@ function renderBars(rows: [number, number][], total: number) {
 function renderResults() {
   const { t } = loc
   // Cards carrying a selected tag are highlighted too, so an expanded deck shows why it matched.
-  const cards = pickedCards(state.picks)
+  const wanted = wantedPicks(state)
+  const cards = pickedCards(wanted)
   const tagged = Object.keys(data.cards)
     .map(Number)
-    .filter((id) => data.cards[id].tags?.some((k) => state.picks.includes(k)))
+    .filter((id) => data.cards[id].tags?.some((k) => wanted.includes(k)))
   const selected = new Set([...cards, ...tagged])
   const matches = matchDecks(decks, state)
+  matchCount = matches.length
   els.resultHead.textContent = t('results.count', { n: matches.length })
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
   const page = matches.slice(0, limit)
@@ -521,6 +543,7 @@ const autocomplete = createAutocomplete({
   authorCandidates: () => new Map([...current.authors].filter(([key]) => !state.picks.includes(`@${key}`))),
   authorName: (key) => AUTHORS.get(key) ?? key,
   onPick: addPick,
+  total: () => matchCount,
   onBackspace: () => {
     const last = state.picks.at(-1)
     if (last !== undefined) removePick(last)
@@ -573,6 +596,7 @@ const FOCUS_KEYS = [
   ['guideLang', 'data-guide-lang'],
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
+  ['flip', 'data-flip'],
   ['removeDeck', 'data-remove-deck'],
   ['removeNear', 'data-remove-near'],
   ['near', 'data-near'],
@@ -635,6 +659,7 @@ document.addEventListener('click', (e) => {
   else if (t.dataset.removeNear) removeNear()
   else if (t.dataset.near) showNear(t.dataset.near)
   else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
+  else if (t.dataset.flip) flipPick(/^\d+$/.test(t.dataset.flip) ? Number(t.dataset.flip) : t.dataset.flip)
   else if (add) addPick(Number(add))
   else if (toggle) {
     if (!expanded.delete(toggle)) expanded.add(toggle)

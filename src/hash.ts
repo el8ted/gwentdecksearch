@@ -8,6 +8,7 @@ export const EMPTY_STATE: FilterState = {
   sources: [],
   budgets: [],
   picks: [],
+  excludes: [],
   video: false,
   langs: [],
   match: 'all',
@@ -42,7 +43,9 @@ export function encodeState(state: FilterState): string {
   // An author's key can hold any letter, so it's encoded to keep a comma in it from splitting the list.
   const pick = (p: number | string) =>
     typeof p === 'string' && p.startsWith('@') ? `@${encodeURIComponent(p.slice(1))}` : p
-  if (state.picks.length) params.set('c', state.picks.map(pick).join(','))
+  // An excluded pick is the same with a leading `-`; no card ID, tag key or `@` starts with one.
+  const sign = (p: number | string) => (state.excludes?.includes(p) ? `-${pick(p)}` : String(pick(p)))
+  if (state.picks.length) params.set('c', state.picks.map(sign).join(','))
   if (state.deck !== undefined) params.set('d', state.deck)
   if (state.near !== undefined) params.set('n', state.near)
   const query = params.toString()
@@ -81,6 +84,20 @@ export function decodeState(
   const factions = (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction))
   const leader = ids('l', 'leader')[0]
   const deck = params.get('d')
+  // Card IDs, tag keys and authors share `c`, in pick order: a number is a card, `@…` an author, anything else a tag;
+  // a leading `-` excludes it. A repeated pick keeps its first place and sign.
+  const picks = new Map<number | string, boolean>()
+  for (const token of (params.get('c') ?? '').split(',')) {
+    const excluded = token.startsWith('-')
+    const p = excluded ? token.slice(1) : token
+    const key = p.startsWith('@') ? decodeAuthor(p.slice(1)) : undefined
+    const pick = /^\d+$/.test(p)
+      ? typeOf(Number(p)) && Number(p)
+      : p.startsWith('@')
+        ? key !== undefined && isAuthor(key) && `@${key}`
+        : isTag(p) && p
+    if (pick !== undefined && pick !== false && !picks.has(pick)) picks.set(pick, excluded)
+  }
   const near = params.get('n')
   return {
     deck: deck ? listOf(deck) : undefined,
@@ -106,16 +123,7 @@ export function decodeState(
         ? undefined
         : leader,
     stratagem: ids('s', 'stratagem')[0],
-    // Card IDs, tag keys and authors share `c`, in pick order: a number is a card, `@…` an author, anything else a tag.
-    picks: [
-      ...new Set(
-        (params.get('c') ?? '').split(',').flatMap((p): (number | string)[] => {
-          if (/^\d+$/.test(p)) return typeOf(Number(p)) ? [Number(p)] : []
-          if (!p.startsWith('@')) return isTag(p) ? [p] : []
-          const key = decodeAuthor(p.slice(1))
-          return key !== undefined && isAuthor(key) ? [`@${key}`] : []
-        }),
-      ),
-    ],
+    picks: [...picks.keys()],
+    excludes: [...picks].filter(([, excluded]) => excluded).map(([p]) => p),
   }
 }

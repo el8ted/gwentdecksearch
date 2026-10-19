@@ -58,8 +58,10 @@ export interface AutocompleteOptions {
   authorCandidates: () => Map<string, number>
   /** An author's display name by key. */
   authorName: (key: string) => string
-  /** A card ID, a tag key, or `@` + an author key. */
-  onPick: (pick: number | string) => void
+  /** A card ID, a tag key, or `@` + an author key; `excluded` when typed after `-` or `!`. */
+  onPick: (pick: number | string, excluded: boolean) => void
+  /** Decks currently matching, so an exclude suggestion can show how many would remain. */
+  total: () => number
   /** Backspace in an empty input. */
   onBackspace: () => void
   /** The deck a playgwent URL points to: its card list, name and how many decks have that list; `undefined` if unknown. */
@@ -67,6 +69,9 @@ export interface AutocompleteOptions {
   /** A deck URL was chosen; `list` as from {@link deckFor}. */
   onDeck: (list: string) => void
 }
+
+// Typed before a name to exclude it: ASCII and full-width (Japanese, Chinese and Korean keyboards) minus and bang.
+const EXCLUDE = /^[-!－！]\s*/
 
 // Typing out a URL: card names never start like this, so suggestions would only flash irrelevant cards.
 const URL_START = /^(?:http|www\.|playgwent)/i
@@ -99,12 +104,15 @@ export function createAutocomplete({
   authorName,
   onPick,
   onBackspace,
+  total,
   deckFor,
   onDeck,
 }: AutocompleteOptions) {
   // A number is a card ID, `@…` an author, any other string a tag key.
   let items: (number | string)[] = []
   let active = 0
+  // The query starts with an exclude mark: suggestions are for excluding.
+  let excluding = false
   // The card list a typed deck URL found; set instead of items while the input holds a URL.
   let deckHit: string | undefined
 
@@ -136,7 +144,8 @@ export function createAutocomplete({
     const raw = input.value.trim()
     if (DECK_URL.test(raw)) return renderDeck(raw)
     if (URL_START.test(raw)) return close()
-    const q = fold(raw)
+    excluding = EXCLUDE.test(raw)
+    const q = fold(raw.replace(EXCLUDE, ''))
     if (!q) return close()
     const loc = locale()
     const isAuthor = (item: number | string): item is string => typeof item === 'string' && item.startsWith('@')
@@ -180,8 +189,10 @@ export function createAutocomplete({
     active = Math.min(active, Math.max(items.length - 1, 0))
     const counts = new Map(scored.map(([item, , c]) => [item, c]))
     const viaEnglish = new Set(scored.filter(([, rank]) => rank >= 2).map(([item]) => item))
+    // Excluding shows the decks that would remain, and says so before the name.
     const count = (item: number | string) =>
-      `<span class="count" title="${esc(loc.t('cards.deckCount'))}">${counts.get(item)}</span>`
+      `<span class="count" title="${esc(loc.t(excluding ? 'cards.remainCount' : 'cards.deckCount'))}">${excluding ? total() - (counts.get(item) ?? 0) : counts.get(item)}</span>`
+    const without = excluding ? `<span class="sug-without">${esc(loc.t('cards.without'))}</span> ` : ''
     const alt = (item: number | string) =>
       viaEnglish.has(item) ? ` <span class="sug-alt">${esc(englishOf(item))}</span>` : ''
     list.innerHTML = items.length
@@ -189,17 +200,17 @@ export function createAutocomplete({
           .map((item, i) => {
             if (isAuthor(item)) {
               return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="author" aria-selected="${i === active}">
-              <span class="cost" aria-hidden="true">✎</span><span class="sug-name">${esc(nameOf(item))} <span class="sug-kind">${esc(loc.t('cards.author'))}</span></span>
+              <span class="cost" aria-hidden="true">✎</span><span class="sug-name">${without}${esc(nameOf(item))} <span class="sug-kind">${esc(loc.t('cards.author'))}</span></span>
               ${count(item)}</div>`
             }
             if (typeof item === 'string') {
               return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="tag" aria-selected="${i === active}">
-              <span class="cost" aria-hidden="true">#</span><span class="sug-name">${esc(loc.tag(item))}${alt(item)} <span class="sug-kind">${esc(loc.t('cards.tag'))}</span></span>
+              <span class="cost" aria-hidden="true">#</span><span class="sug-name">${without}${esc(loc.tag(item))}${alt(item)} <span class="sug-kind">${esc(loc.t('cards.tag'))}</span></span>
               ${count(item)}</div>`
             }
             const card = data.cards[item]
             return `<div id="${optionId(item)}" role="option" data-id="${item}" class="f-${card.faction}" aria-selected="${i === active}">
-              <span class="cost">${card.provisions}</span><span class="sug-name">${esc(loc.card(item))}${alt(item)}</span>
+              <span class="cost">${card.provisions}</span><span class="sug-name">${without}${esc(loc.card(item))}${alt(item)}</span>
               ${count(item)}</div>`
           })
           .join('')
@@ -213,7 +224,7 @@ export function createAutocomplete({
     input.value = ''
     active = 0
     close()
-    onPick(item)
+    onPick(item, excluding)
   }
 
   function pickDeck(deck: string) {

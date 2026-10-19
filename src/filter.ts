@@ -53,7 +53,9 @@ export interface FilterState {
    * so the last one is the last tried. A deck has a tag if any of its cards (leader and stratagem included) does.
    */
   picks: (number | TagKey)[]
-  /** Deck must contain every pick (`all`, default) or at least one (`any`). */
+  /** Picks a deck must not have, whatever {@link match} says; each is also in {@link picks}, which keeps the order. */
+  excludes?: (number | TagKey)[]
+  /** Deck must contain every wanted pick (`all`, default) or at least one (`any`). */
   match?: 'all' | 'any'
   /** Only decks with this card list: an {@link IndexedDeck.list} ID, from a pasted deck URL. */
   deck?: string
@@ -249,18 +251,33 @@ function sharedWithNear(decks: IndexedDeck[], s: FilterState): Map<IndexedDeck, 
   return near && new Map(decks.map((e) => [e, overlap(near, e)]))
 }
 
-/** How many of the picks a deck has. */
-function hits(e: IndexedDeck, s: FilterState): number {
-  return s.picks.filter((p) =>
-    typeof p === 'number' ? e.ids.has(p) : p.startsWith('@') ? e.authors.has(p.slice(1)) : e.tags.has(p),
-  ).length
+/**
+ * The picks a deck should have: every pick that isn't excluded.
+ *
+ * @param s - Current filters
+ * @returns Picks, in pick order
+ */
+export function wantedPicks(s: Pick<FilterState, 'picks' | 'excludes'>): FilterState['picks'] {
+  return s.excludes?.length ? s.picks.filter((p) => !s.excludes?.includes(p)) : s.picks
 }
 
-/** Whether a deck has the picks: all of them, or at least one with `match: 'any'`. */
+/** Whether a deck has a card, tag or author. */
+function has(e: IndexedDeck, p: number | TagKey): boolean {
+  return typeof p === 'number' ? e.ids.has(p) : p.startsWith('@') ? e.authors.has(p.slice(1)) : e.tags.has(p)
+}
+
+/** How many of the wanted picks a deck has. */
+function hits(e: IndexedDeck, s: FilterState): number {
+  return wantedPicks(s).filter((p) => has(e, p)).length
+}
+
+/** Whether a deck has none of the excludes, and the wanted picks: all of them, or at least one with `match: 'any'`. */
 function hasCards(e: IndexedDeck, s: FilterState): boolean {
-  if (s.picks.length === 0) return true
+  if (s.excludes?.some((p) => has(e, p))) return false
+  const wanted = wantedPicks(s).length
+  if (wanted === 0) return true
   const n = hits(e, s)
-  return s.match === 'any' ? n > 0 : n === s.picks.length
+  return s.match === 'any' ? n > 0 : n === wanted
 }
 
 function matchesBase(

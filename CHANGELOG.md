@@ -19,6 +19,9 @@ the release tag and starts a new Unreleased section. -->
   25 cards, most in common first. Use it to find a playable version of a deck that's now over its provisions, or
   variations of your own. The deck itself leads, marked **This deck**, when its provision step is on
   ([#7](https://github.com/el8ted/gwentdecksearch/issues/7)).
+- Search can exclude: click a card, tag or author you've added to find decks *without* it, or type `-` before a name.
+  For example, Skellige Warrior decks without Tyr. Shared links keep it
+  ([#8](https://github.com/el8ted/gwentdecksearch/issues/8)).
 
 ## 2026-10-18
 

@@ -13,7 +13,7 @@ Gwent Deck Search listet veröffentlichte Decks für GWENT: The Witcher Card Gam
 ## So geht's
 
 1. Wähle eine Fraktion, dann einen Anführer. Im Match fängst du mit denen deines Gegners an.
-2. Gib die Karten, die du siehst, ins Suchfeld ein (Taste /), einen Tag wie Bestie oder Hingabe oder einen Autor. Jeder Eintrag grenzt die Liste ein.
+2. Gib die Karten, die du siehst, ins Suchfeld ein (Taste /), einen Tag wie Bestie oder Hingabe oder einen Autor. Jeder Eintrag grenzt die Liste ein. Mit - davor schließt du etwas aus.
 3. Am häufigsten zeigt Karten, die die übrigen Decks spielen; Am seltensten zeigt seltene Überraschungen. Klicke eine an, um sie hinzuzufügen.
 4. Alle listet Decks mit allem, was du hinzugefügt hast; Eine listet Decks mit mindestens einem Eintrag, beste Treffer zuerst.
 5. Klicke ein Deck an, um seine Karten zu sehen. ↗ öffnet es zum Importieren auf playgwent.com; ▶ spielt ein Gameplay-Video ab, wenn es eines gibt.

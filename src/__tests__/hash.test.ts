@@ -75,6 +75,7 @@ describe('decodeState', () => {
       leader: 201743,
       stratagem: undefined,
       picks: ['devotion', 203123, 'c12'],
+      excludes: [203123],
     }
 
     // Act
@@ -82,6 +83,21 @@ describe('decodeState', () => {
 
     // Assert
     expect(decoded).toEqual(s)
+  })
+
+  it("writes an excluded pick with a leading -, author keys included, and keeps a repeat's first sign", () => {
+    // Arrange
+    const s: FilterState = { ...EMPTY_STATE, picks: [203123, '@-innuendo-', 'c12'], excludes: [203123, '@-innuendo-'] }
+    const isAuthor = (key: string) => key === '-innuendo-'
+
+    // Act
+    const hash = encodeState(s)
+    const repeated = decodeState('#c=c12,-c12,-203123,203123', cardOf, isTag)
+
+    // Assert
+    expect(hash).toBe('#c=-203123%2C-%40-innuendo-%2Cc12')
+    expect(decodeState(hash, cardOf, isTag, isAuthor)).toMatchObject({ picks: s.picks, excludes: s.excludes })
+    expect(repeated).toMatchObject({ picks: ['c12', 203123], excludes: [203123] })
   })
 
   it('drops unknown factions, unknown IDs, junk and duplicates', () => {
@@ -103,6 +119,7 @@ describe('decodeState', () => {
       leader: undefined,
       stratagem: undefined,
       picks: [203123, 'c12'],
+      excludes: [],
     })
   })
 

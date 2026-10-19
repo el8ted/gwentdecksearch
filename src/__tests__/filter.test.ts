@@ -633,3 +633,39 @@ describe('similar decks', () => {
     expect(ids(ranked)).toEqual(['b2'])
   })
 })
+
+describe('excluded picks', () => {
+  it('drop decks with an excluded card', () => {
+    // Act
+    const matched = matchDecks(DECKS, state({ picks: [102], excludes: [102] }))
+
+    // Assert: only Portal b2 lacks Royal Decree
+    expect(ids(matched)).toEqual(['b2'])
+  })
+
+  it('leave All to the wanted picks', () => {
+    // Act
+    const matched = matchDecks(DECKS, state({ picks: [101, 102], excludes: [102] }))
+
+    // Assert
+    expect(ids(matched)).toEqual(['b2'])
+  })
+
+  it('still exclude in Any mode', () => {
+    // Act
+    const matched = matchDecks(DECKS, state({ match: 'any', picks: [100, 103, 101], excludes: [101] }))
+
+    // Assert: GN Swarm has Golden Nekker but also Chimera; Soldiers has Cadaverine and no Chimera
+    expect(ids(matched)).toEqual(['c1'])
+  })
+
+  it('work alone, for tags too, and in the counts', () => {
+    // Act
+    const matched = matchDecks(DECKS, state({ picks: ['deploy'], excludes: ['deploy'] }))
+    const counts = facets(DECKS, state({ picks: [102], excludes: [102] }))
+
+    // Assert
+    expect(ids(matched)).toEqual(['b1', 'b2'])
+    expect([...counts.leaders]).toEqual([[1, 1]])
+  })
+})

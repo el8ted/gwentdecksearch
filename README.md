@@ -37,7 +37,7 @@ between matches to find a deck to build.
 
 1. Pick a **faction**, then a **leader**. In a match, start with your opponent's.
 2. Type the cards you see into the **Search** box (press <kbd>/</kbd> to jump there), a tag such as Beast or
-   Devotion, or an author. Each one narrows the list.
+   Devotion, or an author. Each one narrows the list. Type `-` first to exclude one, or click its name once added.
 3. **Most common** shows the cards the remaining decks run; **Least common** shows rare surprises. Click a card to
    add it.
 4. **All** lists decks with everything you've added; **Any** lists decks with at least one, best matches first.
@@ -182,7 +182,7 @@ the search before. (Building your own copy? `similarMinShared` in `src/config.ts
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
-| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
+| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
 | **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
 
 ## Save and share a search

@@ -295,6 +295,29 @@ h1 span {
   color: var(--text);
   background: var(--hover);
 }
+/* The name toggles wanted/excluded, so it reads as text until hovered. */
+.chip .chip-name {
+  display: inline-flex;
+  gap: 0.3rem;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+}
+/* Excluded: faded (a faint tint, muted text) as well as struck through, since a line through two or three CJK
+   characters is easy to miss. The faction edge stays. */
+.chip.excluded {
+  background: color-mix(in srgb, var(--fc) 6%, var(--surface));
+}
+.chip.excluded .chip-name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.sug-without {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--over-text);
+}
 
 .combo {
   position: relative;
