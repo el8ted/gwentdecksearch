@@ -931,6 +931,50 @@ h1 span {
   }
 }
 
+/* Help's extra sections: closed, one line each, so the dialog fits a phone. */
+.help-more {
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+/* A button's symbol in Help text, boxed like the button itself. */
+.glyph {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 0.2em;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.35;
+  text-align: center;
+  text-transform: none;
+}
+.credits-head + .help-more {
+  border-top: 0;
+}
+.help-more summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.help-more summary:hover {
+  color: var(--text);
+}
+.help-more ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0.2rem;
+  padding-left: 1.4rem;
+}
+.help-more + p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* Display menu */
 .display {
   position: relative;
@@ -1316,7 +1360,4 @@ h1 span {
   border-bottom-width: 2px;
   border-radius: 0.3rem;
   background: var(--surface);
-}
-.keys + p {
-  margin-bottom: 1rem;
 }

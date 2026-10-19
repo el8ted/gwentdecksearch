@@ -189,6 +189,15 @@ function applyStatic() {
     el.placeholder = t(el.dataset.i18nPlaceholder ?? '')
   }
   for (const el of document.querySelectorAll<HTMLAnchorElement>('[data-pg]')) el.href = loc.pg(el.dataset.pg ?? '')
+  // The threshold is a build setting, so Help reads it rather than repeating the number.
+  byId('help-similar').textContent = t('help.similar1', { n: CONFIG.similarMinShared })
+  // Help's ≈ ↗ ▶ ✕ drawn like the buttons they name, and the - typed to exclude like a key (a lone -, so hyphenated
+  // words like Gameplay-Video stay as they are): easy to spot, in every language.
+  for (const el of byId('shortcuts').querySelectorAll<HTMLElement>('summary, li')) {
+    el.innerHTML = esc(el.textContent ?? '')
+      .replace(/[≈↗▶✕]/g, (g) => `<span class="glyph">${g}</span>`)
+      .replace(/(?<![\p{L}\p{N}])-(?![\p{L}\p{N}])/gu, '<kbd class="glyph">-</kbd>')
+  }
   const version = byId<HTMLAnchorElement>('version')
   version.textContent = t('credits.version', { version: __VERSION__ })
   version.href = `https://github.com/el8ted/gwentdecksearch/releases${__VERSION__ === 'dev' ? '' : `/tag/${__VERSION__}`}`

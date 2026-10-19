@@ -161,39 +161,70 @@
         <h2 id="shortcuts-title" data-i18n="help.title">Help</h2>
         <button type="button" class="clear" id="shortcuts-close" data-i18n-label="help.close">✕</button>
       </div>
-      <h3 data-i18n="help.guide">How to use it</h3>
-      <ol class="guide">
-        <li data-i18n="help.step1">Pick a faction, then a leader. In a match, start with your opponent's.</li>
-        <li data-i18n="help.step2">Type the cards you see into the Cards box (press /). Each one narrows the list.</li>
-        <li data-i18n="help.step3">Most common shows the cards the remaining decks run; Least common shows rare surprises. Click one to add it.</li>
-        <li data-i18n="help.step4">All lists decks with every card; Any lists decks with at least one, best matches first.</li>
-        <li data-i18n="help.step5">Click a deck to see its cards. ↗ opens it on playgwent.com to import.</li>
-        <li data-i18n="help.step6">Spare: room to upgrade a card. Over: costs have changed and the deck no longer fits.</li>
-        <li data-i18n="help.step7">Clear all starts over; your browser's Back button undoes it.</li>
-      </ol>
+      <details class="help-more" name="help" open>
+        <summary data-i18n="help.guide">How to use it</summary>
+        <ol class="guide">
+          <li data-i18n="help.step1">Pick a faction, then a leader. In a match, start with your opponent's.</li>
+          <li data-i18n="help.step2">Type the cards you see into the Cards box (press /). Each one narrows the list.</li>
+          <li data-i18n="help.step3">Most common shows the cards the remaining decks run; Least common shows rare surprises. Click one to add it.</li>
+          <li data-i18n="help.step4">All lists decks with every card; Any lists decks with at least one, best matches first.</li>
+          <li data-i18n="help.step5">Click a deck to see its cards. ↗ opens it on playgwent.com to import.</li>
+          <li data-i18n="help.step6">Spare: room to upgrade a card. Over: costs have changed and the deck no longer fits.</li>
+          <li data-i18n="help.step7">Clear all starts over; your browser's Back button undoes it.</li>
+        </ol>
+      </details>
+      <details class="help-more" name="help">
+        <summary data-i18n="help.searchTitle">Search tips</summary>
+        <ul>
+          <li data-i18n="help.search1">Tags (#) such as Beast or Devotion, and authors (✎) by their playgwent name, narrow the list like cards.</li>
+          <li data-i18n="help.search2">Type - before a name, or click a pick you've added, to find decks without it. Excluded picks look faded and struck through.</li>
+          <li data-i18n="help.search3">Paste a playgwent.com deck or guide link to find that deck, with its guide and video. Back restores your search.</li>
+          <li data-i18n="help.search4">Names match in your language or in English, and accents don't matter: coen finds Coën.</li>
+        </ul>
+      </details>
+      <details class="help-more" name="help">
+        <summary data-i18n="help.similarTitle">Similar decks ≈</summary>
+        <ul>
+          <li id="help-similar"></li>
+          <li data-i18n="help.similar2">Turn on the deck's own provision step to list it too, marked This deck. Dim common then fades what they all share, so the swaps stand out.</li>
+          <li data-i18n="help.similar3">Use it to find a playable version of an Over deck, or variations of your own. ✕ on the Similar pill, or Back, returns to your search.</li>
+        </ul>
+      </details>
+      <details class="help-more" name="help">
+        <summary data-i18n="help.filtersTitle">Filters</summary>
+        <ul>
+          <li data-i18n="help.filters1">Every option shows how many decks it would leave; a dimmed 0 means none.</li>
+          <li data-i18n="help.filters2">Source: community guides on playgwent.com, or a creator's deck list.</li>
+          <li data-i18n="help.filters3">Guide &amp; video: ▶ Has video keeps decks with a gameplay video; a language keeps decks whose guide or video is in it.</li>
+          <li data-i18n="help.filters4">Provisions: how far a deck is from today's limit, 150 plus the leader's bonus. Pick several steps to combine them.</li>
+          <li data-i18n="help.filters5">Stratagem: players swap these freely, so the same list often appears under another one.</li>
+        </ul>
+      </details>
+      <details class="help-more" name="help">
+        <summary data-i18n="shortcuts.title">Keyboard shortcuts</summary>
+        <dl class="keys">
+          <dt><kbd>/</kbd></dt>
+          <dd data-i18n="shortcuts.cards">Jump to the search box</dd>
+          <dt><kbd>[</kbd></dt>
+          <dd data-i18n="shortcuts.filters">Jump to the filters</dd>
+          <dt><kbd>]</kbd></dt>
+          <dd data-i18n="shortcuts.panel">Jump to card frequency</dd>
+          <dt><kbd>Shift</kbd> + <kbd>Backspace</kbd></dt>
+          <dd data-i18n="shortcuts.clear">Clear all (Back undoes it)</dd>
+          <dt><kbd>?</kbd></dt>
+          <dd data-i18n="shortcuts.help">Show or hide this help</dd>
+          <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Tab</kbd></dt>
+          <dd data-i18n="shortcuts.suggestions">Move through suggestions</dd>
+          <dt><kbd>Enter</kbd></dt>
+          <dd data-i18n="shortcuts.add">Add the highlighted suggestion</dd>
+          <dt><kbd>Backspace</kbd></dt>
+          <dd data-i18n="shortcuts.removeLast">Remove the last pick (in an empty search box)</dd>
+          <dt><kbd>Esc</kbd></dt>
+          <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help</dd>
+        </dl>
+        <p data-i18n="shortcuts.note">Shortcuts work when you're not typing in a box. Tab from the top of the page for skip links.</p>
+      </details>
       <p><a id="help-readme" href="https://github.com/el8ted/gwentdecksearch#readme" target="_blank" rel="noopener" data-i18n="help.readme">Full guide</a> · <a id="help-news" href="https://github.com/el8ted/gwentdecksearch/releases" target="_blank" rel="noopener" data-i18n="help.whatsNew">What's new</a></p>
-      <h3 data-i18n="shortcuts.title">Keyboard shortcuts</h3>
-      <dl class="keys">
-        <dt><kbd>/</kbd></dt>
-        <dd data-i18n="shortcuts.cards">Jump to the search box</dd>
-        <dt><kbd>[</kbd></dt>
-        <dd data-i18n="shortcuts.filters">Jump to the filters</dd>
-        <dt><kbd>]</kbd></dt>
-        <dd data-i18n="shortcuts.panel">Jump to card frequency</dd>
-        <dt><kbd>Shift</kbd> + <kbd>Backspace</kbd></dt>
-        <dd data-i18n="shortcuts.clear">Clear all (Back undoes it)</dd>
-        <dt><kbd>?</kbd></dt>
-        <dd data-i18n="shortcuts.help">Show or hide this help</dd>
-        <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Tab</kbd></dt>
-        <dd data-i18n="shortcuts.suggestions">Move through suggestions</dd>
-        <dt><kbd>Enter</kbd></dt>
-        <dd data-i18n="shortcuts.add">Add the highlighted suggestion</dd>
-        <dt><kbd>Backspace</kbd></dt>
-        <dd data-i18n="shortcuts.removeLast">Remove the last pick (in an empty search box)</dd>
-        <dt><kbd>Esc</kbd></dt>
-        <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help</dd>
-      </dl>
-      <p data-i18n="shortcuts.note">Shortcuts work when you're not typing in a box. Tab from the top of the page for skip links.</p>
     </dialog>
 
     <dialog class="credits" id="credits" aria-labelledby="credits-title">

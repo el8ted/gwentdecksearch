@@ -22,6 +22,8 @@ the release tag and starts a new Unreleased section. -->
 - Search can exclude: click a card, tag or author you've added to find decks *without* it, or type `-` before a name.
   For example, Skellige Warrior decks without Tyr. Shared links keep it
   ([#8](https://github.com/el8ted/gwentdecksearch/issues/8)).
+- Help (**?**) has more to say, in every language: search tips, similar decks, filters and keyboard shortcuts, each
+  in its own section that opens on a tap, so it still fits a phone.
 
 ## 2026-10-18
 
