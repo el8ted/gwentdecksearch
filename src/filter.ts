@@ -54,6 +54,8 @@ export interface FilterState {
   picks: (number | TagKey)[]
   /** Deck must contain every pick (`all`, default) or at least one (`any`). */
   match?: 'all' | 'any'
+  /** Only decks with this card list: an {@link IndexedDeck.list} ID, from a pasted deck URL. */
+  deck?: string
 }
 
 /** A deck with lookups precomputed once, so filtering stays a set check per card. */
@@ -70,6 +72,8 @@ export interface IndexedDeck {
   langs: Set<string>
   /** {@link authorKey}s: the guide's author, and the owner of each list that has the deck. */
   authors: Set<string>
+  /** The ID of the first deck with exactly this card list (leader and stratagem included), shared by its duplicates. */
+  list: string
 }
 
 /** A deck's provisions against the current-patch limit. */
@@ -133,6 +137,8 @@ export function authorNames(decks: IndexedDeck[]): Map<string, string> {
  * @throws {Error} If a deck lacks a leader or stratagem (the scraper guarantees both)
  */
 export function indexDecks(data: Dataset): IndexedDeck[] {
+  // Card list → first deck with it, so guides of the same list find each other.
+  const lists = new Map<string, string>()
   return data.decks.map((deck) => {
     const ofType = (type: Card['type']) => deck.cards.find(([id]) => data.cards[id]?.type === type)?.[0]
     const leader = ofType('leader')
@@ -144,8 +150,38 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     const ids = new Set(deck.cards.map(([id]) => id))
     const tags = new Set([...ids].flatMap((id) => data.cards[id]?.tags ?? []))
     const langs = new Set([deck.guideLang, deck.video?.lang].filter((l) => l !== undefined))
-    return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors: new Set(deckAuthors(deck)) }
+    const key = deck.cards
+      .map(([id, n]) => `${id}x${n}`)
+      .sort()
+      .join(',')
+    if (!lists.has(key)) lists.set(key, deck.id)
+    const list = lists.get(key) as string
+    return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors: new Set(deckAuthors(deck)), list }
   })
+}
+
+/**
+ * A playgwent deck URL: a guide (`/decks/guides/408411`) or a deck hash (`/decks/3c3e…`), with or without the scheme,
+ * `www.` and a language segment (`/en/`, `/pt-BR/`). Group 1 is the guide number, group 2 the hash.
+ */
+export const DECK_URL =
+  /^(?:https?:\/\/)?(?:www\.)?playgwent\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?decks\/(?:guides\/(\d+)|([0-9a-f]{8,}))\/?(?:[?#].*)?$/i
+
+/**
+ * The card list a pasted playgwent deck URL points to.
+ *
+ * @param decks - Indexed decks
+ * @param text - What was typed or pasted
+ * @returns The deck's {@link IndexedDeck.list}; `undefined` if it isn't a deck URL or the deck isn't in the data
+ */
+export function listForUrl(decks: IndexedDeck[], text: string): string | undefined {
+  const m = DECK_URL.exec(text.trim())
+  if (!m) return undefined
+  const [, guide, hash] = m
+  const found = guide
+    ? decks.find((e) => e.deck.url.endsWith(`/guides/${guide}`))
+    : decks.find((e) => e.deck.id === hash.toLowerCase())
+  return found?.list
 }
 
 /**
@@ -198,7 +234,7 @@ function hasCards(e: IndexedDeck, s: FilterState): boolean {
 
 function matchesBase(
   e: IndexedDeck,
-  s: Pick<FilterState, 'factions' | 'sources' | 'budgets' | 'video' | 'langs' | 'leader' | 'stratagem'>,
+  s: Pick<FilterState, 'factions' | 'sources' | 'budgets' | 'video' | 'langs' | 'leader' | 'stratagem' | 'deck'>,
 ): boolean {
   return (
     (!s.video || e.deck.video !== undefined) &&
@@ -207,7 +243,8 @@ function matchesBase(
     (!s.budgets?.length || s.budgets.includes(e.budget)) &&
     (s.factions.length === 0 || s.factions.includes(e.faction)) &&
     (s.leader === undefined || e.leader === s.leader) &&
-    (s.stratagem === undefined || e.stratagem === s.stratagem)
+    (s.stratagem === undefined || e.stratagem === s.stratagem) &&
+    (s.deck === undefined || e.list === s.deck)
   )
 }
 

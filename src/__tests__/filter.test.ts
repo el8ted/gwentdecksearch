@@ -9,6 +9,7 @@ import {
   facets,
   type IndexedDeck,
   indexDecks,
+  listForUrl,
   matchDecks,
   provisionStatus,
   sharedCards,
@@ -520,5 +521,76 @@ describe('sharedCards', () => {
 
     // Assert
     expect(result.size).toBe(0)
+  })
+})
+
+describe('deck URLs', () => {
+  // A guide, a sheet deck with the same list in another order, and an unrelated deck.
+  const GUIDE = 'f93d165652a1c36c68ce4cd1095f2583'
+  const TWIN = '3c3e3dc159b34988cb91f079ab8d1ad4'
+  const OTHER = 'a39641ec3acba061069d274b0c17189a'
+  const list: [number, number][] = [
+    [1, 1],
+    [10, 1],
+    [101, 2],
+  ]
+  const decks = indexDecks({
+    ...DATA,
+    decks: [
+      { ...deck('Guide', GUIDE, 160, list), url: 'https://www.playgwent.com/decks/guides/408411' },
+      deck('Twin', TWIN, 160, [...list].reverse()),
+      deck('Other', OTHER, 160, [...list, [102, 1]]),
+    ],
+  })
+
+  it('gives decks with the same cards the same list, whatever the order', () => {
+    // Act
+    const lists = decks.map((e) => e.list)
+
+    // Assert
+    expect(lists).toEqual([GUIDE, GUIDE, OTHER])
+  })
+
+  it('finds a deck by guide number or hash, with or without scheme, www and a language segment', () => {
+    // Arrange
+    const urls = [
+      'https://www.playgwent.com/en/decks/guides/408411',
+      'playgwent.com/pt-BR/decks/guides/408411/',
+      `  www.playgwent.com/decks/${TWIN.toUpperCase()}?utm=x  `,
+      `http://playgwent.com/decks/${TWIN}#top`,
+    ]
+
+    // Act
+    const found = urls.map((u) => listForUrl(decks, u))
+
+    // Assert
+    expect(found).toEqual([GUIDE, GUIDE, GUIDE, GUIDE])
+  })
+
+  it('finds nothing for an unknown deck, another site or plain text', () => {
+    // Arrange
+    const texts = [
+      'https://www.playgwent.com/decks/guides/1',
+      'https://www.playgwent.com/decks/0123456789abcdef',
+      `https://example.com/decks/${TWIN}`,
+      'http',
+      'Tyr',
+    ]
+
+    // Act
+    const found = texts.map((t) => listForUrl(decks, t))
+
+    // Assert
+    expect(found).toEqual([undefined, undefined, undefined, undefined, undefined])
+  })
+
+  it('narrows matches to the list, alongside other filters', () => {
+    // Act
+    const all = matchDecks(decks, state({ deck: GUIDE }))
+    const none = matchDecks(decks, state({ deck: GUIDE, factions: ['NG'] }))
+
+    // Assert
+    expect(ids(all)).toEqual([GUIDE, TWIN])
+    expect(none).toEqual([])
   })
 })

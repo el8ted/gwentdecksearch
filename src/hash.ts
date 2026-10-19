@@ -43,6 +43,7 @@ export function encodeState(state: FilterState): string {
   const pick = (p: number | string) =>
     typeof p === 'string' && p.startsWith('@') ? `@${encodeURIComponent(p.slice(1))}` : p
   if (state.picks.length) params.set('c', state.picks.map(pick).join(','))
+  if (state.deck !== undefined) params.set('d', state.deck)
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -58,6 +59,7 @@ export function encodeState(state: FilterState): string {
  * @param cardOf - A card in the current dataset, or `undefined` if it isn't there
  * @param isTag - Whether a tag key is in the current dataset
  * @param isAuthor - Whether an author key is in the current dataset
+ * @param listOf - A deck ID's card list (`IndexedDeck.list`), or `undefined` if the deck isn't there
  * @returns Parsed filters; defaults for anything missing or invalid
  */
 export function decodeState(
@@ -65,6 +67,7 @@ export function decodeState(
   cardOf: (id: number) => Pick<Card, 'type' | 'faction'> | undefined,
   isTag: (key: string) => boolean,
   isAuthor: (key: string) => boolean = () => false,
+  listOf: (id: string) => string | undefined = () => undefined,
 ): FilterState {
   const typeOf = (id: number) => cardOf(id)?.type
   const params = new URLSearchParams(hash.replace(/^#/, ''))
@@ -76,7 +79,9 @@ export function decodeState(
       .filter((id) => Number.isInteger(id) && (type ? typeOf(id) === type : typeOf(id) !== undefined))
   const factions = (params.get('f') ?? '').split(',').filter((f): f is Faction => FACTIONS.includes(f as Faction))
   const leader = ids('l', 'leader')[0]
+  const deck = params.get('d')
   return {
+    deck: deck ? listOf(deck) : undefined,
     match: params.get('k') === 'any' ? 'any' : 'all',
     factions,
     video: params.get('v') === '1',

@@ -1,4 +1,5 @@
 import { CONFIG } from '../config.ts'
+import { DECK_URL } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import type { Dataset } from '../types.ts'
 import { esc } from './dom.ts'
@@ -61,7 +62,14 @@ export interface AutocompleteOptions {
   onPick: (pick: number | string) => void
   /** Backspace in an empty input. */
   onBackspace: () => void
+  /** The deck a playgwent URL points to: its card list, name and how many decks have that list; `undefined` if unknown. */
+  deckFor: (url: string) => { list: string; name: string; count: number } | undefined
+  /** A deck URL was chosen; `list` as from {@link deckFor}. */
+  onDeck: (list: string) => void
 }
+
+// Typing out a URL: card names never start like this, so suggestions would only flash irrelevant cards.
+const URL_START = /^(?:http|www\.|playgwent)/i
 
 /** How a name matches the query: 0 prefix, 1 substring, -1 not at all. `loose` also counts a query that extends the name. */
 function matchRank(name: string, q: string, loose = false): number {
@@ -91,10 +99,14 @@ export function createAutocomplete({
   authorName,
   onPick,
   onBackspace,
+  deckFor,
+  onDeck,
 }: AutocompleteOptions) {
   // A number is a card ID, `@…` an author, any other string a tag key.
   let items: (number | string)[] = []
   let active = 0
+  // The card list a typed deck URL found; set instead of items while the input holds a URL.
+  let deckHit: string | undefined
 
   function close() {
     list.hidden = true
@@ -102,8 +114,29 @@ export function createAutocomplete({
     input.removeAttribute('aria-activedescendant')
   }
 
+  /** One row for a deck URL: the deck, or a note that it isn't in the list. */
+  function renderDeck(url: string) {
+    const loc = locale()
+    const hit = deckFor(url)
+    deckHit = hit?.list
+    items = []
+    list.innerHTML = hit
+      ? `<div id="sug-deck" role="option" data-deck="${esc(hit.list)}" class="deck-pick" aria-selected="true">
+        <span class="cost" aria-hidden="true">⧉</span><span class="sug-name">${esc(hit.name)} <span class="sug-kind">${esc(loc.t('cards.deck'))}</span></span>
+        <span class="count" title="${esc(loc.t('cards.deckCount'))}">${hit.count}</span></div>`
+      : `<div class="none">${esc(loc.t('cards.deckUnknown'))}</div>`
+    list.hidden = false
+    input.setAttribute('aria-expanded', 'true')
+    if (hit) input.setAttribute('aria-activedescendant', 'sug-deck')
+    else input.removeAttribute('aria-activedescendant')
+  }
+
   function render() {
-    const q = fold(input.value.trim())
+    deckHit = undefined
+    const raw = input.value.trim()
+    if (DECK_URL.test(raw)) return renderDeck(raw)
+    if (URL_START.test(raw)) return close()
+    const q = fold(raw)
     if (!q) return close()
     const loc = locale()
     const isAuthor = (item: number | string): item is string => typeof item === 'string' && item.startsWith('@')
@@ -183,9 +216,21 @@ export function createAutocomplete({
     onPick(item)
   }
 
-  input.addEventListener('input', () => {
+  function pickDeck(deck: string) {
+    input.value = ''
+    deckHit = undefined
+    close()
+    onDeck(deck)
+  }
+
+  input.addEventListener('input', (e) => {
     active = 0
     render()
+    // A pasted deck URL applies at once; a typed one waits for Enter. A pasted unknown one is selected, so the next
+    // paste or keystroke replaces it.
+    if ((e as InputEvent).inputType !== 'insertFromPaste' || !DECK_URL.test(input.value.trim())) return
+    if (deckHit) pickDeck(deckHit)
+    else input.select()
   })
   input.addEventListener('keydown', (e) => {
     // Tab/Shift+Tab move through suggestions like the arrows while the list is open; otherwise Tab leaves the field.
@@ -196,6 +241,9 @@ export function createAutocomplete({
       const step = e.key === 'ArrowDown' || (tab && !e.shiftKey) ? 1 : -1
       active = (active + step + items.length) % Math.max(items.length, 1)
       render()
+    } else if (e.key === 'Enter' && !list.hidden && deckHit) {
+      e.preventDefault()
+      pickDeck(deckHit)
     } else if (e.key === 'Enter' && !list.hidden && items[active] !== undefined) {
       e.preventDefault()
       pick(items[active])
@@ -208,9 +256,10 @@ export function createAutocomplete({
   input.addEventListener('blur', () => setTimeout(close, 150))
   // mousedown (not click) fires before blur closes the list.
   list.addEventListener('mousedown', (e) => {
-    const li = (e.target as HTMLElement).closest<HTMLElement>('[data-id], [data-tag]')
+    const li = (e.target as HTMLElement).closest<HTMLElement>('[data-id], [data-tag], [data-deck]')
     if (!li) return
     e.preventDefault()
+    if (li.dataset.deck) return pickDeck(li.dataset.deck)
     pick(li.dataset.tag ?? Number(li.dataset.id))
   })
 

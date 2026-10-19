@@ -173,7 +173,7 @@ several to combine them.
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
-| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. ✕ removes a pick. |
+| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
 | **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
 
 ## Save and share a search

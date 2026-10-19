@@ -132,6 +132,19 @@ describe('decodeState', () => {
     expect(decoded.stratagem).toBeUndefined()
   })
 
+  it('round-trips a deck list, mapping a deck to its list and dropping an unknown one', () => {
+    // Arrange
+    const listOf = (id: string) => ({ abc: 'abc', dup: 'abc' })[id]
+    const decode = (hash: string) => decodeState(hash, cardOf, isTag, () => false, listOf).deck
+
+    // Act
+    const hash = encodeState({ ...EMPTY_STATE, deck: 'abc' })
+
+    // Assert
+    expect(hash).toBe('#d=abc')
+    expect([decode(hash), decode('#d=dup'), decode('#d=gone')]).toEqual(['abc', 'abc', undefined])
+  })
+
   it('returns the empty state for an empty hash', () => {
     // Arrange
     const hash = ''

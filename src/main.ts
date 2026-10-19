@@ -10,6 +10,7 @@ import {
   type FilterState,
   facets,
   indexDecks,
+  listForUrl,
   matchDecks,
   pickedCards,
   sharedCards,
@@ -43,7 +44,7 @@ import { createAutocomplete } from './ui/autocomplete.ts'
 import { initDisplayMenu } from './ui/display-menu.ts'
 import { byId, esc, readStorage, writeStorage } from './ui/dom.ts'
 import { initLanguageMenu } from './ui/language-menu.ts'
-import { deckRow, sourceLabel } from './ui/results.ts'
+import { deckName, deckRow, sourceLabel } from './ui/results.ts'
 
 declare global {
   // Set at build time (tsdown.config.ts).
@@ -83,6 +84,7 @@ const els = {
   chips: byId('chips'),
   input: byId<HTMLInputElement>('card-input'),
   suggestions: byId('suggestions'),
+  deckNote: byId('deck-note'),
   clear: byId('clear'),
   match: byId('match'),
   resultHead: byId('result-head'),
@@ -122,17 +124,24 @@ function loadPack(lang: Lang): Promise<LanguagePack | undefined> {
 const params = new URLSearchParams(location.search)
 let loc = makeLocale(pickLanguage(params.get('lang'), readStorage(LANG_KEY), navigator.languages))
 const AUTHORS = authorNames(decks)
+// Each deck's card list (by deck ID), and how many decks share each list.
+const LIST_OF = new Map(decks.map((e) => [e.deck.id, e.list]))
+const LIST_SIZE = new Map<string, number>()
+for (const e of decks) LIST_SIZE.set(e.list, (LIST_SIZE.get(e.list) ?? 0) + 1)
 const readHash = () =>
   decodeState(
     location.hash,
     (id) => data.cards[id],
     (key) => Object.hasOwn(data.tags, key),
     (key) => AUTHORS.has(key),
+    (id) => LIST_OF.get(id),
   )
 let state: FilterState = readHash()
 // The faction pill that adding a card turned on (see addCard); a pill click makes the choice the visitor's own.
 // Not in the hash: after a reload the pill simply stays.
 let autoFaction: Faction | undefined
+// A pasted deck URL replaced an earlier search: say so, and that Back brings it back. Cleared with the deck filter.
+let deckReplaced = false
 let current = facets(decks, state)
 const expanded = new Set<string>()
 // Side-panel ordering; a view choice, so it isn't stored in the URL.
@@ -203,7 +212,22 @@ function clearAll() {
   expanded.clear()
   dimCommon = false
   autoFaction = undefined
-  update({ ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined }, { push: true })
+  update(
+    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: undefined },
+    { push: true },
+  )
+}
+
+/** Shows the decks with a pasted URL's card list, replacing the whole search (Back restores it). */
+function showDeck(list: string) {
+  deckReplaced = encodeState({ ...state, match: 'all' }) !== ''
+  autoFaction = undefined
+  update({ ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: list }, { push: true })
+}
+
+function removeDeck() {
+  deckReplaced = false
+  update({ deck: undefined })
 }
 
 /**
@@ -214,10 +238,12 @@ function addPick(pick: number | string) {
   if (state.picks.includes(pick)) return
   const picks = [...state.picks, pick]
   const faction = typeof pick === 'number' ? singleFaction(data.cards[pick]) : undefined
+  // A pick searches across decks, so the pasted deck's list stops narrowing the results.
+  deckReplaced = false
   if (faction && state.factions.length === 0) {
     autoFaction = faction
-    update({ picks, factions: [faction] })
-  } else update({ picks })
+    update({ picks, factions: [faction], deck: undefined })
+  } else update({ picks, deck: undefined })
 }
 
 /** Removes a card or tag; a faction a card selected is cleared again once no card of that faction remains. */
@@ -321,18 +347,26 @@ function renderFilters() {
       ? esc(t('stratagem.caution'))
       : // Named here too: on touch screens an icon has no tooltip.
         `<strong>${esc(loc.card(state.stratagem))}</strong> · ${esc(t('stratagem.swapped'))}${others ? ` ${esc(t('stratagem.others', { n: others }))}` : ''} <button type="button" class="link" data-any-stratagem="1">${esc(t('stratagem.any'))}</button>`
-  els.chips.innerHTML = state.picks
-    .map((pick) => {
-      const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
-      if (typeof pick === 'string') {
-        const mark = pick.startsWith('@') ? '✎' : '#'
-        return `<li class="chip tag"><span aria-hidden="true">${mark}</span>${esc(pickName(pick))}${remove}</li>`
-      }
-      const card = data.cards[pick]
-      const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
-      return `<li class="chip f-${card.faction}${dual}">${esc(loc.card(pick))}${remove}</li>`
-    })
-    .join('')
+  const list = state.deck === undefined ? undefined : decks.find((e) => e.deck.id === state.deck)
+  const deckChip = list
+    ? `<li class="chip deck-pick"><span aria-hidden="true">⧉</span>${esc(t('cards.deckChip', { name: deckName(list.deck, loc) }))}<button type="button" data-remove-deck="1" aria-label="${esc(t('cards.remove', { name: deckName(list.deck, loc) }))}">✕</button></li>`
+    : ''
+  els.deckNote.hidden = !(list && deckReplaced)
+  els.deckNote.textContent = t('cards.deckReplaced')
+  els.chips.innerHTML =
+    deckChip +
+    state.picks
+      .map((pick) => {
+        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name: pickName(pick) }))}">✕</button>`
+        if (typeof pick === 'string') {
+          const mark = pick.startsWith('@') ? '✎' : '#'
+          return `<li class="chip tag"><span aria-hidden="true">${mark}</span>${esc(pickName(pick))}${remove}</li>`
+        }
+        const card = data.cards[pick]
+        const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
+        return `<li class="chip f-${card.faction}${dual}">${esc(loc.card(pick))}${remove}</li>`
+      })
+      .join('')
 }
 
 function renderBars(rows: [number, number][], total: number) {
@@ -416,7 +450,16 @@ const autocomplete = createAutocomplete({
   onBackspace: () => {
     const last = state.picks.at(-1)
     if (last !== undefined) removePick(last)
+    else if (state.deck !== undefined) removeDeck()
   },
+  deckFor: (url) => {
+    const list = listForUrl(decks, url)
+    const first = list && decks.find((e) => e.deck.id === list)
+    return first
+      ? { list: first.list, name: deckName(first.deck, loc), count: LIST_SIZE.get(first.list) ?? 1 }
+      : undefined
+  },
+  onDeck: showDeck,
 })
 
 /** Switches language: interface phrases at once, card names once the pack loads. */
@@ -455,6 +498,7 @@ const FOCUS_KEYS = [
   ['guideLang', 'data-guide-lang'],
   ['toggle', 'data-toggle'],
   ['remove', 'data-remove'],
+  ['removeDeck', 'data-remove-deck'],
   ['add', 'data-add'],
   ['anyStratagem', 'data-any-stratagem'],
   ['leader', 'data-leader'],
@@ -510,7 +554,8 @@ document.addEventListener('click', (e) => {
     // Exclusive: clicking switches to that faction; clicking the selected one clears it.
     autoFaction = undefined
     update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
-  } else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
+  } else if (t.dataset.removeDeck) removeDeck()
+  else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
   else if (add) addPick(Number(add))
   else if (toggle) {
     if (!expanded.delete(toggle)) expanded.add(toggle)
@@ -533,7 +578,7 @@ document.addEventListener('click', (e) => {
     const fallback =
       k === 'anyStratagem'
         ? els.stratagem.querySelector('button')
-        : k === 'remove' || k === 'add'
+        : k === 'remove' || k === 'removeDeck' || k === 'add'
           ? els.input
           : undefined
     ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(t.dataset[k] ?? '')}"]`) ?? fallback)?.focus()

@@ -279,6 +279,7 @@ h1 span {
   font-size: 0.9rem;
 }
 .tag,
+.deck-pick,
 .suggestions .author {
   --fc: var(--accent);
 }
@@ -1212,6 +1213,7 @@ h1 span {
 }
 /* A tag has no cost: the # mark sits where a card's cost would. */
 .suggestions .tag .cost,
+.suggestions .deck-pick .cost,
 .suggestions .author .cost {
   background: none;
   color: var(--muted);
