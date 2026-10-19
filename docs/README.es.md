@@ -20,6 +20,6 @@ Gwent Deck Search lista los mazos publicados de GWENT: The Witcher Card Game y l
 6. Sobrante: espacio para mejorar una carta. Excedido: los costes han cambiado y el mazo ya no cabe.
 7. Borrar todo empieza de nuevo; el botón Atrás del navegador lo deshace.
 
-La guía completa está en inglés: [README.md](../README.md)
+La guía completa está en inglés: [guide.md](guide.md)
 
 > Esta página se tradujo automáticamente. Las correcciones son bienvenidas: [CONTRIBUTING.md](../CONTRIBUTING.md)

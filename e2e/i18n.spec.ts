@@ -44,7 +44,7 @@ test("Help's full-guide link opens the README in the page's language", async ({ 
   // Assert
   await expect(link).toHaveAttribute('href', /docs\/README\.ru\.md$/)
   await page.locator('[data-lang="en"]').evaluate((b: HTMLElement) => b.click())
-  await expect(link).toHaveAttribute('href', /#readme$/)
+  await expect(link).toHaveAttribute('href', /docs\/guide\.md$/)
 })
 
 test('Credits shows the version, linked to its release notes', async ({ page, open }) => {

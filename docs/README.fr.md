@@ -20,6 +20,6 @@ Gwent Deck Search liste les decks publiés de GWENT: The Witcher Card Game et le
 6. Marge : de la place pour améliorer une carte. Dépassé : les coûts ont changé et le deck ne rentre plus.
 7. Tout effacer repart de zéro ; le bouton Retour du navigateur l'annule.
 
-Le guide complet est en anglais: [README.md](../README.md)
+Le guide complet est en anglais: [guide.md](guide.md)
 
 > Cette page a été traduite automatiquement. Les corrections sont les bienvenues : [CONTRIBUTING.md](../CONTRIBUTING.md)

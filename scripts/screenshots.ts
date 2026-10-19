@@ -1,7 +1,7 @@
 /**
- * Retakes the README screenshots (docs/screenshots/*.png) from the built site, so they follow the current data and
- * UI. Examples use every source, and searches whose top decks come from a mix of authors, so no one creator is
- * featured.
+ * Retakes the README and guide screenshots (docs/screenshots/*.png) from the built site, so they follow the current
+ * data and UI. Examples use every source, and searches whose top decks come from a mix of authors, so no one creator
+ * is featured.
  *
  * Run: `pnpm build && pnpm screenshots`. If the data no longer supports an example, the script stops and says which.
  */
@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { type Browser, chromium, type Page } from '@playwright/test'
 import { consola } from 'consola'
+import { BUDGETS, budgetSide, indexDecks, matchDecks } from '../src/filter.ts'
 import { LANGUAGES } from '../src/i18n.ts'
 import type { Dataset } from '../src/types.ts'
 
@@ -35,6 +36,15 @@ const SHIELDWALL = card('Shieldwall')
 const PAIR = [card('Queen Meve'), card('Griffin Witcher'), card('Margarita Laux-Antille'), card('Bloody Baron')]
 const TATTERWING = card('Tatterwing')
 const ANY_CARDS = [HIVE_MIND, GOLDEN_NEKKER, TATTERWING]
+// ≈ for an Over deck with a handful of close decks that fit: the first such deck, so reruns pick the same one.
+const decks = indexDecks(data)
+const valid = BUDGETS.filter((b) => budgetSide(b) !== 'over')
+const NEAR = decks.find((e) => {
+  if (budgetSide(e.budget) !== 'over') return false
+  const n = matchDecks(decks, { factions: [], picks: [], leader: e.leader, budgets: valid, near: e.deck.id }).length
+  return n >= 3 && n <= 6
+})
+if (!NEAR) throw new Error('similar: no Over deck with 3–6 similar decks; change the range')
 
 /** Opens the page in a fresh context (no saved settings) at 1280×800, dark theme, without animations. */
 async function open(browser: Browser, suffix: string, height = 800): Promise<Page> {
@@ -118,6 +128,17 @@ try {
   page = await open(browser, `#f=MO&l=${ARACHAS}&c=${HIVE_MIND},${HIDEOUS_FEAST}`)
   await page.locator('[data-freq="least"]').click()
   await save(page, 'least-common')
+
+  // Leaving out a card you'd rather not play, while typing another exclusion.
+  page = await open(browser, `#f=MO&c=-${GOLDEN_NEKKER}`, 560)
+  await page.locator('#card-input').fill('-kiki')
+  await page.locator('#suggestions .sug-without').first().waitFor()
+  await save(page, 'exclude')
+
+  // The Over deck's own step on too, so it leads as This deck.
+  const steps = [...valid, NEAR?.budget].join(',')
+  page = await open(browser, `#f=${NEAR?.faction}&b=${steps}&l=${NEAR?.leader}&n=${NEAR?.deck.id}`, 1100)
+  await save(page, 'similar')
 
   page = await open(browser, `#k=any&c=${ANY_CARDS.join(',')}`)
   await save(page, 'any-cards')

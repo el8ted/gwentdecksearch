@@ -1,7 +1,7 @@
 /**
  * Writes docs/README.{lang}.md: a short page per language with the quick guide from the Help panel (src/i18n/{lang}.json,
- * `help.*`) and links to the site and the full English README. Translators fix the guide in the phrase files; the
- * few sentences below are the only other text.
+ * `help.*`) and links to the site and the full English guide (docs/guide.md). Translators fix the guide in the phrase
+ * files; the few sentences below are the only other text.
  *
  * Run: `pnpm readmes` after changing `help.*` phrases or the text below.
  */
@@ -116,7 +116,7 @@ ${intro}
 
 ${steps}
 
-${full}: [README.md](../README.md)
+${full}: [guide.md](guide.md)
 
 > ${machine} [CONTRIBUTING.md](../CONTRIBUTING.md)
 `

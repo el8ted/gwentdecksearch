@@ -20,6 +20,6 @@ O Gwent Deck Search lista os decks publicados de GWENT: The Witcher Card Game e 
 6. Sobra: espaço para melhorar uma carta. Excedido: os custos mudaram e o deck não cabe mais.
 7. Limpar tudo recomeça; o botão Voltar do navegador desfaz.
 
-O guia completo está em inglês: [README.md](../README.md)
+O guia completo está em inglês: [guide.md](guide.md)
 
 > Esta página foi traduzida automaticamente. Correções são bem-vindas: [CONTRIBUTING.md](../CONTRIBUTING.md)

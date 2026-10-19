@@ -204,7 +204,7 @@ function applyStatic() {
   // The README for this language; each one links on to the full English guide.
   byId<HTMLAnchorElement>('help-readme').href =
     loc.lang === 'en'
-      ? 'https://github.com/el8ted/gwentdecksearch#readme'
+      ? 'https://github.com/el8ted/gwentdecksearch/blob/main/docs/guide.md'
       : `https://github.com/el8ted/gwentdecksearch/blob/main/docs/README.${loc.lang}.md`
   // CDPR's site has every language we do, under the same codes in lower case (pt-br, zh-cn).
   byId<HTMLAnchorElement>('fan-content').href = `https://www.cdprojektred.com/${loc.lang.toLowerCase()}/fan-content`

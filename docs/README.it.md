@@ -20,6 +20,6 @@ Gwent Deck Search elenca i mazzi pubblicati di GWENT: The Witcher Card Game e li
 6. Avanzo: spazio per migliorare una carta. Eccesso: i costi sono cambiati e il mazzo non rientra più.
 7. Cancella tutto ricomincia da capo; il tasto Indietro del browser lo annulla.
 
-La guida completa è in inglese: [README.md](../README.md)
+La guida completa è in inglese: [guide.md](guide.md)
 
 > Questa pagina è stata tradotta automaticamente. Le correzioni sono benvenute: [CONTRIBUTING.md](../CONTRIBUTING.md)

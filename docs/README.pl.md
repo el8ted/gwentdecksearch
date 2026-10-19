@@ -20,6 +20,6 @@ Gwent Deck Search wyświetla opublikowane talie do GWINT: Wiedźmińska Gra Karc
 6. Zapas: miejsce na ulepszenie karty. Przekroczone: koszty się zmieniły i talia już się nie mieści.
 7. Wyczyść wszystko zaczyna od nowa; przycisk Wstecz w przeglądarce to cofa.
 
-Pełny przewodnik jest po angielsku: [README.md](../README.md)
+Pełny przewodnik jest po angielsku: [guide.md](guide.md)
 
 > Ta strona została przetłumaczona maszynowo. Poprawki są mile widziane: [CONTRIBUTING.md](../CONTRIBUTING.md)

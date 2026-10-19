@@ -20,6 +20,6 @@ Gwent Deck Search listet veröffentlichte Decks für GWENT: The Witcher Card Gam
 6. Reserve: Platz, um eine Karte aufzuwerten. Über: Die Kosten haben sich geändert und das Deck passt nicht mehr.
 7. Alles zurücksetzen fängt neu an; die Zurück-Taste deines Browsers macht es rückgängig.
 
-Die vollständige Anleitung gibt es auf Englisch: [README.md](../README.md)
+Die vollständige Anleitung gibt es auf Englisch: [guide.md](guide.md)
 
 > Diese Seite wurde maschinell übersetzt. Korrekturen sind willkommen: [CONTRIBUTING.md](../CONTRIBUTING.md)

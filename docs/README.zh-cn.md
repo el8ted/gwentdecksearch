@@ -20,6 +20,6 @@ Gwent Deck Search 列出《巫师之昆特牌》的已发布卡组，并随着�
 6. 有余：还有升级卡牌的空间。超出：费用已变动，卡组超出上限。
 7. 全部清除可重新开始；浏览器的后退按钮可撤销。
 
-完整指南为英文: [README.md](../README.md)
+完整指南为英文: [guide.md](guide.md)
 
 > 本页为机器翻译，欢迎指正： [CONTRIBUTING.md](../CONTRIBUTING.md)
