@@ -108,3 +108,36 @@ test('an unknown deck URL says so and changes nothing; partial URLs suggest noth
   // Assert
   await expect(page.locator('#suggestions')).toBeHidden()
 })
+
+test('?deck= opens a deck from its full URL, then shows the short link', async ({ page, open }) => {
+  // Act
+  await open(`?lang=de&deck=${encodeURIComponent(url)}`)
+
+  // Assert: the deck is shown, the language stays, and deck= is gone
+  await expect(page).toHaveURL(new RegExp(`\\?lang=de#d=${guide.list}$`))
+  await expect(page.locator('#result-head')).toHaveText(/^1 /)
+})
+
+test('?deck= also takes the URL unencoded', async ({ page, open }) => {
+  // Act
+  await open(`?deck=${guide.deck.url}`)
+
+  // Assert
+  await expect(page).toHaveURL(new RegExp(`#d=${guide.list}$`))
+})
+
+test('?deck= with a deck not in the list puts it in Search, selected, which says so', async ({ page, open }) => {
+  // Arrange
+  const unknown = 'https://www.playgwent.com/en/decks/948d24acf05cd92e7a71495355aefbd9'
+
+  // Act
+  await open(`?deck=${encodeURIComponent(unknown)}`)
+
+  // Assert
+  await expect(page.locator('#card-input')).toHaveValue(unknown)
+  expect(await page.locator('#card-input').evaluate((el: HTMLInputElement) => el.selectionEnd)).toBe(unknown.length)
+  await expect(page.locator('#suggestions .none')).toBeVisible()
+  await expect(page).not.toHaveURL(/deck=/)
+  await page.locator('#card-input').pressSequentially('Tyr')
+  await expect(page.locator('#card-input')).toHaveValue('Tyr')
+})

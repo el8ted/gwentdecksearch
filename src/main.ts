@@ -139,6 +139,20 @@ const readHash = () =>
     (id) => LIST_OF.get(id),
   )
 let state: FilterState = readHash()
+// `?deck=<playgwent URL>`: a way in for bots and tools holding a deck's full URL. Resolved once, then swapped for the
+// short `#d=` form so bookmarks stay short; a deck that isn't in the list lands in Search, which says so.
+const incoming = params.get('deck')
+const unknownDeck = incoming !== null && listForUrl(decks, incoming) === undefined ? incoming : undefined
+if (incoming !== null) {
+  const list = listForUrl(decks, incoming)
+  const url = new URL(location.href)
+  url.searchParams.delete('deck')
+  if (list) {
+    state = { ...EMPTY_STATE, leader: undefined, stratagem: undefined, deck: list }
+    url.hash = encodeState(state)
+  }
+  history.replaceState(null, '', url)
+}
 // The faction pill that adding a card turned on (see addCard); a pill click makes the choice the visitor's own.
 // Not in the hash: after a reload the pill simply stays.
 let autoFaction: Faction | undefined
@@ -693,6 +707,13 @@ window.addEventListener('hashchange', () => {
 
 initDisplayMenu()
 void setLanguage(loc.lang)
+if (unknownDeck) {
+  els.input.value = unknownDeck
+  els.input.dispatchEvent(new Event('input'))
+  // Selected, as after a paste, so typing or pasting replaces it.
+  els.input.focus()
+  els.input.select()
+}
 
 // Credits and Help: a native <dialog> handles Esc and focus; a click on the backdrop (the dialog
 // itself) closes it too.

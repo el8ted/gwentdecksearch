@@ -11,6 +11,14 @@ the release tag and starts a new Unreleased section. -->
 - The bug report form opens again: GitHub had rejected it since 2026-10-17.
 - Search ignores accents: typing "coen" finds Coën, "sile" finds Síle de Tansarville, and a plain ' matches Raffard’s
   ([#5](https://github.com/el8ted/gwentdecksearch/issues/5)).
+- Paste a playgwent.com deck link (a guide or a deck) into Search to find that deck, with its guide and video. It
+  replaces your other filters, and Back brings them back. A link to a deck that isn't in the list says so. Sites and
+  bots can link straight to a deck with `?deck=` and its playgwent.com link
+  ([#6](https://github.com/el8ted/gwentdecksearch/issues/6)).
+- **≈ Similar decks** on every deck: the decks with its leader that fit (Spare or Exact) and share at least 15 of its
+  25 cards, most in common first. Use it to find a playable version of a deck that's now over its provisions, or
+  variations of your own. The deck itself leads, marked **This deck**, when its provision step is on
+  ([#7](https://github.com/el8ted/gwentdecksearch/issues/7)).
 
 ## 2026-10-18
 

@@ -190,6 +190,13 @@ the search before. (Building your own copy? `similarMinShared` in `src/config.ts
 Your filters are part of the page address. Bookmark it, share it, or reload the page and your search is still
 there. Deck and card links open in a new tab so you don't lose it.
 
+**Linking to a deck from elsewhere** (a bot, a stream overlay, your own site): add the deck's playgwent.com link,
+URL-encoded, as `?deck=`. For example
+`https://el8ted.github.io/gwentdecksearch/?deck=https%3A%2F%2Fwww.playgwent.com%2Fen%2Fdecks%2Fguides%2F408411`
+opens that deck with its guide and video, then shortens the address to the usual `#d=…`. A deck that isn't in the
+list shows its link in Search with a note saying so. This link format is meant to stay; the page still needs
+JavaScript, so link previews in chat apps show the plain page.
+
 ## Languages
 
 The page comes in the 11 languages playgwent supports. Click the language button (🌐) in the header to change it.
