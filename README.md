@@ -31,16 +31,13 @@ The same steps are in the page's **?** (Help) panel, with search tips and keyboa
 
 ## Learn more
 
-The [full guide](docs/guide.md) covers everything, with pictures:
+The [full guide](docs/guide.md) walks through both jobs the page does, then covers every control, with pictures:
 
-- [Find out what your opponent is playing](docs/guide.md#find-out-what-your-opponent-is-playing) and
-  [find a deck to play](docs/guide.md#find-a-deck-to-play), including ≈ Similar decks
-- [Read a deck](docs/guide.md#read-a-deck), and what [Spare, Exact and Over](docs/guide.md#provisions-spare-exact-and-over)
-  mean
-- [Filters](docs/guide.md#filters), [saving and sharing a search](docs/guide.md#save-and-share-a-search), and linking
-  to a deck from a bot or site
-- [Languages](docs/guide.md#languages), [display and accessibility](docs/guide.md#display-and-accessibility), and
-  [keyboard shortcuts](docs/guide.md#keyboard-shortcuts)
+- [During a match](docs/guide.md#during-a-match): work out what your opponent is playing, one card at a time
+- [Find a deck to play](docs/guide.md#find-a-deck-to-play): from a deck link, cards you like or want to avoid, a
+  creator, or a deck that's over its provisions
+- [Reference](docs/guide.md#reference): Search, filters, provisions, `≈` Similar decks, sharing links, languages,
+  display and keyboard shortcuts
 - [Common questions](docs/guide.md#common-questions)
 
 What changed lately: [CHANGELOG.md](CHANGELOG.md).

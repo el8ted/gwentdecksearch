@@ -24,6 +24,8 @@ the release tag and starts a new Unreleased section. -->
   ([#8](https://github.com/el8ted/gwentdecksearch/issues/8)).
 - Help (**?**) has more to say, in every language: search tips, similar decks, filters and keyboard shortcuts, each
   in its own section that opens on a tap, so it still fits a phone.
+- A new [full guide](https://github.com/el8ted/gwentdecksearch/blob/main/docs/guide.md), opened from Help's **Full guide** link: what to do during a match, how to find a
+  deck to play, then every control explained, with pictures and common questions.
 
 ## 2026-10-18
 

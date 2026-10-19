@@ -1,23 +1,83 @@
 # Gwent Deck Search: The Full Guide
 
-Everything the page can do, with pictures. New here? The [Quick start](../README.md#quick-start) covers the basics,
-and the page's **?** (Help) panel has the same tips in your language.
+New here? The [Quick start](../README.md#quick-start) covers the basics, and the page's **?** (Help) panel has the
+same tips in your language. This guide has two walkthroughs, one for each job the page does, then a reference to
+every control.
 
 ## Contents
 
-- [The page at a glance](#the-page-at-a-glance)
-- [Find out what your opponent is playing](#find-out-what-your-opponent-is-playing)
-- [Find a deck to Play](#find-a-deck-to-play)
-- [Read a deck](#read-a-deck)
-- [Provisions: Spare, Exact and Over](#provisions-spare-exact-and-over)
-- [Filters](#filters)
-- [Save and share a search](#save-and-share-a-search)
-- [Languages](#languages)
-- [Display and accessibility](#display-and-accessibility)
-- [Keyboard shortcuts](#keyboard-shortcuts)
+- [During a match](#during-a-match): work out what your opponent is playing
+- [Find a deck to play](#find-a-deck-to-play): from a link, cards you like, a creator, or a deck that needs fixing
+- [Reference](#reference): [Search](#search), [Card frequency](#card-frequency), [Filters](#filters),
+  [Provisions](#provisions-spare-exact-and-over), [Read a deck](#read-a-deck), [Dim common](#dim-common),
+  [`≈` Similar decks](#-similar-decks), [Save and share](#save-and-share-a-search), [Languages](#languages),
+  [Display](#display-and-accessibility), [Keyboard shortcuts](#keyboard-shortcuts)
 - [Common questions](#common-questions)
 
-## The page at a glance
+## During a match
+
+You're working out your opponent's archetype, so you can guess the cards still to come, and, once only a few decks
+are left, spot the surprise cards one of them might run. It's a loop: one card in, read the result, repeat.
+
+1. **Pick their faction, then their leader.** Leaders appear as icons once a faction is picked. Add the stratagem
+   only with care: players swap it freely on otherwise identical lists.
+2. **Add the card they just played.** Press <kbd>/</kbd>, type a few letters, <kbd>Enter</kbd>.
+3. **Read the count** in the results heading. It tells you what to look at:
+   - **Many decks:** **Most common** shows what the remaining decks run, which is the archetype taking shape.
+     **Least common** shows the tech cards only a few of them run.
+   - **A handful:** **Expand all**, then **Dim common**. What stays bright is what sets each deck apart: that's where
+     the surprises are.
+4. **Next card: back to step 2.**
+
+![Arachas Swarm with Hive Mind and Hideous Feast: the Most common panel lists the cards most of those decks run](screenshots/common-cards.png)
+
+**Probe a guess.** Expect a card next? Add it and read the count. A big drop says it's unlikely; then
+<kbd>Backspace</kbd> takes it out again.
+
+**Certain a card isn't in their deck?** You can [exclude it](#search), but only when you're sure: a card they
+haven't played yet can still be in the deck.
+
+## Find a deck to play
+
+Where you start depends on what you have in hand; after that, every search goes the same way.
+
+### Where are you starting?
+
+| You have | First move |
+|---|---|
+| **A deck link** | Paste it into Search. See [Have a deck link?](#have-a-deck-link) below. |
+| **Cards or tags you like** | Add them in Search. Switch to **Any** to see decks with at least one of them, best matches first. |
+| **Cards you'd rather not play** | Type `-` before a name: `-golden` leaves out every Golden Nekker deck. |
+| **A faction and leader in mind** | Pick them, then look at **Most common** for the usual cards. |
+| **A favourite creator** | Type their name in Search (**✎**), or pick their list under **Source**. |
+| **Time to play, not build** | **▶ Has video** and the **Spare** and **Exact** steps: decks that fit today, with a video. Add your language if you like, but [other languages can still help](#common-questions). |
+
+![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](screenshots/deck-to-build.png)
+
+### Then: narrow, inspect, fix, compare
+
+1. **Narrow.** Add what you want and `-` what you don't, until the list is short. **Most common** and **Least common**
+   suggest cards to try: click one to add it.
+2. **Inspect.** **Expand all** opens every deck; **Dim common** fades what they share, so each deck's choices stand
+   out.
+3. **Fix provisions.** A **+N over** badge means costs changed since it was posted. Turn on the **Spare** and
+   **Exact** steps to see only decks that fit, or use `≈` on an Over deck to find the closest ones that do.
+4. **Compare.** `≈` on a deck you like lists its closest relatives, with it first as **This deck**.
+
+### Have a deck link?
+
+Paste a playgwent.com deck or guide link into Search. It replaces your other filters (Back brings them back) and shows
+that deck, with its guide and video. From there:
+
+- **Read the guide or watch the video:** the links are on the deck.
+- **It's over its provisions:** `≈` finds the closest decks that fit.
+- **You're tired of it, but like the cards:** `≈` finds variations.
+
+A link to a deck that isn't in the list says so.
+
+## Reference
+
+### The page at a glance
 
 | Area | What it's for |
 |---|---|
@@ -28,17 +88,10 @@ and the page's **?** (Help) panel has the same tips in your language.
 
 Every option shows a count. An option with **0** is dimmed: picking it would leave no decks.
 
-## Find out what your opponent is playing
+### Search
 
-The filters follow the order things happen in a match: you see the **leader** first, sometimes the **stratagem**,
-then **cards** as they're played.
-
-**1. Pick the faction and leader.** Leaders appear as their ability icons once a faction is picked. Hover over an
-icon to see its name; the selected leader's name is shown next to the icons.
-
-**2. Add the cards you see.** Press <kbd>/</kbd> and start typing in the **Search** box. Suggestions show each card's
-provision cost and how many of the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd>
-to add.
+Press <kbd>/</kbd> and start typing in the **Search** box. Suggestions show each card's provision cost and how many of
+the remaining decks run it. Use <kbd>↑</kbd> <kbd>↓</kbd> to move and <kbd>Enter</kbd> to add.
 
 ![Typing "kiki" in the Search box suggests Kikimore cards, each with its provision cost and how many of the remaining decks run it](screenshots/autocomplete.png)
 
@@ -55,35 +108,11 @@ stay in the order you added them, so <kbd>Backspace</kbd> in the empty box remov
 
 ![Typing "mag" suggests the Mage tag first, then cards whose names start with it, then authors](screenshots/search-tags.png)
 
-**3. Check what the remaining decks have in common.** The **Most common** panel counts how many of the matching
-decks run each card. A card near the top is likely to show up.
-
-![Arachas Swarm with Hive Mind and Hideous Feast: the Most common panel lists the cards most of those decks run](screenshots/common-cards.png)
-
-**4. Check for surprises.** **Least common** lists cards only one or two of the matching decks run: tech cards you
-might not expect. Click one to see which deck runs it.
-
-![The same search with Least common selected: cards that appear in just one deck each](screenshots/least-common.png)
-
-> The panel counts decks, not how often a card is drawn. Any card in a deck can be played.
-
-**About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
-the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**
-removes the filter.
-
-**Certain a card isn't in their deck?** You can exclude it: see [Leave out what you don't want](#find-a-deck-to-build).
-
-## Find a deck to Play
-
-Switch **All** to **Any** and add the cards you want to play, own, or have just crafted. You get every deck that
-uses at least one of them, with the decks using the most of your cards at the top.
+**All and Any.** **All** (the default) lists decks with every pick. **Any** lists decks with at least one, the decks
+using the most of your picks at the top: add the cards you want to play, own, or have just crafted, and see what's out
+there.
 
 ![Any mode with Hive Mind, Golden Nekker and Tatterwing: decks using at least one of them, best matches first](screenshots/any-cards.png)
-
-Tags and authors make good picks here too. The Devotion tag with Shinmiri2, in Skellige, lists his Skellige Devotion
-decks: a creator you trust and a theme you like.
-
-![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](screenshots/deck-to-build.png)
 
 Adding a card that belongs to one faction also picks that faction, if none is picked. Removing the card clears it
 again. Neutral cards, and cards that belong to two factions, leave the faction alone. To search across all factions,
@@ -100,54 +129,37 @@ for example Skellige Warrior decks without Tyr:
 
 ![Monsters decks with Golden Nekker excluded (faded and struck through); typing "-kiki" suggests excluding Kikimore cards too, each with the number of decks that would remain](screenshots/exclude.png)
 
-**Already have a deck link?** Paste a playgwent.com deck or guide link into Search to find that deck, with its guide
-and video. It replaces your other filters, and Back brings them back. A link to a deck that isn't in the list says so.
+**Deck links.** Paste a playgwent.com deck or guide link to find that deck, with its guide and video. It replaces your
+other filters, and Back brings them back. A link to a deck that isn't in the list says so.
 
-**≈ Similar decks.** Every deck has a **≈** button. It lists the decks with the same leader that fit today's limit
-(Spare or Exact) and share at least 15 of its 25 cards (leader and stratagem aside), most in common first, with a
-badge like **21/25 cards in common**.
+### Card frequency
 
-- **Find a playable version of an Over deck**, or **variations of your own**.
-- **Compare against it:** the deck itself is listed first, marked **This deck**, whenever its provision step is on. An
-  Over deck is hidden until you turn on its own Over step (see [Common questions](#common-questions)). With it
-  listed, **Dim common** fades the cards they all share, so each variation's swaps stand out.
-- **Widen or narrow it:** your other picks still apply. Turn on an Over step or clear the leader for more decks.
-- **Go back:** ✕ on the **Similar to** pill, or Back, returns to the search before.
+The panel on the right counts how many of the matching decks run each card you haven't added. **Most common** puts
+the staples first; **Least common** puts the cards only one or two decks run: tech cards you might not expect. Click
+one to add it, or to see which deck runs it.
 
-![≈ Similar decks for a deck 1 over, with Over 1 turned on as well: the deck first as This deck, then the closest decks, each with its cards in common](screenshots/similar.png)
+![The same search with Least common selected: cards that appear in just one deck each](screenshots/least-common.png)
 
-(Building your own copy? `similarMinShared` in `src/config.ts` sets the 15.)
+> The panel counts decks, not how often a card is drawn. Any card in a deck can be played.
 
-## Read a deck
+### Filters
 
-Click a deck's name to open its card list. **Expand all** opens every deck in the results.
-
-![An expanded deck: leader, stratagem, then each card with provision cost, power and copies. Golden Nekker, which was searched for, is highlighted](screenshots/decklist.png)
-
-| Part | Meaning |
+| Filter | How it works |
 |---|---|
-| **Name** | The deck's name, then its leader · stratagem. |
-| **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
-| **Links** | On the right: the guide's language, **▶** for a video, the deck ID and **↗**. On phones they get their own row under the name. |
-| **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
-| **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. |
-| **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
-| **≈** | Similar decks: see [Find a deck to build](#find-a-deck-to-build). |
-| **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
-| **Stats** | Scraps · cards · units · provisions used / limit. |
-| **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
+| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
+| **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
+| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
+| **Faction** | One at a time. Click the selected faction again to clear it. |
+| **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
+| **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
+| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
+| **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
 
-**Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 1,360 of them), and
-a language pill keeps decks whose guide or video is in that language: handy for finding guides you can read.
+**About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
+the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**
+removes the filter.
 
-![Guide & video with Has video and English picked: each deck shows ▶ EN next to its deck ID](screenshots/videos.png)
-
-**Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
-out. It's most useful with two or three decks open side by side.
-
-![Two Shieldwall decks, both exactly on the provision limit, expanded with Dim common on: the cards they share are faded, the differences stay bright](screenshots/dim-common.png)
-
-## Provisions: Spare, Exact and Over
+### Provisions: Spare, Exact and Over
 
 Card costs and leader bonuses change every month with the Balance Council, but published decks don't change. A deck
 that fitted when it was posted can be over its limit now, or have provisions to spare. Every deck is checked against
@@ -164,20 +176,57 @@ several to combine them.
 
 ![The Provisions filter with every Spare step picked for Northern Realms: decks under the limit, each with an "N spare" badge](screenshots/provisions.png)
 
-## Filters
+### Read a deck
 
-| Filter | How it works |
+Click a deck's name to open its card list. **Expand all** opens every deck in the results.
+
+![An expanded deck: leader, stratagem, then each card with provision cost, power and copies. Golden Nekker, which was searched for, is highlighted](screenshots/decklist.png)
+
+| Part | Meaning |
 |---|---|
-| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
-| **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
-| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
-| **Faction** | One at a time. Click the selected faction again to clear it. |
-| **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
-| **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
-| **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
-| **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
+| **Name** | The deck's name, then its leader · stratagem. |
+| **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
+| **Links** | On the right: the guide's language, **▶** for a video, the deck ID and **↗**. On phones they get their own row under the name. |
+| **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
+| **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. Not your language? [It can still help](#common-questions). |
+| **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
+| `≈` | Similar decks: see [`≈` Similar decks](#-similar-decks). |
+| **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
+| **Stats** | Scraps · cards · units · provisions used / limit. |
+| **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
 
-## Save and share a search
+**Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 1,360 of them), and a
+language pill keeps decks whose guide or video is in that language: handy for finding guides you can read. A video in
+another language can still help: gameplay mostly speaks for itself, and YouTube can translate its subtitles (see [Common
+questions](#common-questions)).
+
+![Guide & video with Has video and English picked: each deck shows ▶ EN next to its deck ID](screenshots/videos.png)
+
+### Dim common
+
+**Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
+out. It's most useful with two or three decks open side by side.
+
+![Two Shieldwall decks, both exactly on the provision limit, expanded with Dim common on: the cards they share are faded, the differences stay bright](screenshots/dim-common.png)
+
+### `≈` Similar decks
+
+Every deck has a `≈` button. It lists the decks with the same leader that fit today's limit (Spare or Exact) and
+share at least 15 of its 25 cards (leader and stratagem aside), most in common first, with a badge like **21/25 cards
+in common**.
+
+- **Find a playable version of an Over deck**, or **variations of your own**.
+- **Compare against it:** the deck itself is listed first, marked **This deck**, whenever its provision step is on. An
+  Over deck is hidden until you turn on its own Over step (see [Common questions](#common-questions)). With it
+  listed, **Dim common** fades the cards they all share, so each variation's swaps stand out.
+- **Widen or narrow it:** your other picks still apply. Turn on an Over step or clear the leader for more decks.
+- **Go back:** ✕ on the **Similar to** pill, or Back, returns to the search before.
+
+![≈ Similar decks for a deck 1 over, with Over 1 turned on as well: the deck first as This deck, then the closest decks, each with its cards in common](screenshots/similar.png)
+
+(Building your own copy? `similarMinShared` in `src/config.ts` sets the 15.)
+
+### Save and share a search
 
 Your filters are part of the page address. Bookmark it, share it, or reload the page and your search is still
 there. Deck and card links open in a new tab so you don't lose it.
@@ -189,7 +238,7 @@ opens that deck with its guide and video, then shortens the address to the usual
 list shows its link in Search with a note saying so. This link format is meant to stay; the page still needs
 JavaScript, so link previews in chat apps show the plain page.
 
-## Languages
+### Languages
 
 The page comes in the 11 languages playgwent supports. Click the language button (🌐) in the header to change it.
 Your choice is remembered; on a first visit the page follows your browser's language.
@@ -204,7 +253,7 @@ Your choice is remembered; on a first visit the page follows your browser's lang
 
 ![The page in Russian with the language menu open](screenshots/languages.png)
 
-## Display and accessibility
+### Display and accessibility
 
 Open **Aa Display** in the header to change:
 
@@ -220,7 +269,7 @@ Settings are saved on your device. Filter pills, badges and secondary text meet 
 theme, contrast and colour setting. Everything works with a keyboard, and animations follow your system's
 reduced-motion setting.
 
-## Keyboard shortcuts
+### Keyboard shortcuts
 
 Press <kbd>?</kbd> on the page and open **Keyboard shortcuts** for this list.
 
@@ -244,27 +293,33 @@ links that skip to the search, results or card frequency.
 
 ## Common questions
 
-**No decks match.** The filters together are too narrow. Remove the last pick you added (✕ on it), or unpick a
-filter. Options that show **0** would leave no decks. **Clear all** starts over.
+1. **No decks match.** The filters together are too narrow. Remove the last pick you added (✕ on it), or unpick a
+   filter. Options that show **0** would leave no decks. **Clear all** starts over.
 
-**I can't find the leader.** Pick a faction first; its leaders then appear as icons.
+2. **I can't find the leader.** Pick a faction first; its leaders then appear as icons.
 
-**A deck I know is missing.** Only decks from the [sources below](../README.md#where-the-decks-come-from) are included, and only
-recent ones. If a deck should be here, [report it](https://github.com/el8ted/gwentdecksearch/issues/new/choose).
+3. **A deck I know is missing.** Only decks from the [sources below](../README.md#where-the-decks-come-from) are
+   included, and only recent ones. If a deck should be here, [report
+   it](https://github.com/el8ted/gwentdecksearch/issues/new/choose).
 
-**A deck disappeared when I used ≈ Similar decks (or the Provisions filter).** ≈ turns on the Spare and Exact
-provision steps, so Over decks, including the one you started from, are hidden. Its pill still counts it: turn on
-the matching Over step (1, 2 or 3+) to bring it back, listed first as **This deck**. The same goes for any Provisions
-selection: a deck shows only if its step is on, or no step is.
+4. **A deck disappeared when I used `≈` Similar decks (or the Provisions filter).** `≈` turns on the Spare and Exact
+   provision steps, so Over decks, including the one you started from, are hidden. Its pill still counts it: turn on the
+   matching Over step (1, 2 or 3+) to bring it back, listed first as **This deck**. The same goes for any Provisions
+   selection: a deck shows only if its step is on, or no step is.
 
-**A deck says "+N over". Is it broken?** No. Card costs changed after it was published. Swap in a cheaper card
-before you play it.
+5. **A video isn't in my language. Is it still worth a look?** Often, yes. Gameplay mostly speaks for itself: the
+   mulligan, the order cards come down, when to pass. YouTube can also show auto-generated subtitles and translate them
+   into your language (⚙ settings → Subtitles → Auto-translate), and some videos have AI-dubbed audio in other languages
+   (⚙ settings → Audio track). The language code on **▶** only says what the video is narrated in.
 
-**What does the language code next to a deck mean?** The language its community guide is written in. It only says the
-guide has real text in that language, not whether the text is useful. Guides that are only filler show none.
+6. **A deck says "+N over". Is it broken?** No. Card costs changed after it was published. Swap in a cheaper card before
+   you play it.
 
-**How current is the data?** The header shows when it was collected, in UTC. Gwent updates land around midnight
-UTC, so you can tell whether the data is from before or after the latest update.
+7. **What does the language code next to a deck mean?** The language its community guide is written in. It only says the
+   guide has real text in that language, not whether the text is useful. Guides that are only filler show none.
 
-**A deck name reads oddly.** Names not written in English are machine-translated. You can
-[fix them](../CONTRIBUTING.md#fixing-deck-name-translations).
+8. **How current is the data?** The header shows when it was collected, in UTC. Gwent updates land around midnight UTC,
+   so you can tell whether the data is from before or after the latest update.
+
+9. **A deck name reads oddly.** Names not written in English are machine-translated. You can [fix
+   them](../CONTRIBUTING.md#fixing-deck-name-translations).
