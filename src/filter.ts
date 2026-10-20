@@ -245,6 +245,24 @@ export function overlap(a: IndexedDeck, b: IndexedDeck): number {
   return deckBody(a).reduce((n, [id, c]) => n + Math.min(c, copies.get(id) ?? 0), 0)
 }
 
+/**
+ * How a deck differs from a reference deck, copies counted and stratagem included (a swapped stratagem is a change).
+ *
+ * @param ref - The deck compared against (a Similar list's This deck)
+ * @param e - The deck to compare
+ * @returns `added`: copies `e` runs beyond `ref`, by card; `removed`: `[cardId, copies]` `ref` runs beyond `e`
+ */
+export function cardChanges(
+  ref: IndexedDeck,
+  e: IndexedDeck,
+): { added: Map<number, number>; removed: [number, number][] } {
+  const mine = new Map(e.deck.cards)
+  const theirs = new Map(ref.deck.cards)
+  const extra = (a: Map<number, number>, b: Map<number, number>) =>
+    [...a].map(([id, c]): [number, number] => [id, c - (b.get(id) ?? 0)]).filter(([, n]) => n > 0)
+  return { added: new Map(extra(mine, theirs)), removed: extra(theirs, mine) }
+}
+
 /** Each deck's {@link overlap} with the `near` deck; `undefined` without one (or for an unknown ID). */
 function sharedWithNear(decks: IndexedDeck[], s: FilterState): Map<IndexedDeck, number> | undefined {
   const near = s.near === undefined ? undefined : decks.find((e) => e.deck.id === s.near)

@@ -1,4 +1,4 @@
-import { budgetSide, type IndexedDeck, provisionStatus } from '../filter.ts'
+import { budgetSide, type cardChanges, type IndexedDeck, provisionStatus } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
@@ -41,22 +41,50 @@ function provisionBadge(entry: IndexedDeck, data: Dataset, loc: Locale): string 
   return `<span title="${esc(tip)}">${value}</span>`
 }
 
-function decklist(entry: IndexedDeck, data: Dataset, selected: Set<number>, common: Set<number>, loc: Locale): string {
+/** How a deck differs from the deck a Similar list is ranked against ({@link cardChanges}). */
+export type Changes = ReturnType<typeof cardChanges>
+
+function decklist(
+  entry: IndexedDeck,
+  data: Dataset,
+  selected: Set<number>,
+  common: Set<number>,
+  loc: Locale,
+  changes?: Changes,
+): string {
   const { cards } = data
   const rest = entry.deck.cards
     .filter(([id]) => id !== entry.leader && id !== entry.stratagem)
     .sort(([a], [b]) => cards[b].provisions - cards[a].provisions || loc.card(a).localeCompare(loc.card(b), loc.lang))
   const power = loc.t('deck.power')
   // Cost and power are fixed-width columns (power blank for non-units) so names line up.
+  // Comparing with This deck: + marks what this deck added (+1 for one extra copy), and everything else is common.
+  const added = (id: number, copies: number) => {
+    const n = changes?.added.get(id)
+    if (!n) return ''
+    const tip = esc(n < copies ? loc.t('deck.addedCopies', { n }) : loc.t('deck.added'))
+    return `<span class="added" title="${tip}" aria-hidden="true">+${n < copies ? n : ''}</span><span class="sr-only">${tip}</span>`
+  }
+  const dim = (id: number) => (changes ? !changes.added.has(id) : common.has(id))
   const line = (id: number, copies: number, cost: string) =>
-    `<li class="${selected.has(id) ? 'hit ' : ''}${common.has(id) ? 'common' : ''}"><span class="cost">${esc(cost)}</span><span class="power"${
+    `<li class="${selected.has(id) ? 'hit ' : ''}${dim(id) ? 'common' : ''}"><span class="cost">${esc(cost)}</span><span class="power"${
       cards[id].power === undefined ? '>' : ` title="${esc(power)}">${cards[id].power}`
     }</span>${newTabLink(loc.pg(`https://www.playgwent.com/decks/builder/card/details/${id}`), loc.card(id))}${
       copies > 1 ? `<span class="copies">×${copies}</span>` : ''
-    }</li>`
+    }${added(id, copies)}</li>`
+  const removed = (changes?.removed ?? []).sort(([a], [b]) => cards[b].provisions - cards[a].provisions)
+  const swapped = removed.length
+    ? `<p class="swapped">${esc(loc.t('deck.swappedOut'))} ${removed
+        // −1 when this deck still runs the card, just fewer copies; ×2 when both copies went.
+        .map(([id, n]) => {
+          const kept = entry.deck.cards.some(([c]) => c === id)
+          return `${esc(loc.card(id))}${kept ? ` <span class="copies">−${n}</span>` : n > 1 ? ` <span class="copies">×${n}</span>` : ''}`
+        })
+        .join(', ')}</p>`
+    : ''
   return `<ul class="decklist">${line(entry.leader, 1, loc.t('deck.leaderAbbr'))}${line(entry.stratagem, 1, loc.t('deck.stratagemAbbr'))}${rest
     .map(([id, copies]) => line(id, copies, String(cards[id].provisions)))
-    .join('')}</ul>`
+    .join('')}</ul>${swapped}`
 }
 
 /** A language's short code for a badge: `pt-BR` → `PT`. */
@@ -91,6 +119,7 @@ function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): s
  * @param common - Cards to dim in the expanded list (selected ones keep their highlight)
  * @param loc - Locale for text, card names and links
  * @param shared - Cards in common with the deck the list is ranked against, that deck's card count, and whether this is it
+ * @param changes - How this deck differs from that deck, shown in the expanded list instead of `common`
  * @returns `<li>` HTML
  */
 export function deckRow(
@@ -101,6 +130,7 @@ export function deckRow(
   common: Set<number>,
   loc: Locale,
   shared?: { n: number; of: number; self: boolean },
+  changes?: Changes,
 ): string {
   const { deck } = entry
   const state = entry.budget === 'exact' ? '' : budgetSide(entry.budget)
@@ -131,6 +161,6 @@ export function deckRow(
     ${provisionBadge(entry, data, loc)}
     ${shared ? `<span class="badge shared">${esc(shared.self ? loc.t('deck.thisDeck') : loc.t('deck.shared', { n: shared.n, of: shared.of }))}</span>` : ''}
   </div>
-  ${expanded ? decklist(entry, data, selected, common, loc) : ''}
+  ${expanded ? decklist(entry, data, selected, common, loc, changes) : ''}
 </li>`
 }

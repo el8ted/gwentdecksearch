@@ -1,4 +1,13 @@
-import { BUDGETS, budgetSide, deckBody, type IndexedDeck, indexDecks, matchDecks, overlap } from '../src/filter.ts'
+import {
+  BUDGETS,
+  budgetSide,
+  cardChanges,
+  deckBody,
+  type IndexedDeck,
+  indexDecks,
+  matchDecks,
+  overlap,
+} from '../src/filter.ts'
 import { data, expect, expectedCount, test } from './app.ts'
 
 const decks = indexDecks(data)
@@ -92,4 +101,39 @@ test('Back after ≈ restores the search', async ({ page, open }) => {
 
   // Assert
   await expect(page).toHaveURL(new RegExp(`#d=${over.list}$`))
+})
+
+test('Show changes compares each deck with This deck, even while the Provisions filter hides it', async ({
+  page,
+  open,
+}) => {
+  // Arrange
+  await open(`#d=${over.list}`)
+  await page.locator(`[data-near="${over.deck.id}"]`).click()
+  const [best] = ranked(over)
+  const { added, removed } = cardChanges(over, best)
+  const toggle = page.locator('#dim-common')
+
+  // Act
+  await page.locator(`[data-toggle="${best.deck.id}"]`).click()
+  await toggle.click()
+
+  // Assert
+  await expect(toggle).toHaveText('Show changes')
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#near-note')).toContainText('Provisions filter')
+  const row = page.locator('#results > li').first()
+  await expect(row.locator('.added')).toHaveCount(added.size)
+  if (removed.length === 0) await expect(row.locator('.swapped')).toHaveCount(0)
+  for (const [id] of removed) await expect(row.locator('.swapped')).toContainText(data.cards[id].name)
+
+  // Act: Show it turns on the deck's own step, listing it first, unmarked
+  await page.locator('[data-show-near]').click()
+
+  // Assert
+  await expect(page.locator('#near-note')).toBeHidden()
+  await expect(page.locator(`[data-budget="${over.budget}"]`)).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#result-head')).toBeFocused()
+  const self = page.locator('#results > li').first()
+  await expect(self.locator('.badge.shared')).toHaveText('This deck')
 })

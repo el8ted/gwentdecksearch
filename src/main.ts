@@ -6,10 +6,12 @@ import {
   BUDGETS,
   type Budget,
   budgetSide,
+  cardChanges,
   cardFrequency,
   deckBody,
   type FilterState,
   facets,
+  type IndexedDeck,
   indexDecks,
   listForUrl,
   matchDecks,
@@ -88,6 +90,7 @@ const els = {
   input: byId<HTMLInputElement>('card-input'),
   suggestions: byId('suggestions'),
   deckNote: byId('deck-note'),
+  nearNote: byId('near-note'),
   clear: byId('clear'),
   match: byId('match'),
   resultHead: byId('result-head'),
@@ -168,7 +171,8 @@ let freq: 'most' | 'least' = 'most'
 // Deck IDs currently listed, for Expand/Collapse all.
 let shown: string[] = []
 let allOpen = false
-// Dim cards every listed deck shares, so each deck's distinctive cards stand out; a view choice.
+// Dim cards every listed deck shares, so each deck's distinctive cards stand out; a view choice. In a Similar list it
+// compares each deck with This deck instead (Show changes).
 let dimCommon = false
 // Deck rows rendered; "Show more" adds PAGE at a time so a phone isn't handed 2,000+ rows at once.
 const PAGE = CONFIG.resultsPageSize
@@ -492,9 +496,9 @@ function renderResults() {
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
   const page = matches.slice(0, limit)
   shown = page.map((e) => e.deck.id)
-  // One deck shares everything with itself, so dimming needs at least two.
-  const common = dimCommon && matches.length > 1 ? sharedCards(matches) : new Set<number>()
   const near = state.near === undefined ? undefined : decks.find((e) => e.deck.id === state.near)
+  // One deck shares everything with itself, so dimming needs at least two; a Similar list compares with This deck.
+  const common = dimCommon && !near && matches.length > 1 ? sharedCards(matches) : new Set<number>()
   const size = near ? deckBody(near).reduce((n, [, c]) => n + c, 0) : 0
   const rows = page.map((e) =>
     deckRow(
@@ -505,6 +509,7 @@ function renderResults() {
       common,
       loc,
       near && { n: overlap(near, e), of: size, self: e === near },
+      dimCommon && near && e !== near ? cardChanges(near, e) : undefined,
     ),
   )
   if (matches.length > limit) {
@@ -521,7 +526,11 @@ function renderResults() {
   els.expandAll.textContent = t(allOpen ? 'results.collapseAll' : 'results.expandAll')
   els.expandAll.disabled = shown.length === 0
   els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
-  els.dimCommon.disabled = shown.length < 2
+  els.dimCommon.textContent = t(near ? 'results.showChanges' : 'results.dimCommon')
+  els.dimCommon.title = t(near ? 'results.showChangesTip' : 'results.dimCommonTip')
+  // This deck may be filtered out (≈ hides Over decks), but the others can still be compared with it.
+  els.dimCommon.disabled = near ? !shown.some((id) => id !== near.deck.id) : shown.length < 2
+  renderNearNote(near, matches)
   const last = state.picks.at(-1)
   els.results.innerHTML = rows.length
     ? rows.join('')
@@ -530,6 +539,21 @@ function renderResults() {
           ? ''
           : ` <button type="button" class="link" data-remove="${esc(String(last))}">${esc(t('results.removeCard', { name: pickName(last) }))}</button>`
       }</li>`
+}
+
+/**
+ * Says when the Similar list's own deck isn't listed, so its badges and changes aren't measured against a deck the
+ * visitor can't see; offers to list it when only its provision step hides it.
+ */
+function renderNearNote(near: IndexedDeck | undefined, matches: IndexedDeck[]) {
+  const hidden = near && !matches.includes(near)
+  els.nearNote.hidden = !hidden
+  if (!hidden) return
+  const budgets = [...(state.budgets ?? []), near.budget]
+  const byBudget = matchDecks(decks, { ...state, budgets }).includes(near)
+  els.nearNote.innerHTML = byBudget
+    ? `${esc(loc.t('results.thisDeckHiddenBudget'))} <button type="button" class="link" data-show-near="${esc(near.budget)}">${esc(loc.t('results.showThisDeck'))}</button>`
+    : esc(loc.t('results.thisDeckHidden'))
 }
 
 function render() {
@@ -643,6 +667,10 @@ document.addEventListener('click', (e) => {
   } else if (t === els.dimCommon) {
     dimCommon = !dimCommon
     renderResults()
+  } else if (t.dataset.showNear) {
+    update({ budgets: [...(state.budgets ?? []), t.dataset.showNear as Budget] })
+    // The button is gone once This deck is listed; it leads the results.
+    els.resultHead.focus()
   } else if (t === els.expandAll) {
     if (allOpen) for (const id of shown) expanded.delete(id)
     else for (const id of shown) expanded.add(id)

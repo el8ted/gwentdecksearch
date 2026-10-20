@@ -140,6 +140,13 @@ try {
   page = await open(browser, `#f=${NEAR?.faction}&b=${steps}&l=${NEAR?.leader}&n=${NEAR?.deck.id}`, 1100)
   await save(page, 'similar')
 
+  // Without its step: This deck is hidden, and Show changes still compares the closest deck with it.
+  page = await open(browser, `#f=${NEAR?.faction}&b=${valid.join(',')}&l=${NEAR?.leader}&n=${NEAR?.deck.id}`, 1800)
+  await page.locator('#results [data-toggle]').first().click()
+  await page.locator('#dim-common').click()
+  // Tall enough that main needn't scroll under the sticky header.
+  await save(page, 'similar-changes', 'main')
+
   page = await open(browser, `#k=any&c=${ANY_CARDS.join(',')}`)
   await save(page, 'any-cards')
 

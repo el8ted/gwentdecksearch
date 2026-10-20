@@ -8,6 +8,14 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- In a **≈ Similar** list, **Dim common** becomes **Show changes**: each deck is compared with the one you started from,
+  even while it's hidden. Shared cards fade, added cards are marked `+`, and the cards it swapped out are listed. When
+  the Provisions filter hides the deck you started from, a note says so, with a button to show it
+  ([#9](https://github.com/el8ted/gwentdecksearch/issues/9)).
+- **Accessibility:** text that was too faint now meets WCAG AA contrast (4.5:1) in every theme, high contrast
+  included: cards faded by **Dim common**, the notes under the filters and above the results, and card costs in the
+  light theme.
+
 ## 2026-10-18.03
 
 - The Search box's hint mentions that it takes a deck link too, in every language.

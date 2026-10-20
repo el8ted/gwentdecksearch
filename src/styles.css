@@ -615,9 +615,25 @@ h1 span {
 .decklist .hit {
   background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
-/* Dims the text only, so a selected card keeps its highlight background. */
-.decklist .common > :is(span, a) {
-  opacity: 0.4;
+/* Muted, not faded, so dimmed text keeps WCAG AA contrast. A selected card stays bright: muted text on its highlight
+   misses AA in the dark theme. */
+.decklist .common:not(.hit) > :is(span, a) {
+  color: var(--muted);
+}
+/* A card This deck doesn't run: + as well as an edge, so it doesn't rely on colour. */
+.decklist li:has(.added) {
+  box-shadow: inset 2px 0 var(--accent);
+}
+.decklist .added {
+  font: 700 0.8rem var(--mono);
+  color: var(--text);
+}
+/* The cards This deck runs that this one doesn't: muted, as their label says what they are. */
+.swapped {
+  margin: 0.4rem 0 0;
+  padding: 0 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 .decklist .copies {
   color: var(--muted);
@@ -742,7 +758,11 @@ h1 span {
 .note {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--spare);
+  /* The text shade: --spare itself misses AA on the light background. */
+  color: var(--spare-text);
+}
+#near-note {
+  margin-bottom: 0.6rem;
 }
 
 .f2-MO {
@@ -818,7 +838,8 @@ h1 span {
   --spare: #a8740e;
   --over-text: #a01e55;
   --spare-text: #7d5508;
-  --cost-bg: #f1e6cc;
+  /* Light enough for the accent cost text to keep AA (4.65:1). */
+  --cost-bg: #f5ecd6;
   --hover: rgb(0 0 0 / 0.05);
   --header-top: #ebe7de;
   --sticky-bg: rgb(245 243 238 / 0.94);
@@ -1294,6 +1315,16 @@ h1 span {
 .suggestions .author .cost {
   background: none;
   color: var(--muted);
+}
+
+/* Read by screen readers, not shown. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Skip links: off-screen until focused (screen readers still reach them), then a bar at the top. */

@@ -62,7 +62,8 @@ Where you start depends on what you have in hand; after that, every search goes 
    out.
 3. **Fix provisions.** A **+N over** badge means costs changed since it was posted. Turn on the **Spare** and
    **Exact** steps to see only decks that fit, or use `≈` on an Over deck to find the closest ones that do.
-4. **Compare.** `≈` on a deck you like lists its closest relatives, with it first as **This deck**.
+4. **Compare.** `≈` on a deck you like lists its closest relatives, with it first as **This deck**. **Show changes**
+   marks what each one added and swapped out.
 
 ### Have a deck link?
 
@@ -205,7 +206,8 @@ questions](#common-questions)).
 ### Dim common
 
 **Dim common** fades the cards that every deck in the results runs, so the cards that make each deck different stand
-out. It's most useful with two or three decks open side by side.
+out. It's most useful with two or three decks open side by side. In a `≈` Similar list it becomes **Show changes**
+(see below).
 
 ![Two Shieldwall decks, both exactly on the provision limit, expanded with Dim common on: the cards they share are faded, the differences stay bright](screenshots/dim-common.png)
 
@@ -217,12 +219,17 @@ in common**.
 
 - **Find a playable version of an Over deck**, or **variations of your own**.
 - **Compare against it:** the deck itself is listed first, marked **This deck**, whenever its provision step is on. An
-  Over deck is hidden until you turn on its own Over step (see [Common questions](#common-questions)). With it
-  listed, **Dim common** fades the cards they all share, so each variation's swaps stand out.
+  Over deck is hidden until you turn on its own Over step (see [Common questions](#common-questions)); a note above
+  the results says so, and its **Show it** button turns that step on.
+- **See what each one changed:** **Show changes** compares every deck with **This deck**, listed or not. Open a deck:
+  the cards they share are faded, the cards it added are marked `+` (`+1` for an extra copy), and **Swapped out**
+  lists the cards it dropped (`−1` for a copy fewer).
 - **Widen or narrow it:** your other picks still apply. Turn on an Over step or clear the leader for more decks.
 - **Go back:** ✕ on the **Similar to** pill, or Back, returns to the search before.
 
 ![≈ Similar decks for a deck 1 over, with Over 1 turned on as well: the deck first as This deck, then the closest decks, each with its cards in common](screenshots/similar.png)
+
+![≈ Similar decks with This deck hidden by the Provisions filter, and Show changes on: the closest deck opened, its added cards marked + and the cards it swapped out listed below](screenshots/similar-changes.png)
 
 (Building your own copy? `similarMinShared` in `src/config.ts` sets the 15.)
 

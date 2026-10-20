@@ -4,6 +4,7 @@ import {
   authorNames,
   budgetOf,
   budgetSide,
+  cardChanges,
   cardFrequency,
   type FilterState,
   facets,
@@ -522,6 +523,39 @@ describe('sharedCards', () => {
 
     // Assert
     expect(result.size).toBe(0)
+  })
+})
+
+describe('cardChanges', () => {
+  const byId = (id: string) => DECKS.find((e) => e.deck.id === id) as IndexedDeck
+
+  it('lists added and swapped-out cards, stratagem included', () => {
+    // Act
+    const { added, removed } = cardChanges(byId('b1'), byId('a1'))
+
+    // Assert
+    expect([...added]).toEqual([
+      [10, 1],
+      [100, 1],
+    ])
+    expect(removed).toEqual([[11, 1]])
+  })
+
+  it('counts extra copies of a card both decks run', () => {
+    // Act
+    const { added, removed } = cardChanges(byId('b2'), byId('b1'))
+
+    // Assert
+    expect(added.get(101)).toBe(1)
+    expect(removed).toEqual([])
+  })
+
+  it('finds no changes against itself', () => {
+    // Act
+    const { added, removed } = cardChanges(byId('a1'), byId('a1'))
+
+    // Assert
+    expect([added.size, removed.length]).toEqual([0, 0])
   })
 })
 
