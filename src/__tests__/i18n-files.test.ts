@@ -7,7 +7,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { BUDGETS, budgetSide } from '../filter.ts'
 import { LANGUAGES } from '../i18n.ts'
-import { FACTIONS } from '../types.ts'
+import { FACTIONS, RARITIES } from '../types.ts'
 
 const DIR = join(import.meta.dirname, '..', 'i18n')
 const PLURAL_FORMS = ['zero', 'one', 'two', 'few', 'many', 'other']
@@ -67,10 +67,14 @@ describe('code', () => {
     expect(missing).toEqual([])
   })
 
-  // Built from templates (t(`faction.${f}`), t(`budget.${side}`)), so the scan above can't see them.
-  it('has a phrase for every faction and budget', () => {
+  // Built from templates (t(`faction.${f}`), t(`budget.${side}`), t(`rarity.${r}`)), so the scan above can't see them.
+  it('has a phrase for every faction, budget and rarity', () => {
     // Act
-    const keys = [...[...FACTIONS, 'NE'].map((f) => `faction.${f}`), ...BUDGETS.map((b) => `budget.${budgetSide(b)}`)]
+    const keys = [
+      ...[...FACTIONS, 'NE'].map((f) => `faction.${f}`),
+      ...BUDGETS.map((b) => `budget.${budgetSide(b)}`),
+      ...RARITIES.map((r) => `rarity.${r}`),
+    ]
     const missing = keys.filter((k) => !(k in en))
 
     // Assert

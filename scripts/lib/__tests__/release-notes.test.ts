@@ -32,17 +32,17 @@ const data = (decks: Deck[], cards: Dataset['cards'], scrapedAt = '2026-10-24T00
 const BEFORE = data(
   [deck('a', ['community']), deck('b', ['shinmiri2'])],
   {
-    1: { name: 'Arachas Swarm', type: 'leader', faction: 'MO', provisions: 15 },
-    2: { name: 'Golden Nekker', type: 'special', faction: 'NE', provisions: 14 },
-    3: { name: 'Chimera', type: 'unit', faction: 'MO', provisions: 10, power: 5 },
+    1: { name: 'Arachas Swarm', type: 'leader', faction: 'MO', provisions: 15, scraps: 30, rarity: 'common' },
+    2: { name: 'Golden Nekker', type: 'special', faction: 'NE', provisions: 14, scraps: 30, rarity: 'common' },
+    3: { name: 'Chimera', type: 'unit', faction: 'MO', provisions: 10, power: 5, scraps: 30, rarity: 'common' },
   },
   '2026-10-16T00:49:11.354Z',
 )
 const AFTER = data([deck('a', ['community', 'metallic-danny']), deck('c', ['metallic-danny'])], {
-  1: { name: 'Arachas Swarm', type: 'leader', faction: 'MO', provisions: 16 },
-  2: { name: 'Golden Nekker', type: 'special', faction: 'NE', provisions: 13 },
-  3: { name: 'Chimera', type: 'unit', faction: 'MO', provisions: 10, power: 6 },
-  4: { name: 'New Card', type: 'unit', faction: 'MO', provisions: 5, power: 3 },
+  1: { name: 'Arachas Swarm', type: 'leader', faction: 'MO', provisions: 16, scraps: 30, rarity: 'common' },
+  2: { name: 'Golden Nekker', type: 'special', faction: 'NE', provisions: 13, scraps: 30, rarity: 'common' },
+  3: { name: 'Chimera', type: 'unit', faction: 'MO', provisions: 10, power: 6, scraps: 30, rarity: 'common' },
+  4: { name: 'New Card', type: 'unit', faction: 'MO', provisions: 5, power: 3, scraps: 30, rarity: 'common' },
 })
 
 describe('unreleased', () => {

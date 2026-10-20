@@ -33,6 +33,10 @@ export const SOURCE_NAMES: Record<Source, string> = {
 }
 
 /** A card as used by the app. */
+/** How rare a card is, which sets what it costs to craft; cheapest first. */
+export const RARITIES = ['common', 'rare', 'epic', 'legendary'] as const
+export type Rarity = (typeof RARITIES)[number]
+
 export interface Card {
   name: string
   type: CardType
@@ -43,6 +47,9 @@ export interface Card {
   power?: number
   /** Card cost; for a leader, the bonus added to the 150 provision limit (current, from playgwent's card search). */
   provisions: number
+  /** Scraps to craft one copy; 0 for leaders and the default stratagem, which every player has. */
+  scraps: number
+  rarity: Rarity
   /** {@link TagKey}s: the card's categories, then the abilities its text names. */
   tags?: TagKey[]
 }

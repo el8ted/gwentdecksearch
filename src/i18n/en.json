@@ -129,6 +129,12 @@
     "other": "In {n} decks"
   },
   "freq.barTip": "In {n} of {total} decks. Add {name} as a filter",
+  "freq.barCost": "{rarity} · {scraps} scraps to craft",
+  "freq.barLabel": "{name}, in {n} of {total} decks. {cost}",
+  "rarity.common": "Common",
+  "rarity.rare": "Rare",
+  "rarity.epic": "Epic",
+  "rarity.legendary": "Legendary",
   "freq.empty": "No other cards in these decks",
   "stat.scraps": "Scraps",
   "stat.cards": "Cards",

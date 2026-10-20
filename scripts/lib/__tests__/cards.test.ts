@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { abilityNamesFromText, parseCardSearch, parseLocalizedNames, type SearchHit } from '../cards.ts'
+import { abilityNamesFromText, parseCardSearch, parseLocalizedNames, rarityOf, type SearchHit } from '../cards.ts'
 
 const hit = (over: Partial<SearchHit['_source']>): SearchHit => ({
   _source: {
@@ -140,5 +140,23 @@ describe('abilityNamesFromText', () => {
 
     // Assert
     expect(names).toEqual({ deploy: '部署', order: '指令' })
+  })
+})
+
+describe('rarityOf', () => {
+  it('names each rarity playgwent codes', () => {
+    // Act
+    const rarities = [5, 15, 20, 25].map((code) => rarityOf(code, 1))
+
+    // Assert
+    expect(rarities).toEqual(['common', 'rare', 'epic', 'legendary'])
+  })
+
+  it('throws on an unknown code, naming the card', () => {
+    // Act
+    const act = () => rarityOf(30, 123)
+
+    // Assert
+    expect(act).toThrow('Unknown rarity code 30 (card 123)')
   })
 })

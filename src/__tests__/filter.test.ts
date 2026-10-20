@@ -25,6 +25,8 @@ const card = (name: string, type: Card['type'], faction: Card['faction'], provis
   type,
   faction,
   provisions,
+  scraps: 30,
+  rarity: 'common',
 })
 const CARDS: Dataset['cards'] = {
   1: { ...card('Arachas Swarm', 'leader', 'MO', 15), tags: ['spawn'] },

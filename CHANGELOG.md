@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- **Most common** and **Least common** show what each card costs to craft, in scraps, so you can see what a deck's
+  staples will cost you ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
 - In a **≈ Similar** list, **Dim common** becomes **Show changes**: each deck is compared with the one you started from,
   even while it's hidden. Shared cards fade, added cards are marked `+`, and the cards it swapped out are listed. When
   the Provisions filter hides the deck you started from, a note says so, with a button to show it

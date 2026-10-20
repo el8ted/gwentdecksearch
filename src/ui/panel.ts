@@ -8,7 +8,7 @@ import { esc } from './dom.ts'
  *
  * @param rows - `[cardId, deckCount]`, from `cardFrequency`
  * @param total - Decks counted, the 100% mark
- * @param data - Dataset for card factions
+ * @param data - Dataset for card factions and crafting costs
  * @param loc - Locale for names and text
  * @returns `<li>` HTML; a "none" item when there are no rows
  */
@@ -20,8 +20,11 @@ export function barsHtml(rows: [number, number][], total: number, data: Dataset,
           const card = data.cards[id]
           const name = loc.card(id)
           const pct = Math.round((n / Math.max(total, 1)) * 100)
-          return `<li class="f-${card.faction}"><button type="button" data-add="${id}" title="${esc(loc.t('freq.barTip', { n, total, name }))}">
-            <span class="bar-name">${esc(name)}</span><span class="bar-n">${n}</span>
+          const cost = loc.t('freq.barCost', { rarity: loc.t(`rarity.${card.rarity}`), scraps: loc.num(card.scraps) })
+          // The label reads the row in order; the tooltip says what a click does.
+          const label = loc.t('freq.barLabel', { name, n, total, cost })
+          return `<li class="f-${card.faction}"><button type="button" data-add="${id}" aria-label="${esc(label)}" title="${esc(`${loc.t('freq.barTip', { n, total, name })}\n${cost}`)}">
+            <span class="bar-name">${esc(name)}</span><span class="bar-cost"><img src="icons/scraps.png" alt="" />${esc(loc.num(card.scraps))}</span><span class="bar-n">${n}</span>
             <span class="bar" style="--pct:${pct}%"></span></button></li>`
         })
         .join('')

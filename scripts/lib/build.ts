@@ -1,5 +1,6 @@
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
+import { rarityOf } from './cards.ts'
 import type { GuideInfo } from './guide.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
@@ -81,7 +82,8 @@ export function guideSummary(info: GuideInfo, declared: string): Pick<Deck, 'gui
 
 /** The app's view of a catalog card, keys in the order the dataset has always used; `tags` only the named ones. */
 function appCard(
-  { name, type, faction, provisions, power, secondaryFaction, tags }: CatalogCard,
+  id: number,
+  { name, type, faction, provisions, craftingCost, rarity, power, secondaryFaction, tags }: CatalogCard,
   named: Set<string>,
 ): Card {
   const known = tags?.filter((k) => named.has(k)) ?? []
@@ -90,6 +92,8 @@ function appCard(
     type,
     faction,
     provisions,
+    scraps: craftingCost,
+    rarity: rarityOf(rarity, id),
     ...(power !== undefined && { power }),
     ...(secondaryFaction && { secondaryFaction }),
     ...(known.length && { tags: known }),
@@ -158,7 +162,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
     }
     const copies = stored.cards.map(([id, n]) => [id, n] as [number, number])
     if (!copies.some(([id]) => catalog[id].type === 'stratagem')) copies.splice(1, 0, [DEFAULT_STRATAGEM, 1])
-    for (const [id] of copies) used[id] ??= appCard(catalog[id], named)
+    for (const [id] of copies) used[id] ??= appCard(id, catalog[id], named)
 
     const summary = entry.guide && stored.guide ? guideSummary(stored.guide, entry.lang) : {}
     // A guide's own video (narrated, presumably, in the language the guide is written in) comes first, then a list's,

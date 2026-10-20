@@ -663,6 +663,8 @@ h1 span {
   margin: 0;
   padding: 0;
   display: grid;
+  /* minmax(0, …) and the name's min-width: 0 let a long name shrink to its ellipsis instead of widening the panel. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.25rem;
 }
 .bars button {
@@ -683,6 +685,7 @@ h1 span {
 }
 .bar-name {
   flex: 1;
+  min-width: 0;
   z-index: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -690,8 +693,27 @@ h1 span {
 }
 .bar-n {
   z-index: 1;
+  min-width: 2.2rem;
+  text-align: right;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+}
+/* Crafting cost: fixed width, and well apart from the deck count, so the two numbers read as separate columns. */
+.bar-cost {
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  min-width: 3.4rem;
+  margin-right: 0.6rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.bar-cost img {
+  height: 0.85rem;
+  width: auto;
+  opacity: 0.8;
 }
 .bar {
   position: absolute;

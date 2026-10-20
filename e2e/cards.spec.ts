@@ -129,3 +129,35 @@ test('plain typing finds accented names: "coen" finds Coën', async ({ page, ope
   // Assert
   await expect(page.locator(`#sug-${id}`)).toBeVisible()
 })
+
+test('each panel card shows its crafting cost, and its accessible name gives rarity and cost', async ({
+  page,
+  open,
+}) => {
+  // Arrange
+  await open()
+  const bar = page.locator('#bars [data-add]').first()
+  const card = data.cards[Number(await bar.getAttribute('data-add'))]
+  const rarity = { common: 'Common', rare: 'Rare', epic: 'Epic', legendary: 'Legendary' }[card.rarity]
+
+  // Assert
+  await expect(bar.locator('.bar-cost')).toHaveText(card.scraps.toLocaleString('en'))
+  await expect(bar).toHaveAccessibleName(new RegExp(`^${card.name}, in \\d+ of \\d+ decks\\. ${rarity} · `))
+})
+
+test('a long card name shortens instead of pushing the panel wider (Russian)', async ({ page, open }) => {
+  // Arrange: Russian card names are among the longest
+  await open('?lang=ru')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ru')
+  // Card names arrive with the language pack, after the page's own text.
+  await expect(page.locator('#bars .bar-name').first()).toHaveText(/\p{Script=Cyrillic}/u)
+
+  // Act
+  const overflowing = await page.locator('#bars').evaluate((bars) => {
+    const right = bars.getBoundingClientRect().right
+    return [...bars.querySelectorAll('button')].filter((b) => b.getBoundingClientRect().right > right + 0.5).length
+  })
+
+  // Assert
+  expect(overflowing).toBe(0)
+})

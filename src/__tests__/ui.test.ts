@@ -14,6 +14,8 @@ const card = (name: string, type: Card['type'], faction: Card['faction'], provis
   type,
   faction,
   provisions,
+  scraps: 30,
+  rarity: 'common',
 })
 const DATA: Dataset = {
   scrapedAt: '2026-10-20',
@@ -124,6 +126,21 @@ describe('barsHtml', () => {
     // Assert
     expect(html.match(/<li /g)).toHaveLength(CONFIG.frequencyBars)
     expect(html).toContain('--pct:25%')
+  })
+
+  it("shows each card's crafting cost, and reads name, decks, rarity and cost in order", () => {
+    // Arrange
+    const data = {
+      ...DATA,
+      cards: { ...DATA.cards, 100: { ...DATA.cards[100], scraps: 800, rarity: 'legendary' as const } },
+    }
+
+    // Act
+    const html = barsHtml([[100, 3]], 4, data, loc)
+
+    // Assert
+    expect(html).toMatch(/class="bar-cost"><img [^>]*alt="" \/>800</)
+    expect(html).toContain('aria-label="Golden Nekker, in 3 of 4 decks. Legendary · 800 scraps to craft"')
   })
 
   it('says so when there are no cards', () => {

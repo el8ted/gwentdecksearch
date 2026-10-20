@@ -3,9 +3,13 @@ import { dirname } from 'node:path'
 import type { Card } from '../../src/types.ts'
 import type { GuideInfo } from './guide.ts'
 
-/** Card catalog entry: the app's {@link Card} plus fields only the build needs. */
-export interface CatalogCard extends Card {
+/**
+ * Card catalog entry, with crafting cost and rarity as playgwent gives them; the build maps them to the app's
+ * {@link Card} `scraps` and `rarity` (see `rarityOf`).
+ */
+export interface CatalogCard extends Omit<Card, 'scraps' | 'rarity'> {
   craftingCost: number
+  /** playgwent's rarity code: 5, 15, 20 or 25. */
   rarity: number
 }
 

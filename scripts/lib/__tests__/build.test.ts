@@ -7,7 +7,7 @@ const card = (c: Partial<CatalogCard> & Pick<CatalogCard, 'name' | 'type'>): Cat
   faction: 'NE',
   provisions: 0,
   craftingCost: 0,
-  rarity: 1,
+  rarity: 25,
   ...c,
 })
 const CARDS: Record<number, CatalogCard> = {
@@ -289,7 +289,15 @@ describe('buildDataset', () => {
     const { dataset } = buildDataset(input())
 
     // Assert
-    expect(dataset.cards[100]).toEqual({ name: 'Chimera', type: 'unit', faction: 'MO', provisions: 10, power: 5 })
+    expect(dataset.cards[100]).toEqual({
+      name: 'Chimera',
+      type: 'unit',
+      faction: 'MO',
+      provisions: 10,
+      scraps: 800,
+      rarity: 'legendary',
+      power: 5,
+    })
   })
 
   it('names a guide published without a name after its leader', () => {

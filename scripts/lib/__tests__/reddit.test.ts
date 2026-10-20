@@ -4,11 +4,14 @@ import type { Card, Dataset, Deck } from '../../../src/types.ts'
 import { redditReply, SITE } from '../reddit.ts'
 
 // Two Monsters leaders (+15, so a 165 limit), a stratagem, and 30 one-provision units to build decks from.
-const unit = (n: number): [number, Card] => [n, { name: `Unit ${n}`, type: 'unit', faction: 'NE', provisions: 1 }]
+const unit = (n: number): [number, Card] => [
+  n,
+  { name: `Unit ${n}`, type: 'unit', faction: 'NE', provisions: 1, scraps: 30, rarity: 'common' },
+]
 const CARDS: Dataset['cards'] = Object.fromEntries([
-  [1, { name: 'Leader', type: 'leader', faction: 'MO', provisions: 15 }],
-  [2, { name: 'Other leader', type: 'leader', faction: 'MO', provisions: 15 }],
-  [10, { name: 'Stratagem', type: 'stratagem', faction: 'NE', provisions: 0 }],
+  [1, { name: 'Leader', type: 'leader', faction: 'MO', provisions: 15, scraps: 30, rarity: 'common' }],
+  [2, { name: 'Other leader', type: 'leader', faction: 'MO', provisions: 15, scraps: 30, rarity: 'common' }],
+  [10, { name: 'Stratagem', type: 'stratagem', faction: 'NE', provisions: 0, scraps: 30, rarity: 'common' }],
   ...Array.from({ length: 30 }, (_, i) => unit(100 + i)),
 ])
 const range = (from: number, n: number) => Array.from({ length: n }, (_, i) => from + i)

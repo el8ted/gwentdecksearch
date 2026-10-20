@@ -1,4 +1,4 @@
-import type { CardType, Faction } from '../../src/types.ts'
+import type { CardType, Faction, Rarity } from '../../src/types.ts'
 import { toSecondaryFaction } from './extract.ts'
 import type { CatalogCard } from './store.ts'
 
@@ -25,6 +25,22 @@ export interface SearchHit {
 // Numeric codes in the search API, verified one-to-one against deck-page JSON on 2026-10-13.
 const TYPES: Record<number, CardType> = { 1: 'leader', 2: 'special', 4: 'unit', 8: 'artifact', 16: 'stratagem' }
 const FACTIONS: Record<number, Faction> = { 0: 'NE', 1: 'MO', 2: 'NG', 3: 'NR', 4: 'ST', 5: 'SK', 6: 'SY' }
+// Crafting costs 30, 80, 200 and 800 scraps (checked 2026-10-20).
+const RARITIES: Record<number, Rarity> = { 5: 'common', 15: 'rare', 20: 'epic', 25: 'legendary' }
+
+/**
+ * A card's rarity from playgwent's code.
+ *
+ * @param code - The search API's `rarity`, as stored in the card catalog
+ * @param id - The card, for the error
+ * @returns Its rarity
+ * @throws {Error} For an unknown code, so an API change can't mislabel cards
+ */
+export function rarityOf(code: number, id: number): Rarity {
+  const rarity = RARITIES[code]
+  if (!rarity) throw new Error(`Unknown rarity code ${code} (card ${id})`)
+  return rarity
+}
 
 /**
  * Reads card names from a localized card search.

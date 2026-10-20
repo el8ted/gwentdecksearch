@@ -137,7 +137,8 @@ other filters, and Back brings them back. A link to a deck that isn't in the lis
 
 The panel on the right counts how many of the matching decks run each card you haven't added. **Most common** puts
 the staples first; **Least common** puts the cards only one or two decks run: tech cards you might not expect. Click
-one to add it, or to see which deck runs it.
+one to add it, or to see which deck runs it. Each card shows what it costs to craft, in scraps; hover over it for its
+rarity.
 
 ![The same search with Least common selected: cards that appear in just one deck each](screenshots/least-common.png)
 
