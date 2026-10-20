@@ -190,6 +190,43 @@ describe('deckRow', () => {
     expect(html).toMatch(/class="swapped">Swapped out: Golden Nekker, Chimera <span class="copies">−1<\/span>/)
   })
 
+  it('closed: an arrow and tooltip say it opens, with no deck ID and no 25-card stat', () => {
+    // Act
+    const html = deckRow(a1, DATA, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html).toContain('aria-expanded="false" title="Show the cards"')
+    expect(html).toContain('<span class="chev" aria-hidden="true">▸</span>')
+    expect(html).not.toContain('deck-id')
+    expect(html).not.toContain('icons/cards.png')
+  })
+
+  it('open: the deck ID moves to a footer, and a deck of other than 25 cards says so', () => {
+    // Arrange
+    const big = { ...a1, deck: { ...a1.deck, stats: { ...a1.deck.stats, cards: 26 } } }
+
+    // Act
+    const html = deckRow(big, DATA, new Set(), true, new Set(), loc)
+
+    // Assert
+    expect(html).toContain('title="Hide the cards"')
+    expect(html).toMatch(/class="deck-foot"><code class="deck-id"[^>]*>a1</)
+    expect(html).toMatch(/icons\/cards\.png[\s\S]*26/)
+  })
+
+  it('presses ⧉ only on the deck the search shows alone, naming the deck for screen readers', () => {
+    // Act
+    const [off, on] = [false, true].map((only) =>
+      deckRow(a1, DATA, new Set(), false, new Set(), loc, undefined, undefined, only),
+    )
+
+    // Assert
+    expect(off).toContain(
+      `data-select="${a1.list}" aria-pressed="false" title="Show only this deck" aria-label="Show only Swarm"`,
+    )
+    expect(on).toContain('aria-pressed="true" title="Showing only this deck; press again to show the others"')
+  })
+
   it('renders no card list when collapsed', () => {
     // Act
     const html = deckRow(a1, DATA, new Set(), false, new Set(), loc)

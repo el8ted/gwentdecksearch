@@ -87,6 +87,13 @@ function decklist(
     .join('')}</ul>${swapped}`
 }
 
+/**
+ * A deck button's face: its symbol, and a word that shows only when the row is wide enough (see `.btn-word`). The
+ * button's aria-label names it in full, so both are hidden from screen readers.
+ */
+const glyph = (symbol: string, word: string) =>
+  `<span aria-hidden="true">${symbol}</span><span class="btn-word" aria-hidden="true">${esc(word)}</span>`
+
 /** A language's short code for a badge: `pt-BR` → `PT`. */
 const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
 
@@ -99,14 +106,23 @@ function langName(lang: string, loc: Locale): string {
   }
 }
 
-/** The video link and the guide's language, shown before the deck ID. */
+/** The video link and the guide's language, before the deck's buttons; one badge when both are the same language. */
 function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): string {
-  const guide = deck.guideLang
-    ? `<span class="lang" title="${esc(loc.t('deck.guideLang', { lang: langName(deck.guideLang, loc) }))}">${esc(langCode(deck.guideLang))}</span>`
-    : ''
-  if (!deck.video) return guide
+  const guideTip = deck.guideLang && loc.t('deck.guideLang', { lang: langName(deck.guideLang, loc) })
+  if (!deck.video) {
+    return deck.guideLang
+      ? `<span class="lang" title="${esc(guideTip ?? '')}">${esc(langCode(deck.guideLang))}</span>`
+      : ''
+  }
   const lang = langName(deck.video.lang, loc)
-  return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(loc.t('deck.video', { lang }))}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}"><span aria-hidden="true">▶</span>${esc(langCode(deck.video.lang))}</a>`
+  // ▶ EN alone says both, so the guide's own badge would only repeat it; its tooltip says so instead.
+  const same = deck.guideLang !== undefined && langCode(deck.guideLang) === langCode(deck.video.lang)
+  const guide =
+    !deck.guideLang || same
+      ? ''
+      : `<span class="lang" title="${esc(guideTip ?? '')}">${esc(langCode(deck.guideLang))}</span>`
+  const tip = loc.t('deck.video', { lang }) + (same ? `\n${guideTip}` : '')
+  return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(tip)}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}"><span aria-hidden="true">▶</span>${esc(langCode(deck.video.lang))}</a>`
 }
 
 /**
@@ -120,6 +136,7 @@ function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): s
  * @param loc - Locale for text, card names and links
  * @param shared - Cards in common with the deck the list is ranked against, that deck's card count, and whether this is it
  * @param changes - How this deck differs from that deck, shown in the expanded list instead of `common`
+ * @param only - Whether the search shows only this deck's list (the Deck pill), so its ⧉ is pressed
  * @returns `<li>` HTML
  */
 export function deckRow(
@@ -131,13 +148,15 @@ export function deckRow(
   loc: Locale,
   shared?: { n: number; of: number; self: boolean },
   changes?: Changes,
+  only = false,
 ): string {
   const { deck } = entry
   const state = entry.budget === 'exact' ? '' : budgetSide(entry.budget)
   const name = deckName(deck, loc)
   return `<li class="deck f-${entry.faction} ${state}">
   <div class="deck-head">
-    <button type="button" class="deck-toggle" data-toggle="${esc(deck.id)}" aria-expanded="${expanded}">
+    <button type="button" class="deck-toggle" data-toggle="${esc(deck.id)}" aria-expanded="${expanded}" title="${esc(loc.t(expanded ? 'deck.hideCards' : 'deck.showCards'))}">
+      <span class="chev" aria-hidden="true">▸</span>
       <span class="deck-name"><span class="fcode">${entry.faction}</span>${esc(name)}</span>
       <span class="deck-sub">${esc(loc.card(entry.leader))} · ${esc(loc.card(entry.stratagem))}</span>
       <span class="deck-src">${deck.sources.map((s) => `<span class="src s-${s}">${esc(sourceLabel(s, loc))}</span>`).join('')}${
@@ -150,17 +169,18 @@ export function deckRow(
           : `<time class="updated" datetime="${esc(deck.updated)}" title="${esc(loc.t('deck.updatedTip'))}">${esc(loc.date(deck.updated))}</time>`
       }</span>
     </button>
-    <span class="deck-links">${deckLinks(deck, name, loc)}<code class="deck-id" title="${esc(deck.id)}">${esc(deck.id.slice(0, 8))}</code>
-    <button type="button" class="open" data-near="${esc(deck.id)}" title="${esc(loc.t('deck.similar'))}" aria-label="${esc(loc.t('deck.similarNamed', { name }))}">≈</button>
-    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">↗</a></span>
+    <span class="deck-links">${deckLinks(deck, name, loc)}
+    <button type="button" class="open" data-select="${esc(entry.list)}" aria-pressed="${only}" title="${esc(loc.t(only ? 'deck.selectedTip' : 'deck.select'))}" aria-label="${esc(loc.t('deck.selectNamed', { name }))}">${glyph('⧉', loc.t('deck.selectWord'))}</button>
+    <button type="button" class="open" data-near="${esc(deck.id)}" title="${esc(loc.t('deck.similar'))}" aria-label="${esc(loc.t('deck.similarNamed', { name }))}">${glyph('≈', loc.t('deck.similarWord'))}</button>
+    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">${glyph('↗', 'playgwent.com')}</a></span>
   </div>
   <div class="stats">
     ${stat('scraps', loc.t('stat.scraps'), loc.num(deck.stats.scraps))}
-    ${stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
+    ${deck.stats.cards === 25 ? '' : stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
     ${stat('helmet', loc.t('stat.units'), String(deck.stats.units))}
     ${provisionBadge(entry, data, loc)}
     ${shared ? `<span class="badge shared">${esc(shared.self ? loc.t('deck.thisDeck') : loc.t('deck.shared', { n: shared.n, of: shared.of }))}</span>` : ''}
   </div>
-  ${expanded ? decklist(entry, data, selected, common, loc, changes) : ''}
+  ${expanded ? `${decklist(entry, data, selected, common, loc, changes)}<p class="deck-foot"><code class="deck-id" title="${esc(loc.t('deck.idTip'))}">${esc(deck.id)}</code></p>` : ''}
 </li>`
 }

@@ -18,9 +18,11 @@ test('Has video lists only decks with a video, in the link too', async ({ page, 
   await expect(rows.locator('a.video')).toHaveCount(await rows.count())
 })
 
-test("a deck row links its video and shows its guide's language", async ({ page, open }) => {
-  // Arrange: a guide with a video, listed alone by picking its leader and every card
-  const deck = data.decks.find((d) => d.video && d.guideLang)
+const code = (lang?: string) => lang?.split('-')[0].toUpperCase() ?? ''
+
+test("a deck row links its video and shows its guide's language when it differs", async ({ page, open }) => {
+  // Arrange: a guide with a video in another language, listed alone by picking its leader and every card
+  const deck = data.decks.find((d) => d.video && d.guideLang && code(d.guideLang) !== code(d.video.lang))
   if (!deck) throw new Error('no guide with a video')
   const ids = deck.cards.map(([id]) => id)
   const leader = ids.find((id) => data.cards[id].type === 'leader')
@@ -32,7 +34,24 @@ test("a deck row links its video and shows its guide's language", async ({ page,
   // Assert
   await expect(row.locator('a.video')).toHaveAttribute('href', deck.video?.url ?? '')
   await expect(row.locator('a.video')).toContainText(deck.video?.lang.split('-')[0].toUpperCase() ?? '')
-  await expect(row.locator('.lang')).toHaveText(deck.guideLang?.split('-')[0].toUpperCase() ?? '')
+  await expect(row.locator('.lang')).toHaveText(code(deck.guideLang))
+})
+
+test('a guide and video in the same language show one badge, whose tooltip names both', async ({ page, open }) => {
+  // Arrange
+  const deck = data.decks.find((d) => d.video && d.guideLang && code(d.guideLang) === code(d.video.lang))
+  if (!deck) throw new Error('no guide with a video in its own language')
+  const ids = deck.cards.map(([id]) => id)
+  const leader = ids.find((id) => data.cards[id].type === 'leader')
+  await open(`#l=${leader}&c=${ids.filter((id) => id !== leader && data.cards[id].type !== 'stratagem').join(',')}`)
+
+  // Act
+  const row = page.locator('#results li.deck', { has: page.locator(`[data-toggle="${deck.id}"]`) })
+
+  // Assert
+  await expect(row.locator('a.video')).toContainText(code(deck.video?.lang))
+  await expect(row.locator('.lang')).toHaveCount(0)
+  await expect(row.locator('a.video')).toHaveAttribute('title', /Guide written in/)
 })
 
 test('a language pill keeps decks with a guide or video in that language', async ({ page, open }) => {

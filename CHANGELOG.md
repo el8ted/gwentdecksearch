@@ -8,6 +8,12 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- **⧉** on any deck shows only that deck, just as pasting its link does; Back brings your search back. Then **Craft**
+  shows what that deck costs you ([#11](https://github.com/el8ted/gwentdecksearch/issues/11)).
+- Deck rows are easier to read: a **▸** before each name shows it opens to its cards, and rows leave out what rarely
+  helps: the deck ID moves under the opened card list, a guide and video in the same language show one badge, and the
+  card count shows only when it isn't 25. On wide screens a deck's buttons say what they do: **⧉ Only this**,
+  **≈ Similar**, **↗ playgwent.com**.
 - **Clear all** (and Shift+Backspace) now empties the Search box too: a pasted deck link that wasn't found, or a
   half-typed name, no longer stays behind ([#12](https://github.com/el8ted/gwentdecksearch/issues/12)).
 - **Craft**, next to the deck list, shows the cards today's published decks run, most used first, with what each costs

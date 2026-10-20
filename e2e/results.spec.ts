@@ -91,3 +91,39 @@ test('a community guide shows its last-updated UTC date; a sheet deck shows none
   await open('#src=shinmiri2')
   await expect(page.locator(`[data-toggle="${sheetDeck.id}"] time`)).toHaveCount(0)
 })
+
+for (const [w, words] of [
+  [1280, true],
+  [360, false],
+] as const) {
+  test(`deck buttons ${words ? 'say what they do in words' : 'keep their symbols'} at ${w}px, and screen readers hear the full name`, async ({
+    page,
+    open,
+  }) => {
+    // Arrange
+    await page.setViewportSize({ width: w, height: 800 })
+
+    // Act
+    await open()
+    const select = page.locator('#results [data-select]').first()
+
+    // Assert
+    await expect(select.locator('.btn-word')).toBeVisible({ visible: words })
+    await expect(select).toHaveAccessibleName(/^Show only /)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(w)
+  })
+}
+
+test('a pressed ⧉ keeps its text readable while hovered', async ({ page, open }) => {
+  // Arrange
+  await open()
+  await page.locator('#results [data-select]').first().click()
+  const pressed = page.locator('#results [data-select][aria-pressed="true"]').first()
+
+  // Act
+  await pressed.hover()
+
+  // Assert: the text isn't painted in the colour of the fill behind it
+  const [color, fill] = await pressed.evaluate((e) => [getComputedStyle(e).color, getComputedStyle(e).backgroundColor])
+  expect(color).not.toBe(fill)
+})

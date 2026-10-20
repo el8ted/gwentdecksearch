@@ -1,5 +1,5 @@
 import { indexDecks } from '../src/filter.ts'
-import { data, expect, expectedCount, test } from './app.ts'
+import { commonNeutralCards, data, expect, expectedCount, test } from './app.ts'
 
 const decks = indexDecks(data)
 const guide = decks.find((e) => e.deck.url.includes('/guides/'))
@@ -176,4 +176,59 @@ test('Shift+Backspace empties half-typed text in the Search box too', async ({ p
   // Assert
   await expect(page).not.toHaveURL(/#f=/)
   await expect(input).toHaveValue('')
+})
+
+test('⧉ on a deck shows only it, as pasting its link would; Back restores the search', async ({ page, open }) => {
+  // Arrange: a search with a pick, so selecting has something to replace
+  const [id] = commonNeutralCards(1)
+  await open(`#c=${id}`)
+  const select = page.locator('#results [data-select]').first()
+  const list = (await select.getAttribute('data-select')) ?? ''
+
+  // Act
+  await select.click()
+
+  // Assert
+  await expect(page).toHaveURL(new RegExp(`#d=${list}$`))
+  await expect(page.locator('#chips [data-remove-deck]')).toHaveCount(1)
+  await expect(page.locator('#chips [data-remove]')).toHaveCount(0)
+  await expect(page.locator('#deck-note')).toBeVisible()
+  await expect(page.locator('#result-head')).toBeFocused()
+  await expect(page.locator(`#results [data-select="${list}"]`).first()).toHaveAttribute('aria-pressed', 'true')
+
+  // Act
+  await page.goBack()
+
+  // Assert
+  await expect(page).toHaveURL(new RegExp(`#c=${id}$`))
+})
+
+test('⧉ pressed again shows the other decks', async ({ page, open }) => {
+  // Arrange
+  const deck = data.decks[0]
+  await open(`#d=${deck.id}`)
+
+  // Act
+  await page.locator('#results [data-select][aria-pressed="true"]').first().click()
+
+  // Assert
+  await expect(page).not.toHaveURL(/#d=/)
+  await expect(page.locator('#chips [data-remove-deck]')).toHaveCount(0)
+})
+
+test("after ⧉, Craft lists that deck's cards", async ({ page, open }) => {
+  // Arrange: the first deck listed
+  await open()
+  const row = page.locator('#results li.deck').first()
+  const id = await row.locator('[data-toggle]').getAttribute('data-toggle')
+  const deck = data.decks.find((d) => d.id === id)
+  if (!deck) throw new Error(`deck ${id} not in the data`)
+  await row.locator('[data-select]').click()
+
+  // Act
+  await page.locator('[data-tab="craft"]').click()
+
+  // Assert: every card but the leader and stratagem
+  const body = deck.cards.filter(([c]) => !['leader', 'stratagem'].includes(data.cards[c].type))
+  await expect(page.locator('#craft-body [data-craft-pick]')).toHaveCount(body.length)
 })

@@ -16,7 +16,7 @@ Gwent Deck Search elenca i mazzi pubblicati di GWENT: The Witcher Card Game e li
 2. Scrivi nel campo Cerca le carte che vedi (tasto /), un tag come Bestia o Devozione, oppure un autore. Ognuno restringe l'elenco. Scrivi - davanti per escludere.
 3. Più comuni mostra le carte usate dai mazzi rimasti; Meno comuni mostra le sorprese rare. Fai clic su una carta per aggiungerla.
 4. Tutte elenca i mazzi con tutto ciò che hai aggiunto; Almeno una quelli con almeno un elemento, migliori corrispondenze prima.
-5. Fai clic su un mazzo per vederne le carte. ↗ lo apre su playgwent.com per importarlo; ▶ avvia un video di gameplay, se c'è.
+5. Fai clic su un mazzo per vederne le carte. ↗ lo apre su playgwent.com per importarlo; ▶ avvia un video di gameplay, se c'è. ⧉ mostra solo quel mazzo, come se avessi incollato il suo link.
 6. Avanzo: spazio per migliorare una carta. Eccesso: i costi sono cambiati e il mazzo non rientra più.
 7. Cancella tutto ricomincia da capo; il tasto Indietro del browser lo annulla.
 

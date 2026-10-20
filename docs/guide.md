@@ -202,7 +202,8 @@ several to combine them.
 
 ### Read a deck
 
-Click a deck's name to open its card list. **Expand all** opens every deck in the results.
+Click a deck's **▸**, or anywhere on its name, to open its card list (the **▸** turns down). **Expand all** opens every deck in the
+results.
 
 ![An expanded deck: leader, stratagem, then each card with provision cost, power and copies. Golden Nekker, which was searched for, is highlighted](screenshots/decklist.png)
 
@@ -210,21 +211,21 @@ Click a deck's name to open its card list. **Expand all** opens every deck in th
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
 | **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
-| **Links** | On the right: the guide's language, **▶** for a video, the deck ID and **↗**. On phones they get their own row under the name. |
-| **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
+| **Links** | On the right: the guide's language, **▶** for a video, then **⧉ Only this**, **≈ Similar** and **↗ playgwent.com**. On narrower screens the buttons show just their symbols, and on phones they get their own row under the name. |
+| **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). When the video is in the same language, **▶ EN** alone stands for both. Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
 | **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. Not your language? [It can still help](#common-questions). |
-| **Deck ID** | The first 8 characters of the playgwent deck code. Two decks with the same name have different IDs. |
+| **⧉** | Shows only this deck, exactly as pasting its link would: your search is replaced (Back brings it back). Then **Craft** lists what it costs you. Press it again to see the other decks. |
 | `≈` | Similar decks: see [`≈` Similar decks](#-similar-decks). |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
-| **Stats** | Scraps · cards · units · provisions used / limit. |
-| **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. |
+| **Stats** | Scraps · units · provisions used / limit. The card count shows only when it isn't 25. |
+| **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. Under the list, the full playgwent deck ID, handy for reporting a problem with a deck. |
 
 **Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 1,360 of them), and a
 language pill keeps decks whose guide or video is in that language: handy for finding guides you can read. A video in
 another language can still help: gameplay mostly speaks for itself, and YouTube can translate its subtitles (see [Common
 questions](#common-questions)).
 
-![Guide & video with Has video and English picked: each deck shows ▶ EN next to its deck ID](screenshots/videos.png)
+![Guide & video with Has video and English picked: each deck shows ▶ EN beside its buttons](screenshots/videos.png)
 
 ### Dim common
 

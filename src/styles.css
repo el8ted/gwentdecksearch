@@ -458,7 +458,8 @@ h1 span {
 
 .deck-head {
   display: flex;
-  align-items: center;
+  /* The buttons line up with the ▸ and the deck name along the top, however many lines the name and badges take. */
+  align-items: flex-start;
   gap: 0.75rem;
 }
 .deck-links {
@@ -488,6 +489,68 @@ h1 span {
 .deck-toggle[aria-expanded="true"] .deck-name {
   color: var(--accent);
 }
+/* The disclosure arrow: a control the size of the deck's other buttons, at the start of the row, so it reads as
+   "this opens" without words. The whole name area is the button it belongs to. */
+.deck-toggle {
+  grid-template-columns: 2rem minmax(0, 1fr);
+  column-gap: 0.6rem;
+}
+.deck-toggle > :not(.chev) {
+  grid-column: 2;
+}
+.chev {
+  grid-row: 1 / span 3;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  transition:
+    transform 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+.deck-toggle:hover .chev {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.deck-toggle[aria-expanded="true"] .chev {
+  transform: rotate(90deg);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.deck-foot {
+  margin: 0.4rem 0 0;
+  padding: 0 0.3rem;
+}
+/* A deck's buttons say what they do in words once its row has room; narrower rows (phones, the two-column layout on
+   a small laptop) keep the symbols, so the deck name isn't squeezed. Measured on the row, so text size counts too. */
+.deck {
+  container-type: inline-size;
+}
+.btn-word {
+  display: none;
+}
+@container (min-width: 46rem) {
+  .deck-links .open {
+    width: auto;
+    padding: 0 0.6rem;
+    grid-auto-flow: column;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+  }
+  .btn-word {
+    display: inline;
+  }
+}
+.open[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
 .deck-sub {
   color: var(--muted);
   font-size: 0.85rem;
@@ -516,6 +579,11 @@ h1 span {
 .open:hover {
   color: var(--accent);
   border-color: var(--accent);
+}
+/* Pressed (⧉ on the deck shown alone): keep its ink on hover, or the accent text vanishes into the accent fill. */
+.open[aria-pressed="true"]:hover {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 85%, var(--text));
 }
 /* A guide's language, and the video link with its narration language: before the deck ID. */
 .lang,

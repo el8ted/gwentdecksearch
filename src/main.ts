@@ -221,11 +221,11 @@ function applyStatic() {
   for (const el of document.querySelectorAll<HTMLAnchorElement>('[data-pg]')) el.href = loc.pg(el.dataset.pg ?? '')
   // The threshold is a build setting, so Help reads it rather than repeating the number.
   byId('help-similar').textContent = t('help.similar1', { n: CONFIG.similarMinShared })
-  // Help's ≈ ↗ ▶ ✕ drawn like the buttons they name, and the - typed to exclude like a key (a lone -, so hyphenated
+  // Help's ≈ ↗ ▶ ✕ ⧉ drawn like the buttons they name, and the - typed to exclude like a key (a lone -, so hyphenated
   // words like Gameplay-Video stay as they are): easy to spot, in every language.
   for (const el of byId('shortcuts').querySelectorAll<HTMLElement>('summary, li')) {
     el.innerHTML = esc(el.textContent ?? '')
-      .replace(/[≈↗▶✕]/g, (g) => `<span class="glyph">${g}</span>`)
+      .replace(/[≈↗▶✕⧉]/g, (g) => `<span class="glyph">${g}</span>`)
       .replace(/(?<![\p{L}\p{N}])-(?![\p{L}\p{N}])/gu, '<kbd class="glyph">-</kbd>')
   }
   const version = byId<HTMLAnchorElement>('version')
@@ -451,6 +451,7 @@ function renderResults() {
       loc,
       near && { n: overlap(near, e), of: size, self: e === near },
       view.dimCommon && near && e !== near ? cardChanges(near, e) : undefined,
+      e.list === state.deck,
     ),
   )
   if (matches.length > view.limit) {
@@ -689,6 +690,14 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
     },
   },
   near: { run: (id) => showNear(id), fallback: () => els.resultHead },
+  // ⧉: the same as pasting the deck's link; pressed again (on the only deck left) it shows the others.
+  select: {
+    run: (list) => {
+      if (state.deck === list) removeDeck()
+      else showDeck(list)
+      els.resultHead.focus()
+    },
+  },
   showNear: {
     run: (v) => {
       update({ budgets: [...(state.budgets ?? []), v as Budget] })
