@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-18.04
+
 - **Craft: where to spend your scraps.** New, or back after a break, and not sure which cards are worth crafting?
   **Craft**, next to the deck list, shows the cards today's published decks actually run, most used first, with what
   each costs to craft ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
