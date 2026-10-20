@@ -23,7 +23,7 @@ Run before committing; CI runs the same on every push and pull request (`.github
 ```bash
 pnpm check        # lint and formatting (pnpm check:fix to fix)
 pnpm typecheck
-pnpm test:run     # unit tests
+pnpm test:coverage  # unit tests, failing any file under 80% coverage (as CI does)
 pnpm test:e2e     # builds, then browser tests (Chromium and Firefox)
 ```
 

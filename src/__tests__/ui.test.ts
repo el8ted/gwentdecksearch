@@ -70,6 +70,16 @@ const loc: Locale = {
   pg: (url) => url,
 }
 const state = (s: Partial<FilterState> = {}): FilterState => ({ factions: [], picks: [], ...s })
+const context = (s: FilterState) => ({
+  state: s,
+  facets: facets(DECKS, s),
+  data: DATA,
+  loc,
+  leaders: [1, 2],
+  stratagems: [10],
+  langs: [] as string[],
+  pickName: (p: number | string) => (typeof p === 'number' ? loc.card(p) : loc.tag(p)),
+})
 const rows = (s: FilterState) =>
   filterRows({
     state: s,
@@ -113,6 +123,55 @@ describe('filterRows', () => {
     expect(chips).toContain('data-flip="103" aria-pressed="true"')
     expect(chips).toContain('<span aria-hidden="true">#</span>Deploy')
     expect(chips).not.toContain('<b>')
+  })
+
+  it('draws a leader with art as its icon, named in its label, and one without as its name', () => {
+    // Arrange: 122105 has art (src/art.ts); 1 doesn't
+    const data: Dataset = { ...DATA, cards: { ...DATA.cards, 122105: card('Pincer Maneuver', 'leader', 'MO', 15) } }
+    const s = state({ factions: ['MO'] })
+
+    // Act
+    const { leader } = filterRows({
+      ...context(s),
+      data,
+      loc: { ...loc, card: (id) => data.cards[id].name },
+      leaders: [1, 122105],
+    })
+
+    // Assert
+    expect(leader).toMatch(
+      /class="pill f-MO empty art"[^>]*aria-label="Pincer Maneuver \(0\)"><img src="icons\/l-122105\.webp"/,
+    )
+    expect(leader).toMatch(/data-leader="1"[^>]*>Arachas Swarm<span>2<\/span>/)
+  })
+
+  it('draws a pill per guide language, pressed when picked, labelled with its name', () => {
+    // Act
+    const { media } = filterRows({ ...context(state({ langs: ['ru'] })), langs: ['en', 'ru'] })
+
+    // Assert
+    expect(media).toContain('data-guide-lang="ru" aria-pressed="true" aria-label="Guide or video in Russian (0)"')
+    expect(media).toContain('data-guide-lang="en" aria-pressed="false"')
+  })
+
+  it('with a stratagem picked, names it and counts the decks under the others', () => {
+    // Arrange
+    const s = state({ stratagem: 10 })
+    const counts = {
+      ...facets(DECKS, s),
+      stratagems: new Map([
+        [10, 2],
+        [11, 3],
+      ]),
+    }
+
+    // Act
+    const { stratagemNote } = filterRows({ ...context(s), facets: counts })
+
+    // Assert
+    expect(stratagemNote).toMatch(/^<strong>Enchanted Armor<\/strong>/)
+    expect(stratagemNote).toContain('3')
+    expect(stratagemNote).toContain('data-any-stratagem="1"')
   })
 })
 
@@ -225,6 +284,96 @@ describe('deckRow', () => {
       `data-select="${a1.list}" aria-pressed="false" title="Show only this deck" aria-label="Show only Swarm"`,
     )
     expect(on).toContain('aria-pressed="true" title="Showing only this deck; press again to show the others"')
+  })
+
+  it.each([
+    [160, 'badge spare', '5 spare'],
+    [170, 'badge over', '+5 over'],
+  ])('a deck using %i of 165 provisions gets a %s badge', (provisions, cls, text) => {
+    // Arrange
+    const deck = { ...a1, deck: { ...a1.deck, stats: { ...a1.deck.stats, provisions } } }
+
+    // Act
+    const html = deckRow(deck, DATA, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html).toContain(`<span class="${cls}" title="160 used / 165 limit`.replace('160', String(provisions)))
+    expect(html).toContain(`>${text}</span>`)
+  })
+
+  it('shows a guide with no video by its language, named in the tooltip, and falls back to the code for an unknown one', () => {
+    // Arrange
+    const guide = (guideLang: string) => ({ ...a1, deck: { ...a1.deck, guideLang } })
+
+    // Act
+    const [known, unknown] = ['ru', 'not a language!'].map((l) =>
+      deckRow(guide(l), DATA, new Set(), false, new Set(), loc),
+    )
+
+    // Assert
+    expect(known).toContain('<span class="lang" title="Guide written in Russian">RU</span>')
+    expect(unknown).toContain('title="Guide written in not a language!"')
+  })
+
+  it("shows a guide's votes, author and update date, and a Similar list's cards in common", () => {
+    // Arrange
+    const deck = { ...a1, deck: { ...a1.deck, votes: 7, author: 'Avajar', updated: '2026-10-01' } }
+
+    // Act
+    const html = deckRow(deck, DATA, new Set(), false, new Set(), loc, { n: 2, of: 3, self: false })
+
+    // Assert
+    expect(html).toContain('▲ 7 · Avajar')
+    expect(html).toContain('<time class="updated" datetime="2026-10-01"')
+    expect(html).toContain('<span class="badge shared">2/3 cards in common</span>')
+  })
+
+  it.each([
+    ['en', 'en', '', '\nGuide written in English'],
+    ['ru', 'en', '<span class="lang" title="Guide written in Russian">RU</span>', ''],
+    [undefined, 'en', '', ''],
+  ])('a guide in %s with a video in %s shows the badges it needs', (guideLang, videoLang, guideBadge, tipExtra) => {
+    // Arrange
+    const deck = {
+      ...a1,
+      deck: { ...a1.deck, guideLang, video: { url: 'https://youtu.be/AAAAAAAAAAA', lang: videoLang } },
+    }
+
+    // Act
+    const html = deckRow(deck, DATA, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html.includes('class="lang"')).toBe(guideBadge !== '')
+    if (guideBadge) expect(html).toContain(guideBadge)
+    expect(html).toContain(`title="Watch gameplay (English)${tipExtra}"`)
+  })
+
+  it("uses the author's own deck name when it's in the visitor's language", () => {
+    // Arrange
+    const deck = { ...a1, deck: { ...a1.deck, original: { name: 'Рой', lang: 'en' } } }
+
+    // Act
+    const html = deckRow(deck, DATA, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html).toContain('Рой</span>')
+  })
+
+  it("marks the Similar list's own deck as This deck", () => {
+    // Act
+    const html = deckRow(a1, DATA, new Set(), false, new Set(), loc, { n: 3, of: 3, self: true })
+
+    // Assert
+    expect(html).toContain('<span class="badge shared">This deck</span>')
+  })
+
+  it('compared with a reference deck, marks one extra copy +1 and an added card +', () => {
+    // Act: a1 runs Chimera ×2 where a2 runs one, and Golden Nekker, which a2 doesn't
+    const html = deckRow(a1, DATA, new Set(), true, new Set(), loc, undefined, cardChanges(a2, a1))
+
+    // Assert
+    expect(line(html, 'Chimera')).toContain('>+1</span>')
+    expect(line(html, 'Golden Nekker')).toContain('>+</span>')
   })
 
   it('renders no card list when collapsed', () => {

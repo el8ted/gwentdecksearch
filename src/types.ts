@@ -32,11 +32,12 @@ export const SOURCE_NAMES: Record<Source, string> = {
   'metallic-danny': 'MetallicDanny',
 }
 
-/** A card as used by the app. */
 /** How rare a card is, which sets what it costs to craft; cheapest first. */
 export const RARITIES = ['common', 'rare', 'epic', 'legendary'] as const
+/** One of {@link RARITIES}. */
 export type Rarity = (typeof RARITIES)[number]
 
+/** A card as used by the app. */
 export interface Card {
   name: string
   type: CardType

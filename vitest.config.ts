@@ -17,7 +17,11 @@ export default defineConfig({
         'src/display.ts',
         'src/i18n.ts',
         'src/config.ts',
-        'src/ui/dom.ts',
+        // The HTML builders; the rest of src/ui (dom.ts, the menus, autocomplete) needs a browser, so e2e/ covers it.
+        'src/ui/results.ts',
+        'src/ui/filters.ts',
+        'src/ui/panel.ts',
+        'src/ui/craft.ts',
         'scripts/lib/*.ts',
       ],
       exclude: ['**/*.test.{ts,tsx}', '**/__tests__/**'],
