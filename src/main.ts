@@ -271,6 +271,8 @@ function update(next: Partial<FilterState>, { push = false } = {}) {
 function clearAll() {
   Object.assign(view, freshView())
   autoFaction = undefined
+  // Text left in the box (a deck link that wasn't found, a half-typed name) is part of the search too.
+  autocomplete.clear()
   update(
     // All/Any and the Decks/Craft view are how you search, not what for, so they stay.
     {

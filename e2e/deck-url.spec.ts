@@ -141,3 +141,39 @@ test('?deck= with a deck not in the list puts it in Search, selected, which says
   await page.locator('#card-input').pressSequentially('Tyr')
   await expect(page.locator('#card-input')).toHaveValue('Tyr')
 })
+
+test('Clear all empties the Search box of a pasted deck link that was not found (#12)', async ({ page, open }) => {
+  // Arrange: the issue's steps, a pasted unknown link left selected in the box
+  await open()
+  const input = page.locator('#card-input')
+  const unknown = 'https://www.playgwent.com/en/decks/11e5b6353f6fbe7ac15984c0192f1dc8'
+  await input.evaluate((el: HTMLInputElement, text) => {
+    el.focus()
+    el.value = text
+    el.dispatchEvent(new InputEvent('input', { inputType: 'insertFromPaste', data: text }))
+  }, unknown)
+  await expect(page.locator('#suggestions .none')).toBeVisible()
+
+  // Act
+  await page.locator('#clear').click()
+
+  // Assert
+  await expect(input).toHaveValue('')
+  await expect(page.locator('#suggestions')).toBeHidden()
+  await expect(input).not.toHaveAttribute('aria-activedescendant')
+})
+
+test('Shift+Backspace empties half-typed text in the Search box too', async ({ page, open }) => {
+  // Arrange: typed, then focus moved to a filter, where the shortcut works
+  await open('#f=MO')
+  const input = page.locator('#card-input')
+  await input.fill('Tyr')
+  await page.locator('[data-faction="NG"]').focus()
+
+  // Act
+  await page.keyboard.press('Shift+Backspace')
+
+  // Assert
+  await expect(page).not.toHaveURL(/#f=/)
+  await expect(input).toHaveValue('')
+})

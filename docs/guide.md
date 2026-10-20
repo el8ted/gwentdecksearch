@@ -177,7 +177,7 @@ rarity.
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
 | **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
-| **Clear all** | Resets every filter except All/Any and the Decks/Craft view, and turns off Dim common. |
+| **Clear all** | Resets every filter except All/Any and the Decks/Craft view, empties the Search box, and turns off Dim common. |
 
 **About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
 the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**

@@ -91,7 +91,7 @@ function matchRank(name: string, q: string, loose = false): number {
  * ignored, and come after cards.
  *
  * @param options - Elements, data and callbacks
- * @returns `refresh()`, to re-filter after the candidates change
+ * @returns `refresh()`, to re-filter after the candidates change, and `clear()`, to empty the box
  */
 export function createAutocomplete({
   input,
@@ -220,17 +220,21 @@ export function createAutocomplete({
     if (items.length) input.setAttribute('aria-activedescendant', optionId(items[active]))
   }
 
-  function pick(item: number | string) {
+  /** Empties the box and closes the suggestions, as after a pick. */
+  function clear() {
     input.value = ''
     active = 0
+    deckHit = undefined
     close()
+  }
+
+  function pick(item: number | string) {
+    clear()
     onPick(item, excluding)
   }
 
   function pickDeck(deck: string) {
-    input.value = ''
-    deckHit = undefined
-    close()
+    clear()
     onDeck(deck)
   }
 
@@ -274,5 +278,5 @@ export function createAutocomplete({
     pick(li.dataset.tag ?? Number(li.dataset.id))
   })
 
-  return { refresh: () => (list.hidden ? undefined : render()) }
+  return { refresh: () => (list.hidden ? undefined : render()), clear }
 }

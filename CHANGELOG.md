@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- **Clear all** (and Shift+Backspace) now empties the Search box too: a pasted deck link that wasn't found, or a
+  half-typed name, no longer stays behind ([#12](https://github.com/el8ted/gwentdecksearch/issues/12)).
 - **Craft**, next to the deck list, shows the cards today's published decks run, most used first, with what each costs
   to craft. With no filters the top is the staples every faction plays; pick a faction or leader for what those decks
   need. Type your scraps to see how far down the list they go, and tick the cards you already have. Nothing is saved.
