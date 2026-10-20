@@ -6,6 +6,7 @@ import {
   budgetSide,
   cardChanges,
   cardFrequency,
+  craftList,
   type FilterState,
   facets,
   type IndexedDeck,
@@ -558,6 +559,37 @@ describe('cardChanges', () => {
 
     // Assert
     expect([added.size, removed.length]).toEqual([0, 0])
+  })
+})
+
+describe('craftList', () => {
+  it('ranks by the matching decks running each card, then card ID', () => {
+    // Act
+    const rows = craftList(DECKS, [])
+
+    // Assert: 101 and 102 tie on 3 decks
+    expect(rows.map(({ id, decks }) => [id, decks])).toEqual([
+      [101, 3],
+      [102, 3],
+      [100, 1],
+      [103, 1],
+    ])
+  })
+
+  it('counts two copies when at least half the decks running a card run two', () => {
+    // Act
+    const copies = Object.fromEntries(craftList(DECKS, []).map((r) => [r.id, r.copies]))
+
+    // Assert
+    expect(copies).toEqual({ 100: 1, 101: 2, 102: 1, 103: 2 })
+  })
+
+  it('leaves out picked cards', () => {
+    // Act
+    const rows = craftList(DECKS, [102])
+
+    // Assert
+    expect(rows.map((r) => r.id)).toEqual([101, 100, 103])
   })
 })
 

@@ -48,6 +48,8 @@ export function encodeState(state: FilterState): string {
   if (state.picks.length) params.set('c', state.picks.map(sign).join(','))
   if (state.deck !== undefined) params.set('d', state.deck)
   if (state.near !== undefined) params.set('n', state.near)
+  // `t` for tab: `v` is taken by Has video.
+  if (state.tab === 'craft') params.set('t', 'craft')
   const query = params.toString()
   return query ? `#${query}` : ''
 }
@@ -125,5 +127,6 @@ export function decodeState(
     stratagem: ids('s', 'stratagem')[0],
     picks: [...picks.keys()],
     excludes: [...picks].filter(([, excluded]) => excluded).map(([p]) => p),
+    tab: params.get('t') === 'craft' ? 'craft' : undefined,
   }
 }

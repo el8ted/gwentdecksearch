@@ -1,16 +1,17 @@
 # Gwent Deck Search: The Full Guide
 
 New here? The [Quick start](../README.md#quick-start) covers the basics, and the page's **?** (Help) panel has the
-same tips in your language. This guide has two walkthroughs, one for each job the page does, then a reference to
+same tips in your language. This guide has three walkthroughs, one for each job the page does, then a reference to
 every control.
 
 ## Contents
 
 - [During a match](#during-a-match): work out what your opponent is playing
 - [Find a deck to play](#find-a-deck-to-play): from a link, cards you like, a creator, or a deck that needs fixing
+- [Plan your crafting](#plan-your-crafting): which cards today's decks run, and how far your scraps go
 - [Reference](#reference): [Search](#search), [Card frequency](#card-frequency), [Filters](#filters),
   [Provisions](#provisions-spare-exact-and-over), [Read a deck](#read-a-deck), [Dim common](#dim-common),
-  [`≈` Similar decks](#-similar-decks), [Save and share](#save-and-share-a-search), [Languages](#languages),
+  [`≈` Similar decks](#-similar-decks), [Craft](#craft), [Save and share](#save-and-share-a-search), [Languages](#languages),
   [Display](#display-and-accessibility), [Keyboard shortcuts](#keyboard-shortcuts)
 - [Common questions](#common-questions)
 
@@ -75,6 +76,27 @@ that deck, with its guide and video. From there:
 - **You're tired of it, but like the cards:** `≈` finds variations.
 
 A link to a deck that isn't in the list says so.
+
+## Plan your crafting
+
+New, or back after a break, and not sure where to spend your scraps? **Craft** shows what the decks people publish
+today actually run.
+
+Treat it as guidance, not a guarantee. A card many decks run is a safe craft because it fits a lot of decks, but
+that doesn't make it the right craft for you: the decks you enjoy, the cards you already have and the next Balance
+Council change all matter more than a percentage.
+
+1. **Switch to Craft** above the results. With no filters, the top of the list is the neutral staples every faction
+   plays, such as Oneiromancy and Royal Decree: they pay off whatever you end up playing.
+2. **Narrow it** with the filters you'd use for decks: a faction, a leader, a card you already have. The list follows
+   them, so it shows what *those* decks need.
+3. **Type the scraps you have** (the game shows your total). A line marks how far down the list they go.
+4. **Tick Have it** on the cards you already own. They stay in place but drop out of the total, so the line moves
+   down. Ticks and scraps last until you reload; nothing is saved.
+5. **Click a card** to see the decks that run it, and Back to return.
+
+> Craft counts published decks, not ladder play or win rates, and older and alternate versions of a deck count too.
+> It shows what's popular among deck builders, which is a good starting point, not proof that a card wins games.
 
 ## Reference
 
@@ -155,7 +177,7 @@ rarity.
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
 | **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
-| **Clear all** | Resets every filter except All/Any, and turns off Dim common. |
+| **Clear all** | Resets every filter except All/Any and the Decks/Craft view, and turns off Dim common. |
 
 **About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
 the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**
@@ -233,6 +255,21 @@ in common**.
 ![≈ Similar decks with This deck hidden by the Provisions filter, and Show changes on: the closest deck opened, its added cards marked + and the cards it swapped out listed below](screenshots/similar-changes.png)
 
 (Building your own copy? `similarMinShared` in `src/config.ts` sets the 15.)
+
+### Craft
+
+**Decks | Craft**, above the results, switches between the deck list and the cards those decks run. The filters
+above apply to both, and a shared link keeps the view (`t=craft`).
+
+| Column | What it shows |
+|---|---|
+| **Decks** | The share of the matching decks that run the card, and how many that is. The list is ordered by it. With no faction picked that's every deck, so a faction card's share counts the other factions' decks too. |
+| **Cost** | Scraps to craft it, for the copies most of those decks run (`2 × 80`). |
+| **Total** | The running total of the cards you don't have, in list order. |
+| **Have it** | Tick a card you own to leave it out of the total. |
+
+**Scraps you have** draws a line where the total passes your scraps, and says how many cards they cover. The line
+follows the list's order and never skips ahead to a cheaper card further down.
 
 ### Save and share a search
 

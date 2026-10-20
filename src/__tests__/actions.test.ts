@@ -9,8 +9,9 @@ import { describe, expect, it } from 'vitest'
 const SRC = join(import.meta.dirname, '..')
 const read = (file: string) => readFileSync(join(SRC, file), 'utf8')
 const camel = (attr: string) => attr.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
-// Buttons another module handles: the Display menu (ui/display-menu.ts).
-const ELSEWHERE = new Set(['pref', 'value'])
+// Handled elsewhere: the Display menu's buttons (ui/display-menu.ts), and Craft's Have it checkboxes (a change listener
+// in main.ts).
+const ELSEWHERE = new Set(['pref', 'value', 'have'])
 
 describe('ACTIONS', () => {
   it('has an action for every button attribute', () => {
@@ -20,7 +21,7 @@ describe('ACTIONS', () => {
     const actions = new Set([...table.matchAll(/^ {2}(\w+): \{/gm)].map((m) => m[1]))
     const html = [...read('index.html').matchAll(/<button[^>]*>/g)].map((m) => m[0]).join('\n')
     // Renderers build buttons in template strings; `data-${attr}` (leader and stratagem pills) is listed by hand.
-    const markup = [html, main, ...['results', 'filters', 'panel'].map((f) => read(`ui/${f}.ts`))].join('\n')
+    const markup = [html, main, ...['results', 'filters', 'panel', 'craft'].map((f) => read(`ui/${f}.ts`))].join('\n')
 
     // Act
     const attrs = new Set([...markup.matchAll(/\bdata-([a-z][a-z-]*)="/g)].map((m) => camel(m[1])))

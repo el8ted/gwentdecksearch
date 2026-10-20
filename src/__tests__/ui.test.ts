@@ -4,6 +4,7 @@ import { cardChanges, type FilterState, facets, indexDecks } from '../filter.ts'
 import en from '../i18n/en.json'
 import { createTranslator, type Locale } from '../i18n.ts'
 import type { Card, Dataset } from '../types.ts'
+import { craftView } from '../ui/craft.ts'
 import { filterRows } from '../ui/filters.ts'
 import { barsHtml } from '../ui/panel.ts'
 import { deckRow } from '../ui/results.ts'
@@ -195,5 +196,79 @@ describe('deckRow', () => {
 
     // Assert
     expect(html).not.toContain('class="decklist"')
+  })
+})
+
+describe('craftView', () => {
+  // Costs 800, 200 (×2 = 400) and 30, so running totals 800, 1,200, 1,230.
+  const data = {
+    ...DATA,
+    cards: {
+      ...DATA.cards,
+      100: { ...DATA.cards[100], scraps: 800 },
+      101: { ...DATA.cards[101], scraps: 200 },
+      102: { ...DATA.cards[102], scraps: 30 },
+    },
+  }
+  const rows = [
+    { id: 100, decks: 3, copies: 1 as const },
+    { id: 101, decks: 2, copies: 2 as const },
+    { id: 102, decks: 1, copies: 1 as const },
+  ]
+  const draw = (opts: { scraps?: number; have?: number[]; limit?: number }) =>
+    craftView({ rows, total: 4, limit: opts.limit ?? 50, have: new Set(opts.have), scraps: opts.scraps, data, loc })
+  /** Running totals in row order, and where the scraps line falls (before which card). */
+  const read = (body: string) => ({
+    totals: [...body.matchAll(/class="total">([^<]+)</g)].map((m) => m[1]),
+    lineBefore: /class="reach"[\s\S]*?data-craft-pick="(\d+)"/.exec(body)?.[1],
+  })
+
+  it('runs a total of the cards not ticked, counting copies, and puts the line before the first the scraps miss', () => {
+    // Act
+    const { body, summary } = draw({ scraps: 1000 })
+
+    // Assert
+    expect(read(body)).toEqual({ totals: ['800', '1200', '1230'], lineBefore: '101' })
+    expect(body).toContain('2 × 200')
+    expect(summary).toBe("Enough for the first card you don't have: 800 scraps, 200 left.")
+  })
+
+  it('leaves a ticked card in place but out of the total, so the scraps reach further', () => {
+    // Act
+    const { body, summary } = draw({ scraps: 1000, have: [100] })
+
+    // Assert
+    expect(read(body)).toEqual({ totals: ['—', '400', '430'], lineBefore: undefined })
+    expect(body).toMatch(/<tr class="f-NE have">/)
+    expect(summary).toBe("Enough for the first 2 cards you don't have: 430 scraps, 570 left.")
+  })
+
+  it('says so when the scraps miss the first card, and draws no line or summary without a number', () => {
+    // Act
+    const short = draw({ scraps: 100 })
+    const none = draw({})
+
+    // Assert
+    expect(read(short.body).lineBefore).toBe('100')
+    expect(short.summary).toBe("Not enough for the first card you don't have (800 scraps).")
+    expect(none.body).not.toContain('class="reach"')
+    expect(none.summary).toBe('')
+  })
+
+  it('gives each card its share of the matching decks', () => {
+    // Act
+    const { body } = draw({})
+
+    // Assert
+    expect(body).toContain('class="share" title="In 3 of 4 matching decks">75%<span class="share-of">3</span>')
+  })
+
+  it('draws one page, then Show more', () => {
+    // Act
+    const { body } = draw({ limit: 2 })
+
+    // Assert
+    expect(body.match(/data-craft-pick=/g)).toHaveLength(2)
+    expect(body).toContain('Show 1 more card')
   })
 })

@@ -7,6 +7,7 @@ import {
   budgetSide,
   cardChanges,
   cardFrequency,
+  craftList,
   deckBody,
   type FilterState,
   facets,
@@ -45,6 +46,7 @@ import {
 } from './i18n.ts'
 import type { Card, Dataset, Faction, Source } from './types.ts'
 import { createAutocomplete } from './ui/autocomplete.ts'
+import { craftView } from './ui/craft.ts'
 import { initDisplayMenu } from './ui/display-menu.ts'
 import { byId, esc, readStorage, writeStorage } from './ui/dom.ts'
 import { type FilterRows, filterRows } from './ui/filters.ts'
@@ -97,6 +99,14 @@ const els = {
   results: byId('results'),
   panelHead: byId('panel-head'),
   bars: byId('bars'),
+  panel: byId('panel'),
+  tab: byId('tab'),
+  craft: byId('craft'),
+  craftIntro: byId('craft-intro'),
+  craftSummary: byId('craft-summary'),
+  craftBody: byId('craft-body'),
+  scraps: byId<HTMLInputElement>('scraps'),
+  skipPast: byId('skip-past'),
 }
 
 function makeLocale(lang: Lang, pack?: LanguagePack): Locale {
@@ -185,6 +195,10 @@ const view = {
   ...freshView(),
   /** Side-panel ordering; kept through Clear all. */
   freq: 'most' as 'most' | 'least',
+  /** Craft cards ticked Have it, and the scraps typed in: about the player rather than the search, so they're kept
+   * through Clear all, but only for this visit (nothing is stored). */
+  have: new Set<number>(),
+  scraps: undefined as number | undefined,
 }
 // Deck IDs currently listed, for Expand/Collapse all.
 let shown: string[] = []
@@ -258,7 +272,16 @@ function clearAll() {
   Object.assign(view, freshView())
   autoFaction = undefined
   update(
-    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: undefined, near: undefined },
+    // All/Any and the Decks/Craft view are how you search, not what for, so they stay.
+    {
+      ...EMPTY_STATE,
+      match: state.match,
+      tab: state.tab,
+      leader: undefined,
+      stratagem: undefined,
+      deck: undefined,
+      near: undefined,
+    },
     { push: true },
   )
 }
@@ -268,7 +291,16 @@ function showDeck(list: string) {
   deckReplaced = encodeState({ ...state, match: 'all' }) !== ''
   autoFaction = undefined
   update(
-    { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: list, near: undefined },
+    // A deck link is for seeing that deck, so it opens the deck list even from Craft.
+    {
+      ...EMPTY_STATE,
+      match: state.match,
+      leader: undefined,
+      stratagem: undefined,
+      deck: list,
+      near: undefined,
+      tab: undefined,
+    },
     { push: true },
   )
 }
@@ -398,6 +430,7 @@ function renderResults() {
   const selected = new Set([...cards, ...tagged])
   const matches = matchDecks(decks, state)
   matchCount = matches.length
+  if (showTab(state.tab === 'craft')) return renderCraft(matches, cards)
   els.resultHead.textContent = t('results.count', { n: matches.length })
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
   const page = matches.slice(0, view.limit)
@@ -445,6 +478,51 @@ function renderResults() {
           ? ''
           : ` <button type="button" class="link" data-remove="${esc(String(last))}">${esc(t('results.removeCard', { name: pickName(last) }))}</button>`
       }</li>`
+}
+
+/**
+ * Shows the deck list or the Craft list, with the controls that belong to it.
+ *
+ * @param crafting - Whether the Craft tab is on
+ * @returns `crafting`
+ */
+function showTab(crafting: boolean): boolean {
+  for (const b of els.tab.querySelectorAll<HTMLButtonElement>('[data-tab]')) {
+    b.setAttribute('aria-pressed', String((b.dataset.tab === 'craft') === crafting))
+  }
+  els.craft.hidden = !crafting
+  // The panel would repeat the Craft list, and the deck list's buttons have nothing to act on.
+  for (const el of [els.results, els.panel, els.dimCommon, els.expandAll, els.skipPast]) el.hidden = crafting
+  if (crafting) els.nearNote.hidden = true
+  return crafting
+}
+
+/**
+ * Renders the Craft list for the matching decks.
+ *
+ * @param matches - Decks the filters keep
+ * @param picked - Cards picked in the search, which every match already has (with All) or the player chose
+ */
+function renderCraft(matches: IndexedDeck[], picked: number[]) {
+  const { t } = loc
+  els.resultHead.textContent = t('craft.head', { n: matches.length })
+  const rows = craftList(matches, picked)
+  // With no faction picked the top is mostly neutral cards; say why, since that's the advice.
+  const first = rows.slice(0, 10)
+  const neutral =
+    state.factions.length === 0 && first.filter((r) => data.cards[r.id].faction === 'NE').length * 2 >= first.length
+  els.craftIntro.textContent = `${t('craft.intro')}${neutral && first.length ? ` ${t('craft.neutral')}` : ''}`
+  const { body, summary } = craftView({
+    rows,
+    total: matches.length,
+    limit: view.limit,
+    have: view.have,
+    scraps: view.scraps,
+    data,
+    loc,
+  })
+  els.craftBody.innerHTML = body
+  els.craftSummary.textContent = summary
 }
 
 /**
@@ -532,7 +610,7 @@ const JUMPS: Record<string, () => HTMLElement | null> = {
   cards: () => els.input,
   filters: () => els.sources.querySelector('button'),
   results: () => els.resultHead,
-  panel: () => document.querySelector('[data-freq][aria-pressed="true"]'),
+  panel: () => (state.tab === 'craft' ? els.scraps : document.querySelector('[data-freq][aria-pressed="true"]')),
 }
 
 /** `list` with `item` added, or removed if it's there: a multi-select pill's click. */
@@ -621,10 +699,38 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
       view.limit += PAGE
       renderResults()
       // Continue reading where the new rows start, rather than on the button that moved below them.
-      els.results.querySelectorAll<HTMLElement>('[data-toggle]')[view.limit - PAGE]?.focus()
+      const rows =
+        state.tab === 'craft'
+          ? els.craftBody.querySelectorAll('[data-craft-pick]')
+          : els.results.querySelectorAll('[data-toggle]')
+      ;(rows[view.limit - PAGE] as HTMLElement | undefined)?.focus()
+    },
+  },
+  tab: { run: (v) => update({ tab: v === 'craft' ? 'craft' : undefined }, { push: true }) },
+  // A Craft card's name lists the decks that run it; Back returns to the list.
+  craftPick: {
+    run: (v) => {
+      update({ picks: [...state.picks, Number(v)], deck: undefined, tab: undefined }, { push: true })
+      els.resultHead.focus()
     },
   },
 }
+
+// Have it: a checkbox, so it's handled on change; re-rendering replaces it, so focus goes to its new copy.
+document.addEventListener('change', (e) => {
+  const box = e.target as HTMLInputElement
+  if (!box.dataset?.have) return
+  const id = Number(box.dataset.have)
+  if (box.checked) view.have.add(id)
+  else view.have.delete(id)
+  renderResults()
+  document.querySelector<HTMLElement>(`[data-have="${id}"]`)?.focus()
+})
+els.scraps.addEventListener('input', () => {
+  const n = els.scraps.valueAsNumber
+  view.scraps = Number.isFinite(n) && n >= 0 ? Math.floor(n) : undefined
+  renderResults()
+})
 
 document.addEventListener('click', (e) => {
   const t = (e.target as HTMLElement).closest<HTMLElement>('button')

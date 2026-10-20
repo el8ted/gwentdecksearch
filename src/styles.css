@@ -50,6 +50,10 @@
 * {
   box-sizing: border-box;
 }
+/* What the Craft tab hides: `hidden` has to beat these elements' own display (grid, flex, inline-flex). */
+:is(.results, .panel, .result-bar .clear)[hidden] {
+  display: none;
+}
 
 fieldset {
   margin: 0;
@@ -650,6 +654,128 @@ h1 span {
   color: var(--muted);
   border: 1px dashed var(--border);
   border-radius: var(--radius);
+}
+
+/* Craft: the list takes the panel's column too. */
+.layout:has(> .panel[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.craft-intro {
+  max-width: 75ch;
+  margin: 0 0 0.8rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.craft-budget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.8rem;
+}
+.craft-budget input {
+  width: 8rem;
+  padding: 0.35rem 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.craft-summary {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.craft-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.craft-table :is(th, td) {
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.craft-table thead th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.craft-table :is(.rank, .share, .craft-cost, .total) {
+  text-align: right;
+  white-space: nowrap;
+}
+.craft-table .rank {
+  width: 2.5rem;
+  color: var(--muted);
+}
+.craft-table .have {
+  width: 4.5rem;
+  text-align: center;
+}
+.craft-table .have input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent);
+}
+/* The faction's colour on the card's edge, as on chips and bars. */
+.craft-card {
+  box-shadow: inset 3px 0 var(--fc);
+  font-weight: normal;
+}
+.craft-card button {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.craft-card button:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.share-of {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+/* Have it: out of the total, so muted (and the total shows —), but kept in place so ranks don't move. */
+.craft-table tr.have :is(th, td:not(.have)) {
+  color: var(--muted);
+}
+.craft-table .reach td {
+  padding: 0.5rem;
+  text-align: center;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--accent);
+}
+.craft-table .more td {
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Phones: the rank and the running total's padding give way, so the table fits 360px. */
+@media (max-width: 600px) {
+  .craft-table .rank {
+    display: none;
+  }
+  .craft-table :is(th, td) {
+    padding: 0.35rem 0.3rem;
+  }
+  .craft-table .have {
+    width: auto;
+  }
+  .craft-table thead th {
+    font-size: 0.75rem;
+  }
+  /* "253 of 547" may break after "of"; a long card name breaks between words, or inside one if it must. */
+  .craft-table .share {
+    white-space: normal;
+  }
+  .craft-card button {
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Side panel */

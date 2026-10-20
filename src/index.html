@@ -139,15 +139,40 @@
     <div class="layout">
       <main>
         <div class="result-bar">
+          <fieldset class="mode tab" id="tab" data-i18n-label="tab.label">
+            <button type="button" data-tab="decks" data-i18n="tab.decks" data-i18n-title="tab.decksTip">Decks</button>
+            <button type="button" data-tab="craft" data-i18n="tab.craft" data-i18n-title="tab.craftTip">Craft</button>
+          </fieldset>
           <h2 class="result-head" id="result-head" tabindex="-1" aria-live="polite">Decks</h2>
           <button type="button" class="clear" id="dim-common" data-dim-common="1" aria-pressed="false" data-i18n="results.dimCommon" data-i18n-title="results.dimCommonTip">Dim common</button>
           <button type="button" class="clear" id="expand-all" data-expand-all="1">Expand all</button>
-          <button type="button" class="clear skip-past" data-skip="panel" data-i18n="skip.pastResults">Skip past results</button>
+          <button type="button" class="clear skip-past" id="skip-past" data-skip="panel" data-i18n="skip.pastResults">Skip past results</button>
         </div>
         <p class="note" id="near-note" role="status" hidden></p>
         <ol class="results" id="results"></ol>
+        <section class="craft" id="craft" hidden>
+          <p class="craft-intro" id="craft-intro"></p>
+          <div class="craft-budget">
+            <label for="scraps" data-i18n="craft.scraps">Scraps you have</label>
+            <input type="number" id="scraps" min="0" step="1" inputmode="numeric" autocomplete="off" />
+            <p class="craft-summary" id="craft-summary" role="status"></p>
+          </div>
+          <table class="craft-table">
+            <thead>
+              <tr>
+                <th scope="col" class="rank">#</th>
+                <th scope="col" data-i18n="craft.colCard">Card</th>
+                <th scope="col" class="share" data-i18n="craft.colShare" data-i18n-title="craft.colShareTip">Decks</th>
+                <th scope="col" class="craft-cost" data-i18n="craft.colCost">Cost</th>
+                <th scope="col" class="total" data-i18n="craft.colTotal" data-i18n-title="craft.colTotalTip">Total</th>
+                <th scope="col" class="have" data-i18n="craft.colHave">Have it</th>
+              </tr>
+            </thead>
+            <tbody id="craft-body"></tbody>
+          </table>
+        </section>
       </main>
-      <aside class="panel" aria-labelledby="panel-head">
+      <aside class="panel" id="panel" aria-labelledby="panel-head">
         <fieldset class="mode freq" id="freq" data-i18n-label="freq.label">
           <button type="button" data-freq="most" data-i18n-title="freq.mostTip" data-i18n="freq.most">Most common</button>
           <button type="button" data-freq="least" data-i18n-title="freq.leastTip" data-i18n="freq.least">Least common</button>
@@ -199,6 +224,14 @@
           <li data-i18n="help.filters3">Guide &amp; video: ▶ Has video keeps decks with a gameplay video; a language keeps decks whose guide or video is in it.</li>
           <li data-i18n="help.filters4">Provisions: how far a deck is from today's limit, 150 plus the leader's bonus. Pick several steps to combine them.</li>
           <li data-i18n="help.filters5">Stratagem: players swap these freely, so the same list often appears under another one.</li>
+        </ul>
+      </details>
+      <details class="help-more" name="help">
+        <summary data-i18n="help.craftTitle">Craft</summary>
+        <ul>
+          <li data-i18n="help.craft1">Craft lists the cards the matching decks run, most used first, with what each costs to craft.</li>
+          <li data-i18n="help.craft2">Type the scraps you have: a line marks how far down the list they go.</li>
+          <li data-i18n="help.craft3">Click a card to see the decks that run it; Back returns to the list.</li>
         </ul>
       </details>
       <details class="help-more" name="help">

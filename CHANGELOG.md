@@ -8,6 +8,11 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- **Craft**, next to the deck list, shows the cards today's published decks run, most used first, with what each costs
+  to craft. With no filters the top is the staples every faction plays; pick a faction or leader for what those decks
+  need. Type your scraps to see how far down the list they go, and tick the cards you already have. Nothing is saved.
+  It's a guide to what published decks use, not a promise that a card is worth crafting for you: how you like to play,
+  and what the next balance change does, matter too ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
 - **Most common** and **Least common** show what each card costs to craft, in scraps, so you can see what a deck's
   staples will cost you ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
 - In a **≈ Similar** list, **Dim common** becomes **Show changes**: each deck is compared with the one you started from,

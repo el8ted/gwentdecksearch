@@ -61,6 +61,8 @@ export interface FilterState {
   deck?: string
   /** Rank by cards in common with this deck (its ID), most first; the deck itself leads when the filters keep it. */
   near?: string
+  /** Show the Craft list instead of the decks; the filters above apply to both. */
+  tab?: 'craft'
 }
 
 /** A deck with lookups precomputed once, so filtering stays a set check per card. */
@@ -434,4 +436,37 @@ export function cardFrequency(
   }
   const dir = order === 'most' ? -1 : 1
   return [...counts].sort((a, b) => dir * (a[1] - b[1]) || a[0] - b[0])
+}
+
+/** A card in the craft list ({@link craftList}). */
+export interface CraftRow {
+  id: number
+  /** Matching decks that run it. */
+  decks: number
+  /** Copies the decks running it usually have (2 when at least half run two), which crafting it means paying for. */
+  copies: 1 | 2
+}
+
+/**
+ * The cards the matching decks run, ranked for crafting: most decks first, so the staples every faction plays lead
+ * an unfiltered list.
+ *
+ * @param decks - Currently matching decks
+ * @param exclude - Cards already picked in the search (leaders and stratagems are left out anyway)
+ * @returns Most decks first, then card ID
+ */
+export function craftList(decks: IndexedDeck[], exclude: number[]): CraftRow[] {
+  const skip = new Set(exclude)
+  const runs = new Map<number, number>()
+  const doubles = new Map<number, number>()
+  for (const e of decks) {
+    for (const [id, n] of e.deck.cards) {
+      if (skip.has(id) || id === e.leader || id === e.stratagem) continue
+      count(runs, id)
+      if (n > 1) count(doubles, id)
+    }
+  }
+  return [...runs]
+    .map(([id, n]): CraftRow => ({ id, decks: n, copies: (doubles.get(id) ?? 0) * 2 >= n ? 2 : 1 }))
+    .sort((a, b) => b.decks - a.decks || a.id - b.id)
 }

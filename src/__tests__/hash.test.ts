@@ -175,6 +175,18 @@ describe('decodeState', () => {
     expect([decode(hash), decode('#n=gone')]).toEqual(['dup', undefined])
   })
 
+  it('round-trips the Craft tab, reading anything else as the deck list', () => {
+    // Arrange
+    const decode = (hash: string) => decodeState(hash, cardOf, isTag).tab
+
+    // Act
+    const hash = encodeState({ ...EMPTY_STATE, tab: 'craft' })
+
+    // Assert
+    expect(hash).toBe('#t=craft')
+    expect([decode(hash), decode('#t=decks'), decode('')]).toEqual(['craft', undefined, undefined])
+  })
+
   it('returns the empty state for an empty hash', () => {
     // Arrange
     const hash = ''
