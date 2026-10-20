@@ -17,8 +17,9 @@ Gwent Deck Search wyświetla opublikowane talie do GWINT: Wiedźmińska Gra Karc
 3. Najczęstsze pokazuje karty grane przez pozostałe talie; Najrzadsze pokazuje rzadkie niespodzianki. Kliknij kartę, aby ją dodać.
 4. Wszystkie pokazuje talie ze wszystkim, co dodano; Dowolną pokazuje talie z co najmniej jednym wpisem, najlepsze dopasowania najpierw.
 5. Kliknij talię, aby zobaczyć jej karty. ↗ otwiera ją na playgwent.com do importu; ▶ odtwarza film z rozgrywki, jeśli jest. ⧉ pokazuje tylko tę talię, jakbyś wkleił jej link.
-6. Zapas: miejsce na ulepszenie karty. Przekroczone: koszty się zmieniły i talia już się nie mieści.
-7. Wyczyść wszystko zaczyna od nowa; przycisk Wstecz w przeglądarce to cofa.
+6. Wytwarzanie, obok Talii, pokazuje karty z pasujących talii i koszt ich wytworzenia: wskazówka, na co wydać fragmenty kart.
+7. Zapas: miejsce na ulepszenie karty. Przekroczone: koszty się zmieniły i talia już się nie mieści.
+8. Wyczyść wszystko zaczyna od nowa; przycisk Wstecz w przeglądarce to cofa.
 
 Pełny przewodnik jest po angielsku: [guide.md](guide.md)
 

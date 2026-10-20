@@ -5,7 +5,6 @@ const KEYS = [
   ...[0, 1, 2, 3, 4, 5, 6].map((i) => `faction_name_${i}`),
   'filter_faction',
   'filter_type_25',
-  'filters_tags',
   'tooltip_title_provision',
   'tooltip_title_scraps',
   'tooltip_title_cards',

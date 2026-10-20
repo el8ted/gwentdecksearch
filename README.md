@@ -22,10 +22,12 @@ between matches to find a deck to build.
 3. **Most common** shows the cards the remaining decks run; **Least common** shows rare surprises. Click a card to
    add it.
 4. **All** lists decks with everything you've added; **Any** lists decks with at least one, best matches first.
-5. Click a deck to see its cards. **↗** opens it on playgwent.com, where you can import it; **▶** plays a gameplay
-   video, when there is one.
-6. **Spare** means room to upgrade a card. **Over** means card costs have changed and the deck no longer fits.
-7. **Clear all** starts over. Your browser's Back button undoes it.
+5. Click a deck's **▸** to see its cards. **↗** opens it on playgwent.com, where you can import it; **▶** plays a
+   gameplay video, when there is one; **⧉** shows only that deck.
+6. **Craft**, next to **Decks**, lists the cards the matching decks run and what each costs to craft: a guide to
+   where to spend your scraps. See [Plan your crafting](docs/guide.md#plan-your-crafting).
+7. **Spare** means room to upgrade a card. **Over** means card costs have changed and the deck no longer fits.
+8. **Clear all** starts over. Your browser's Back button undoes it.
 
 The same steps are in the page's **?** (Help) panel, with search tips and keyboard shortcuts.
 

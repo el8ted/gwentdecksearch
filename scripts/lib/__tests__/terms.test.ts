@@ -13,7 +13,6 @@ const FULL = {
   faction_name_6: 'Синдикат',
   filter_faction: 'Фракция',
   filter_type_25: 'Стратегический прием',
-  filters_tags: 'Ключевые слова',
   tooltip_title_provision: 'Стоимость найма',
   tooltip_title_scraps: 'Обрывки ',
   tooltip_title_cards: 'Карты',
@@ -33,7 +32,7 @@ describe('extractTerms', () => {
     expect(terms['faction.ST']).toBe("Скоя'таэли")
     expect(terms['stat.scraps']).toBe('Обрывки')
     expect(terms['filter.stratagem']).toBe('Стратегический прием')
-    expect(Object.keys(terms)).toHaveLength(14)
+    expect(Object.keys(terms)).toHaveLength(13)
   })
 
   it('throws when a term is missing or the attribute is absent', () => {

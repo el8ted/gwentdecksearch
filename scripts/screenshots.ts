@@ -56,7 +56,8 @@ async function open(browser: Browser, suffix: string, height = 800): Promise<Pag
   })
   const page = await context.newPage()
   await page.goto(PAGE_URL + suffix)
-  await page.locator('#results [data-toggle]').first().waitFor()
+  // A deck row, or a Craft row when the link opens the Craft view.
+  await page.locator('#results [data-toggle], #craft-body [data-craft-pick]').first().waitFor()
   return page
 }
 
@@ -146,6 +147,14 @@ try {
   await page.locator('#dim-common').click()
   // Tall enough that main needn't scroll under the sticky header.
   await save(page, 'similar-changes', 'main')
+
+  // Craft across every deck: 3,000 scraps typed in and the first card ticked, so the total and the line both show.
+  // The whole page, tall enough for the filters, the scraps box and the line.
+  page = await open(browser, '#t=craft', 1300)
+  await page.locator('#scraps').fill('3000')
+  await page.locator('[data-have]').first().check()
+  await page.locator('[data-have]').first().blur()
+  await save(page, 'craft')
 
   page = await open(browser, `#k=any&c=${ANY_CARDS.join(',')}`)
   await save(page, 'any-cards')

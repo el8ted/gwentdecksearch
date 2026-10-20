@@ -95,6 +95,8 @@ Council change all matter more than a percentage.
    down. Ticks and scraps last until you reload; nothing is saved.
 5. **Click a card** to see the decks that run it, and Back to return.
 
+![Craft with no filters and 3,000 scraps typed in: Oneiromancy, Royal Decree and Korathi Heatwave lead with their share of all 3,365 decks; Oneiromancy is ticked Have it, so it's out of the total, and a line after Runemage marks where the scraps run out](screenshots/craft.png)
+
 > Craft counts published decks, not ladder play or win rates, and older and alternate versions of a deck count too.
 > It shows what's popular among deck builders, which is a good starting point, not proof that a card wins games.
 

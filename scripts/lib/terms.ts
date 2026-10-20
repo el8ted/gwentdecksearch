@@ -11,7 +11,6 @@ const OFFICIAL_TERMS: Record<string, string> = {
   faction_name_6: 'faction.SY',
   filter_faction: 'filter.faction',
   filter_type_25: 'filter.stratagem',
-  filters_tags: 'filter.tags',
   tooltip_title_provision: 'filter.provisions',
   tooltip_title_scraps: 'stat.scraps',
   tooltip_title_cards: 'stat.cards',

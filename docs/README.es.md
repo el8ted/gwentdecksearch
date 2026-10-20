@@ -17,8 +17,9 @@ Gwent Deck Search lista los mazos publicados de GWENT: The Witcher Card Game y l
 3. Más comunes muestra las cartas que llevan los mazos restantes; Menos comunes muestra sorpresas poco habituales. Haz clic en una para añadirla.
 4. Todas lista los mazos con todo lo que has añadido; Alguna, los que tienen al menos una cosa, con las mejores coincidencias primero.
 5. Haz clic en un mazo para ver sus cartas. ↗ lo abre en playgwent.com para importarlo; ▶ reproduce un vídeo de partidas, si lo hay. ⧉ muestra solo ese mazo, como si hubieras pegado su enlace.
-6. Sobrante: espacio para mejorar una carta. Excedido: los costes han cambiado y el mazo ya no cabe.
-7. Borrar todo empieza de nuevo; el botón Atrás del navegador lo deshace.
+6. Fabricar, junto a Mazos, muestra las cartas de los mazos que coinciden y lo que cuesta fabricarlas: una guía para gastar tus restos.
+7. Sobrante: espacio para mejorar una carta. Excedido: los costes han cambiado y el mazo ya no cabe.
+8. Borrar todo empieza de nuevo; el botón Atrás del navegador lo deshace.
 
 La guía completa está en inglés: [guide.md](guide.md)
 

@@ -17,8 +17,9 @@ Gwent Deck Search listet veröffentlichte Decks für GWENT: The Witcher Card Gam
 3. Am häufigsten zeigt Karten, die die übrigen Decks spielen; Am seltensten zeigt seltene Überraschungen. Klicke eine an, um sie hinzuzufügen.
 4. Alle listet Decks mit allem, was du hinzugefügt hast; Eine listet Decks mit mindestens einem Eintrag, beste Treffer zuerst.
 5. Klicke ein Deck an, um seine Karten zu sehen. ↗ öffnet es zum Importieren auf playgwent.com; ▶ spielt ein Gameplay-Video ab, wenn es eines gibt. ⧉ zeigt nur dieses Deck, als hättest du seinen Link eingefügt.
-6. Reserve: Platz, um eine Karte aufzuwerten. Über: Die Kosten haben sich geändert und das Deck passt nicht mehr.
-7. Alles zurücksetzen fängt neu an; die Zurück-Taste deines Browsers macht es rückgängig.
+6. Herstellen, neben Decks, listet die Karten der passenden Decks und ihre Herstellungskosten: ein Hinweis, wofür sich deine Scraps lohnen.
+7. Reserve: Platz, um eine Karte aufzuwerten. Über: Die Kosten haben sich geändert und das Deck passt nicht mehr.
+8. Alles zurücksetzen fängt neu an; die Zurück-Taste deines Browsers macht es rückgängig.
 
 Die vollständige Anleitung gibt es auf Englisch: [guide.md](guide.md)
 

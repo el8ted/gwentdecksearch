@@ -17,8 +17,9 @@ O Gwent Deck Search lista os decks publicados de GWENT: The Witcher Card Game e 
 3. Mais comuns mostra as cartas que os decks restantes usam; Menos comuns mostra surpresas raras. Clique numa carta para adicioná-la.
 4. Todas lista os decks com tudo o que você adicionou; Alguma lista os que têm pelo menos um item, com as melhores correspondências primeiro.
 5. Clique em um deck para ver suas cartas. ↗ abre no playgwent.com para importar; ▶ reproduz um vídeo de gameplay, quando houver. ⧉ mostra só esse deck, como se você tivesse colado o link dele.
-6. Sobra: espaço para melhorar uma carta. Excedido: os custos mudaram e o deck não cabe mais.
-7. Limpar tudo recomeça; o botão Voltar do navegador desfaz.
+6. Criar, ao lado de Decks, lista as cartas dos decks correspondentes e o custo para criá-las: um guia de onde gastar seus restos.
+7. Sobra: espaço para melhorar uma carta. Excedido: os custos mudaram e o deck não cabe mais.
+8. Limpar tudo recomeça; o botão Voltar do navegador desfaz.
 
 O guia completo está em inglês: [guide.md](guide.md)
 
