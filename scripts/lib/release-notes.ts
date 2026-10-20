@@ -111,8 +111,9 @@ export function dataNotes(before: Dataset | undefined, after: Dataset): string {
  * @returns Markdown
  */
 export function releaseNotes(changelog: string, before: Dataset | undefined, after: Dataset): string {
-  // Release pages keep every line break, so an entry wrapped over lines in the changelog is joined back up.
-  const changes = unreleased(changelog).replace(/\n[ \t]+/g, ' ')
+  // Release pages keep every line break, so an entry wrapped over lines in the changelog is joined back up; an
+  // indented `- ` starts a sub-bullet, which keeps its own line.
+  const changes = unreleased(changelog).replace(/\n[ \t]+(?![ \t]|[-*] )/g, ' ')
   return [
     ...(changes ? ['### Changes', '', changes, ''] : []),
     '### Data',

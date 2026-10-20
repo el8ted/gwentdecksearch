@@ -8,6 +8,22 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- **Craft: where to spend your scraps.** New, or back after a break, and not sure which cards are worth crafting?
+  **Craft**, next to the deck list, shows the cards today's published decks actually run, most used first, with what
+  each costs to craft ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
+  - **Across every deck:** with no filters, the top is the key cards nearly every deck runs, whatever its faction,
+    such as Oneiromancy and Royal Decree.
+  - **Across a faction:** pick one to see what its decks rely on.
+  - **For a leader or archetype:** pick a leader, or a card or tag (Devotion, Beast…), for what that style of deck
+    needs.
+  - **For one deck:** **⧉ Only this** on a deck, then Craft, lists what that deck costs.
+  - **With your scraps:** type how many you have to see how far down the list they go, and tick the cards you
+    already own. Nothing is saved.
+  - **Elsewhere:** **Most common** and **Least common** show each card's crafting cost too.
+  - It's a guide to what published decks use, not a promise that a card is worth crafting for you: how you like to
+    play, and what the next balance change does, matter too.
+  - How to use it: [Plan your crafting](https://github.com/el8ted/gwentdecksearch/blob/main/docs/guide.md#plan-your-crafting)
+    in the guide.
 - **⧉** on any deck shows only that deck, just as pasting its link does; Back brings your search back. Then **Craft**
   shows what that deck costs you ([#11](https://github.com/el8ted/gwentdecksearch/issues/11)).
 - Deck rows are easier to read: a **▸** before each name shows it opens to its cards, and rows leave out what rarely
@@ -16,13 +32,6 @@ the release tag and starts a new Unreleased section. -->
   **≈ Similar**, **↗ playgwent.com**.
 - **Clear all** (and Shift+Backspace) now empties the Search box too: a pasted deck link that wasn't found, or a
   half-typed name, no longer stays behind ([#12](https://github.com/el8ted/gwentdecksearch/issues/12)).
-- **Craft**, next to the deck list, shows the cards today's published decks run, most used first, with what each costs
-  to craft. With no filters the top is the staples every faction plays; pick a faction or leader for what those decks
-  need. Type your scraps to see how far down the list they go, and tick the cards you already have. Nothing is saved.
-  It's a guide to what published decks use, not a promise that a card is worth crafting for you: how you like to play,
-  and what the next balance change does, matter too ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
-- **Most common** and **Least common** show what each card costs to craft, in scraps, so you can see what a deck's
-  staples will cost you ([#10](https://github.com/el8ted/gwentdecksearch/issues/10)).
 - In a **≈ Similar** list, **Dim common** becomes **Show changes**: each deck is compared with the one you started from,
   even while it's hidden. Shared cards fade, added cards are marked `+`, and the cards it swapped out are listed. When
   the Provisions filter hides the deck you started from, a note says so, with a button to show it

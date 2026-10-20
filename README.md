@@ -31,13 +31,15 @@ The same steps are in the page's **?** (Help) panel, with search tips and keyboa
 
 ## Learn more
 
-The [full guide](docs/guide.md) walks through both jobs the page does, then covers every control, with pictures:
+The [full guide](docs/guide.md) walks through the three jobs the page does, then covers every control, with pictures:
 
 - [During a match](docs/guide.md#during-a-match): work out what your opponent is playing, one card at a time
 - [Find a deck to play](docs/guide.md#find-a-deck-to-play): from a deck link, cards you like or want to avoid, a
   creator, or a deck that's over its provisions
-- [Reference](docs/guide.md#reference): Search, filters, provisions, `≈` Similar decks, sharing links, languages,
-  display and keyboard shortcuts
+- [Plan your crafting](docs/guide.md#plan-your-crafting): new or back after a break? See which cards today's decks
+  run, across every deck, a faction or a leader, and how far your scraps go
+- [Reference](docs/guide.md#reference): Search, filters, provisions, `≈` Similar decks, Craft, sharing links,
+  languages, display and keyboard shortcuts
 - [Common questions](docs/guide.md#common-questions)
 
 What changed lately: [CHANGELOG.md](CHANGELOG.md).

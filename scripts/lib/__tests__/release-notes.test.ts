@@ -141,6 +141,17 @@ describe('releaseNotes', () => {
     expect(result).toContain('- A long entry that wraps (#1).\n- Next.')
   })
 
+  it('keeps sub-bullets on their own lines, joining only their wrapped text', () => {
+    // Arrange
+    const changelog = '## Unreleased\n\n- A feature:\n  - one part\n    that wraps.\n  - another.\n- Next.\n'
+
+    // Act
+    const result = releaseNotes(changelog, BEFORE, AFTER)
+
+    // Assert
+    expect(result).toContain('- A feature:\n  - one part that wraps.\n  - another.\n- Next.')
+  })
+
   it('is only data and links for a data-only release', () => {
     // Arrange
     const changelog = fileUnreleased(CHANGELOG, '2026-10-24')
