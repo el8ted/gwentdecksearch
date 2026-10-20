@@ -131,7 +131,7 @@
           <button type="button" data-match="all" data-i18n-title="match.allTip" data-i18n="match.all">All</button>
           <button type="button" data-match="any" data-i18n-title="match.anyTip" data-i18n="match.any">Any</button>
         </fieldset>
-        <button type="button" class="clear" id="clear" data-i18n="clearAll">Clear all</button>
+        <button type="button" class="clear" id="clear" data-clear-all="1" data-i18n="clearAll">Clear all</button>
       </div>
       <p class="note indent" id="deck-note" role="status" hidden></p>
     </section>
@@ -140,8 +140,8 @@
       <main>
         <div class="result-bar">
           <h2 class="result-head" id="result-head" tabindex="-1" aria-live="polite">Decks</h2>
-          <button type="button" class="clear" id="dim-common" aria-pressed="false" data-i18n="results.dimCommon" data-i18n-title="results.dimCommonTip">Dim common</button>
-          <button type="button" class="clear" id="expand-all">Expand all</button>
+          <button type="button" class="clear" id="dim-common" data-dim-common="1" aria-pressed="false" data-i18n="results.dimCommon" data-i18n-title="results.dimCommonTip">Dim common</button>
+          <button type="button" class="clear" id="expand-all" data-expand-all="1">Expand all</button>
           <button type="button" class="clear skip-past" data-skip="panel" data-i18n="skip.pastResults">Skip past results</button>
         </div>
         <p class="note" id="near-note" role="status" hidden></p>

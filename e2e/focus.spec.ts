@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test'
-import { expect, test } from './app.ts'
+import { BUDGETS, budgetSide, indexDecks, matchDecks } from '../src/filter.ts'
+import { data, expect, test } from './app.ts'
 
 // F05: re-rendering replaces the activated button; focus must land on its new copy or the nearest control.
 const focused = (page: Page) =>
@@ -99,4 +100,184 @@ test('"any stratagem" clears it and focuses the first stratagem pill', async ({ 
   // Assert
   await expect.poll(() => focused(page)).toBe(JSON.stringify({ stratagem: id }))
   await expect(page.locator('#stratagem [aria-pressed="true"]')).toHaveCount(0)
+})
+
+/** Whether the first element `selector` matches has focus. */
+const hasFocus = (page: Page, selector: string) =>
+  page
+    .locator(selector)
+    .first()
+    .evaluate((el) => el === document.activeElement)
+
+const decks = indexDecks(data)
+// An Over deck with close decks that fit, as in similar.spec.ts: ≈ on it hides it, so the note offers Show it.
+const over = decks.find(
+  (e) =>
+    budgetSide(e.budget) === 'over' &&
+    matchDecks(decks, {
+      factions: [e.faction],
+      picks: [],
+      leader: e.leader,
+      near: e.deck.id,
+      budgets: BUDGETS.filter((b) => budgetSide(b) !== 'over'),
+    }).length > 1,
+)
+if (!over) throw new Error('need an Over deck with similar decks')
+
+test('a deck toggle keeps focus when it closes too', async ({ page, open }) => {
+  // Arrange
+  await open()
+  const id = await page.locator('[data-toggle]').first().getAttribute('data-toggle')
+  await enter(page, `[data-toggle="${id}"]`)
+
+  // Act
+  await page.keyboard.press('Enter')
+
+  // Assert
+  await expect(page.locator(`[data-toggle="${id}"]`)).toHaveAttribute('aria-expanded', 'false')
+  await expect.poll(() => focused(page)).toBe(JSON.stringify({ toggle: id }))
+})
+
+test('≈ on a deck the filters hide focuses the results heading', async ({ page, open }) => {
+  // Arrange: ≈ turns the Over steps off, so this Over deck isn't listed and its ≈ button is gone
+  await open(`#d=${over.list}`)
+
+  // Act
+  await enter(page, `[data-near="${over.deck.id}"]`)
+
+  // Assert
+  await expect.poll(() => focused(page)).toBe('#result-head')
+})
+
+test('≈ on a deck in a Similar list keeps focus on its ≈, now leading the list as This deck', async ({
+  page,
+  open,
+}) => {
+  // Arrange
+  await open(`#d=${over.list}`)
+  await page.locator(`[data-near="${over.deck.id}"]`).click()
+  const id = await page.locator('#results [data-near]').first().getAttribute('data-near')
+
+  // Act
+  await enter(page, `[data-near="${id}"]`)
+
+  // Assert
+  await expect(page.locator('#results .badge.shared').first()).toHaveText('This deck')
+  await expect.poll(() => focused(page)).toBe(JSON.stringify({ near: id }))
+})
+
+test('✕ on the Deck pill focuses the search box', async ({ page, open }) => {
+  // Arrange
+  await open(`#d=${over.list}`)
+
+  // Act
+  await enter(page, '[data-remove-deck]')
+
+  // Assert
+  await expect(page.locator('[data-remove-deck]')).toHaveCount(0)
+  await expect.poll(() => focused(page)).toBe('#card-input')
+})
+
+test('✕ on the Similar pill focuses the search box', async ({ page, open }) => {
+  // Arrange
+  await open(`#d=${over.list}`)
+  await page.locator(`[data-near="${over.deck.id}"]`).click()
+
+  // Act
+  await enter(page, '[data-remove-near]')
+
+  // Assert
+  await expect(page.locator('[data-remove-near]')).toHaveCount(0)
+  await expect.poll(() => focused(page)).toBe('#card-input')
+})
+
+test("a chip's name flips it twice without losing focus", async ({ page, open }) => {
+  // Arrange
+  await open()
+  const id = await page.locator('[data-add]').first().getAttribute('data-add')
+  await enter(page, `[data-add="${id}"]`)
+
+  // Act
+  await enter(page, `[data-flip="${id}"]`)
+
+  // Assert
+  await expect(page.locator(`[data-flip="${id}"]`)).toHaveAttribute('aria-pressed', 'true')
+  await expect.poll(() => focused(page)).toBe(JSON.stringify({ flip: id }))
+
+  // Act
+  await page.keyboard.press('Enter')
+
+  // Assert
+  await expect(page.locator(`[data-flip="${id}"]`)).toHaveAttribute('aria-pressed', 'false')
+  await expect.poll(() => focused(page)).toBe(JSON.stringify({ flip: id }))
+})
+
+test('Show more focuses the first deck it adds', async ({ page, open }) => {
+  // Arrange
+  await open()
+  const toggles = page.locator('#results [data-toggle]')
+  const before = await toggles.count()
+
+  // Act
+  await enter(page, '[data-more]')
+
+  // Assert
+  await expect.poll(() => toggles.nth(before).evaluate((el) => el === document.activeElement)).toBe(true)
+})
+
+test('Show it lists This deck first and focuses the results heading', async ({ page, open }) => {
+  // Arrange
+  await open(`#d=${over.list}`)
+  await page.locator(`[data-near="${over.deck.id}"]`).click()
+
+  // Act
+  await enter(page, '[data-show-near]')
+
+  // Assert
+  await expect.poll(() => focused(page)).toBe('#result-head')
+  await expect(page.locator('#results [data-toggle]').first()).toHaveAttribute('data-toggle', over.deck.id)
+})
+
+for (const [label, selector] of [
+  ['Expand all', '#expand-all'],
+  ['Dim common', '#dim-common'],
+  ['Least common', '[data-freq="least"]'],
+  ['Any', '[data-match="any"]'],
+  ['Has video', '[data-video]'],
+] as const) {
+  test(`${label} keeps focus on itself`, async ({ page, open }) => {
+    // Arrange: two decks, so Dim common is enabled
+    await open(`#f=${over.faction}&l=${over.leader}`)
+
+    // Act
+    await enter(page, selector)
+
+    // Assert
+    await expect.poll(() => hasFocus(page, selector)).toBe(true)
+  })
+}
+
+test('Clear all keeps focus on itself', async ({ page, open }) => {
+  // Arrange
+  await open(`#f=${over.faction}`)
+
+  // Act
+  await enter(page, '#clear')
+
+  // Assert
+  await expect(page).not.toHaveURL(/#f=/)
+  await expect.poll(() => focused(page)).toBe('#clear')
+})
+
+test('adding the last card in the panel focuses the Most/Least toggle', async ({ page, open }) => {
+  // Arrange: one deck, so every card added keeps it and the panel shrinks to nothing
+  await open(`#d=${over.list}`)
+  const bars = page.locator('#bars [data-add]')
+
+  // Act
+  while ((await bars.count()) > 0) await enter(page, '#bars [data-add] >> nth=-1')
+
+  // Assert
+  await expect(page.locator('#bars .none')).toBeVisible()
+  await expect.poll(() => hasFocus(page, '[data-freq][aria-pressed="true"]')).toBe(true)
 })

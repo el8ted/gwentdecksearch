@@ -1,5 +1,4 @@
 import dataJson from '../data/decks.json'
-import { CARD_ART } from './art.ts'
 import { CONFIG } from './config.ts'
 import {
   authorNames,
@@ -44,12 +43,14 @@ import {
   pickLanguage,
   playgwentUrl,
 } from './i18n.ts'
-import { type Card, type Dataset, FACTIONS, type Faction, SOURCES, type Source } from './types.ts'
+import type { Card, Dataset, Faction, Source } from './types.ts'
 import { createAutocomplete } from './ui/autocomplete.ts'
 import { initDisplayMenu } from './ui/display-menu.ts'
 import { byId, esc, readStorage, writeStorage } from './ui/dom.ts'
+import { type FilterRows, filterRows } from './ui/filters.ts'
 import { initLanguageMenu } from './ui/language-menu.ts'
-import { deckName, deckRow, sourceLabel } from './ui/results.ts'
+import { barsHtml } from './ui/panel.ts'
+import { deckName, deckRow } from './ui/results.ts'
 
 declare global {
   // Set at build time (tsdown.config.ts).
@@ -91,7 +92,6 @@ const els = {
   suggestions: byId('suggestions'),
   deckNote: byId('deck-note'),
   nearNote: byId('near-note'),
-  clear: byId('clear'),
   match: byId('match'),
   resultHead: byId('result-head'),
   results: byId('results'),
@@ -130,6 +130,9 @@ function loadPack(lang: Lang): Promise<LanguagePack | undefined> {
 const params = new URLSearchParams(location.search)
 let loc = makeLocale(pickLanguage(params.get('lang'), readStorage(LANG_KEY), navigator.languages))
 const AUTHORS = authorNames(decks)
+const BY_ID = new Map(decks.map((e) => [e.deck.id, e]))
+/** The deck with this ID; `undefined` for none (an unset filter) or an ID not in the data. */
+const deckById = (id: string | undefined) => (id === undefined ? undefined : BY_ID.get(id))
 // Each deck's card list (by deck ID), and how many decks share each list.
 const LIST_OF = new Map(decks.map((e) => [e.deck.id, e.list]))
 const LIST_SIZE = new Map<string, number>()
@@ -165,18 +168,27 @@ let deckReplaced = false
 // The search before ≈, which ✕ on the Similar pill restores. Not in the hash: a shared ≈ link has nothing to restore.
 let beforeNear: FilterState | undefined
 let current = facets(decks, state)
-const expanded = new Set<string>()
-// Side-panel ordering; a view choice, so it isn't stored in the URL.
-let freq: 'most' | 'least' = 'most'
+// Deck rows rendered; "Show more" adds PAGE at a time so a phone isn't handed 2,000+ rows at once.
+const PAGE = CONFIG.resultsPageSize
+/** View choices Clear all resets; they aren't in the URL, so a shared link opens without them. */
+const freshView = () => ({
+  /** Decks opened to their card list, by ID. */
+  expanded: new Set<string>(),
+  /** Dim cards every listed deck shares, so each deck's own cards stand out; a Similar list compares each deck with
+   * This deck instead (Show changes). */
+  dimCommon: false,
+  /** Deck rows rendered; back to one page whenever the results change. */
+  limit: PAGE,
+})
+/** How the results are shown, as opposed to which decks match ({@link state}). */
+const view = {
+  ...freshView(),
+  /** Side-panel ordering; kept through Clear all. */
+  freq: 'most' as 'most' | 'least',
+}
 // Deck IDs currently listed, for Expand/Collapse all.
 let shown: string[] = []
 let allOpen = false
-// Dim cards every listed deck shares, so each deck's distinctive cards stand out; a view choice. In a Similar list it
-// compares each deck with This deck instead (Show changes).
-let dimCommon = false
-// Deck rows rendered; "Show more" adds PAGE at a time so a phone isn't handed 2,000+ rows at once.
-const PAGE = CONFIG.resultsPageSize
-let limit = PAGE
 // Decks listed now, for exclude suggestions' "would remain" counts.
 let matchCount = 0
 
@@ -233,7 +245,7 @@ function update(next: Partial<FilterState>, { push = false } = {}) {
     next = { ...next, leader: undefined }
   }
   state = { ...state, ...next }
-  limit = PAGE
+  view.limit = PAGE
   const hash = encodeState(state)
   const url = hash || location.pathname + location.search
   // Filter tweaks replace the entry so they don't flood the back button; Clear all pushes one, so Back undoes it.
@@ -243,8 +255,7 @@ function update(next: Partial<FilterState>, { push = false } = {}) {
 }
 
 function clearAll() {
-  expanded.clear()
-  dimCommon = false
+  Object.assign(view, freshView())
   autoFaction = undefined
   update(
     { ...EMPTY_STATE, match: state.match, leader: undefined, stratagem: undefined, deck: undefined, near: undefined },
@@ -267,7 +278,7 @@ function showDeck(list: string) {
  * Picks and the other filters stay; Back, or ✕ on the Similar pill, restores the search before.
  */
 function showNear(id: string) {
-  const target = decks.find((e) => e.deck.id === id)
+  const target = deckById(id)
   if (!target) return
   // ≈ from a similar list keeps the search before the first ≈, so ✕ goes all the way back.
   if (state.near === undefined) beforeNear = state
@@ -349,136 +360,31 @@ const pickName = (pick: number | string) =>
       ? (AUTHORS.get(pick.slice(1)) ?? pick)
       : loc.tag(pick)
 
-/** A single-select pill for a leader or stratagem; clicking the selected one clears it. */
-function cardPill(attr: 'leader' | 'stratagem', id: number, counts: Map<number, number>, selected?: number) {
-  const n = counts.get(id) ?? 0
-  const name = esc(loc.card(id))
-  const attrs = `data-${attr}="${id}" aria-pressed="${id === selected}" title="${name} (${n})"`
-  const cls = `pill f-${data.cards[id].faction}${n ? '' : ' empty'}`
-  // Art is the same in every language and keeps tiles one size; the name stays in the label and tooltip.
-  // A card without one (added since scripts/card-art.py last ran) shows its name.
-  if (CARD_ART.has(id)) {
-    return `<button type="button" class="${cls} art" ${attrs} aria-label="${name} (${n})"><img src="icons/${attr[0]}-${id}.webp" alt="" /><span>${n}</span></button>`
-  }
-  return `<button type="button" class="${cls}" ${attrs}>${name}<span>${n}</span></button>`
-}
-
 function renderFilters() {
-  const { t } = loc
   for (const b of els.match.querySelectorAll<HTMLButtonElement>('[data-match]')) {
     b.setAttribute('aria-pressed', String(b.dataset.match === (state.match ?? 'all')))
   }
-  els.factions.innerHTML = FACTIONS.map((f) => {
-    const n = current.factions.get(f) ?? 0
-    const title = `${t(`faction.${f}`)} (${n})`
-    return `<button type="button" class="pill f-${f}${n ? '' : ' empty'}" data-faction="${f}" aria-pressed="${state.factions.includes(f)}" title="${esc(title)}">${f}<span>${n}</span></button>`
-  }).join('')
-  els.sources.innerHTML = SOURCES.map((src) => {
-    const n = current.sources.get(src) ?? 0
-    const on = !!state.sources?.includes(src)
-    const label = esc(sourceLabel(src, loc))
-    return `<button type="button" class="pill s-${src}${n ? '' : ' empty'}" data-source="${src}" aria-pressed="${on}" title="${label} (${n})">${label}<span>${n}</span></button>`
-  }).join('')
-  // Spare [3+][2][1] · [Exact] · Over [1][2][3+]: each side's word labels its steps, and a group never splits
-  // across lines on phones.
-  els.budgets.innerHTML = (['spare', 'exact', 'over'] as const)
-    .map((side) => {
-      const pills = BUDGETS.filter((b) => budgetSide(b) === side).map((b) => {
-        const n = current.budgets.get(b) ?? 0
-        const on = !!state.budgets?.includes(b)
-        const step = b === 'exact' ? '' : b.endsWith('3') ? '3+' : b.slice(-1)
-        const label = esc(step ? `${t(`budget.${side}`)} ${step}` : t('budget.exact'))
-        return `<button type="button" class="pill b-${side}${n ? '' : ' empty'}" data-budget="${b}" aria-pressed="${on}" aria-label="${label} (${n})" title="${label} (${n})">${step || label}<span>${n}</span></button>`
-      })
-      const word =
-        side === 'exact' ? '' : `<span class="pill-group-label" aria-hidden="true">${esc(t(`budget.${side}`))}</span>`
-      return `<span class="pill-group">${side === 'over' ? '' : word}${pills.join('')}${side === 'over' ? word : ''}</span>`
-    })
-    .join('')
-  const langName = new Intl.DisplayNames(loc.lang, { type: 'language' })
-  const video = `<button type="button" class="pill${current.videos ? '' : ' empty'}" data-video="1" aria-pressed="${!!state.video}" aria-label="${esc(t('results.hasVideo'))} (${current.videos})" title="${esc(t('results.hasVideoTip'))} (${current.videos})">▶ ${esc(t('results.hasVideo'))}<span>${current.videos}</span></button>`
-  els.media.innerHTML =
-    video +
-    LANGS.map((l) => {
-      const n = current.langs.get(l) ?? 0
-      const label = esc(t('filter.langTip', { lang: langName.of(l) ?? l }))
-      return `<button type="button" class="pill${n ? '' : ' empty'}" data-guide-lang="${l}" aria-pressed="${!!state.langs?.includes(l)}" aria-label="${label} (${n})" title="${label} (${n})">${l.split('-')[0].toUpperCase()}<span>${n}</span></button>`
-    }).join('')
-  // Leaders only make sense within one faction: the selected one, else the selected leader's (from a shared link).
-  const faction =
-    state.factions.length === 1
-      ? state.factions[0]
-      : state.leader !== undefined
-        ? data.cards[state.leader].faction
-        : undefined
-  els.leader.innerHTML = faction
-    ? LEADERS.filter((id) => data.cards[id].faction === faction)
-        .map((id) => cardPill('leader', id, current.leaders, state.leader))
-        .join('') +
-      // Named here too: on touch screens an icon has no tooltip.
-      (state.leader === undefined ? '' : `<strong class="picked">${esc(loc.card(state.leader))}</strong>`)
-    : `<span class="hint">${esc(t('leader.pickFaction'))}</span>`
-  const stratagems = (ids: number[]) =>
-    `<div class="pills">${ids.map((id) => cardPill('stratagem', id, current.stratagems, state.stratagem)).join('')}</div>`
-  // Every faction's stratagem stays, other factions' at 0 (dimmed), so the row never reshapes.
-  const own = FACTIONS.flatMap((f) => STRATAGEMS.filter((id) => data.cards[id].faction === f))
-  els.stratagem.innerHTML = stratagems(STRATAGEMS.filter((id) => data.cards[id].faction === 'NE')) + stratagems(own)
-  // Stratagems are swapped freely, so the same list often appears under another stratagem.
-  const others =
-    state.stratagem === undefined
-      ? 0
-      : [...current.stratagems].reduce((n, [id, c]) => (id === state.stratagem ? n : n + c), 0)
-  els.stratagemNote.innerHTML =
-    state.stratagem === undefined
-      ? esc(t('stratagem.caution'))
-      : // Named here too: on touch screens an icon has no tooltip.
-        `<strong>${esc(loc.card(state.stratagem))}</strong> · ${esc(t('stratagem.swapped'))}${others ? ` ${esc(t('stratagem.others', { n: others }))}` : ''} <button type="button" class="link" data-any-stratagem="1">${esc(t('stratagem.any'))}</button>`
-  const list = state.deck === undefined ? undefined : decks.find((e) => e.deck.id === state.deck)
-  const deckChip = list
-    ? `<li class="chip deck-pick"><span aria-hidden="true">⧉</span>${esc(t('cards.deckChip', { name: deckName(list.deck, loc) }))}<button type="button" data-remove-deck="1" aria-label="${esc(t('cards.remove', { name: deckName(list.deck, loc) }))}">✕</button></li>`
-    : ''
-  const near = state.near === undefined ? undefined : decks.find((e) => e.deck.id === state.near)
-  const nearChip = near
-    ? `<li class="chip deck-pick"><span aria-hidden="true">≈</span>${esc(t('cards.nearChip', { name: deckName(near.deck, loc) }))}<button type="button" data-remove-near="1" aria-label="${esc(t('cards.remove', { name: deckName(near.deck, loc) }))}">✕</button></li>`
-    : ''
-  els.deckNote.hidden = !(list && deckReplaced)
-  els.deckNote.textContent = t('cards.deckReplaced')
-  els.chips.innerHTML =
-    deckChip +
-    nearChip +
-    state.picks
-      .map((pick) => {
-        const name = pickName(pick)
-        const excluded = !!state.excludes?.includes(pick)
-        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name }))}">✕</button>`
-        // The name toggles wanted/excluded; pressed means excluded, which the label says in words, not just the strike.
-        const mark =
-          typeof pick === 'number' ? '' : `<span aria-hidden="true">${pick.startsWith('@') ? '✎' : '#'}</span>`
-        const flip = `<button type="button" class="chip-name" data-flip="${esc(String(pick))}" aria-pressed="${excluded}" aria-label="${esc(t('cards.exclude', { name }))}" title="${esc(t(excluded ? 'cards.includeTip' : 'cards.excludeTip'))}">${mark}${esc(name)}</button>`
-        const cls = excluded ? ' excluded' : ''
-        if (typeof pick === 'string') return `<li class="chip tag${cls}">${flip}${remove}</li>`
-        const card = data.cards[pick]
-        const dual = card.secondaryFaction ? ` dual f2-${card.secondaryFaction}` : ''
-        return `<li class="chip f-${card.faction}${dual}${cls}">${flip}${remove}</li>`
-      })
-      .join('')
+  const deck = deckById(state.deck)
+  const rows = filterRows({
+    state,
+    facets: current,
+    data,
+    loc,
+    leaders: LEADERS,
+    stratagems: STRATAGEMS,
+    langs: LANGS,
+    pickName,
+    deck,
+    near: deckById(state.near),
+  })
+  for (const k of Object.keys(rows) as (keyof FilterRows)[]) els[k].innerHTML = rows[k]
+  els.deckNote.hidden = !(deck && deckReplaced)
+  els.deckNote.textContent = loc.t('cards.deckReplaced')
 }
 
 function renderBars(rows: [number, number][], total: number) {
   els.panelHead.textContent = loc.t('freq.inDecks', { n: total })
-  els.bars.innerHTML = rows.length
-    ? rows
-        .slice(0, CONFIG.frequencyBars)
-        .map(([id, n]) => {
-          const card = data.cards[id]
-          const name = loc.card(id)
-          const pct = Math.round((n / Math.max(total, 1)) * 100)
-          return `<li class="f-${card.faction}"><button type="button" data-add="${id}" title="${esc(loc.t('freq.barTip', { n, total, name }))}">
-            <span class="bar-name">${esc(name)}</span><span class="bar-n">${n}</span>
-            <span class="bar" style="--pct:${pct}%"></span></button></li>`
-        })
-        .join('')
-    : `<li class="none">${esc(loc.t('freq.empty'))}</li>`
+  els.bars.innerHTML = barsHtml(rows, total, data, loc)
 }
 
 function renderResults() {
@@ -494,38 +400,38 @@ function renderResults() {
   matchCount = matches.length
   els.resultHead.textContent = t('results.count', { n: matches.length })
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
-  const page = matches.slice(0, limit)
+  const page = matches.slice(0, view.limit)
   shown = page.map((e) => e.deck.id)
-  const near = state.near === undefined ? undefined : decks.find((e) => e.deck.id === state.near)
+  const near = deckById(state.near)
   // One deck shares everything with itself, so dimming needs at least two; a Similar list compares with This deck.
-  const common = dimCommon && !near && matches.length > 1 ? sharedCards(matches) : new Set<number>()
+  const common = view.dimCommon && !near && matches.length > 1 ? sharedCards(matches) : new Set<number>()
   const size = near ? deckBody(near).reduce((n, [, c]) => n + c, 0) : 0
   const rows = page.map((e) =>
     deckRow(
       e,
       data,
       selected,
-      expanded.has(e.deck.id),
+      view.expanded.has(e.deck.id),
       common,
       loc,
       near && { n: overlap(near, e), of: size, self: e === near },
-      dimCommon && near && e !== near ? cardChanges(near, e) : undefined,
+      view.dimCommon && near && e !== near ? cardChanges(near, e) : undefined,
     ),
   )
-  if (matches.length > limit) {
-    const n = Math.min(PAGE, matches.length - limit)
+  if (matches.length > view.limit) {
+    const n = Math.min(PAGE, matches.length - view.limit)
     rows.push(
       `<li class="more"><button type="button" class="clear" data-more="1">${esc(t('results.showMore', { n }))}</button></li>`,
     )
   }
   for (const b of document.querySelectorAll<HTMLButtonElement>('[data-freq]')) {
-    b.setAttribute('aria-pressed', String(b.dataset.freq === freq))
+    b.setAttribute('aria-pressed', String(b.dataset.freq === view.freq))
   }
-  renderBars(cardFrequency(matches, cards, freq), matches.length)
-  allOpen = shown.length > 0 && shown.every((id) => expanded.has(id))
+  renderBars(cardFrequency(matches, cards, view.freq), matches.length)
+  allOpen = shown.length > 0 && shown.every((id) => view.expanded.has(id))
   els.expandAll.textContent = t(allOpen ? 'results.collapseAll' : 'results.expandAll')
   els.expandAll.disabled = shown.length === 0
-  els.dimCommon.setAttribute('aria-pressed', String(dimCommon))
+  els.dimCommon.setAttribute('aria-pressed', String(view.dimCommon))
   els.dimCommon.textContent = t(near ? 'results.showChanges' : 'results.dimCommon')
   els.dimCommon.title = t(near ? 'results.showChangesTip' : 'results.dimCommonTip')
   // This deck may be filtered out (≈ hides Over decks), but the others can still be compared with it.
@@ -584,8 +490,7 @@ const autocomplete = createAutocomplete({
     else if (state.near !== undefined) removeNear()
   },
   deckFor: (url) => {
-    const list = listForUrl(decks, url)
-    const first = list && decks.find((e) => e.deck.id === list)
+    const first = deckById(listForUrl(decks, url))
     return first
       ? { list: first.list, name: deckName(first.deck, loc), count: LIST_SIZE.get(first.list) ?? 1 }
       : undefined
@@ -620,24 +525,6 @@ const languageMenu = initLanguageMenu(
   },
 )
 
-// Buttons that renderFilters/renderBars/renderResults re-create, as [dataset key, attribute].
-const FOCUS_KEYS = [
-  ['faction', 'data-faction'],
-  ['source', 'data-source'],
-  ['budget', 'data-budget'],
-  ['video', 'data-video'],
-  ['guideLang', 'data-guide-lang'],
-  ['toggle', 'data-toggle'],
-  ['remove', 'data-remove'],
-  ['flip', 'data-flip'],
-  ['removeDeck', 'data-remove-deck'],
-  ['removeNear', 'data-remove-near'],
-  ['near', 'data-near'],
-  ['add', 'data-add'],
-  ['anyStratagem', 'data-any-stratagem'],
-  ['leader', 'data-leader'],
-  ['stratagem', 'data-stratagem'],
-] as const
 const help = byId<HTMLDialogElement>('shortcuts')
 
 // Where skip links (and the [ ] shortcuts) move focus.
@@ -648,84 +535,110 @@ const JUMPS: Record<string, () => HTMLElement | null> = {
   panel: () => document.querySelector('[data-freq][aria-pressed="true"]'),
 }
 
-document.addEventListener('click', (e) => {
-  const t = (e.target as HTMLElement).closest<HTMLElement>('button')
-  if (!t) return
-  if (t.dataset.skip) return JUMPS[t.dataset.skip]?.()?.focus()
-  const { faction, source, budget, leader, stratagem, remove, add, toggle, anyStratagem, match, more } = t.dataset
+/** `list` with `item` added, or removed if it's there: a multi-select pill's click. */
+const toggled = <T>(list: T[] | undefined, item: T) =>
+  list?.includes(item) ? list.filter((x) => x !== item) : [...(list ?? []), item]
+/** A pick from a `data-*` value: card IDs are numbers, tags and authors strings. */
+const asPick = (v: string) => (/^\d+$/.test(v) ? Number(v) : v)
+
+/**
+ * What a page button does, keyed by its `data-*` attribute (camelCase, as in `dataset`); the attribute's value is the
+ * argument. `fallback` is where focus goes when the button is re-rendered away and no button with the same attribute
+ * and value replaces it; `at` is the button's index among those with its attribute, before the click.
+ */
+const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: number) => HTMLElement | null }> = {
+  skip: { run: (v) => JUMPS[v]?.()?.focus() },
+  faction: {
+    run: (v) => {
+      const f = v as Faction
+      // Exclusive: clicking switches to that faction; clicking the selected one clears it.
+      autoFaction = undefined
+      update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
+    },
+  },
+  source: { run: (v) => update({ sources: toggled(state.sources, v as Source) }) },
+  budget: { run: (v) => update({ budgets: toggled(state.budgets, v as Budget) }) },
+  video: { run: () => update({ video: !state.video }) },
+  guideLang: { run: (v) => update({ langs: toggled(state.langs, v) }) },
+  leader: { run: (v) => update({ leader: state.leader === Number(v) ? undefined : Number(v) }) },
+  stratagem: { run: (v) => update({ stratagem: state.stratagem === Number(v) ? undefined : Number(v) }) },
+  anyStratagem: {
+    run: () => update({ stratagem: undefined }),
+    fallback: () => els.stratagem.querySelector('button'),
+  },
+  match: { run: (v) => update({ match: v as FilterState['match'] }) },
+  clearAll: { run: () => clearAll() },
+  remove: { run: (v) => removePick(asPick(v)), fallback: () => els.input },
+  flip: { run: (v) => flipPick(asPick(v)) },
+  removeDeck: { run: () => removeDeck(), fallback: () => els.input },
+  removeNear: { run: () => removeNear(), fallback: () => els.input },
   // A card added from the panel leaves it: the card below moves into its place, so focus goes there (not the card box,
   // which would scroll a phone back up and open its keyboard).
-  const barAt = add ? [...els.bars.querySelectorAll('[data-add]')].indexOf(t) : -1
-  if (t.dataset.freq) {
-    freq = t.dataset.freq as typeof freq
-    renderResults()
-  } else if (t.dataset.video) update({ video: !state.video })
-  else if (t.dataset.guideLang) {
-    const l = t.dataset.guideLang
-    const on = state.langs ?? []
-    update({ langs: on.includes(l) ? on.filter((x) => x !== l) : [...on, l] })
-  } else if (t === els.dimCommon) {
-    dimCommon = !dimCommon
-    renderResults()
-  } else if (t.dataset.showNear) {
-    update({ budgets: [...(state.budgets ?? []), t.dataset.showNear as Budget] })
-    // The button is gone once This deck is listed; it leads the results.
-    els.resultHead.focus()
-  } else if (t === els.expandAll) {
-    if (allOpen) for (const id of shown) expanded.delete(id)
-    else for (const id of shown) expanded.add(id)
-    renderResults()
-  } else if (anyStratagem) update({ stratagem: undefined })
-  else if (leader) update({ leader: state.leader === Number(leader) ? undefined : Number(leader) })
-  else if (stratagem) update({ stratagem: state.stratagem === Number(stratagem) ? undefined : Number(stratagem) })
-  else if (budget) {
-    const b = budget as Budget
-    const on = state.budgets ?? []
-    update({ budgets: on.includes(b) ? on.filter((x) => x !== b) : [...on, b] })
-  } else if (source) {
-    const src = source as Source
-    const on = state.sources ?? []
-    update({ sources: on.includes(src) ? on.filter((x) => x !== src) : [...on, src] })
-  } else if (match) update({ match: match as FilterState['match'] })
-  else if (faction) {
-    const f = faction as Faction
-    // Exclusive: clicking switches to that faction; clicking the selected one clears it.
-    autoFaction = undefined
-    update({ factions: state.factions.length === 1 && state.factions[0] === f ? [] : [f] })
-  } else if (t.dataset.removeDeck) removeDeck()
-  else if (t.dataset.removeNear) removeNear()
-  else if (t.dataset.near) showNear(t.dataset.near)
-  else if (remove) removePick(/^\d+$/.test(remove) ? Number(remove) : remove)
-  else if (t.dataset.flip) flipPick(/^\d+$/.test(t.dataset.flip) ? Number(t.dataset.flip) : t.dataset.flip)
-  else if (add) addPick(Number(add))
-  else if (toggle) {
-    if (!expanded.delete(toggle)) expanded.add(toggle)
-    renderResults()
-  } else if (t === els.clear) clearAll()
-  else if (more) {
-    limit += PAGE
-    renderResults()
-    // Continue reading where the new rows start, rather than on the button that moved below them.
-    els.results.querySelectorAll<HTMLElement>('[data-toggle]')[limit - PAGE]?.focus()
-  }
-  // Re-rendering replaced the button: focus its new copy (or the nearest control) so keyboard users keep their place.
-  const key = FOCUS_KEYS.find(([k]) => t.dataset[k] !== undefined)
-  if (key && !t.isConnected) {
-    const [k, attr] = key
-    if (barAt >= 0) {
+  add: {
+    run: (v) => addPick(Number(v)),
+    fallback: (at) => {
       const bars = els.bars.querySelectorAll<HTMLElement>('[data-add]')
-      return (bars[Math.min(barAt, bars.length - 1)] ?? JUMPS.panel())?.focus()
-    }
-    const fallback =
-      k === 'anyStratagem'
-        ? els.stratagem.querySelector('button')
-        : k === 'near'
-          ? els.resultHead
-          : k === 'remove' || k === 'removeDeck' || k === 'removeNear' || k === 'add'
-            ? els.input
-            : undefined
-    ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(t.dataset[k] ?? '')}"]`) ?? fallback)?.focus()
-  }
+      return bars[Math.min(at, bars.length - 1)] ?? JUMPS.panel()
+    },
+  },
+  freq: {
+    run: (v) => {
+      view.freq = v as typeof view.freq
+      renderResults()
+    },
+  },
+  dimCommon: {
+    run: () => {
+      view.dimCommon = !view.dimCommon
+      renderResults()
+    },
+  },
+  expandAll: {
+    run: () => {
+      for (const id of shown) {
+        if (allOpen) view.expanded.delete(id)
+        else view.expanded.add(id)
+      }
+      renderResults()
+    },
+  },
+  toggle: {
+    run: (id) => {
+      if (!view.expanded.delete(id)) view.expanded.add(id)
+      renderResults()
+    },
+  },
+  near: { run: (id) => showNear(id), fallback: () => els.resultHead },
+  showNear: {
+    run: (v) => {
+      update({ budgets: [...(state.budgets ?? []), v as Budget] })
+      // The button is gone once This deck is listed; it leads the results.
+      els.resultHead.focus()
+    },
+  },
+  more: {
+    run: () => {
+      view.limit += PAGE
+      renderResults()
+      // Continue reading where the new rows start, rather than on the button that moved below them.
+      els.results.querySelectorAll<HTMLElement>('[data-toggle]')[view.limit - PAGE]?.focus()
+    },
+  },
+}
+
+document.addEventListener('click', (e) => {
+  const t = (e.target as HTMLElement).closest<HTMLElement>('button')
+  const key = t && Object.keys(t.dataset).find((k) => Object.hasOwn(ACTIONS, k))
+  if (!t || !key) return
+  const value = t.dataset[key] ?? ''
+  const attr = `data-${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`
+  const at = [...document.querySelectorAll(`[${attr}]`)].indexOf(t)
+  ACTIONS[key].run(value)
+  // Re-rendering replaced the button: focus its new copy (or the nearest control) so keyboard users keep their place.
+  // An action that placed focus itself is left alone.
+  const lost = !document.activeElement || document.activeElement === document.body
+  if (t.isConnected || !lost) return
+  ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(value)}"]`) ?? ACTIONS[key].fallback?.(at))?.focus()
 })
 // Page shortcuts, outside text fields. Each matches the printed key, then the physical key, so layouts without
 // / [ ] (e.g. Russian) still work.
@@ -763,7 +676,7 @@ window.addEventListener('hashchange', () => {
   beforeNear = undefined
   state = readHash()
   autoFaction = undefined
-  limit = PAGE
+  view.limit = PAGE
   render()
 })
 

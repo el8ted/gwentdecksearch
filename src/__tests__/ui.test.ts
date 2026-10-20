@@ -1,0 +1,182 @@
+import { describe, expect, it } from 'vitest'
+import { CONFIG } from '../config.ts'
+import { cardChanges, type FilterState, facets, indexDecks } from '../filter.ts'
+import en from '../i18n/en.json'
+import { createTranslator, type Locale } from '../i18n.ts'
+import type { Card, Dataset } from '../types.ts'
+import { filterRows } from '../ui/filters.ts'
+import { barsHtml } from '../ui/panel.ts'
+import { deckRow } from '../ui/results.ts'
+
+// Leaders 1 (MO) and 2 (NG); stratagem 10; cards 100–103, one with markup in its name.
+const card = (name: string, type: Card['type'], faction: Card['faction'], provisions: number): Card => ({
+  name,
+  type,
+  faction,
+  provisions,
+})
+const DATA: Dataset = {
+  scrapedAt: '2026-10-20',
+  cards: {
+    1: card('Arachas Swarm', 'leader', 'MO', 15),
+    2: card('Imperial Formation', 'leader', 'NG', 16),
+    10: card('Enchanted Armor', 'stratagem', 'NE', 0),
+    100: card('Golden Nekker', 'special', 'NE', 14),
+    101: card('Chimera', 'unit', 'MO', 5),
+    102: card('Royal Decree', 'special', 'NE', 9),
+    103: card('<b>Cadaverine</b>', 'special', 'NG', 6),
+  },
+  tags: { deploy: 'Deploy' },
+  decks: [
+    {
+      name: 'Swarm',
+      id: 'a1',
+      url: 'https://www.playgwent.com/decks/a1',
+      stats: { scraps: 0, cards: 25, units: 13, provisions: 165 },
+      sources: ['shinmiri2'],
+      cards: [
+        [1, 1],
+        [10, 1],
+        [100, 1],
+        [101, 2],
+      ],
+    },
+    {
+      name: 'Swarm II',
+      id: 'a2',
+      url: 'https://www.playgwent.com/decks/a2',
+      stats: { scraps: 0, cards: 25, units: 13, provisions: 165 },
+      sources: ['shinmiri2'],
+      cards: [
+        [1, 1],
+        [10, 1],
+        [101, 1],
+        [102, 1],
+      ],
+    },
+  ],
+}
+const DECKS = indexDecks(DATA)
+const loc: Locale = {
+  lang: 'en',
+  t: createTranslator('en', { en }),
+  card: (id) => DATA.cards[id].name,
+  tag: (key) => DATA.tags[key] ?? key,
+  num: String,
+  date: (iso) => iso,
+  pg: (url) => url,
+}
+const state = (s: Partial<FilterState> = {}): FilterState => ({ factions: [], picks: [], ...s })
+const rows = (s: FilterState) =>
+  filterRows({
+    state: s,
+    facets: facets(DECKS, s),
+    data: DATA,
+    loc,
+    leaders: [1, 2],
+    stratagems: [10],
+    langs: [],
+    pickName: (p) => (typeof p === 'number' ? loc.card(p) : loc.tag(p)),
+  })
+
+describe('filterRows', () => {
+  it('presses the selected faction and marks options with no decks', () => {
+    // Act
+    const { factions } = rows(state({ factions: ['MO'] }))
+
+    // Assert
+    expect(factions).toContain('data-faction="MO" aria-pressed="true"')
+    expect(factions).toMatch(/class="pill f-NR empty" data-faction="NR"/)
+  })
+
+  it('lists leaders only once a faction is picked, and names the selected one', () => {
+    // Act
+    const none = rows(state()).leader
+    const picked = rows(state({ factions: ['MO'], leader: 1 })).leader
+
+    // Assert
+    expect(none).toContain('class="hint"')
+    expect(picked).toContain('data-leader="1" aria-pressed="true"')
+    expect(picked).not.toContain('data-leader="2"')
+    expect(picked).toContain('<strong class="picked">Arachas Swarm</strong>')
+  })
+
+  it('draws an excluded pick pressed and a tag with its mark, escaping names', () => {
+    // Act
+    const { chips } = rows(state({ picks: [103, 'deploy'], excludes: [103] }))
+
+    // Assert
+    expect(chips).toContain('class="chip f-NG excluded"')
+    expect(chips).toContain('data-flip="103" aria-pressed="true"')
+    expect(chips).toContain('<span aria-hidden="true">#</span>Deploy')
+    expect(chips).not.toContain('<b>')
+  })
+})
+
+describe('barsHtml', () => {
+  it(`shows at most ${CONFIG.frequencyBars} bars, each sized by its share`, () => {
+    // Arrange
+    const many = Array.from({ length: CONFIG.frequencyBars + 5 }, (): [number, number] => [101, 1])
+
+    // Act
+    const html = barsHtml([[101, 1], ...many], 4, DATA, loc)
+
+    // Assert
+    expect(html.match(/<li /g)).toHaveLength(CONFIG.frequencyBars)
+    expect(html).toContain('--pct:25%')
+  })
+
+  it('says so when there are no cards', () => {
+    // Act
+    const html = barsHtml([], 0, DATA, loc)
+
+    // Assert
+    expect(html).toContain('class="none"')
+  })
+})
+
+describe('deckRow', () => {
+  const [a1, a2] = DECKS
+  /** The decklist row naming this card. */
+  const line = (html: string, name: string) => html.split('<li ').find((li) => li.includes(`>${name}</a>`)) ?? ''
+  const open = (opts: { selected?: number[]; common?: number[]; changes?: boolean }) =>
+    deckRow(
+      a2,
+      DATA,
+      new Set(opts.selected),
+      true,
+      new Set(opts.common),
+      loc,
+      undefined,
+      opts.changes ? cardChanges(a1, a2) : undefined,
+    )
+
+  it('lists leader and stratagem first, then highlights selected and dims common cards', () => {
+    // Act
+    const html = open({ selected: [102], common: [101] })
+
+    // Assert
+    expect(html.indexOf('Arachas Swarm')).toBeLessThan(html.indexOf('Enchanted Armor'))
+    expect(line(html, 'Royal Decree')).toMatch(/^class="hit "/)
+    expect(line(html, 'Chimera')).toMatch(/^class="common"/)
+    expect(line(html, 'Enchanted Armor')).toMatch(/^class=""/)
+  })
+
+  it('compared with a reference deck, marks what it added and lists what it swapped out', () => {
+    // Act
+    const html = open({ changes: true })
+
+    // Assert
+    expect(line(html, 'Royal Decree')).toContain('<span class="added"')
+    expect(line(html, 'Chimera')).not.toContain('class="added"')
+    expect(html).toMatch(/class="swapped">Swapped out: Golden Nekker, Chimera <span class="copies">−1<\/span>/)
+  })
+
+  it('renders no card list when collapsed', () => {
+    // Act
+    const html = deckRow(a1, DATA, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html).not.toContain('class="decklist"')
+  })
+})
