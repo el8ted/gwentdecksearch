@@ -188,3 +188,12 @@ Done once, in the repo's **Settings**:
 3. **General → Features:** turn on Issues.
 4. **Issues → Labels:** create `data` and `translation` (`bug` and `enhancement` exist already). The issue forms in
    `.github/ISSUE_TEMPLATE/` use them.
+
+## Keg value numbers
+
+`pnpm kegs [faction]` (default `MO`) prints the Markdown tables behind the keg-buying guide: what faction, neutral and
+general kegs are worth as a collection fills, and how many kegs it takes to own a faction's bronzes and half its golds.
+It simulates players opening kegs against `data/source/cards.json`, counting as wanted either every card or only the
+cards in at least 1% / 5% of `data/decks.json`'s decks that could run them. Seeded, so a rerun prints the same numbers
+until the data changes; rerun after a balance patch and a refresh. The odds and mill values it assumes are in
+`scripts/lib/kegs.ts`.
