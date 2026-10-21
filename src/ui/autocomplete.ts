@@ -40,9 +40,6 @@ export function fold(text: string): string {
 /** For matching typed text to an author: spacing and punctuation ignored, so "metallic d" finds MetallicDanny. */
 const loose = (text: string) => fold(text).replace(/[^\p{L}\p{N}]/gu, '')
 
-/** Author suggestions at most: names are many and short, so a few letters match dozens and would crowd out cards. */
-const MAX_AUTHORS = 3
-
 /** Options for {@link createAutocomplete}. */
 export interface AutocompleteOptions {
   input: HTMLInputElement
@@ -69,6 +66,10 @@ export interface AutocompleteOptions {
   /** A deck URL was chosen; `list` as from {@link deckFor}. */
   onDeck: (list: string) => void
 }
+
+// How long after the box loses focus the list closes. Picks happen on mousedown, before blur, so this is a margin
+// for a browser that blurs first, not the main path.
+const BLUR_CLOSE_MS = 150
 
 // Typed before a name to exclude it: ASCII and full-width (Japanese, Chinese and Korean keyboards) minus and bang.
 const EXCLUDE = /^[-!－！]\s*/
@@ -167,7 +168,7 @@ export function createAutocomplete({
       ? [...authorCandidates()]
           .filter(([key]) => loose(key).startsWith(aq))
           .sort((a, b) => b[1] - a[1])
-          .slice(0, MAX_AUTHORS)
+          .slice(0, CONFIG.maxAuthorSuggestions)
           .map(([key, count]) => [`@${key}`, 0, count])
       : []
     const kind = (item: number | string) => (typeof item === 'number' ? 1 : isAuthor(item) ? 2 : 0)
@@ -268,7 +269,7 @@ export function createAutocomplete({
       onBackspace()
     }
   })
-  input.addEventListener('blur', () => setTimeout(close, 150))
+  input.addEventListener('blur', () => setTimeout(close, BLUR_CLOSE_MS))
   // mousedown (not click) fires before blur closes the list.
   list.addEventListener('mousedown', (e) => {
     const li = (e.target as HTMLElement).closest<HTMLElement>('[data-id], [data-tag], [data-deck]')

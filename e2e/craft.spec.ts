@@ -132,3 +132,25 @@ test("Clear all in Craft keeps Craft, listing every deck's cards", async ({ page
   await expect(page).toHaveURL(/#t=craft$/)
   await expect(page.locator('[data-craft-pick]').first()).toHaveText(name(top.id))
 })
+
+test('a faction card clicked in Craft turns its faction on, as adding it from Search does', async ({ page, open }) => {
+  // Arrange: the most-run card that belongs to one faction (Lord Riptide, for Monsters, today)
+  const row = all.find((r) => data.cards[r.id].faction !== 'NE' && !data.cards[r.id].secondaryFaction)
+  if (!row) throw new Error('no faction card in the Craft list')
+  const faction = data.cards[row.id].faction
+  await open('#t=craft')
+
+  // Act
+  await page.locator(`[data-craft-pick="${row.id}"]`).click()
+
+  // Assert
+  await expect(page).toHaveURL(new RegExp(`f=${faction}`))
+  await expect(page.locator(`[data-faction="${faction}"]`)).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#leader [data-leader]').first()).toBeVisible()
+
+  // Act: removing the card turns the faction it chose back off
+  await page.locator(`#chips [data-remove="${row.id}"]`).click()
+
+  // Assert
+  await expect(page.locator(`[data-faction="${faction}"]`)).toHaveAttribute('aria-pressed', 'false')
+})

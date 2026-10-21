@@ -7,10 +7,10 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { CONFIG } from '../src/config.ts'
 import { LANGUAGE_NAMES, LANGUAGES, type Lang } from '../src/i18n.ts'
 
 const ROOT = join(import.meta.dirname, '..')
-const SITE = 'https://el8ted.github.io/gwentdecksearch/'
 
 /**
  * Per-language text outside the Help panel: intro, "open the site", "full guide in English", translation note, and
@@ -111,7 +111,7 @@ ${bar(lang)}
 
 ${intro}
 
-**[${open}](${SITE}?lang=${lang})**
+**[${open}](${CONFIG.siteUrl}?lang=${lang})**
 
 ![${alt}](screenshots/overview-${lang}.png)
 

@@ -13,6 +13,7 @@ import { collectEntries } from './lib/entries.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
 import type { StoredDeck } from './lib/store.ts'
 import { markRefreshed, readJson, STORE_PATHS, writeJson } from './lib/store.ts'
+import { myMemory } from './lib/translate.ts'
 
 const get = createPoliteFetch({
   'www.playgwent.com': 1_000,
@@ -59,24 +60,7 @@ const glossary = (lang: string) => {
   if (!glossaries.has(lang)) glossaries.set(lang, glossaryFor(lang, { cards, cardNames, categories }))
   return glossaries.get(lang) ?? new Map()
 }
-const MM_LANG: Record<string, string> = { 'zh-cn': 'zh-CN' }
-const mt = async (text: string, lang: string) => {
-  const pair = `${MM_LANG[lang] ?? lang}|en`
-  try {
-    const res = JSON.parse(
-      await get(
-        `https://api.mymemory.translated.net/get?langpair=${encodeURIComponent(pair)}&q=${encodeURIComponent(text)}`,
-      ),
-    )
-    if (res.responseStatus === 200 && res.responseData?.translatedText && !res.quotaFinished) {
-      return res.responseData.translatedText as string
-    }
-    consola.warn(`MyMemory stopped (${res.responseDetails || res.responseStatus}); deferring the rest`)
-  } catch (e) {
-    consola.warn(`MyMemory failed (${(e as Error).message}); deferring the rest`)
-  }
-  return undefined
-}
+const mt = myMemory(get)
 const names = dataset.decks.flatMap((d) => (d.original ? [d.original] : []))
 const { added, deferred } = await translateNames(names, translations, glossary, mt)
 // Same order as the file has always had (locale order per language), so diffs stay small.

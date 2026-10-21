@@ -1,3 +1,4 @@
+import { CONFIG } from '../../src/config.ts'
 import {
   BUDGETS,
   budgetSide,
@@ -12,7 +13,7 @@ import { encodeState } from '../../src/hash.ts'
 import type { Dataset } from '../../src/types.ts'
 
 /** The live site, which every link in a reply opens. */
-export const SITE = 'https://el8ted.github.io/gwentdecksearch/'
+export const SITE = CONFIG.siteUrl
 
 /** A reply to post, or why there's nothing worth posting. */
 export type RedditReply = { ok: true; markdown: string } | { ok: false; reason: string }

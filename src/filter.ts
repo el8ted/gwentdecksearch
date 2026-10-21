@@ -1,8 +1,11 @@
 import { CONFIG } from './config.ts'
 import { type Card, type Dataset, type Deck, type Faction, SOURCE_AUTHORS, type Source, type TagKey } from './types.ts'
 
+// Game rules, which the game itself fixes: not settings.
 /** Base provision limit before the leader's bonus. */
 export const BASE_PROVISIONS = 150
+/** The fewest cards a deck can have, besides leader and stratagem; most decks have exactly this many. */
+export const MIN_DECK_CARDS = 25
 
 /** Provisions used against the limit: spare (under), exact, or over. */
 export type BudgetSide = 'spare' | 'exact' | 'over'
@@ -327,15 +330,17 @@ function matchesBase(
  * @param decks - Indexed decks
  * @param state - Current filters
  * @param minShared - Cards a deck must share with the `near` deck ({@link overlap})
+ * @param nameOf - The name a deck is shown under, which the list is sorted by (the author's own, in their language)
  * @returns Matching decks
  */
 export function matchDecks(
   decks: IndexedDeck[],
   state: FilterState,
   minShared = CONFIG.similarMinShared,
+  nameOf: (deck: Deck) => string = (deck) => deck.name,
 ): IndexedDeck[] {
   const byName = (a: IndexedDeck, b: IndexedDeck) =>
-    a.deck.name.localeCompare(b.deck.name) || a.deck.id.localeCompare(b.deck.id)
+    nameOf(a.deck).localeCompare(nameOf(b.deck)) || a.deck.id.localeCompare(b.deck.id)
   const shared = sharedWithNear(decks, state)
   const matched = decks.filter(
     (e) => matchesBase(e, state) && hasCards(e, state) && (!shared || (shared.get(e) ?? 0) >= minShared),
@@ -429,13 +434,9 @@ export function cardFrequency(
   exclude: number[],
   order: 'most' | 'least' = 'most',
 ): [number, number][] {
-  const skip = new Set(exclude)
-  const counts = new Map<number, number>()
-  for (const e of decks) {
-    for (const id of e.ids) if (!skip.has(id) && id !== e.leader && id !== e.stratagem) count(counts, id)
-  }
-  const dir = order === 'most' ? -1 : 1
-  return [...counts].sort((a, b) => dir * (a[1] - b[1]) || a[0] - b[0])
+  // The Craft list already counts them, most first; the panel only reverses it for least.
+  const rows = craftList(decks, exclude).map((r): [number, number] => [r.id, r.decks])
+  return order === 'most' ? rows : rows.sort((a, b) => a[1] - b[1] || a[0] - b[0])
 }
 
 /** A card in the craft list ({@link craftList}). */

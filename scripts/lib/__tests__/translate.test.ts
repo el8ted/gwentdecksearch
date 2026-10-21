@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { addTerm, type Glossary, translateName } from '../translate.ts'
+import { consola } from 'consola'
+import { describe, expect, it, vi } from 'vitest'
+import { addTerm, type Glossary, myMemory, translateName } from '../translate.ts'
+
+vi.mock('consola', () => ({ consola: { warn: vi.fn() } }))
 
 function glossary(): Glossary {
   const g: Glossary = new Map()
@@ -154,5 +157,45 @@ describe('translateName in other languages', () => {
 
     // Assert
     expect(result.text).toBe('Elfyś')
+  })
+})
+
+describe('myMemory', () => {
+  const answer = (body: object) => async () => JSON.stringify(body)
+
+  it('returns the translation, asking for the language pair MyMemory uses', async () => {
+    // Arrange
+    const urls: string[] = []
+    const get = async (url: string) => {
+      urls.push(url)
+      return JSON.stringify({ responseStatus: 200, responseData: { translatedText: 'Swarm' } })
+    }
+
+    // Act
+    const text = await myMemory(get)('Рой', 'zh-cn')
+
+    // Assert
+    expect(text).toBe('Swarm')
+    expect(urls[0]).toContain('langpair=zh-CN%7Cen')
+  })
+
+  it.each([
+    ['the quota is spent', answer({ responseStatus: 200, responseData: { translatedText: 'x' }, quotaFinished: true })],
+    ['it answers with an error', answer({ responseStatus: 403, responseDetails: 'INVALID LANGUAGE PAIR' })],
+    ['the answer has no text', answer({ responseStatus: 200, responseData: {} })],
+    ['the answer is not JSON', async () => '<html>busy</html>'],
+    [
+      'the request fails',
+      async () => {
+        throw new Error('timeout')
+      },
+    ],
+  ])('defers, with a warning, when %s', async (_, get) => {
+    // Act
+    const text = await myMemory(get)('Рой', 'ru')
+
+    // Assert
+    expect(text).toBeUndefined()
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringMatching(/^MyMemory (stopped|failed) .*deferring the rest$/))
   })
 })

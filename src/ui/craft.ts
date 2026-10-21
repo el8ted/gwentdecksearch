@@ -4,6 +4,9 @@ import type { Locale } from '../i18n.ts'
 import type { Dataset } from '../types.ts'
 import { esc } from './dom.ts'
 
+// The table's columns (index.html): rank, card, decks, cost, total, have it; full-width rows span them all.
+const COLUMNS = 6
+
 /** What the Craft list is drawn from. */
 export interface CraftContext {
   /** Every ranked card, from `craftList`; only the first `limit` are drawn. */
@@ -53,7 +56,7 @@ export function craftView(c: CraftContext): CraftView {
     }
     return total
   })
-  const line = `<tr class="reach"><td colspan="6">${esc(t('craft.line', { scraps: num(scraps ?? 0) }))}</td></tr>`
+  const line = `<tr class="reach"><td colspan="${COLUMNS}">${esc(t('craft.line', { scraps: num(scraps ?? 0) }))}</td></tr>`
   const body = rows.slice(0, limit).map((r, i) => {
     const card = data.cards[r.id]
     const name = loc.card(r.id)
@@ -72,7 +75,7 @@ export function craftView(c: CraftContext): CraftView {
   if (rows.length > limit) {
     const n = Math.min(CONFIG.resultsPageSize, rows.length - limit)
     body.push(
-      `<tr class="more"><td colspan="6"><button type="button" class="clear" data-more="1">${esc(t('craft.showMore', { n }))}</button></td></tr>`,
+      `<tr class="more"><td colspan="${COLUMNS}"><button type="button" class="clear" data-more="1">${esc(t('craft.showMore', { n }))}</button></td></tr>`,
     )
   }
   const left = rows.filter((r) => !have.has(r.id))
@@ -83,7 +86,9 @@ export function craftView(c: CraftContext): CraftView {
         ? t('craft.reachNone', { cost: num(data.cards[left[0].id].scraps * left[0].copies) })
         : t('craft.reach', { n: reach, spent: num(spent), left: num(scraps - spent) })
   return {
-    body: body.length ? body.join('') : `<tr><td colspan="6" class="empty-state">${esc(t('craft.none'))}</td></tr>`,
+    body: body.length
+      ? body.join('')
+      : `<tr><td colspan="${COLUMNS}" class="empty-state">${esc(t('craft.none'))}</td></tr>`,
     summary,
   }
 }

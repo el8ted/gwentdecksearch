@@ -8,6 +8,12 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- Decks are listed in alphabetical order of the name you see: a deck shown under its author's own name, in your
+  language, used to be sorted by its English translation, so lists in Russian, Polish and other languages looked
+  unordered.
+- Clicking a faction's card in **Craft** turns that faction on, as adding the card from Search does, so its leaders
+  show straight away.
+
 ## 2026-10-18.04
 
 - **Craft: where to spend your scraps.** New, or back after a break, and not sure which cards are worth crafting?

@@ -1,3 +1,4 @@
+import { CONFIG } from '../../src/config.ts'
 import { type Card, type Dataset, SOURCE_NAMES, SOURCES } from '../../src/types.ts'
 
 const num = new Intl.NumberFormat('en')
@@ -60,7 +61,7 @@ export function cardChanges(before: Record<number, CardFields>, after: Record<nu
 }
 
 /**
- * Sources that lost more than a quarter of their decks: a sheet made private or rearranged still answers, but
+ * Sources that lost more than {@link CONFIG.maxSourceLoss} of their decks (a quarter): a sheet made private or rearranged still answers, but
  * yields no deck links, and an unattended update must not publish that.
  *
  * @param before - The published dataset
@@ -71,7 +72,7 @@ export function shrunkSources(before: Dataset, after: Dataset): string[] {
   const count = (data: Dataset, src: string) => data.decks.filter((d) => (d.sources as string[]).includes(src)).length
   return SOURCES.flatMap((s) => {
     const [was, now] = [count(before, s), count(after, s)]
-    return now < was * 0.75 ? [`${SOURCE_NAMES[s]}: ${was} → ${now} decks`] : []
+    return now < was * (1 - CONFIG.maxSourceLoss) ? [`${SOURCE_NAMES[s]}: ${was} → ${now} decks`] : []
   })
 }
 
@@ -122,7 +123,7 @@ export function releaseNotes(changelog: string, before: Dataset | undefined, aft
     '',
     '### Use it',
     '',
-    '- **Online:** https://el8ted.github.io/gwentdecksearch/',
+    `- **Online:** ${CONFIG.siteUrl}`,
     '- **Offline:** download the zip below, unzip it and open `gwent-deck-search/index.html` in your browser.',
   ].join('\n')
 }

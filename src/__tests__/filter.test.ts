@@ -562,6 +562,19 @@ describe('cardChanges', () => {
   })
 })
 
+describe('matchDecks sorting', () => {
+  it('sorts by the name each deck is shown under', () => {
+    // Arrange: shown names in another order than the English ones (GN Swarm, Portal, Portal, Soldiers)
+    const shown: Record<string, string> = { a1: 'Яд', b1: 'Барьер', b2: 'Барьер', c1: 'Вихрь' }
+
+    // Act
+    const ids = matchDecks(DECKS, state(), undefined, (d) => shown[d.id]).map((e) => e.deck.id)
+
+    // Assert
+    expect(ids).toEqual(['b1', 'b2', 'c1', 'a1'])
+  })
+})
+
 describe('craftList', () => {
   it('ranks by the matching decks running each card, then card ID', () => {
     // Act

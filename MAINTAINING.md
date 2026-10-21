@@ -65,9 +65,10 @@ place they'd learn about it:
 `.github/workflows/update.yml` refreshes the data and, if any deck or card changed, commits it to `main` and publishes
 a release. If nothing changed, nothing is released.
 
-**If a source loses more than a quarter of its decks, the run fails and nothing is released.** A sheet that was made
-private, renamed or rearranged still answers, but yields no deck links. GitHub emails you about the failed run; the
-live site keeps its data. Check the source, fix the parser or its address if needed, and run the update again.
+**If a source loses more than a quarter of its decks (`maxSourceLoss` in `src/config.ts`), the run fails and nothing
+is released.** A sheet that was made private, renamed or rearranged still answers, but yields no deck links. GitHub
+emails you about the failed run; the live site keeps its data. Check the source, fix the parser or its address if
+needed, and run the update again.
 
 | What | When (UTC) |
 |---|---|

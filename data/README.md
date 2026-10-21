@@ -60,7 +60,7 @@ and cards around each month's end, then builds.
 
 ## How the app uses it
 
-- **`decks.json` is compiled into the app.** `src/main.ts` imports it, and `pnpm build` bundles it into
+- **`decks.json` is compiled into the app.** `src/data.ts` imports it, and `pnpm build` bundles it into
   `dist/app.iife.js`. There's no server and no fetching at runtime, which is why the site also works opened straight
   from disk. Changing the data means rebuilding the app.
 - **On load, the app indexes every deck once** (`indexDecks` in `src/filter.ts`): it finds each deck's leader and

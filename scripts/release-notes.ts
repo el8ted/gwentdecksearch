@@ -3,13 +3,15 @@
  *
  * - `node scripts/release-notes.ts check` compares data/decks.json with the last commit's. Prints `changed=true` or
  *   `changed=false` (only a deck or card change counts, not the "data as of" time), and fails if a source lost more
- *   than a quarter of its decks.
+ *   than `CONFIG.maxSourceLoss` of its decks (a quarter).
  * - `node scripts/release-notes.ts notes <tag>` prints the notes: CHANGELOG.md's Unreleased entries, then what changed
  *   in the data since the previous release tag (needs the tags fetched).
  * - `node scripts/release-notes.ts file <tag>` moves the Unreleased entries under a `## <tag>` heading in CHANGELOG.md.
  */
+
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
+import { CONFIG } from '../src/config.ts'
 import type { Dataset } from '../src/types.ts'
 import { fileUnreleased, releaseNotes, shrunkSources } from './lib/release-notes.ts'
 
@@ -21,7 +23,8 @@ if (command === 'check') {
   const before: Dataset = JSON.parse(git('show', 'HEAD:data/decks.json'))
   const shrunk = shrunkSources(before, after)
   if (shrunk.length) {
-    console.error(`A source lost more than a quarter of its decks; not releasing:\n  ${shrunk.join('\n  ')}`)
+    const share = `${CONFIG.maxSourceLoss * 100}%`
+    console.error(`A source lost more than ${share} of its decks; not releasing:\n  ${shrunk.join('\n  ')}`)
     process.exit(1)
   }
   const same = (d: Dataset) => JSON.stringify({ cards: d.cards, decks: d.decks })

@@ -1,3 +1,6 @@
+import { consola } from 'consola'
+import type { GetBody } from './entries.ts'
+
 /** Localized term (lowercase) → English, from Gwent's own localization. */
 export type Glossary = Map<string, string>
 
@@ -54,4 +57,34 @@ export function translateName(name: string, glossary: Glossary, lang: string): {
   }
   const latinScript = !['ru', ...NO_BOUNDARY_LANGS].includes(lang)
   return { text, needsMt: latinScript || NON_LATIN_TOKEN.test(text) }
+}
+
+// MyMemory's language codes, where they differ from playgwent's.
+const MM_LANG: Record<string, string> = { 'zh-cn': 'zh-CN' }
+
+/**
+ * A machine translator into English using MyMemory's free API, which has a daily quota.
+ *
+ * @param get - Fetches a body (the polite fetcher, which spaces requests out)
+ * @returns `(text, lang) =>` the English text; `undefined` once the service stops answering (quota spent, an error,
+ *   or an answer it can't read), so the caller defers the rest to the next run rather than failing
+ */
+export function myMemory(get: GetBody): (text: string, lang: string) => Promise<string | undefined> {
+  return async (text, lang) => {
+    const pair = `${MM_LANG[lang] ?? lang}|en`
+    try {
+      const res = JSON.parse(
+        await get(
+          `https://api.mymemory.translated.net/get?langpair=${encodeURIComponent(pair)}&q=${encodeURIComponent(text)}`,
+        ),
+      )
+      if (res.responseStatus === 200 && res.responseData?.translatedText && !res.quotaFinished) {
+        return res.responseData.translatedText as string
+      }
+      consola.warn(`MyMemory stopped (${res.responseDetails || res.responseStatus}); deferring the rest`)
+    } catch (e) {
+      consola.warn(`MyMemory failed (${(e as Error).message}); deferring the rest`)
+    }
+    return undefined
+  }
 }

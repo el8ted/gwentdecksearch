@@ -148,7 +148,7 @@ h1 span {
   gap: var(--gap);
 }
 .label {
-  /* Set from the longest translated label (see main.ts) so rows stay aligned in every language. */
+  /* Set from the longest translated label (see sizeFilterLabels in ui/page.ts) so rows stay aligned in every language. */
   width: var(--label-width, 5.5rem);
   flex: none;
   color: var(--muted);

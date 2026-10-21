@@ -127,3 +127,26 @@ test('a pressed ⧉ keeps its text readable while hovered', async ({ page, open 
   const [color, fill] = await pressed.evaluate((e) => [getComputedStyle(e).color, getComputedStyle(e).backgroundColor])
   expect(color).not.toBe(fill)
 })
+
+test('decks are in alphabetical order of the names on screen, in the page language too (Russian)', async ({
+  page,
+  open,
+}) => {
+  // Arrange: MetallicDanny's list, which Russian visitors see under its Russian names
+  await open('?lang=ru#src=metallic-danny')
+
+  // Act: the names as shown, without the faction code kept for screen readers
+  const names = await page.locator('#results .deck-name').evaluateAll((els) =>
+    els.map((el) =>
+      [...el.childNodes]
+        .filter((n) => n.nodeName === '#text')
+        .map((n) => n.textContent)
+        .join(''),
+    ),
+  )
+
+  // Assert
+  expect(names.filter((n) => /\p{Script=Cyrillic}/u.test(n)).length).toBeGreaterThan(20)
+  const unordered = names.findIndex((n, i) => i > 0 && names[i - 1].localeCompare(n) > 0)
+  expect(unordered, `"${names[unordered - 1]}" before "${names[unordered]}"`).toBe(-1)
+})

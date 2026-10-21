@@ -1,4 +1,4 @@
-import { budgetSide, type cardChanges, type IndexedDeck, provisionStatus } from '../filter.ts'
+import { budgetSide, type cardChanges, type IndexedDeck, MIN_DECK_CARDS, provisionStatus } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
@@ -176,7 +176,7 @@ export function deckRow(
   </div>
   <div class="stats">
     ${stat('scraps', loc.t('stat.scraps'), loc.num(deck.stats.scraps))}
-    ${deck.stats.cards === 25 ? '' : stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
+    ${deck.stats.cards === MIN_DECK_CARDS ? '' : stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
     ${stat('helmet', loc.t('stat.units'), String(deck.stats.units))}
     ${provisionBadge(entry, data, loc)}
     ${shared ? `<span class="badge shared">${esc(shared.self ? loc.t('deck.thisDeck') : loc.t('deck.shared', { n: shared.n, of: shared.of }))}</span>` : ''}

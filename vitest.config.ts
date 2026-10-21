@@ -13,6 +13,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       include: [
         'src/filter.ts',
+        'src/search.ts',
         'src/hash.ts',
         'src/display.ts',
         'src/i18n.ts',
