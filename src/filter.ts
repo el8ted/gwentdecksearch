@@ -1,5 +1,14 @@
 import { CONFIG } from './config.ts'
-import { type Card, type Dataset, type Deck, type Faction, SOURCE_AUTHORS, type Source, type TagKey } from './types.ts'
+import {
+  type Card,
+  type Dataset,
+  type Deck,
+  type Faction,
+  RARITIES,
+  SOURCE_AUTHORS,
+  type Source,
+  type TagKey,
+} from './types.ts'
 
 // Game rules, which the game itself fixes: not settings.
 /** Base provision limit before the leader's bonus. */
@@ -426,17 +435,28 @@ export function sharedCards(decks: IndexedDeck[]): Set<number> {
  *
  * @param decks - Currently matching decks
  * @param exclude - Cards already selected
- * @param order - `most` (default) or `least` common first; ties break by card ID
+ * @param cards - Card data, for the rarity ties break by
+ * @param order - `most` (default) or `least` common first; ties break as in {@link craftList}
+ * @param nameOf - A card's name in the page language, for ties of the same rarity
  * @returns `[cardId, deckCount]`
  */
 export function cardFrequency(
   decks: IndexedDeck[],
   exclude: number[],
+  cards: Dataset['cards'],
   order: 'most' | 'least' = 'most',
+  nameOf: (id: number) => string = (id) => cards[id]?.name ?? '',
 ): [number, number][] {
-  // The Craft list already counts them, most first; the panel only reverses it for least.
-  const rows = craftList(decks, exclude).map((r): [number, number] => [r.id, r.decks])
-  return order === 'most' ? rows : rows.sort((a, b) => a[1] - b[1] || a[0] - b[0])
+  // The Craft list already counts them, most first; the panel only reverses the count for least.
+  const tie = byRarityThenName(cards, nameOf)
+  const rows = craftList(decks, exclude, cards, nameOf).map((r): [number, number] => [r.id, r.decks])
+  return order === 'most' ? rows : rows.sort((a, b) => a[1] - b[1] || tie(a[0], b[0]))
+}
+
+/** Orders cards legendary first, then by name, then by card ID, so the order never depends on input order. */
+function byRarityThenName(cards: Dataset['cards'], nameOf: (id: number) => string) {
+  const rank = (id: number) => RARITIES.indexOf(cards[id]?.rarity)
+  return (a: number, b: number) => rank(b) - rank(a) || nameOf(a).localeCompare(nameOf(b)) || a - b
 }
 
 /** A card in the craft list ({@link craftList}). */
@@ -454,9 +474,17 @@ export interface CraftRow {
  *
  * @param decks - Currently matching decks
  * @param exclude - Cards already picked in the search (leaders and stratagems are left out anyway)
- * @returns Most decks first, then card ID
+ * @param cards - Card data, for the rarity ties break by
+ * @param nameOf - A card's name in the page language, for ties of the same rarity
+ * @returns Most decks first, then legendary to common, then name, then card ID
  */
-export function craftList(decks: IndexedDeck[], exclude: number[]): CraftRow[] {
+export function craftList(
+  decks: IndexedDeck[],
+  exclude: number[],
+  cards: Dataset['cards'],
+  nameOf: (id: number) => string = (id) => cards[id]?.name ?? '',
+): CraftRow[] {
+  const tie = byRarityThenName(cards, nameOf)
   const skip = new Set(exclude)
   const runs = new Map<number, number>()
   const doubles = new Map<number, number>()
@@ -469,5 +497,5 @@ export function craftList(decks: IndexedDeck[], exclude: number[]): CraftRow[] {
   }
   return [...runs]
     .map(([id, n]): CraftRow => ({ id, decks: n, copies: (doubles.get(id) ?? 0) * 2 >= n ? 2 : 1 }))
-    .sort((a, b) => b.decks - a.decks || a.id - b.id)
+    .sort((a, b) => b.decks - a.decks || tie(a.id, b.id))
 }

@@ -318,7 +318,7 @@ describe('cardFrequency', () => {
     const decks = matchDecks(DECKS, state({ leader: 1 }))
 
     // Act
-    const result = cardFrequency(decks, [101])
+    const result = cardFrequency(decks, [101], CARDS)
 
     // Assert
     expect(result).toEqual([
@@ -327,19 +327,33 @@ describe('cardFrequency', () => {
     ])
   })
 
-  it('lists least common first, ties by card ID', () => {
+  it('lists least common first, ties by name when rarities match', () => {
     // Arrange
     const decks = DECKS
 
     // Act
-    const result = cardFrequency(decks, [], 'least')
+    const result = cardFrequency(decks, [], CARDS, 'least')
 
     // Assert
     expect(result).toEqual([
-      [100, 1],
       [103, 1],
+      [100, 1],
       [101, 3],
       [102, 3],
+    ])
+  })
+
+  it('breaks least-common ties legendary first', () => {
+    // Arrange
+    const cards = { ...CARDS, 100: { ...CARDS[100], rarity: 'legendary' as const } }
+
+    // Act
+    const result = cardFrequency(DECKS, [], cards, 'least')
+
+    // Assert
+    expect(result.slice(0, 2)).toEqual([
+      [100, 1],
+      [103, 1],
     ])
   })
 })
@@ -576,22 +590,34 @@ describe('matchDecks sorting', () => {
 })
 
 describe('craftList', () => {
-  it('ranks by the matching decks running each card, then card ID', () => {
+  it('ranks by the matching decks running each card, then name', () => {
     // Act
-    const rows = craftList(DECKS, [])
+    const rows = craftList(DECKS, [], CARDS)
 
-    // Assert: 101 and 102 tie on 3 decks
+    // Assert: 101 and 102 tie on 3 decks, 100 and 103 on 1, all common
     expect(rows.map(({ id, decks }) => [id, decks])).toEqual([
       [101, 3],
       [102, 3],
-      [100, 1],
       [103, 1],
+      [100, 1],
     ])
+  })
+
+  it('breaks ties legendary first, then by name in the page language', () => {
+    // Arrange
+    const cards = { ...CARDS, 102: { ...CARDS[102], rarity: 'legendary' as const } }
+    const nameOf = (id: number) => ({ 100: 'A', 103: 'B' })[id] ?? CARDS[id].name
+
+    // Act
+    const rows = craftList(DECKS, [], cards, nameOf)
+
+    // Assert
+    expect(rows.map((r) => r.id)).toEqual([102, 101, 100, 103])
   })
 
   it('counts two copies when at least half the decks running a card run two', () => {
     // Act
-    const copies = Object.fromEntries(craftList(DECKS, []).map((r) => [r.id, r.copies]))
+    const copies = Object.fromEntries(craftList(DECKS, [], CARDS).map((r) => [r.id, r.copies]))
 
     // Assert
     expect(copies).toEqual({ 100: 1, 101: 2, 102: 1, 103: 2 })
@@ -599,10 +625,10 @@ describe('craftList', () => {
 
   it('leaves out picked cards', () => {
     // Act
-    const rows = craftList(DECKS, [102])
+    const rows = craftList(DECKS, [102], CARDS)
 
     // Assert
-    expect(rows.map((r) => r.id)).toEqual([101, 100, 103])
+    expect(rows.map((r) => r.id)).toEqual([101, 103, 100])
   })
 })
 

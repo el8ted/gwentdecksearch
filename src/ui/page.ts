@@ -254,7 +254,12 @@ function renderPanel(matches: IndexedDeck[], picked: number[]) {
     b.setAttribute('aria-pressed', String(b.dataset.freq === view.freq))
   }
   els.panelHead.textContent = loc.t('freq.inDecks', { n: matches.length })
-  els.bars.innerHTML = barsHtml(cardFrequency(matches, picked, view.freq), matches.length, data, loc)
+  els.bars.innerHTML = barsHtml(
+    cardFrequency(matches, picked, data.cards, view.freq, loc.card),
+    matches.length,
+    data,
+    loc,
+  )
 }
 
 /**
@@ -267,7 +272,7 @@ function renderCraft(matches: IndexedDeck[], picked: number[]) {
   const { state, view, loc } = session
   const { t } = loc
   els.resultHead.textContent = t('craft.head', { n: matches.length })
-  const rows = craftList(matches, picked)
+  const rows = craftList(matches, picked, data.cards, loc.card)
   // With no faction picked the top is mostly neutral cards; say why, since that's the advice.
   const top = rows.slice(0, CONFIG.craftNeutralSample)
   const neutral =

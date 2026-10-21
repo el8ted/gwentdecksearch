@@ -2,7 +2,7 @@ import { craftList, indexDecks, matchDecks } from '../src/filter.ts'
 import { data, expect, test } from './app.ts'
 
 const decks = indexDecks(data)
-const all = craftList(matchDecks(decks, { factions: [], picks: [] }), [])
+const all = craftList(matchDecks(decks, { factions: [], picks: [] }), [], data.cards)
 const [top, second] = all
 const name = (id: number) => data.cards[id].name
 const cost = (r: (typeof all)[number]) => data.cards[r.id].scraps * r.copies
