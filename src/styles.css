@@ -1,3 +1,30 @@
+/*
+ * Gwent Deck Search: the whole page's styles, in this order (search for a heading in capitals to jump to it):
+ *
+ *   1. TOKENS       Every colour, size and font. The light theme, high contrast and the colour-blind palette change
+ *                   only these, so a colour is changed in one place.
+ *   2. BASE         Plain elements, before any class.
+ *   3. SHARED       Pieces used in several places: text buttons, switches, popups, small-caps labels, notes, cost
+ *                   badges, text for screen readers only.
+ *   4. SKIP LINKS   The keyboard shortcuts past the filters and results.
+ *   5. HEADER       Title, data date, and the Language and Display menus.
+ *   6. FILTERS      The sticky filter rows and their pills.
+ *   7. SEARCH       The Search box, its chips and its suggestions.
+ *   8. LAYOUT       Results beside the side panel.
+ *   9. RESULTS BAR  Decks/Craft switch, the count, Dim common, Expand all.
+ *  10. DECK ROWS    One deck in the results, closed.
+ *  11. DECK LIST    An opened deck's cards.
+ *  12. CRAFT        The Craft view.
+ *  13. PANEL        Most/Least common.
+ *  14. DIALOGS      Help and Credits.
+ *  15. MOTION       Reduced motion.
+ *
+ * Phone layouts (max-width 860px; 600px for the Craft table) sit at the end of the section they change. Sizes are in
+ * rem or em, so the Display menu's text size scales the page.
+ */
+
+/* ---------- 1. TOKENS ---------- */
+
 :root {
   --bg: #0f1115;
   --surface: #171a21;
@@ -17,6 +44,17 @@
   --header-top: #161920;
   --sticky-bg: rgb(15 17 21 / 0.92);
   --shadow: rgb(0 0 0 / 0.5);
+  /* Factions and sources: each element sets its own colour as --fc from these (see the classes below). */
+  --faction-MO: #c8443b;
+  --faction-NG: #ebb81c;
+  --faction-NR: #4a8fd6;
+  --faction-SK: #9a6ad8;
+  --faction-ST: #5aaa55;
+  --faction-SY: #e5803a;
+  --faction-NE: #9a9488;
+  --source-community: #3fb5a3;
+  --source-shinmiri2: #a3c94a;
+  --source-metallic-danny: #c76bc4;
   --radius: 8px;
   --gap: 0.75rem;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -24,28 +62,134 @@
   color-scheme: dark;
 }
 
+[data-theme="light"] {
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface-2: #eeebe4;
+  --border: #d3cec2;
+  --border-hover: #a9a397;
+  --text: #1c1e23;
+  --muted: #555b67;
+  --accent: #8a6213;
+  --accent-ink: #fff;
+  --over: #b8235f;
+  --spare: #a8740e;
+  --over-text: #a01e55;
+  --spare-text: #7d5508;
+  /* Light enough for the accent cost text to keep AA (4.65:1). */
+  --cost-bg: #f5ecd6;
+  --hover: rgb(0 0 0 / 0.05);
+  --header-top: #ebe7de;
+  --sticky-bg: rgb(245 243 238 / 0.94);
+  --shadow: rgb(0 0 0 / 0.15);
+  color-scheme: light;
+}
+
+[data-contrast="high"] {
+  --text: #ffffff;
+  --muted: #c9ced8;
+  --border: #6b7280;
+  --border-hover: #9aa1ad;
+  --over-text: #ffb3d0;
+  --spare-text: #ffd98a;
+}
+[data-contrast="high"][data-theme="light"] {
+  --text: #000;
+  --muted: #2f333b;
+  --border: #6b6558;
+  --border-hover: #3d392f;
+  --over-text: #7a1440;
+  --spare-text: #5a3c00;
+}
+
+/* Colour-blind palette (Okabe–Ito): distinguishable under protanopia, deuteranopia and tritanopia. After the themes
+   and high contrast, so its colours win when they're combined. */
+[data-cvd="true"] {
+  --over: #d55e00;
+  --spare: #56b4e9;
+  --over-text: #ff9a52;
+  --spare-text: #8fd0f5;
+  --faction-MO: #d55e00;
+  --faction-NG: #f0e442;
+  --faction-NR: #0072b2;
+  --faction-SK: #cc79a7;
+  --faction-ST: #009e73;
+  --faction-SY: #e69f00;
+  --source-community: #56b4e9;
+}
+[data-cvd="true"][data-theme="light"] {
+  --over-text: #9c3f00;
+  --spare-text: #005a8c;
+}
+
+/* Each faction's and source's colour, as --fc on the element it marks; --fc2 is a two-faction card's second.
+   --fc-ink is the text on a solid --fc fill: dark unless set (most palette colours are too light for white). */
 .f-MO {
-  --fc: #c8443b;
+  --fc: var(--faction-MO);
   --fc-ink: #fff;
 }
 .f-NG {
-  --fc: #ebb81c;
+  --fc: var(--faction-NG);
 }
 .f-NR {
-  --fc: #4a8fd6;
+  --fc: var(--faction-NR);
 }
 .f-SK {
-  --fc: #9a6ad8;
+  --fc: var(--faction-SK);
 }
 .f-ST {
-  --fc: #5aaa55;
+  --fc: var(--faction-ST);
 }
 .f-SY {
-  --fc: #e5803a;
+  --fc: var(--faction-SY);
 }
 .f-NE {
-  --fc: #9a9488;
+  --fc: var(--faction-NE);
 }
+.f2-MO {
+  --fc2: var(--faction-MO);
+}
+.f2-NG {
+  --fc2: var(--faction-NG);
+}
+.f2-NR {
+  --fc2: var(--faction-NR);
+}
+.f2-SK {
+  --fc2: var(--faction-SK);
+}
+.f2-ST {
+  --fc2: var(--faction-ST);
+}
+[data-cvd="true"] .f-MO {
+  --fc-ink: #111318;
+}
+[data-cvd="true"] .f-NR {
+  --fc-ink: #fff;
+}
+.s-community {
+  --fc: var(--source-community);
+}
+.s-shinmiri2 {
+  --fc: var(--source-shinmiri2);
+}
+.s-metallic-danny {
+  --fc: var(--source-metallic-danny);
+}
+/* Provision steps take their side's colour. */
+.b-spare {
+  --fc: var(--spare);
+}
+.b-exact {
+  --fc: var(--accent);
+  --fc-ink: var(--accent-ink);
+}
+.b-over {
+  --fc: var(--over);
+  --fc-ink: #fff;
+}
+
+/* ---------- 2. BASE ---------- */
 
 * {
   box-sizing: border-box;
@@ -83,7 +227,152 @@ a {
   outline-offset: 2px;
 }
 
-/* Header */
+/* ---------- 3. SHARED ---------- */
+
+/* Text buttons: outlined (Clear all, Dim common…), or a plain link-like one inside a sentence. */
+.clear,
+.link {
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.clear:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+.link {
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Switches: a row of buttons in a pill, one pressed (All/Any, Decks/Craft, Most/Least, and the Display menu's). */
+.mode,
+.seg {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.mode button,
+.seg button {
+  border: 0;
+  background: none;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+}
+/* Pressed: the accent fill, on every switch and in the Language menu. */
+.mode button[aria-pressed="true"],
+.seg button[aria-pressed="true"],
+.lang-panel button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+/* The Display menu's switches: a little tighter, and a step can be disabled (the text size at either end). */
+.seg {
+  align-items: center;
+  gap: 2px;
+}
+.seg button {
+  padding: 0.3rem 0.8rem;
+}
+/* Not on the pressed one, whose text would vanish into the accent fill. */
+.seg button:hover:not(:disabled, [aria-pressed="true"]) {
+  color: var(--text);
+}
+.seg button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.seg output {
+  min-width: 3.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Popups: suggestions, the menus, the dialogs and the skip links, raised over the page. */
+.suggestions,
+.display-panel,
+.credits,
+.skip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
+/* Small capitals: the filter labels, section headings and Help's section titles. */
+.label,
+.result-head,
+.panel h2,
+.setting-label,
+.help-more summary {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* A short note in the spare colour: under the stratagems, under Search, above a Similar list. */
+.note {
+  margin: 0;
+  font-size: 0.85rem;
+  /* The text shade: --spare itself misses AA on the light background. */
+  color: var(--spare-text);
+}
+
+/* A card's provision cost, in suggestions and deck lists. */
+.cost {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.4rem;
+  border-radius: 4px;
+  background: var(--cost-bg);
+  color: var(--accent);
+  font: 600 0.75rem var(--mono);
+}
+
+/* Read by screen readers, not shown: labels, the faction code (shown in colour-blind mode, see DECK ROWS), and the
+   skip links until they're focused. */
+.sr-only,
+.fcode,
+.skip:not(:focus-within),
+.skip-past:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- 4. SKIP LINKS ---------- */
+
+/* Off-screen until focused (screen readers still reach them), then a bar at the top. */
+.skip {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.skip:not(:focus-within) {
+  padding: 0;
+}
+
+/* ---------- 5. HEADER ---------- */
+
 .topbar {
   display: flex;
   align-items: center;
@@ -109,28 +398,112 @@ h1 span {
   font-size: 0.85rem;
 }
 
-.mode {
-  display: inline-flex;
-  padding: 3px;
-  background: var(--surface);
+/* The header's pill buttons: the Language and Display menus, Help (?) and Credits. */
+.display summary,
+.credits-open {
+  padding: 0.3rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: 999px;
-}
-.mode button {
-  border: 0;
-  background: none;
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
   color: var(--muted);
+  font-weight: 600;
   cursor: pointer;
 }
-.mode button[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 600;
+.credits-open {
+  background: none;
+}
+.display summary {
+  list-style: none;
+}
+.display summary::-webkit-details-marker {
+  display: none;
+}
+.display summary:hover,
+.display[open] summary,
+.credits-open:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+.display {
+  position: relative;
+}
+.display-word {
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+.display-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 30;
+  display: grid;
+  gap: 0.8rem;
+  width: max-content;
+  padding: 1rem;
+}
+.setting {
+  display: grid;
+  gap: 0.35rem;
+}
+.setting-label {
+  padding: 0;
+  font-size: 0.78rem;
 }
 
-/* Filters */
+/* The Language menu: the Display menu's popup, as a list. */
+.lang-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.globe {
+  width: 1.05em;
+  height: 1.05em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+.lang-panel {
+  margin: 0;
+  gap: 0.15rem;
+  padding: 0.4rem;
+}
+.lang-panel button {
+  border: 0;
+  background: none;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+}
+.lang-panel button:hover:not([aria-pressed="true"]) {
+  background: var(--hover);
+}
+
+@media (max-width: 860px) {
+  .topbar {
+    position: relative;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .meta {
+    margin: 0;
+    width: 100%;
+  }
+  /* The menus open under the header, inset from both edges: anchored to a wrapped button they ran off the screen. */
+  .display {
+    position: static;
+  }
+  .display-panel {
+    left: 1rem;
+    right: 1rem;
+    top: calc(100% - 0.4rem);
+    width: auto;
+  }
+}
+
+/* ---------- 6. FILTERS ---------- */
+
 .filters {
   position: sticky;
   top: 0;
@@ -151,10 +524,20 @@ h1 span {
   /* Set from the longest translated label (see sizeFilterLabels in ui/page.ts) so rows stay aligned in every language. */
   width: var(--label-width, 5.5rem);
   flex: none;
-  color: var(--muted);
   font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+}
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+/* As tall as a tile row, so the tiles appearing when a faction is picked don't push the page down. */
+#leader .hint {
+  line-height: calc(2.9rem + 2px);
+}
+/* Lines up under the pills, so the row label centres on the pills alone. */
+.note.indent {
+  margin-top: -0.2rem;
+  margin-left: calc(var(--label-width, 5.5rem) + var(--gap));
 }
 
 .pills {
@@ -197,6 +580,14 @@ h1 span {
 .pill.empty {
   opacity: 0.35;
 }
+[data-contrast="high"] .pill.empty {
+  opacity: 0.6;
+}
+/* Guide & video pills: neutral, so they read as neither a source nor a provision step. */
+#media .pill {
+  --fc: var(--muted);
+  --fc-ink: var(--surface);
+}
 /* Provision steps: a side's word and its pills stay on one line, so phones wrap between groups. */
 .pill-group {
   display: inline-flex;
@@ -207,7 +598,8 @@ h1 span {
   color: var(--muted);
   font-size: 0.85rem;
 }
-/* Stratagem icon pills: the art, then a fixed-width count so every tile is the same size. */
+
+/* Leader and stratagem icon pills: the art, then a fixed-width count so every tile is the same size. */
 .pill.art {
   padding: 0.2rem 0.55rem 0.2rem 0.2rem;
 }
@@ -215,46 +607,48 @@ h1 span {
   width: 2.5rem;
   height: 2.5rem;
 }
+.pill.art span {
+  min-width: 3ch;
+  font-variant-numeric: tabular-nums;
+}
+/* Faction and source colours double as text on tinted pills; darken them on the light background. */
+[data-theme="light"] .pill:not([aria-pressed="true"]) span {
+  color: color-mix(in srgb, var(--fc) 45%, #000);
+}
 /* Stratagem art is a square crop; leader ability icons already have their own shape. */
 [data-stratagem] img {
   border-radius: 999px;
 }
+/* The picked leader's name, beside the tiles (an icon has no tooltip on touch screens). */
 .picked {
   align-self: center;
   color: var(--spare);
   font-size: 0.85rem;
-}
-.pill.art span {
-  min-width: 3ch;
-  font-variant-numeric: tabular-nums;
 }
 /* Stratagem pills: neutral row above the faction row, the note below. */
 .stack {
   display: grid;
   gap: 0.4rem;
 }
-/* Lines up under the pills, so the row label centres on the pills alone. */
-.note.indent {
-  margin-top: -0.2rem;
-  margin-left: calc(var(--label-width, 5.5rem) + var(--gap));
-}
-.hint {
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-/* As tall as a tile row, so the tiles appearing when a faction is picked don't push the page down. */
-#leader .hint {
-  line-height: calc(2.9rem + 2px);
+
+@media (max-width: 860px) {
+  .filters {
+    /* Not sticky on phones, but still positioned: its blur makes it a layer of its own, and its z-index keeps that
+       layer (with the card suggestions in it) above the card frequency list. */
+    position: relative;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
+  .label {
+    width: 100%;
+  }
+  .note.indent {
+    margin-left: 0;
+  }
 }
 
-.chips-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-.chips-box:hover {
-  border-color: var(--border-hover);
-}
+/* ---------- 7. SEARCH ---------- */
 
 .chips-box {
   flex: 1;
@@ -264,14 +658,25 @@ h1 span {
   gap: 0.35rem;
   padding: 0.3rem 0.4rem;
   min-height: 2.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.chips-box:hover {
+  border-color: var(--border-hover);
 }
 .chips-box:focus-within {
   border-color: var(--accent);
+}
+[data-contrast="high"] .chips-box {
+  border-width: 2px;
 }
 .chips {
   display: contents;
   list-style: none;
 }
+
+/* A pick: tinted with its faction (tags, authors and deck links take the accent), with its colour as an edge. */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -316,11 +721,13 @@ h1 span {
   text-decoration: line-through;
   color: var(--muted);
 }
-.sug-without {
-  font-size: 0.75em;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--over-text);
+/* Dual-faction cards: split the faction stripe between both colors. */
+.chip.dual {
+  border-left: 0;
+  box-shadow:
+    inset 3px 0 0 var(--fc),
+    inset 6px 0 0 var(--fc2);
+  padding-left: 0.75rem;
 }
 
 .combo {
@@ -335,6 +742,7 @@ h1 span {
   padding: 0.25rem;
   outline: none;
 }
+
 .suggestions {
   position: absolute;
   top: calc(100% + 6px);
@@ -342,10 +750,6 @@ h1 span {
   width: min(26rem, 90vw);
   margin: 0;
   padding: 0.3rem;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 32px var(--shadow);
 }
 .suggestions > div {
   display: flex;
@@ -375,39 +779,33 @@ h1 span {
   cursor: default;
   border: 0;
 }
-
-.cost {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.6rem;
-  height: 1.4rem;
-  border-radius: 4px;
-  background: var(--cost-bg);
-  color: var(--accent);
-  font: 600 0.75rem var(--mono);
-}
-
-.clear,
-.link {
-  border: 1px solid var(--border);
+/* A tag, author or deck link has no cost: its mark sits where a card's cost would. */
+.suggestions .tag .cost,
+.suggestions .deck-pick .cost,
+.suggestions .author .cost {
   background: none;
   color: var(--muted);
-  padding: 0.35rem 0.8rem;
-  border-radius: var(--radius);
-  cursor: pointer;
 }
-.clear:hover {
-  color: var(--text);
-  border-color: var(--border-hover);
+.sug-alt,
+.sug-kind {
+  color: var(--muted);
+  font-size: 0.85em;
 }
-.link {
-  border: 0;
-  padding: 0;
-  color: var(--accent);
-  text-decoration: underline;
+.sug-kind {
+  margin-left: 0.3rem;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.sug-without {
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--over-text);
 }
 
-/* Layout */
+/* ---------- 8. LAYOUT ---------- */
+
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 20rem;
@@ -415,17 +813,63 @@ h1 span {
   padding: 1rem 1.25rem 3rem;
   max-width: 1400px;
 }
+/* Craft: the list takes the panel's column too. */
+.layout:has(> .panel[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
 .result-head,
 .panel h2 {
   margin: 0 0 0.6rem;
   font-size: 0.8rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
 }
 
-/* Results */
+@media (max-width: 860px) {
+  .layout {
+    /* minmax(0, …): no single deck may stretch the column past the screen (phones then zoom the page out). */
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- 9. RESULTS BAR ---------- */
+
+.result-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+}
+.result-bar .result-head {
+  margin: 0;
+}
+.result-bar .clear {
+  padding: 0.2rem 0.7rem;
+  font-size: 0.85rem;
+}
+/* Skip past results stays hidden (SHARED) until focused, without the padding of the buttons beside it. */
+.result-bar .skip-past:not(:focus) {
+  padding: 0;
+}
+/* Pushes both buttons to the right, together. */
+#dim-common {
+  margin-left: auto;
+}
+.result-bar .clear[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.result-bar .clear:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+#near-note {
+  margin-bottom: 0.6rem;
+}
+
+/* ---------- 10. DECK ROWS ---------- */
+
 .results {
   list-style: none;
   margin: 0;
@@ -433,6 +877,18 @@ h1 span {
   display: grid;
   gap: 0.5rem;
 }
+.more {
+  padding: 1rem;
+  text-align: center;
+}
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
 .deck {
   position: relative;
   padding: 0.6rem 0.9rem 0.6rem 1.1rem;
@@ -440,7 +896,10 @@ h1 span {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   transition: border-color 0.15s;
+  /* The buttons' words show by the row's own width (see the @container rule below). */
+  container-type: inline-size;
 }
+/* The faction stripe down the left edge. */
 .deck::before {
   content: "";
   position: absolute;
@@ -455,6 +914,9 @@ h1 span {
 .deck.over {
   border-color: color-mix(in srgb, var(--over) 55%, var(--border));
 }
+[data-contrast="high"] .deck {
+  border-width: 2px;
+}
 
 .deck-head {
   display: flex;
@@ -462,23 +924,22 @@ h1 span {
   align-items: flex-start;
   gap: 0.75rem;
 }
-.deck-links {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+
+/* The name area is one button that opens the deck: ▸ in the first column, the name, leader and badges in the second. */
 .deck-toggle {
   flex: 1;
   min-width: 0;
   display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  column-gap: 0.6rem;
   border: 0;
   background: none;
   padding: 0;
   text-align: left;
   cursor: pointer;
 }
-.deck-name {
-  font-weight: 600;
+.deck-toggle > :not(.chev) {
+  grid-column: 2;
 }
 /* Names come from deck authors: one with a long unbroken run (e.g. "Shieldwall2111…") must wrap, not widen the page. */
 .deck-name,
@@ -486,20 +947,60 @@ h1 span {
 .votes {
   overflow-wrap: anywhere;
 }
+.deck-name {
+  font-weight: 600;
+}
 .deck-toggle[aria-expanded="true"] .deck-name {
   color: var(--accent);
 }
-/* The disclosure arrow: a control the size of the deck's other buttons, at the start of the row, so it reads as
-   "this opens" without words. The whole name area is the button it belongs to. */
-.deck-toggle {
-  grid-template-columns: 2rem minmax(0, 1fr);
-  column-gap: 0.6rem;
+.deck-sub {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
-.deck-toggle > :not(.chev) {
-  grid-column: 2;
+/* The faction code: hidden (SHARED) but shown in colour-blind mode, before the name. */
+[data-cvd="true"] .fcode {
+  position: static;
+  width: auto;
+  height: auto;
+  clip-path: none;
+  margin-right: 0.45rem;
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  font: 700 0.72rem var(--mono);
+  background: var(--fc);
+  color: var(--fc-ink, #111318);
+  vertical-align: 0.1em;
 }
+
+.deck-src {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+}
+.src {
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fc);
+  background: color-mix(in srgb, var(--fc) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fc) 40%, transparent);
+}
+/* Source colours double as text on tinted badges; darken them on the light background. */
+[data-theme="light"] .src {
+  color: color-mix(in srgb, var(--fc) 45%, #000);
+}
+.votes,
+.updated {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* The deck's square buttons: ▸ (open) on the left; ⧉ ≈ ↗ on the right. */
+.open,
 .chev {
-  grid-row: 1 / span 3;
   display: grid;
   place-items: center;
   width: 2rem;
@@ -507,12 +1008,24 @@ h1 span {
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--muted);
+}
+/* ▸ spans the name area's rows, and turns down (accent) when the deck is open. */
+.chev {
+  grid-row: 1 / span 3;
   font-size: 0.9rem;
   transition:
     transform 0.15s,
     color 0.15s,
     border-color 0.15s;
 }
+.open {
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.open:hover,
 .deck-toggle:hover .chev {
   color: var(--accent);
   border-color: var(--accent);
@@ -522,15 +1035,23 @@ h1 span {
   color: var(--accent);
   border-color: var(--accent);
 }
-.deck-foot {
-  margin: 0.4rem 0 0;
-  padding: 0 0.3rem;
+.deck-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
-/* A deck's buttons say what they do in words once its row has room; narrower rows (phones, the two-column layout on
-   a small laptop) keep the symbols, so the deck name isn't squeezed. Measured on the row, so text size counts too. */
-.deck {
-  container-type: inline-size;
+.open[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
 }
+/* Pressed (⧉ on the deck shown alone): keep its ink on hover, or the accent text vanishes into the accent fill. */
+.open[aria-pressed="true"]:hover {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 85%, var(--text));
+}
+/* The buttons say what they do in words once the row has room; narrower rows (phones, the two-column layout on a
+   small laptop) keep the symbols, so the deck name isn't squeezed. Measured on the row, so text size counts too. */
 .btn-word {
   display: none;
 }
@@ -546,46 +1067,8 @@ h1 span {
     display: inline;
   }
 }
-.open[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-ink);
-}
-.deck-sub {
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-.deck-id {
-  font: 0.78rem var(--mono);
-  color: var(--muted);
-  background: var(--surface-2);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-}
-.open {
-  display: grid;
-  padding: 0;
-  background: none;
-  font: inherit;
-  cursor: pointer;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 6px;
-  text-decoration: none;
-  color: var(--muted);
-  border: 1px solid var(--border);
-}
-.open:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-/* Pressed (⧉ on the deck shown alone): keep its ink on hover, or the accent text vanishes into the accent fill. */
-.open[aria-pressed="true"]:hover {
-  color: var(--accent-ink);
-  background: color-mix(in srgb, var(--accent) 85%, var(--text));
-}
-/* A guide's language, and the video link with its narration language: before the deck ID. */
+
+/* A guide's language, and the video link with its narration language, before the buttons. */
 .lang,
 .video {
   font: 600 0.72rem var(--mono);
@@ -608,11 +1091,6 @@ h1 span {
 }
 .video:hover {
   background: color-mix(in srgb, var(--accent) 15%, transparent);
-}
-/* Guide & video pills: neutral, so they read as neither a source nor a provision step. */
-#media .pill {
-  --fc: var(--muted);
-  --fc-ink: var(--surface);
 }
 
 .stats {
@@ -650,16 +1128,30 @@ h1 span {
   background: color-mix(in srgb, var(--over) 22%, transparent);
   color: var(--over-text);
 }
+.badge.spare {
+  background: color-mix(in srgb, var(--spare) 20%, transparent);
+  color: var(--spare-text);
+}
 /* Cards in common with the deck a Similar list is ranked against. */
 .badge.shared {
   margin-left: 0;
   cursor: default;
   background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
-.badge.spare {
-  background: color-mix(in srgb, var(--spare) 20%, transparent);
-  color: var(--spare-text);
+
+@media (max-width: 860px) {
+  /* The guide language, video and buttons get their own row, so the deck name keeps the width. */
+  .deck-head {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  .deck-links {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
 }
+
+/* ---------- 11. DECK LIST ---------- */
 
 .decklist {
   list-style: none;
@@ -684,15 +1176,26 @@ h1 span {
   text-decoration: underline;
   color: var(--accent);
 }
+.decklist .power {
+  min-width: 1.6rem;
+  text-align: right;
+  font: 600 0.8rem var(--mono);
+  color: var(--text);
+}
+.decklist .copies {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+/* A card the search asked for. */
 .decklist .hit {
   background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
-/* Muted, not faded, so dimmed text keeps WCAG AA contrast. A selected card stays bright: muted text on its highlight
-   misses AA in the dark theme. */
+/* Dim common: muted, not faded, so dimmed text keeps WCAG AA contrast. A selected card stays bright: muted text on its
+   highlight misses AA in the dark theme. */
 .decklist .common:not(.hit) > :is(span, a) {
   color: var(--muted);
 }
-/* A card This deck doesn't run: + as well as an edge, so it doesn't rely on colour. */
+/* Show changes: a card This deck doesn't run gets + as well as an edge, so it doesn't rely on colour. */
 .decklist li:has(.added) {
   box-shadow: inset 2px 0 var(--accent);
 }
@@ -707,27 +1210,21 @@ h1 span {
   font-size: 0.85rem;
   color: var(--muted);
 }
-.decklist .copies {
+/* The full deck ID, under the card list. */
+.deck-foot {
+  margin: 0.4rem 0 0;
+  padding: 0 0.3rem;
+}
+.deck-id {
+  font: 0.78rem var(--mono);
   color: var(--muted);
-  font-size: 0.8rem;
+  background: var(--surface-2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
 }
 
-.more {
-  padding: 1rem;
-  text-align: center;
-}
-.empty-state {
-  padding: 2rem;
-  text-align: center;
-  color: var(--muted);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-}
+/* ---------- 12. CRAFT ---------- */
 
-/* Craft: the list takes the panel's column too. */
-.layout:has(> .panel[hidden]) {
-  grid-template-columns: minmax(0, 1fr);
-}
 .craft-intro {
   max-width: 75ch;
   margin: 0 0 0.8rem;
@@ -810,6 +1307,7 @@ h1 span {
 .craft-table tr.have :is(th, td:not(.have)) {
   color: var(--muted);
 }
+/* The line where the scraps run out. */
 .craft-table .reach td {
   padding: 0.5rem;
   text-align: center;
@@ -823,7 +1321,7 @@ h1 span {
   text-align: center;
 }
 
-/* Phones: the rank and the running total's padding give way, so the table fits 360px. */
+/* Phones: the rank and some padding give way, so the table fits 360px. */
 @media (max-width: 600px) {
   .craft-table .rank {
     display: none;
@@ -846,11 +1344,18 @@ h1 span {
   }
 }
 
-/* Side panel */
+/* ---------- 13. PANEL ---------- */
+
 .panel {
   position: sticky;
   top: 13rem;
   align-self: start;
+}
+.freq {
+  margin-bottom: 0.6rem;
+}
+.freq button {
+  font-size: 0.85rem;
 }
 .bars {
   list-style: none;
@@ -909,6 +1414,7 @@ h1 span {
   width: auto;
   opacity: 0.8;
 }
+/* The share of decks, as a line under the row in the card's faction colour. */
 .bar {
   position: absolute;
   inset: auto auto 0 0;
@@ -922,46 +1428,8 @@ h1 span {
   font-size: 0.85rem;
 }
 
-/* Phones: the guide language, video, ID and open links get their own row, so the deck name keeps the width. */
 @media (max-width: 860px) {
-  .deck-head {
-    flex-wrap: wrap;
-    row-gap: 0.4rem;
-  }
-  .deck-links {
-    flex-basis: 100%;
-    justify-content: flex-end;
-  }
-}
-
-@media (max-width: 860px) {
-  .topbar {
-    position: relative;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  .meta {
-    margin: 0;
-    width: 100%;
-  }
-  .filters {
-    /* Not sticky on phones, but still positioned: its blur makes it a layer of its own, and its z-index keeps that
-       layer (with the card suggestions in it) above the card frequency list. */
-    position: relative;
-  }
-  .row {
-    flex-wrap: wrap;
-  }
-  .label {
-    width: 100%;
-  }
-  .note.indent {
-    margin-left: 0;
-  }
-  .layout {
-    /* minmax(0, …): no single deck may stretch the column past the screen (phones then zoom the page out). */
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* Above the results on phones, its bars in as many columns as fit. */
   .panel {
     position: static;
     order: -1;
@@ -971,408 +1439,13 @@ h1 span {
   }
 }
 
-.note {
-  margin: 0;
-  font-size: 0.85rem;
-  /* The text shade: --spare itself misses AA on the light background. */
-  color: var(--spare-text);
-}
-#near-note {
-  margin-bottom: 0.6rem;
-}
+/* ---------- 14. DIALOGS ---------- */
 
-.f2-MO {
-  --fc2: #c8443b;
-}
-.f2-NG {
-  --fc2: #ebb81c;
-}
-.f2-NR {
-  --fc2: #4a8fd6;
-}
-.f2-SK {
-  --fc2: #9a6ad8;
-}
-.f2-ST {
-  --fc2: #5aaa55;
-}
-
-/* Dual-faction cards: split the faction stripe between both colors. */
-.chip.dual {
-  border-left: 0;
-  box-shadow:
-    inset 3px 0 0 var(--fc),
-    inset 6px 0 0 var(--fc2);
-  padding-left: 0.75rem;
-}
-
-.s-community {
-  --fc: #3fb5a3;
-}
-.s-shinmiri2 {
-  --fc: #a3c94a;
-}
-.s-metallic-danny {
-  --fc: #c76bc4;
-}
-
-.deck-src {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.15rem;
-}
-.src {
-  padding: 0 0.45rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--fc);
-  background: color-mix(in srgb, var(--fc) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--fc) 40%, transparent);
-}
-.votes,
-.updated {
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-/* ---------- Accessibility: themes, contrast, colour vision, motion ---------- */
-
-[data-theme="light"] {
-  --bg: #f5f3ee;
-  --surface: #ffffff;
-  --surface-2: #eeebe4;
-  --border: #d3cec2;
-  --border-hover: #a9a397;
-  --text: #1c1e23;
-  --muted: #555b67;
-  --accent: #8a6213;
-  --accent-ink: #fff;
-  --over: #b8235f;
-  --spare: #a8740e;
-  --over-text: #a01e55;
-  --spare-text: #7d5508;
-  /* Light enough for the accent cost text to keep AA (4.65:1). */
-  --cost-bg: #f5ecd6;
-  --hover: rgb(0 0 0 / 0.05);
-  --header-top: #ebe7de;
-  --sticky-bg: rgb(245 243 238 / 0.94);
-  --shadow: rgb(0 0 0 / 0.15);
-  color-scheme: light;
-}
-/* Faction/source colours double as text on tinted badges; darken them on light backgrounds. */
-[data-theme="light"] .src,
-[data-theme="light"] .pill:not([aria-pressed="true"]) span {
-  color: color-mix(in srgb, var(--fc) 45%, #000);
-}
-
-[data-contrast="high"] {
-  --text: #ffffff;
-  --muted: #c9ced8;
-  --border: #6b7280;
-  --border-hover: #9aa1ad;
-  --over-text: #ffb3d0;
-  --spare-text: #ffd98a;
-}
-[data-contrast="high"][data-theme="light"] {
-  --text: #000;
-  --muted: #2f333b;
-  --border: #6b6558;
-  --border-hover: #3d392f;
-  --over-text: #7a1440;
-  --spare-text: #5a3c00;
-}
-[data-contrast="high"] .pill.empty {
-  opacity: 0.6;
-}
-[data-contrast="high"] .deck,
-[data-contrast="high"] .chips-box {
-  border-width: 2px;
-}
-
-/* Okabe–Ito palette: distinguishable under protanopia, deuteranopia and tritanopia. */
-[data-cvd="true"] .f-MO,
-[data-cvd="true"] .f2-MO {
-  --fc: #d55e00;
-  --fc2: #d55e00;
-  --fc-ink: #111318;
-}
-[data-cvd="true"] .f-NG,
-[data-cvd="true"] .f2-NG {
-  --fc: #f0e442;
-  --fc2: #f0e442;
-}
-[data-cvd="true"] .f-NR,
-[data-cvd="true"] .f2-NR {
-  --fc: #0072b2;
-  --fc2: #0072b2;
-  --fc-ink: #fff;
-}
-[data-cvd="true"] .f-SK,
-[data-cvd="true"] .f2-SK {
-  --fc: #cc79a7;
-  --fc2: #cc79a7;
-}
-[data-cvd="true"] .f-ST,
-[data-cvd="true"] .f2-ST {
-  --fc: #009e73;
-  --fc2: #009e73;
-}
-[data-cvd="true"] .f-SY {
-  --fc: #e69f00;
-}
-[data-cvd="true"] .s-community {
-  --fc: #56b4e9;
-}
-[data-cvd="true"] {
-  --over: #d55e00;
-  --spare: #56b4e9;
-  --over-text: #ff9a52;
-  --spare-text: #8fd0f5;
-}
-[data-cvd="true"][data-theme="light"] {
-  --over-text: #9c3f00;
-  --spare-text: #005a8c;
-}
-
-/* Faction code on each deck: read by screen readers always, shown visually in colour-blind mode. */
-.fcode {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-[data-cvd="true"] .fcode {
-  position: static;
-  width: auto;
-  height: auto;
-  clip-path: none;
-  margin-right: 0.45rem;
-  padding: 0 0.35rem;
-  border-radius: 4px;
-  font: 700 0.72rem var(--mono);
-  background: var(--fc);
-  color: var(--fc-ink, #111318);
-  vertical-align: 0.1em;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    /* biome-ignore lint/complexity/noImportantStyles: must override every component transition for users who asked for less motion */
-    transition: none !important;
-    /* biome-ignore lint/complexity/noImportantStyles: same reason as above */
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Help's extra sections: closed, one line each, so the dialog fits a phone. */
-.help-more {
-  margin-top: 0.8rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--border);
-}
-/* A button's symbol in Help text, boxed like the button itself. */
-.glyph {
-  display: inline-block;
-  min-width: 1.5em;
-  padding: 0 0.2em;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--surface);
-  color: var(--text);
-  line-height: 1.35;
-  text-align: center;
-  text-transform: none;
-}
-.credits-head + .help-more {
-  border-top: 0;
-}
-.help-more summary {
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.help-more summary:hover {
-  color: var(--text);
-}
-.help-more ul {
-  display: grid;
-  gap: 0.4rem;
-  margin: 0.6rem 0 0.2rem;
-  padding-left: 1.4rem;
-}
-.help-more + p {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Display menu */
-.display {
-  position: relative;
-}
-.display summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 0.3rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--muted);
-  font-weight: 600;
-}
-.display summary::-webkit-details-marker {
-  display: none;
-}
-.display-word {
-  font-weight: 400;
-  margin-left: 0.25rem;
-}
-.display summary:hover,
-.display[open] summary {
-  color: var(--text);
-  border-color: var(--border-hover);
-}
-.display-panel {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
-  z-index: 30;
-  display: grid;
-  gap: 0.8rem;
-  width: max-content;
-  padding: 1rem;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 32px var(--shadow);
-}
-.setting {
-  display: grid;
-  gap: 0.35rem;
-}
-.setting-label {
-  padding: 0;
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.seg {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 3px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-}
-.seg button {
-  border: 0;
-  background: none;
-  padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  color: var(--muted);
-  cursor: pointer;
-}
-.seg button:hover:not(:disabled) {
-  color: var(--text);
-}
-.seg button:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.seg button[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 600;
-}
-.seg output {
-  min-width: 3.5rem;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-.result-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
-}
-.result-bar .result-head {
-  margin: 0;
-}
-.result-bar .clear {
-  padding: 0.2rem 0.7rem;
-  font-size: 0.85rem;
-}
-/* Pushes both buttons to the right, together. */
-#dim-common {
-  margin-left: auto;
-}
-.result-bar .clear[aria-pressed="true"] {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-.result-bar .clear:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.decklist .power {
-  min-width: 1.6rem;
-  text-align: right;
-  font: 600 0.8rem var(--mono);
-  color: var(--text);
-}
-
-.b-spare {
-  --fc: var(--spare);
-}
-.b-exact {
-  --fc: var(--accent);
-  --fc-ink: var(--accent-ink);
-}
-.b-over {
-  --fc: var(--over);
-  --fc-ink: #fff;
-}
-
-.freq {
-  margin-bottom: 0.6rem;
-}
-.freq button {
-  font-size: 0.85rem;
-}
-
-/* Credits */
-.credits-open {
-  padding: 0.3rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: none;
-  color: var(--muted);
-  font-weight: 600;
-  cursor: pointer;
-}
-.credits-open:hover {
-  color: var(--text);
-  border-color: var(--border-hover);
-}
+/* Help and Credits share the dialog look ("credits"); each child gets the side margins. */
 .credits {
   width: min(36rem, calc(100vw - 2rem));
   padding: 0;
   color: var(--text);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 32px var(--shadow);
 }
 .credits::backdrop {
   background: rgb(0 0 0 / 0.55);
@@ -1397,6 +1470,79 @@ h1 span {
   margin-top: 0.6rem;
   color: var(--muted);
 }
+
+/* Help: the quick guide, then sections that open one at a time, one line each when closed, so it fits a phone. */
+.help-more {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.credits-head + .help-more {
+  border-top: 0;
+}
+.credits .help-more summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.credits .help-more summary:hover {
+  color: var(--text);
+}
+.help-more ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0.2rem;
+  padding-left: 1.4rem;
+}
+.help-more + p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.guide {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding-left: 1.4rem;
+}
+/* A button's symbol in Help text, boxed like the button itself. */
+.glyph {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 0.2em;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.35;
+  text-align: center;
+  text-transform: none;
+}
+#help-readme,
+#help-news {
+  color: var(--accent);
+}
+.keys {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  margin-top: 0.6rem;
+}
+.keys dt {
+  text-align: right;
+}
+.keys dd {
+  margin: 0;
+}
+.keys kbd {
+  padding: 0.1rem 0.4rem;
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  background: var(--surface);
+}
+
+/* Credits: who made what, with links. */
 .credit-list {
   list-style: none;
   padding: 0;
@@ -1465,146 +1611,13 @@ h1 span {
   color: var(--accent);
 }
 
-/* On narrow screens the menus open under the header, inset from both edges: anchored to a wrapped button they ran off
-   the screen. After the rules above, which it overrides. */
-@media (max-width: 860px) {
-  .display {
-    position: static;
+/* ---------- 15. MOTION ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    /* biome-ignore lint/complexity/noImportantStyles: must override every component transition for users who asked for less motion */
+    transition: none !important;
+    /* biome-ignore lint/complexity/noImportantStyles: same reason as above */
+    scroll-behavior: auto !important;
   }
-  .display-panel {
-    left: 1rem;
-    right: 1rem;
-    top: calc(100% - 0.4rem);
-    width: auto;
-  }
-}
-
-/* Language menu (reuses the Display menu's popup styles) */
-.lang-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.globe {
-  width: 1.05em;
-  height: 1.05em;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-}
-.lang-panel {
-  margin: 0;
-  gap: 0.15rem;
-  padding: 0.4rem;
-}
-.lang-panel button {
-  border: 0;
-  background: none;
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  text-align: left;
-  color: var(--text);
-  cursor: pointer;
-}
-.lang-panel button:hover {
-  background: var(--hover);
-}
-.lang-panel button[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 600;
-}
-.sug-alt,
-.sug-kind {
-  color: var(--muted);
-  font-size: 0.85em;
-}
-.sug-kind {
-  margin-left: 0.3rem;
-  font-size: 0.75em;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-/* A tag has no cost: the # mark sits where a card's cost would. */
-.suggestions .tag .cost,
-.suggestions .deck-pick .cost,
-.suggestions .author .cost {
-  background: none;
-  color: var(--muted);
-}
-
-/* Read by screen readers, not shown. */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* Skip links: off-screen until focused (screen readers still reach them), then a bar at the top. */
-.skip {
-  position: fixed;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 12px 32px var(--shadow);
-}
-.skip:not(:focus-within),
-.skip-past:not(:focus) {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* Help dialog: quick guide, then keyboard shortcuts */
-.credits h3 {
-  margin-top: 1.1rem;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.guide {
-  display: grid;
-  gap: 0.4rem;
-  margin-top: 0.6rem;
-  padding-left: 1.4rem;
-}
-#help-readme,
-#help-news {
-  color: var(--accent);
-}
-.keys {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.5rem 1rem;
-  margin-top: 0.6rem;
-}
-.keys dt {
-  text-align: right;
-}
-.keys dd {
-  margin: 0;
-}
-.keys kbd {
-  padding: 0.1rem 0.4rem;
-  font: inherit;
-  font-size: 0.85rem;
-  border: 1px solid var(--border);
-  border-bottom-width: 2px;
-  border-radius: 0.3rem;
-  background: var(--surface);
 }

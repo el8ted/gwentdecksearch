@@ -13,6 +13,8 @@ the release tag and starts a new Unreleased section. -->
   unordered.
 - Clicking a faction's card in **Craft** turns that faction on, as adding the card from Search does, so its leaders
   show straight away.
+- The **Display** menu's chosen options stay readable when you hover over them: their text no longer fades into the
+  highlight.
 
 ## 2026-10-18.04
 
