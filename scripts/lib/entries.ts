@@ -4,6 +4,7 @@ import {
   type DeckEntry,
   type ListedGuide,
   monthsBefore,
+  parseArchetypeSheet,
   parseGuideListing,
   parseSheet,
   parseSheetTabs,
@@ -32,6 +33,7 @@ const SHEETS = [
     id: '1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM',
     mainGid: '1592369710',
     parse: parseShinmiriSheet,
+    archetypeGid: undefined,
     // Its video links are plain text, so the CSV has them.
     links: false,
   },
@@ -40,6 +42,9 @@ const SHEETS = [
     id: '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
     mainGid: '1966172750',
     parse: parseSheet,
+    // Its Архетипы tab has no patch number and changes rarely, but names the archetype each deck plays: read it in
+    // full every run, like the main list.
+    archetypeGid: '663857777',
     // Its videos are link chips: the CSV has only their titles, the xlsx export their URLs.
     links: true,
   },
@@ -98,11 +103,13 @@ export async function collectEntries(
     for (const t of tabs) {
       extra.push(...(await tab(t.gid)))
     }
+    // After the main list and patch tabs, so names already shown stay the same.
+    if (sheet.archetypeGid) extra.push(...parseArchetypeSheet(await get(sheetCsv(sheet.id, sheet.archetypeGid))))
     const onMain = new Set(main.map((e) => e.url))
     const added = new Set(extra.filter((e) => !onMain.has(e.url)).map((e) => e.url)).size
     const videos = new Set([...main, ...extra].flatMap((e) => (e.video ? [e.url] : []))).size
     consola.info(
-      `${SOURCE_NAMES[sheet.source]}: ${onMain.size} links on the main list; ${tabs.length} patch tabs (${tabs.map((t) => t.name).join(', ')}) add ${added}; ${videos} decks with a video`,
+      `${SOURCE_NAMES[sheet.source]}: ${onMain.size} links on the main list; ${tabs.length} patch tabs (${tabs.map((t) => t.name).join(', ')})${sheet.archetypeGid ? ' and the archetype tab' : ''} add ${added}; ${videos} decks with a video`,
     )
     sheetEntries.push(...main, ...extra)
   }

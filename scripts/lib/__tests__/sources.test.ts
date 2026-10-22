@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   monthsBefore,
   normalizeUrl,
+  parseArchetypeSheet,
   parseCsv,
   parseGuideListing,
   parseSheet,
@@ -115,6 +116,43 @@ describe('parseCsv', () => {
       ['a', 'b, c', 'say "hi"'],
       ['multi\nline', '', 'x'],
     ])
+  })
+})
+
+describe('parseArchetypeSheet', () => {
+  it('names each deck after its row, or the archetype above it, column pair by column pair', () => {
+    // Arrange: two factions; under Monsters, a deck under the archetype and one variant with its own name
+    const deck = (h: string) => `https://www.playgwent.com/ru/decks/${h}`
+    const csv = [
+      'Чудовища,,Синдикат,',
+      'Дикая Охота,,Охотники за Колдуньями,',
+      `${deck('aa')},,Классическое Баунти,${deck('cc')}`,
+      'Завещания,,,',
+      `Классические Завещания,${deck('bb')},,`,
+      ',,Дети Огня,',
+    ].join('\n')
+
+    // Act
+    const entries = parseArchetypeSheet(csv)
+
+    // Assert
+    const e = (name: string, h: string) => ({
+      name,
+      url: `https://www.playgwent.com/decks/${h}`,
+      lang: 'ru',
+      source: 'metallic-danny',
+    })
+    expect(entries).toEqual([e('Дикая Охота', 'aa'), e('Классические Завещания', 'bb'), e('Классическое Баунти', 'cc')])
+  })
+
+  it('skips a link with no archetype above it, and a video in the link column', () => {
+    // Act
+    const entries = parseArchetypeSheet(
+      ['https://www.playgwent.com/ru/decks/aa,', 'Исцеления,https://youtu.be/x'].join('\n'),
+    )
+
+    // Assert
+    expect(entries).toEqual([])
   })
 })
 

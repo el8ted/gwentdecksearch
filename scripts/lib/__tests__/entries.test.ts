@@ -63,6 +63,8 @@ describe('collectEntries', () => {
     expect(entries.map((e) => e.name)).toEqual(['Guide 1', 'Guide 2'])
     expect(requested.some((u) => u.endsWith('gid=105'))).toBe(true)
     expect(requested.some((u) => u.endsWith('gid=102'))).toBe(false)
+    // MetallicDanny's archetype tab has no patch number, so it's read whatever the window.
+    expect(requested.some((u) => u.endsWith('gid=663857777'))).toBe(true)
     // Only MetallicDanny's sheet has link chips, so only its tabs are read as xlsx.
     expect(requested.filter((u) => u.includes('format=xlsx')).map((u) => u.split('/')[5])).toEqual([
       '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',

@@ -63414,5 +63414,701 @@
     "name": "Листик Гезрас (имба)",
     "source": "metallic-danny",
     "url": "https://www.playgwent.com/decks/1c7b8c39528d76e03c85e047cf2485d8"
+  },
+  {
+    "lang": "ru",
+    "name": "Дикая Охота",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399656"
+  },
+  {
+    "lang": "ru",
+    "name": "Классикические Завещания",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/b72cd992977d9c2845a26d2c3b042d4e"
+  },
+  {
+    "lang": "ru",
+    "name": "Вий",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/d1dedeeb390dc3447b178a0d8fd292ea"
+  },
+  {
+    "lang": "ru",
+    "name": "Классикические Огроиды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/bf2915c68917ea3718435c70eaf66347"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Огроиды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/5630b0583582de2e0fcaa79874517a82"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Реликты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401508"
+  },
+  {
+    "lang": "ru",
+    "name": "Классические Вампиры",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402345"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Кащей",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396407"
+  },
+  {
+    "lang": "ru",
+    "name": "Классический Кащей",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400564"
+  },
+  {
+    "lang": "ru",
+    "name": "Плоды Контроль",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/d9407a658ee223e3bfce1c8678fbfe82"
+  },
+  {
+    "lang": "ru",
+    "name": "Гернихора",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/b830d4c4f8b38fb5d2e28b94f3134684"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Плоды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400120"
+  },
+  {
+    "lang": "ru",
+    "name": "Кельтуллис",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/a6652cd3ceafd2ceb6605368da5b7c76"
+  },
+  {
+    "lang": "ru",
+    "name": "Туго Моровая",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402767"
+  },
+  {
+    "lang": "ru",
+    "name": "Рваное Крыло Чудовища",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397069"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Органика",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/225fc15fcca5c34bfe99dfdc873b8e63"
+  },
+  {
+    "lang": "ru",
+    "name": "Шабаш Органика",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/7fa51c6d1b3fa98485800e650b9bbafe"
+  },
+  {
+    "lang": "ru",
+    "name": "Мидрейндж Лара",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401941"
+  },
+  {
+    "lang": "ru",
+    "name": "Пивной Рюхин",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396190"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Рюхин",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400976"
+  },
+  {
+    "lang": "ru",
+    "name": "Ноуюнит Детлафф",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399154"
+  },
+  {
+    "lang": "ru",
+    "name": "Классик Ведьмаки",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/f31f0f7972cec406a40c003e695e9e38"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Щиты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/970b2f291cadc1d94cceb3bb48f1e545"
+  },
+  {
+    "lang": "ru",
+    "name": "Мелитэле",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398782"
+  },
+  {
+    "lang": "ru",
+    "name": "Классические Жрицы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401083"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Жрицы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397349"
+  },
+  {
+    "lang": "ru",
+    "name": "Девоушен Осада",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396928"
+  },
+  {
+    "lang": "ru",
+    "name": "Не Девоушен Осада",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/cdb51f9dd2d4daeef69fc61d239dbd3c"
+  },
+  {
+    "lang": "ru",
+    "name": "Темерская Пехота",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400533"
+  },
+  {
+    "lang": "ru",
+    "name": "Классик Рубайлы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/5d6c2477004ef9194864446d667052a6"
+  },
+  {
+    "lang": "ru",
+    "name": "Цинтрийская Стража",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/c46711a8e7bbcbc6e8520d960e8fb7e5"
+  },
+  {
+    "lang": "ru",
+    "name": "Роше Арбалетчики",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402517"
+  },
+  {
+    "lang": "ru",
+    "name": "Алумни (Терпилы)",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/889fea1134eb1838c7383ab877d58e20"
+  },
+  {
+    "lang": "ru",
+    "name": "Кудесники",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403310"
+  },
+  {
+    "lang": "ru",
+    "name": "Классические Рыцари",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/34d0399c674fa34cabc77832541f25ce"
+  },
+  {
+    "lang": "ru",
+    "name": "Пивные Рыцари",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398298"
+  },
+  {
+    "lang": "ru",
+    "name": "Девоушен Рыцари",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/9072dedbfd57c22e66c6e08fc006bdf0"
+  },
+  {
+    "lang": "ru",
+    "name": "Храм Демавенд Осада",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399886"
+  },
+  {
+    "lang": "ru",
+    "name": "Храм Кимбольт Осада",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402565"
+  },
+  {
+    "lang": "ru",
+    "name": "Проклятые",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397088"
+  },
+  {
+    "lang": "ru",
+    "name": "Лавк Эрланд",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401658"
+  },
+  {
+    "lang": "ru",
+    "name": "Архигрифон",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/83a196b4dc8c54833cb96b602e75d8fc"
+  },
+  {
+    "lang": "ru",
+    "name": "Сиги Баллисты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/7b75acc3c6702d9ac3ba4d90b1fe14d3"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Щиты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403264"
+  },
+  {
+    "lang": "ru",
+    "name": "Анси Щиты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402083"
+  },
+  {
+    "lang": "ru",
+    "name": "Дуэлянты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402385"
+  },
+  {
+    "lang": "ru",
+    "name": "Перемещения Ведьмаки",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398694"
+  },
+  {
+    "lang": "ru",
+    "name": "Ловушки",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400578"
+  },
+  {
+    "lang": "ru",
+    "name": "Классический Амбуш",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/47c5cb64d012718d2ef5df7953dc40bf"
+  },
+  {
+    "lang": "ru",
+    "name": "Абуз Грузы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/47c5cb64d012718d2ef5df7953dc40bf"
+  },
+  {
+    "lang": "ru",
+    "name": "Двойной Сценарий",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402842"
+  },
+  {
+    "lang": "ru",
+    "name": "Эльфи Рагнарёк",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399069"
+  },
+  {
+    "lang": "ru",
+    "name": "Мадук Драконы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/47c5cb64d012718d2ef5df7953dc40bf"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Драконы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/d03c15bdf82d2f1deb655bae23b843a3"
+  },
+  {
+    "lang": "ru",
+    "name": "Не Девоушен",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402416"
+  },
+  {
+    "lang": "ru",
+    "name": "Девоушен",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396168"
+  },
+  {
+    "lang": "ru",
+    "name": "Классическая Гармония",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401865"
+  },
+  {
+    "lang": "ru",
+    "name": "Пивные Эльфы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/35198dee6d06a820275a6d09ae003ed4"
+  },
+  {
+    "lang": "ru",
+    "name": "Конструкты Краснолюды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/fa8875bb247fa2a5cdc633fd805dbef9"
+  },
+  {
+    "lang": "ru",
+    "name": "Краснолюды Мунро",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/108df8cda96ba05702e5fa77cbe43520"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Краснолюды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399576"
+  },
+  {
+    "lang": "ru",
+    "name": "Точный Удар Краснолюды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396825"
+  },
+  {
+    "lang": "ru",
+    "name": "Классика Хэндбафф",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403061"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Хэндбафф",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/34bb35bf9ec05f220b3c551f12cd6ef0"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Хэндбафф",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/83597c2e318a47e6984cd5ea2a40e680"
+  },
+  {
+    "lang": "ru",
+    "name": "Мильва Деннис",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/e83eab459205df65de7ff6c70a57f98f"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Альзур",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400825"
+  },
+  {
+    "lang": "ru",
+    "name": "Альзур Пиво",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/4196f32f90da66a2ca02743bbf9424fa"
+  },
+  {
+    "lang": "ru",
+    "name": "Девоушен Ширру",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403433"
+  },
+  {
+    "lang": "ru",
+    "name": "Мильва Деннис",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/e83eab459205df65de7ff6c70a57f98f"
+  },
+  {
+    "lang": "ru",
+    "name": "Гиперконтроль Ширру",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402201"
+  },
+  {
+    "lang": "ru",
+    "name": "Аристократы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/59b2bc5b621af2c485c2a7b8bfd0a1df"
+  },
+  {
+    "lang": "ru",
+    "name": "Ассимка Тактики",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400679"
+  },
+  {
+    "lang": "ru",
+    "name": "Хельга Тактики",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/0ab2a71a7052a86b977abc5c40d4c05a"
+  },
+  {
+    "lang": "ru",
+    "name": "Иво Тактики",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/661496f2a4f5d07cd3607f1604f962bb"
+  },
+  {
+    "lang": "ru",
+    "name": "Ассимиляция",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/371312"
+  },
+  {
+    "lang": "ru",
+    "name": "Солдаты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402783"
+  },
+  {
+    "lang": "ru",
+    "name": "Милл",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402224"
+  },
+  {
+    "lang": "ru",
+    "name": "Классический Кольгрим",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/65bf8c970c64e77f529abba38a1efe5b"
+  },
+  {
+    "lang": "ru",
+    "name": "Конструкты Риенс",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403517"
+  },
+  {
+    "lang": "ru",
+    "name": "Виппер",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/d123dc2e72ad1bb7b78f7b57c088a369"
+  },
+  {
+    "lang": "ru",
+    "name": "Двойной Мадук",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397395"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Альбрых",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401316"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/d9c238ccdd578df5dc49be3ee1b469c4"
+  },
+  {
+    "lang": "ru",
+    "name": "Лавк Генрих",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398655"
+  },
+  {
+    "lang": "ru",
+    "name": "Лавк Солдаты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396988"
+  },
+  {
+    "lang": "ru",
+    "name": "Коровы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/c3a945eb6195e2c457ec5b55af0533d2"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Нильфы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397512"
+  },
+  {
+    "lang": "ru",
+    "name": "Разведчики (Спотеры)",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/0fbb8b4095705cc9d926b7eb045342a2"
+  },
+  {
+    "lang": "ru",
+    "name": "Бандиты (Трюкачки)",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/392112"
+  },
+  {
+    "lang": "ru",
+    "name": "Набеги",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/397318"
+  },
+  {
+    "lang": "ru",
+    "name": "Воины Улула",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399779"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Улула",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/395941"
+  },
+  {
+    "lang": "ru",
+    "name": "Ведьмаки Скелиге",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398008"
+  },
+  {
+    "lang": "ru",
+    "name": "Компас Пираты",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/13819ab1c26d0dfdeca789f858b3d697"
+  },
+  {
+    "lang": "ru",
+    "name": "Алхимия",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400603"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Дождь",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396866"
+  },
+  {
+    "lang": "ru",
+    "name": "Классический самоурон",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401139"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Исцеления",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400036"
+  },
+  {
+    "lang": "ru",
+    "name": "Сигилль",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/403174"
+  },
+  {
+    "lang": "ru",
+    "name": "Керис Друммонды",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/4c58988ab2b09c5d3cf43465cfa67f95"
+  },
+  {
+    "lang": "ru",
+    "name": "Ренфри Скеллиге",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/401785"
+  },
+  {
+    "lang": "ru",
+    "name": "Мидрейндж Сове",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402034"
+  },
+  {
+    "lang": "ru",
+    "name": "Мидрейндж Сбросы",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398536"
+  },
+  {
+    "lang": "ru",
+    "name": "Классическое Баунти",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/41fb4de22ff8232d3f9ec7a410668e6a"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Баунти",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/399195"
+  },
+  {
+    "lang": "ru",
+    "name": "Джекпот Яго",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/fbfc4fcd52e3476aeb888c553f3a779d"
+  },
+  {
+    "lang": "ru",
+    "name": "Классик Дети Огня",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/402542"
+  },
+  {
+    "lang": "ru",
+    "name": "Накер Дети Огня",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/398896"
+  },
+  {
+    "lang": "ru",
+    "name": "Двойной Сценарий",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/cc7b34086625588b532070980a3d3fea"
+  },
+  {
+    "lang": "ru",
+    "name": "Пассифлора",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/395659"
+  },
+  {
+    "lang": "ru",
+    "name": "Банды Синдиката",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/b3e4a7df9368802c01dce6c4bc32a4ad"
+  },
+  {
+    "lang": "ru",
+    "name": "Преступления",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/9072dedbfd57c22e66c6e08fc006bdf0"
+  },
+  {
+    "lang": "ru",
+    "name": "Мидрейндж Дани",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/209fc0605b4a9759c915e6106d89aed2"
+  },
+  {
+    "lang": "ru",
+    "name": "Ахеронтия",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/400174"
+  },
+  {
+    "lang": "ru",
+    "name": "Горожане",
+    "source": "metallic-danny",
+    "url": "https://www.playgwent.com/decks/guides/396206"
   }
 ]

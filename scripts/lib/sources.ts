@@ -153,6 +153,35 @@ export function parseSheet(csv: string, links: SheetLinks = new Map()): DeckEntr
   })
 }
 
+/**
+ * Parses MetallicDanny's Архетипы (Archetypes) tab (CSV export): one column pair per faction (name, then link).
+ * Down each pair, a name with no link is an archetype; a name with a link beside it is one of its decks; a link
+ * alone in the name column is a deck named after the archetype above it. The faction row on top never has a link.
+ *
+ * @param csv - CSV export of the tab
+ * @returns Entries column by column, top to bottom, names still in Russian
+ */
+export function parseArchetypeSheet(csv: string): DeckEntry[] {
+  const rows = parseCsv(csv)
+  const width = Math.max(0, ...rows.map((r) => r.length))
+  const entries: DeckEntry[] = []
+  for (let col = 0; col < width; col += 2) {
+    let archetype = ''
+    for (const row of rows) {
+      const [left = '', right = ''] = [row[col]?.trim(), row[col + 1]?.trim()]
+      const alone = normalizeUrl(left)
+      const url = alone ?? normalizeUrl(right)
+      if (!url) {
+        if (left) archetype = left
+        continue
+      }
+      const name = alone ? archetype : left || archetype
+      if (name) entries.push({ name, url, lang: 'ru', source: 'metallic-danny' })
+    }
+  }
+  return entries
+}
+
 /** One tab of a public Google Sheet. */
 export interface SheetTab {
   name: string
