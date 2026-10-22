@@ -19,6 +19,7 @@
       "**",
       "!!**/dist",
       "!!**/coverage",
+      "!!**/gwent-deck-data",
       "!!**/data",
       "!!**/.pi",
       "!!**/test-results",

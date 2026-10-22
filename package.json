@@ -22,6 +22,7 @@
     "whatif": "node scripts/whatif.ts",
     "poll": "node scripts/poll.ts",
     "package": "node scripts/package.ts",
+    "export": "node scripts/export.ts",
     "check": "biome check .",
     "check:fix": "biome check --write ."
   },

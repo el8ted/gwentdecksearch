@@ -112,6 +112,25 @@ with them, ranked by lift: how much more often a card is in these decks than in 
 faction's, or every deck for a neutral). Tags miss some roles, so `ROLE_EXTRAS` in `lib/packages.ts` adds them by hand
 (Azar Javed's scarabs are defenders; the card isn't tagged).
 
+## `pnpm export [--out <folder>]`
+
+The decks and cards as spreadsheets, for analysis in Excel, Google Sheets, LibreOffice, Python or R without running
+anything here. Each release attaches it as `gwent-deck-data-<tag>.zip`; `pnpm export` writes the same folder locally
+(`gwent-deck-data/` by default, emptied first).
+
+- `decks.csv`: a row per deck: faction, leader, stratagem, provisions against today's limit, sources, author, guide
+  date, video.
+- `deck-cards.csv`: every deck's cards and copies, one row each, leader and stratagem marked.
+- `cards.csv`: every card's stats and tags, how many decks run it out of those that could, and its name in all 11
+  languages.
+- `card-pairs.csv`: pairs of cards in at least 10 decks together, and their lift: how much more often than chance,
+  counted over the decks that could run both. Groups of cards with high lift to each other are archetypes; the file
+  leaves naming them to whoever reads it.
+- `leaders/<language>/`: a `pnpm package` report per leader, card names in that language beside the English.
+- `manifest.json`, and a README in each of the site's languages (the column reference is in the English one).
+
+The CSV files are UTF-8 with a byte-order mark, so Excel shows every language's names correctly.
+
 ## `pnpm kegs [faction]`
 
 What faction, neutral and general kegs are worth as a collection fills (default faction `MO`), and how many kegs it
@@ -133,5 +152,6 @@ only where it helps, and check the subreddit's rules on links and self-promotion
 ## Code
 
 Each script is a thin command line in this folder over pure, tested functions in `lib/`: `analysis.ts` holds the
-shared loading and name lookup; `whatif.ts`, `poll.ts`, `packages.ts`, `kegs.ts` and `reddit.ts` the reports. Tests are in
-`lib/__tests__/`; the example ballot above is tested against the real data, so it can't go stale unnoticed.
+shared loading and name lookup; `whatif.ts`, `poll.ts`, `packages.ts`, `export.ts` (with `export-readme.ts`),
+`kegs.ts` and `reddit.ts` the reports. Tests are in `lib/__tests__/`; the example ballot above is tested against the
+real data, so it can't go stale unnoticed.

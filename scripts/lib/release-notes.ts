@@ -124,6 +124,7 @@ export function releaseNotes(changelog: string, before: Dataset | undefined, aft
     '### Use it',
     '',
     `- **Online:** ${CONFIG.siteUrl}`,
-    '- **Offline:** download the zip below, unzip it and open `gwent-deck-search/index.html` in your browser.',
+    '- **Offline:** download `gwent-deck-search-…zip` below, unzip it and open `gwent-deck-search/index.html` in your browser.',
+    '- **Data:** `gwent-deck-data-…zip` has the decks and cards as spreadsheets (CSV) for your own analysis; its README explains each file, in 11 languages.',
   ].join('\n')
 }
