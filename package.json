@@ -19,6 +19,9 @@
     "reddit": "node scripts/reddit.ts",
     "readmes": "node scripts/readme-stubs.ts",
     "kegs": "node scripts/kegs.ts",
+    "whatif": "node scripts/whatif.ts",
+    "poll": "node scripts/poll.ts",
+    "package": "node scripts/package.ts",
     "check": "biome check .",
     "check:fix": "biome check --write ."
   },

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { IndexedDeck } from '../../../src/filter.ts'
+import type { Dataset } from '../../../src/types.ts'
 import {
   CRAFT,
   cardsIn,
@@ -54,12 +55,14 @@ describe('kegPools', () => {
 describe('playedCards', () => {
   it("measures faction cards against their faction's decks and neutrals against every deck", () => {
     // Arrange: two MO decks and two SK decks; 10 is in 1 of 2 MO decks, 20 in 1 of 4 decks, 1 is a leader
-    const deck = (faction: IndexedDeck['faction'], ids: number[]) => ({ faction, ids: new Set(ids) }) as IndexedDeck
+    const deck = (faction: IndexedDeck['faction'], ids: number[]) =>
+      ({ faction, leader: 1, stratagem: 2, deck: { cards: ids.map((id) => [id, 1]) } }) as unknown as IndexedDeck
+    const cards = CATALOG as unknown as Dataset['cards']
     const decks = [deck('MO', [1, 10, 20]), deck('MO', [1, 11]), deck('SK', []), deck('SK', [])]
     const factionOf = (id: number) => CATALOG[id].faction
 
     // Act
-    const [half, quarter] = [0.5, 0.25].map((s) => playedCards(decks, rarity, factionOf, s))
+    const [half, quarter] = [0.5, 0.25].map((s) => playedCards(decks, cards, rarity, factionOf, s))
 
     // Assert
     expect(half).toEqual(new Set([10, 11]))

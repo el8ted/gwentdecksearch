@@ -1,5 +1,5 @@
-import type { IndexedDeck } from '../../src/filter.ts'
-import { type Faction, RARITIES, type Rarity } from '../../src/types.ts'
+import { craftList, type IndexedDeck } from '../../src/filter.ts'
+import { type Dataset, type Faction, RARITIES, type Rarity } from '../../src/types.ts'
 import { rarityOf } from './cards.ts'
 import type { CatalogCard } from './store.ts'
 
@@ -69,6 +69,7 @@ export function cardsIn(pools: Pools, kegs: Keg[]): Set<number> {
  * A faction card is measured against that faction's decks, a neutral against every deck, since only those could run it.
  *
  * @param decks - Published decks
+ * @param cards - The decks' card data (the site's), for counting decks per card as the Craft list does
  * @param rarity - Each keg card's rarity, from {@link kegPools}; other cards (leaders, stratagems) are skipped
  * @param factionOf - A card's faction
  * @param share - Smallest share of those decks a card must be in, e.g. 0.05
@@ -76,18 +77,15 @@ export function cardsIn(pools: Pools, kegs: Keg[]): Set<number> {
  */
 export function playedCards(
   decks: IndexedDeck[],
+  cards: Dataset['cards'],
   rarity: Map<number, Rarity>,
   factionOf: (id: number) => Faction,
   share: number,
 ): Set<number> {
   const perFaction = new Map<Faction, number>()
-  const runs = new Map<number, number>()
-  for (const d of decks) {
-    perFaction.set(d.faction, (perFaction.get(d.faction) ?? 0) + 1)
-    for (const id of d.ids) runs.set(id, (runs.get(id) ?? 0) + 1)
-  }
+  for (const d of decks) perFaction.set(d.faction, (perFaction.get(d.faction) ?? 0) + 1)
   const played = new Set<number>()
-  for (const [id, n] of runs) {
+  for (const { id, decks: n } of craftList(decks, [], cards)) {
     if (!rarity.has(id)) continue
     const f = factionOf(id)
     if (n >= share * (f === 'NE' ? decks.length : (perFaction.get(f) ?? Infinity))) played.add(id)

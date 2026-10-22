@@ -13,6 +13,10 @@ the release tag and starts a new Unreleased section. -->
   today's provision limit like the rest; the guide notes that the check sees provisions only.
 - MetallicDanny's archetype list is read too: about 110 decks he files by faction and archetype, 34 of them new to
   the site.
+- For anyone digging into the data: `pnpm whatif` shows what a Balance Council ballot (power and provision changes,
+  ranked) would do to the published decks; `pnpm poll` turns a Balance Council poll (a Google Form) into one; and
+  `pnpm package` shows the decks built around a card or tag and what they run with. Card names work in any of the
+  site's languages. See scripts/README.md.
 - Cards that tie in **Craft** and **Most/Least common** are listed legendary first, then by name, instead of in an
   arbitrary order. On a single deck, where every card ties, Craft now goes from the most expensive cards down.
 - Decks are listed in alphabetical order of the name you see: a deck shown under its author's own name, in your

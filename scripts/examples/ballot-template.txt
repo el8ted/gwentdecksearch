@@ -1,0 +1,32 @@
+# A Balance Council ballot for `pnpm whatif <file>`. Copy this file and fill in the slots.
+#
+# The ballot has four lists of three ranked picks each: 3 is your top pick, 1 your third. Each change that passes
+# moves a card by one: a unit's power, or any card's provisions. A leader's provisions are its bonus, so a provision
+# increase on a leader is a buff to its decks.
+#
+# Write a card after its rank, by name in any of the site's languages or by ID (Gwent Deck Search shows the ID).
+# Empty slots are skipped. A name that could mean more than one card stops the run and lists them: nothing is guessed.
+#
+# More than three picks (a coalition's list, or picks tied on votes): add lines under the same heading, either with
+# a rank ("1. Card" twice for a tie) or unranked ("- Card"). A card can be on one power list and one provision list,
+# not on both of either.
+
+Power increase
+3.
+2.
+1.
+
+Power decrease
+3.
+2.
+1.
+
+Provision increase
+3.
+2.
+1.
+
+Provision decrease
+3.
+2.
+1.

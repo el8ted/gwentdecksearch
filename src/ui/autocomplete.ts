@@ -38,7 +38,7 @@ export function fold(text: string): string {
 }
 
 /** For matching typed text to an author: spacing and punctuation ignored, so "metallic d" finds MetallicDanny. */
-const loose = (text: string) => fold(text).replace(/[^\p{L}\p{N}]/gu, '')
+export const loose = (text: string) => fold(text).replace(/[^\p{L}\p{N}]/gu, '')
 
 /** Options for {@link createAutocomplete}. */
 export interface AutocompleteOptions {
@@ -78,7 +78,7 @@ const EXCLUDE = /^[-!－！]\s*/
 const URL_START = /^(?:http|www\.|playgwent)/i
 
 /** How a name matches the query: 0 prefix, 1 substring, -1 not at all. `loose` also counts a query that extends the name. */
-function matchRank(name: string, q: string, loose = false): number {
+export function matchRank(name: string, q: string, loose = false): number {
   const lower = fold(name)
   const at = lower.indexOf(q)
   return at === 0 || (loose && q.startsWith(lower)) ? 0 : at > 0 ? 1 : -1

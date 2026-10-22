@@ -38,7 +38,7 @@ const VIEWS: [string, Set<number> | undefined][] = [
   ['You want every card', undefined],
   ...[0.01, 0.05].map((s): [string, Set<number>] => [
     `You want cards in at least ${s * 100}% of the ${data.decks.length} published decks that could run them`,
-    playedCards(decks, rarity, (id) => catalog[id].faction, s),
+    playedCards(decks, data.cards, rarity, (id) => catalog[id].faction, s),
   ]),
 ]
 const fmt = (n: number | undefined) => n ?? `>${KEGS}`

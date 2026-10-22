@@ -1,0 +1,25 @@
+# An example ballot for `pnpm whatif scripts/examples/ballot-example.txt`: real cards, made-up picks, not a
+# recommendation. Start your own from ballot-template.txt.
+
+Power increase
+3. Giant Boar
+2. Kaedweni Cavalry
+1. Braathens
+
+Power decrease
+3. Dracoturtle
+2. Auberon: King
+1. Udalryk an Brokvar
+
+Provision increase
+3. Kolgrim
+2. Caranthir Ar-Feiniel
+1. Baccalà
+- Ulula                 # an extra, as a coalition list might add
+- Toussaintois Hospitality   # a leader: its bonus goes up, so its decks gain a provision
+
+Provision decrease
+3. Eldain
+2. Sigi Reuven
+1. Prince Stennis
+1. Vilgefortz Renegade  # tied with the line above; punctuation in names doesn't matter

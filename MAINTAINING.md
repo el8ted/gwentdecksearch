@@ -166,18 +166,6 @@ These are committed, and rebuilt by a script when their inputs change:
 | `docs/README.{lang}.md` | `pnpm readmes` | `help.*` phrases change in `src/i18n/`. |
 | `data/decks.json`, `data/decklist.md`, `data/i18n/*.js` | `pnpm build:data` | Anything in `data/source/` changes. |
 
-## Replying on Reddit
-
-When someone shares a deck on Reddit, `pnpm reddit <playgwent.com deck or guide link>` prints a short comment to paste
-in reply: the deck's gameplay video and, if it's over today's provision limit, the close decks that still fit, each
-linked into the site. It uses the local `data/decks.json`, so pull or `pnpm build:data` first.
-
-It prints nothing, and says why, when the deck has no video and fits: a reply with nothing new in it is just an ad.
-Add `--author` when you're the site's author: it ends the comment with "I made Gwent Deck Search; happy to answer
-questions." (true only for you, so it's not the default). A sentence of your own about the post reads better than any
-template.
-Post by hand, only where it helps, and check the subreddit's rules on links and self-promotion first.
-
 ## First-time setup
 
 Done once, in the repo's **Settings**:
@@ -189,11 +177,8 @@ Done once, in the repo's **Settings**:
 4. **Issues → Labels:** create `data` and `translation` (`bug` and `enhancement` exist already). The issue forms in
    `.github/ISSUE_TEMPLATE/` use them.
 
-## Keg value numbers
+## Helper scripts
 
-`pnpm kegs [faction]` (default `MO`) prints the Markdown tables behind the keg-buying guide: what faction, neutral and
-general kegs are worth as a collection fills, and how many kegs it takes to own a faction's bronzes and half its golds.
-It simulates players opening kegs against `data/source/cards.json`, counting as wanted either every card or only the
-cards in at least 1% / 5% of `data/decks.json`'s decks that could run them. Seeded, so a rerun prints the same numbers
-until the data changes; rerun after a balance patch and a refresh. The odds and mill values it assumes are in
-`scripts/lib/kegs.ts`.
+`pnpm whatif`, `pnpm poll`, `pnpm package`, `pnpm kegs` and `pnpm reddit` read the local data and print Markdown: what
+a Balance Council ballot or poll does to the published decks, the decks built around a card or tag, keg values, and a
+reply for a deck shared on Reddit. The site doesn't need them. See [scripts/README.md](scripts/README.md).
