@@ -12,10 +12,16 @@ import {
 } from './sources.ts'
 import { type SheetLinks, sheetLinks } from './xlsx.ts'
 
-/** Community guides are read back this many months: older guides are usually only a few provisions over. */
-export const COMMUNITY_WINDOW_MONTHS = 12
-/** Sheet patch tabs are read back this many months. */
-export const SHEET_WINDOW_MONTHS = 6
+/**
+ * Community guides are read back this many months. Older guides add variations of today's archetypes and the niche
+ * ones published about once a month; past 18 months, decks over today's provision limit start to crowd the lists.
+ */
+export const COMMUNITY_WINDOW_MONTHS = 18
+/**
+ * Sheet patch tabs are read back this many months; each sheet's main list is always read in full. Older tabs are
+ * mostly decks built to an old patch's limit.
+ */
+export const SHEET_WINDOW_MONTHS = 12
 const LISTING_PAGE = 500
 const GUIDE_API = 'https://www.playgwent.com/en/decks/api/guides'
 // Order matters: the first entry for a deck names it. Shinmiri2 precedes MetallicDanny because MetallicDanny's
@@ -54,6 +60,7 @@ export type GetBytes = (url: string) => Promise<Buffer>
  * @param get - Fetches a body
  * @param getBytes - Fetches a body as bytes (sheet exports with link chips)
  * @param now - Reference time for the window
+ * @param windows - Months to read back, community guides and sheet patch tabs; defaults to the shipped windows
  * @returns Every entry in source-priority order (duplicates kept: each records a source), and the number of
  *   guides listed
  */
@@ -61,8 +68,9 @@ export async function collectEntries(
   get: GetBody,
   getBytes: GetBytes,
   now: Date,
+  windows = { community: COMMUNITY_WINDOW_MONTHS, sheets: SHEET_WINDOW_MONTHS },
 ): Promise<{ entries: DeckEntry[]; listed: number }> {
-  const sinceIso = monthsBefore(now, COMMUNITY_WINDOW_MONTHS).toISOString()
+  const sinceIso = monthsBefore(now, windows.community).toISOString()
   const listed: ListedGuide[] = []
   for (let offset = 0; ; offset += LISTING_PAGE) {
     const body = await get(`${GUIDE_API}/offset/${offset}/limit/${LISTING_PAGE}`)
@@ -71,7 +79,7 @@ export async function collectEntries(
     if (page.length < LISTING_PAGE || page.every((g) => g.modified < sinceIso)) break
   }
 
-  const sheetsSince = monthsBefore(now, SHEET_WINDOW_MONTHS)
+  const sheetsSince = monthsBefore(now, windows.sheets)
   const sheetEntries: DeckEntry[] = []
   for (const sheet of SHEETS) {
     const tab = async (gid: string) => {

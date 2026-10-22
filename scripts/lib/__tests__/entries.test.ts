@@ -15,7 +15,7 @@ const guide = (id: number, modified: string) => ({
   published: true,
   invalid: false,
 })
-const TABS = '{name: "14.5", pageUrl: "x", gid: "105"}, {name: "14.2", pageUrl: "x", gid: "102"}'
+const TABS = '{name: "14.5", pageUrl: "x", gid: "105"}, {name: "13.8", pageUrl: "x", gid: "102"}'
 const NOW = new Date('2026-10-15T00:00:00Z')
 // An empty zip: a sheet without links.
 const noLinks = async () => Buffer.from([0x50, 0x4b, 0x05, 0x06, ...Array(18).fill(0)])
@@ -34,7 +34,7 @@ const sheets =
   }
 
 describe('collectEntries', () => {
-  it('reads community guides 12 months back but sheet patch tabs only 6', async () => {
+  it('reads community guides 18 months back but sheet patch tabs only 12', async () => {
     // Arrange
     const requested: string[] = []
     const get = async (url: string) => {
@@ -43,8 +43,8 @@ describe('collectEntries', () => {
         return JSON.stringify({
           guides: [
             guide(1, '2026-10-01T00:00:00+00:00'),
-            guide(2, '2025-12-01T00:00:00+00:00'),
-            guide(3, '2025-09-01T00:00:00+00:00'),
+            guide(2, '2025-06-01T00:00:00+00:00'),
+            guide(3, '2025-03-01T00:00:00+00:00'),
           ],
         })
       }
@@ -68,6 +68,28 @@ describe('collectEntries', () => {
       '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
       '1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg',
     ])
+  })
+
+  it('takes other windows, as experiments with the window do', async () => {
+    // Arrange
+    const requested: string[] = []
+    const get = async (url: string) => {
+      requested.push(url)
+      if (url.includes('/api/guides/')) {
+        return JSON.stringify({
+          guides: [guide(1, '2026-10-01T00:00:00+00:00'), guide(2, '2025-06-01T00:00:00+00:00')],
+        })
+      }
+      return url.endsWith('/htmlview') ? TABS : 'header\n'
+    }
+
+    // Act
+    const { entries } = await collectEntries(get, noLinks, NOW, { community: 12, sheets: 6 })
+
+    // Assert
+    expect(entries.map((e) => e.name)).toEqual(['Guide 1'])
+    expect(requested.some((u) => u.endsWith('gid=105'))).toBe(true)
+    expect(requested.some((u) => u.endsWith('gid=102'))).toBe(false)
   })
 
   it('pages through the guide listing until a page is short', async () => {

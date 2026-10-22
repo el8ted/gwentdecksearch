@@ -98,7 +98,7 @@ MetallicDanny. When two sources list the same deck, **the first entry names it**
 | `guide` | Community guides only: `id`, `modified` (the listing's date), `votes`, `author`. |
 | `video` | A video the source links for this deck, if any. |
 
-Rewritten in full on every deck refresh. Sheets are read back six months of patch tabs, guides twelve months.
+Rewritten in full on every deck refresh. Sheets are read back 12 months of patch tabs (each sheet's main list always in full), guides 18 months.
 
 ### `deck-store.json`: what each link holds
 

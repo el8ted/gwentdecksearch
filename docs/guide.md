@@ -189,7 +189,8 @@ removes the filter.
 
 Card costs and leader bonuses change every month with the Balance Council, but published decks don't change. A deck
 that fitted when it was posted can be over its limit now, or have provisions to spare. Every deck is checked against
-today's limit: **150 + the leader's bonus**.
+today's limit: **150 + the leader's bonus**. The check sees only provisions: a deck that still fits may have lost
+power or an ability since it was posted.
 
 | Badge | Meaning |
 |---|---|

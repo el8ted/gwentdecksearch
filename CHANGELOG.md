@@ -8,6 +8,9 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- More decks: community guides from the last 18 months (was 12) and the sheets' per-patch tabs from the last 12
+  (was 6), so archetypes show more of their variations and more decks have a video. Older decks are checked against
+  today's provision limit like the rest; the guide notes that the check sees provisions only.
 - Cards that tie in **Craft** and **Most/Least common** are listed legendary first, then by name, instead of in an
   arbitrary order. On a single deck, where every card ties, Craft now goes from the most expensive cards down.
 - Decks are listed in alphabetical order of the name you see: a deck shown under its author's own name, in your
