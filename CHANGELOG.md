@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-22
+
 - More decks: community guides from the last 18 months (was 12) and the sheets' per-patch tabs from the last 12
   (was 6), so archetypes show more of their variations and more decks have a video. Older decks are checked against
   today's provision limit like the rest; the guide notes that the check sees provisions only.
