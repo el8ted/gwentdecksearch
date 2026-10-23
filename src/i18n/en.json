@@ -92,6 +92,7 @@
   "cards.nearChip": "Similar to: {name}",
   "deck.shared": "{n}/{of} cards in common",
   "deck.thisDeck": "This deck",
+  "deck.picksMatched": "Has {n} of the {of} cards, tags and authors you searched for",
   "deck.added": "Not in This deck",
   "deck.addedCopies": {
     "one": "{n} more copy than This deck",

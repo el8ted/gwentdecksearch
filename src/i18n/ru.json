@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -318,6 +319,7 @@
   "cards.nearChip": "Похоже на: {name}",
   "deck.shared": "Общих карт: {n}/{of}",
   "deck.thisDeck": "Эта колода",
+  "deck.picksMatched": "Есть {n} из {of} искомых карт, ключевых слов и авторов",
   "deck.added": "Нет в «Эта колода»",
   "deck.addedCopies": {
     "one": "На {n} копию больше, чем в «Эта колода»",

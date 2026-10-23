@@ -161,3 +161,23 @@ test('a long card name shortens instead of pushing the panel wider (Russian)', a
   // Assert
   expect(overflowing).toBe(0)
 })
+
+test('with Any and several picks, each deck says how many it has, in the order they are listed', async ({
+  page,
+  open,
+}) => {
+  // Act: Fiend, Cyclops, Griffin
+  await open('#k=any&c=112405,200037,132307')
+
+  // Assert
+  const counts = await page
+    .locator('#results .deck .badge.shared [aria-hidden]')
+    .evaluateAll((els) => els.map((e) => Number(e.textContent?.split('/')[0])))
+  expect(counts.length).toBeGreaterThan(1)
+  expect(counts).toEqual([...counts].sort((a, b) => b - a))
+  expect(await page.locator('#results .deck .badge.shared [aria-hidden]').first().textContent()).toMatch(/^\d\/3$/)
+
+  // All: every deck has every pick, so no badge
+  await page.locator('[data-match="all"]').click()
+  await expect(page.locator('#results .deck .badge.shared')).toHaveCount(0)
+})

@@ -22,6 +22,8 @@ the release tag and starts a new Unreleased section. -->
 - On narrow phones at the largest text size, the page no longer scrolls sideways.
 - **Copy link**, beside Clear all, copies a link to your current search to share or bookmark; on a phone it opens the
   share menu. From the offline download it copies the same search on the live site.
+- Searching with **Any** and several cards, each deck shows how many of them it has (**2/3**), which is the order the
+  decks are listed in.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).

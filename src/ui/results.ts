@@ -41,6 +41,12 @@ function provisionBadge(entry: IndexedDeck, data: Dataset, loc: Locale): string 
   return `<span title="${esc(tip)}">${value}</span>`
 }
 
+/** With Any, "3/4": how many of the wanted picks a deck has (the order Any lists them in), said in full for screen readers. */
+function picksBadge({ n, of }: { n: number; of: number }, loc: Locale): string {
+  const tip = esc(loc.t('deck.picksMatched', { n, of }))
+  return `<span class="badge shared" title="${tip}"><span aria-hidden="true">${n}/${of}</span><span class="sr-only">${tip}</span></span>`
+}
+
 /** How a deck differs from the deck a Similar list is ranked against ({@link cardChanges}). */
 export type Changes = ReturnType<typeof cardChanges>
 
@@ -128,6 +134,7 @@ function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): s
  * @param shared - Cards in common with the deck the list is ranked against, that deck's card count, and whether this is it
  * @param changes - How this deck differs from that deck, shown in the expanded list instead of `common`
  * @param only - Whether the search shows only this deck's list (the Deck pill), so its ⧉ is pressed
+ * @param picks - With Any: how many of the wanted picks this deck has, of how many
  * @returns `<li>` HTML
  */
 export function deckRow(
@@ -140,6 +147,7 @@ export function deckRow(
   shared?: { n: number; of: number; self: boolean },
   changes?: Changes,
   only = false,
+  picks?: { n: number; of: number },
 ): string {
   const { deck } = entry
   const state = entry.budget === 'exact' ? '' : budgetSide(entry.budget)
@@ -170,6 +178,7 @@ export function deckRow(
     ${deck.stats.cards === MIN_DECK_CARDS ? '' : stat('cards', loc.t('stat.cards'), String(deck.stats.cards))}
     ${stat('helmet', loc.t('stat.units'), String(deck.stats.units))}
     ${provisionBadge(entry, data, loc)}
+    ${picks ? picksBadge(picks, loc) : ''}
     ${shared ? `<span class="badge shared">${esc(shared.self ? loc.t('deck.thisDeck') : loc.t('deck.shared', { n: shared.n, of: shared.of }))}</span>` : ''}
   </div>
   ${expanded ? `${decklist(entry, data, selected, common, loc, changes)}<p class="deck-foot"><code class="deck-id" title="${esc(loc.t('deck.idTip'))}">${esc(deck.id)}</code></p>` : ''}

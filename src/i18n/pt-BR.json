@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -314,6 +315,7 @@
   "cards.nearChip": "Parecido com: {name}",
   "deck.shared": "{n}/{of} cartas em comum",
   "deck.thisDeck": "Este deck",
+  "deck.picksMatched": "Tem {n} das {of} cartas, tags e autores que você buscou",
   "deck.added": "Não está em Este deck",
   "deck.addedCopies": {
     "one": "{n} cópia a mais que Este deck",

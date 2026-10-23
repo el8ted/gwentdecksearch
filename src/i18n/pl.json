@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -318,6 +319,7 @@
   "cards.nearChip": "Podobne do: {name}",
   "deck.shared": "{n}/{of} wspólnych kart",
   "deck.thisDeck": "Ta talia",
+  "deck.picksMatched": "Ma {n} z {of} wyszukiwanych kart, tagów i autorów",
   "deck.added": "Brak w Tej talii",
   "deck.addedCopies": {
     "one": "{n} kopia więcej niż w Tej talii",

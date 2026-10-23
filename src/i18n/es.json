@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -314,6 +315,7 @@
   "cards.nearChip": "Similar a: {name}",
   "deck.shared": "{n}/{of} cartas en común",
   "deck.thisDeck": "Este mazo",
+  "deck.picksMatched": "Tiene {n} de las {of} cartas, etiquetas y autores que buscaste",
   "deck.added": "No está en Este mazo",
   "deck.addedCopies": {
     "one": "{n} copia más que Este mazo",

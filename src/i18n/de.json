@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -314,6 +315,7 @@
   "cards.nearChip": "Ähnlich wie: {name}",
   "deck.shared": "{n}/{of} gemeinsame Karten",
   "deck.thisDeck": "Dieses Deck",
+  "deck.picksMatched": "Hat {n} der {of} gesuchten Karten, Tags und Autoren",
   "deck.added": "Nicht in Diesem Deck",
   "deck.addedCopies": {
     "one": "{n} Kopie mehr als Dieses Deck",

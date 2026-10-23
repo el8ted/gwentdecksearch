@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -312,6 +313,7 @@
   "cards.nearChip": "비슷한 덱: {name}",
   "deck.shared": "공통 카드 {n}/{of}",
   "deck.thisDeck": "이 덱",
+  "deck.picksMatched": "검색한 카드·태그·작성자 {of}개 중 {n}개 포함",
   "deck.added": "이 덱에 없음",
   "deck.addedCopies": {
     "other": "이 덱보다 {n}장 더 많음"

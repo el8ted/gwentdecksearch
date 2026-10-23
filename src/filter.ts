@@ -298,8 +298,8 @@ function has(e: IndexedDeck, p: number | TagKey): boolean {
   return typeof p === 'number' ? e.ids.has(p) : p.startsWith('@') ? e.authors.has(p.slice(1)) : e.tags.has(p)
 }
 
-/** How many of the wanted picks a deck has. */
-function hits(e: IndexedDeck, s: FilterState): number {
+/** How many of the wanted picks a deck has: what Any ranks by, and what its rows show. */
+export function hits(e: IndexedDeck, s: FilterState): number {
   return wantedPicks(s).filter((p) => has(e, p)).length
 }
 

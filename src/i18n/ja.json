@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -312,6 +313,7 @@
   "cards.nearChip": "類似: {name}",
   "deck.shared": "共通カード {n}/{of}",
   "deck.thisDeck": "このデッキ",
+  "deck.picksMatched": "検索したカード・タグ・作者 {of} 件のうち {n} 件を含む",
   "deck.added": "このデッキにはない",
   "deck.addedCopies": {
     "other": "このデッキより {n} 枚多い"

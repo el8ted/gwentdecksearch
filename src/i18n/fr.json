@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -314,6 +315,7 @@
   "cards.nearChip": "Similaire à : {name}",
   "deck.shared": "{n}/{of} cartes en commun",
   "deck.thisDeck": "Ce deck",
+  "deck.picksMatched": "Contient {n} des {of} cartes, mots-clés et auteurs recherchés",
   "deck.added": "Absente de Ce deck",
   "deck.addedCopies": {
     "one": "{n} copie de plus que Ce deck",

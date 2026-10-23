@@ -63,6 +63,7 @@
     "deck.open",
     "deck.openNamed",
     "deck.over",
+    "deck.picksMatched",
     "deck.power",
     "deck.provisionTip",
     "deck.select",
@@ -312,6 +313,7 @@
   "cards.nearChip": "相似于：{name}",
   "deck.shared": "共同卡牌 {n}/{of}",
   "deck.thisDeck": "此卡组",
+  "deck.picksMatched": "包含你搜索的 {of} 个卡牌、标签和作者中的 {n} 个",
   "deck.added": "此卡组中没有",
   "deck.addedCopies": {
     "other": "比此卡组多 {n} 张"

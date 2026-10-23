@@ -266,6 +266,16 @@ describe('deckRow', () => {
     expect(html).toMatch(/class="swapped">Swapped out: Golden Nekker, Chimera <span class="copies">−1<\/span>/)
   })
 
+  it('with Any, says how many of the picks a deck has, short on screen and in full for screen readers', () => {
+    // Act
+    const html = deckRow(a1, DATA, new Set(), false, new Set(), loc, undefined, undefined, false, { n: 2, of: 3 })
+
+    // Assert
+    expect(html).toContain('<span aria-hidden="true">2/3</span>')
+    expect(html).toContain('<span class="sr-only">Has 2 of the 3 cards, tags and authors you searched for</span>')
+    expect(deckRow(a1, DATA, new Set(), false, new Set(), loc)).not.toContain('sr-only">Has')
+  })
+
   it('closed: an arrow and tooltip say it opens, with no deck ID and no 25-card stat', () => {
     // Act
     const html = deckRow(a1, DATA, new Set(), false, new Set(), loc)

@@ -10,6 +10,7 @@ import {
   cardFrequency,
   craftList,
   deckBody,
+  hits,
   type IndexedDeck,
   matchDecks,
   overlap,
@@ -217,6 +218,8 @@ function renderDeckList(matches: IndexedDeck[], near: IndexedDeck | undefined) {
   const selected = new Set([...pickedCards(wanted), ...tagged])
   // Count, dimming and the card panel describe every match; only the rows are paged (Expand all covers those).
   const page = matches.slice(0, view.limit)
+  // Any ranks decks by how many picks they have; with two or more, each row says so.
+  const ranked = state.match === 'any' && wanted.length > 1
   session.shown = page.map((e) => e.deck.id)
   // One deck shares everything with itself, so dimming needs at least two; a Similar list compares with This deck.
   const common = view.dimCommon && !near && matches.length > 1 ? sharedCards(matches) : new Set<number>()
@@ -232,6 +235,7 @@ function renderDeckList(matches: IndexedDeck[], near: IndexedDeck | undefined) {
       near && { n: overlap(near, e), of: size, self: e === near },
       view.dimCommon && near && e !== near ? cardChanges(near, e) : undefined,
       e.list === state.deck,
+      ranked ? { n: hits(e, state), of: wanted.length } : undefined,
     ),
   )
   if (matches.length > view.limit) {
