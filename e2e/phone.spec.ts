@@ -59,6 +59,15 @@ test.describe('on a phone', () => {
     await expect(line).toBeFocused()
   })
 
+  test('the search box takes its own full-width line', async ({ page, open }) => {
+    // Act
+    await open('#c=112405')
+
+    // Assert
+    const box = await page.locator('.chips-box').boundingBox()
+    expect(box?.width).toBeGreaterThan(330)
+  })
+
   test('the card list folds away to reach the decks, and starts open', async ({ page, open }) => {
     // Arrange
     await open()

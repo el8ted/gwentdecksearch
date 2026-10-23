@@ -6,6 +6,7 @@ import { addPick, apply, clearAll, removeDeck, removeNear, removePick, render, s
 import { CONFIG } from '../config.ts'
 import { data, deckById, readHash } from '../data.ts'
 import type { Budget, FilterState } from '../filter.ts'
+import { shareUrl } from '../hash.ts'
 import * as search from '../search.ts'
 import { session } from '../session.ts'
 import type { Faction, Source } from '../types.ts'
@@ -30,6 +31,38 @@ const JUMPS: Record<string, () => HTMLElement | null> = {
     session.state.tab === 'craft' ? els.scraps : document.querySelector('[data-freq][aria-pressed="true"]'),
 }
 
+let copiedTimer: ReturnType<typeof setTimeout> | undefined
+
+/**
+ * Copy link: the search's link to the clipboard, said in a status line beside the button (read out, nothing moves).
+ * Phones get the share sheet instead (it offers copy too). If the browser won't copy, the link is shown, selected.
+ */
+async function copyLink() {
+  const url = shareUrl(location.href, CONFIG.siteUrl)
+  if (matchMedia('(pointer: coarse)').matches && navigator.share) {
+    try {
+      await navigator.share({ url })
+      return
+    } catch (e) {
+      // Closing the sheet is a choice, not a failure.
+      if ((e as Error).name === 'AbortError') return
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url)
+    els.copyStatus.textContent = session.loc.t('results.linkCopied')
+    clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => {
+      els.copyStatus.textContent = ''
+    }, 2500)
+  } catch {
+    els.shareFallback.hidden = false
+    els.shareUrl.value = url
+    els.shareUrl.focus()
+    els.shareUrl.select()
+  }
+}
+
 /** The first element matching a selector that's rendered (folded rows on a phone are in the page but hidden). */
 const firstVisible = (selector: string) =>
   [...document.querySelectorAll<HTMLElement>(selector)].find((el) => el.getClientRects().length > 0)
@@ -47,6 +80,7 @@ const asPick = (v: string) => (/^\d+$/.test(v) ? Number(v) : v)
  */
 const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: number) => HTMLElement | null }> = {
   skip: { run: (v) => JUMPS[v]?.()?.focus() },
+  copyLink: { run: () => void copyLink() },
   filtersToggle: {
     run: () => {
       session.view.filtersOpen = !session.view.filtersOpen

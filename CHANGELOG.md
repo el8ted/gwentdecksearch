@@ -20,6 +20,8 @@ the release tag and starts a new Unreleased section. -->
 - A cleaner look: Faction is one bar (you pick one), set apart from the filters you can combine; buttons, switches and
   badges have squarer corners, leader and stratagem art stays round, and numbers line up in columns.
 - On narrow phones at the largest text size, the page no longer scrolls sideways.
+- **Copy link**, beside Clear all, copies a link to your current search to share or bookmark; on a phone it opens the
+  share menu. From the offline download it copies the same search on the live site.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).

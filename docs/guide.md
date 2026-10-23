@@ -287,7 +287,8 @@ follows the list's order and never skips ahead to a cheaper card further down.
 ### Save and share a search
 
 Your filters are part of the page address. Bookmark it, share it, or reload the page and your search is still
-there. Deck and card links open in a new tab so you don't lose it.
+there. **Copy link**, beside Clear all, copies that address for you (on a phone it opens the share menu); from the
+offline download it copies the same search on the live site, since a file on your computer can't be shared. Deck and card links open in a new tab so you don't lose it.
 
 **Linking to a deck from elsewhere** (a bot, a stream overlay, your own site): add the deck's playgwent.com link,
 URL-encoded, as `?deck=`. For example

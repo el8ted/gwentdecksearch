@@ -55,6 +55,24 @@ export function encodeState(state: FilterState): string {
 }
 
 /**
+ * The link to share for the page as it is: its own address, or from the offline copy (a `file://` path, useless to
+ * anyone else) the live site with the same language and search.
+ *
+ * @param href - `location.href`
+ * @param siteUrl - The live site (`CONFIG.siteUrl`)
+ * @returns The link
+ */
+export function shareUrl(href: string, siteUrl: string): string {
+  const here = new URL(href)
+  if (here.protocol !== 'file:') return here.href
+  const live = new URL(siteUrl)
+  const lang = here.searchParams.get('lang')
+  if (lang) live.searchParams.set('lang', lang)
+  live.hash = here.hash
+  return live.href
+}
+
+/**
  * Parses a URL hash back into filters.
  *
  * Hashes come from bookmarks and may predate a data refresh, so unknown factions or card IDs are

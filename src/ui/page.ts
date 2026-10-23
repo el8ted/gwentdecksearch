@@ -53,6 +53,9 @@ export const els = {
   craftBody: byId('craft-body'),
   scraps: byId<HTMLInputElement>('scraps'),
   skipPast: byId('skip-past'),
+  copyStatus: byId('copy-status'),
+  shareFallback: byId('share-fallback'),
+  shareUrl: byId<HTMLInputElement>('share-url'),
   filters: byId('filters'),
   filtersToggle: byId<HTMLButtonElement>('filters-toggle'),
   opponentToggle: byId<HTMLButtonElement>('opponent-toggle'),
@@ -168,6 +171,8 @@ export function renderResults() {
   const { state, loc } = session
   const matches = matchDecks(decks, state, undefined, (d) => deckName(d, loc))
   session.matchCount = matches.length
+  // A link shown to copy by hand is for the search it was made from.
+  els.shareFallback.hidden = true
   const picked = pickedCards(wantedPicks(state))
   const crafting = state.tab === 'craft'
   showTab(crafting)

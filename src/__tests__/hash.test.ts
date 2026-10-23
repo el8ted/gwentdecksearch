@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { FilterState } from '../filter.ts'
-import { decodeState, EMPTY_STATE, encodeState } from '../hash.ts'
+import { decodeState, EMPTY_STATE, encodeState, shareUrl } from '../hash.ts'
 import type { Card } from '../types.ts'
 
 const known = new Map<number, Pick<Card, 'type' | 'faction'>>([
@@ -196,5 +196,24 @@ describe('decodeState', () => {
 
     // Assert
     expect(decoded).toEqual({ ...EMPTY_STATE, leader: undefined, stratagem: undefined })
+  })
+})
+
+describe('shareUrl', () => {
+  const SITE = 'https://example.github.io/gds/'
+
+  it('shares the page as it is when it is online', () => {
+    // Act / Assert
+    expect(shareUrl('https://example.github.io/gds/?lang=ru#f=MO', SITE)).toBe(
+      'https://example.github.io/gds/?lang=ru#f=MO',
+    )
+  })
+
+  it('from the offline copy, shares the live site with the same language and search', () => {
+    // Act / Assert
+    expect(shareUrl('file:///home/me/gds/index.html?lang=ru#f=MO&c=1', SITE)).toBe(
+      'https://example.github.io/gds/?lang=ru#f=MO&c=1',
+    )
+    expect(shareUrl('file:///C:/gds/index.html', SITE)).toBe(SITE)
   })
 })

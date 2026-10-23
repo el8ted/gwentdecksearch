@@ -126,8 +126,18 @@
           <button type="button" data-match="any" data-i18n-title="match.anyTip" data-i18n="match.any">Any</button>
         </fieldset>
         <button type="button" class="clear" id="clear" data-clear-all="1" data-i18n="clearAll">Clear all</button>
+        <!-- The search is in the address; this copies it. "Link copied" shows under the button, moving nothing. -->
+        <span class="copy-wrap">
+          <button type="button" class="clear" id="copy-link" data-copy-link="1" data-i18n="results.copyLink" data-i18n-title="results.copyLinkTip">Copy link</button>
+          <span class="copy-status" id="copy-status" role="status"></span>
+        </span>
       </div>
       <p class="note indent" id="deck-note" role="status" hidden></p>
+      <!-- When the browser won't copy: the link, selected, to copy by hand. -->
+      <p class="share-fallback" id="share-fallback" hidden>
+        <label for="share-url" data-i18n="results.copyThisLink">Copy this link</label>
+        <input type="text" id="share-url" readonly />
+      </p>
       <!-- Phones only: folds the rows that refine the search into one line that lists what's set. -->
       <button type="button" class="filters-toggle" id="filters-toggle" data-filters-toggle="1" aria-expanded="false" aria-controls="filter-rows"></button>
       <div class="filter-rows" id="filter-rows">
