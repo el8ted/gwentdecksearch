@@ -102,6 +102,8 @@ export const autocomplete = createAutocomplete({
   authorName: (key) => AUTHORS.get(key) ?? key,
   onPick: addPick,
   total: () => session.matchCount,
+  // To the results' heading (it reads the count), where the next j lands on the first deck.
+  onLeave: () => els.resultHead.focus(),
   onBackspace: () => {
     const { state } = session
     const last = state.picks.at(-1)

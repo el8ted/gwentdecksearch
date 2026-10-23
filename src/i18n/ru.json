@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -469,11 +470,12 @@
   "shortcuts.cards": "Перейти к полю поиска",
   "shortcuts.filters": "Перейти к фильтрам",
   "shortcuts.panel": "Перейти к частоте карт",
+  "shortcuts.decks": "Следующая или предыдущая колода (или карта в разделе «Создание»)",
   "shortcuts.clear": "Сбросить всё («Назад» отменяет)",
   "shortcuts.help": "Показать или скрыть эту справку",
   "shortcuts.suggestions": "Переходить по подсказкам",
   "shortcuts.add": "Добавить выделенную подсказку",
   "shortcuts.removeLast": "Удалить последнее добавленное (в пустом поле поиска)",
-  "shortcuts.esc": "Закрыть подсказки, меню и эту справку",
+  "shortcuts.esc": "Закрыть подсказки, меню и эту справку; ещё раз — выйти из поля поиска",
   "shortcuts.note": "Горячие клавиши работают, когда вы не вводите текст в поле. Нажмите Tab в начале страницы, чтобы увидеть ссылки для быстрого перехода."
 }

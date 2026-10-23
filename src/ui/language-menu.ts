@@ -1,5 +1,6 @@
 import { LANGUAGE_NAMES, LANGUAGES, type Lang } from '../i18n.ts'
 import { byId, closeOnOutside } from './dom.ts'
+import { langCode } from './results.ts'
 
 /**
  * Wires the header language menu: one button per language, labelled in its own script.
@@ -18,6 +19,7 @@ export function initLanguageMenu(current: () => Lang, onPick: (lang: Lang) => vo
 
   function refresh() {
     byId('lang-current').textContent = LANGUAGE_NAMES[current()]
+    byId('lang-code').textContent = langCode(current())
     for (const b of panel.querySelectorAll<HTMLButtonElement>('[data-lang]')) {
       b.setAttribute('aria-pressed', String(b.dataset.lang === current()))
     }

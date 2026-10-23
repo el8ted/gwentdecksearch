@@ -65,8 +65,8 @@ Balance Council change.
 
 Deck lists belong to their authors: the playgwent.com community, MetallicDanny
 ([YouTube](https://www.youtube.com/@metallicdanny), [Twitch](https://www.twitch.tv/metallicdanny)) and Shinmiri2
-([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)). The **Credits**
-button on the page links to them.
+([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)). **Credits** on
+the page (in the header, or at the bottom of Help on phones) links to them.
 
 The site icon was drawn by el8ted's daughter. It's licensed under a father's love: changing it would make el8ted sad
 and disappoint a young woman.

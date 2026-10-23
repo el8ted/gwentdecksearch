@@ -30,6 +30,8 @@ export interface AutocompleteOptions {
   total: () => number
   /** Backspace in an empty input. */
   onBackspace: () => void
+  /** Esc with the suggestions already closed: leave the box, so the page's shortcuts work again. */
+  onLeave: () => void
   /** The deck a playgwent URL points to: its card list, name and how many decks have that list; `undefined` if unknown. */
   deckFor: (url: string) => { list: string; name: string; count: number } | undefined
   /** A deck URL was chosen; `list` as from {@link deckFor}. */
@@ -67,6 +69,7 @@ export function createAutocomplete({
   authorName,
   onPick,
   onBackspace,
+  onLeave,
   total,
   deckFor,
   onDeck,
@@ -226,7 +229,8 @@ export function createAutocomplete({
       e.preventDefault()
       pick(items[active])
     } else if (e.key === 'Escape') {
-      close()
+      if (list.hidden) onLeave()
+      else close()
     } else if (e.key === 'Backspace' && input.value === '') {
       onBackspace()
     }

@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -451,11 +452,12 @@
   "shortcuts.cards": "Vai al campo di ricerca",
   "shortcuts.filters": "Vai ai filtri",
   "shortcuts.panel": "Vai alla frequenza delle carte",
+  "shortcuts.decks": "Mazzo successivo o precedente (o carta in Creare)",
   "shortcuts.clear": "Cancella tutto (Indietro lo annulla)",
   "shortcuts.help": "Mostra o nascondi questo aiuto",
   "shortcuts.suggestions": "Scorri i suggerimenti",
   "shortcuts.add": "Aggiungi il suggerimento evidenziato",
   "shortcuts.removeLast": "Rimuovi l'ultimo inserito (con il campo di ricerca vuoto)",
-  "shortcuts.esc": "Chiudi suggerimenti, menu e questo aiuto",
+  "shortcuts.esc": "Chiudi suggerimenti, menu e questo aiuto; di nuovo per uscire dalla casella di ricerca",
   "shortcuts.note": "Le scorciatoie funzionano quando non stai scrivendo in un campo. Premi Tab in cima alla pagina per i link di salto."
 }

@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -451,11 +452,12 @@
   "shortcuts.cards": "Ir para o campo de busca",
   "shortcuts.filters": "Ir para os filtros",
   "shortcuts.panel": "Ir para a frequência de cartas",
+  "shortcuts.decks": "Deck seguinte ou anterior (ou carta em Criar)",
   "shortcuts.clear": "Limpar tudo (Voltar desfaz)",
   "shortcuts.help": "Mostrar ou ocultar esta ajuda",
   "shortcuts.suggestions": "Percorrer as sugestões",
   "shortcuts.add": "Adicionar a sugestão destacada",
   "shortcuts.removeLast": "Remover o último item (com o campo de busca vazio)",
-  "shortcuts.esc": "Fechar sugestões, menus e esta ajuda",
+  "shortcuts.esc": "Fechar sugestões, menus e esta ajuda; de novo para sair da caixa de busca",
   "shortcuts.note": "Os atalhos funcionam quando você não está digitando num campo. Pressione Tab no topo da página para ver os links de atalho."
 }

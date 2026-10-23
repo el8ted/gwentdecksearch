@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -451,11 +452,12 @@
   "shortcuts.cards": "Zum Suchfeld springen",
   "shortcuts.filters": "Zu den Filtern springen",
   "shortcuts.panel": "Zur Kartenhäufigkeit springen",
+  "shortcuts.decks": "Nächstes oder vorheriges Deck (oder Karte unter Herstellen)",
   "shortcuts.clear": "Alles zurücksetzen (Zurück macht es rückgängig)",
   "shortcuts.help": "Diese Hilfe ein- oder ausblenden",
   "shortcuts.suggestions": "Durch die Vorschläge blättern",
   "shortcuts.add": "Markierten Vorschlag hinzufügen",
   "shortcuts.removeLast": "Letzten Eintrag entfernen (im leeren Suchfeld)",
-  "shortcuts.esc": "Vorschläge, Menüs und diese Hilfe schließen",
+  "shortcuts.esc": "Vorschläge, Menüs und diese Hilfe schließen; erneut, um das Suchfeld zu verlassen",
   "shortcuts.note": "Tastenkürzel funktionieren, wenn du nicht in einem Feld tippst. Drücke oben auf der Seite Tab für Sprunglinks."
 }

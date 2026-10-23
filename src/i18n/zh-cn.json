@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -442,11 +443,12 @@
   "shortcuts.cards": "跳到搜索框",
   "shortcuts.filters": "跳到筛选",
   "shortcuts.panel": "跳到卡牌频率",
+  "shortcuts.decks": "下一个或上一个卡组（合成中为卡牌）",
   "shortcuts.clear": "全部清除（后退可撤销）",
   "shortcuts.help": "显示或隐藏此帮助",
   "shortcuts.suggestions": "在建议之间移动",
   "shortcuts.add": "添加高亮的建议",
   "shortcuts.removeLast": "删除最后添加的一项（搜索框为空时）",
-  "shortcuts.esc": "关闭建议、菜单和此帮助",
+  "shortcuts.esc": "关闭建议、菜单和此帮助；再按一次离开搜索框",
   "shortcuts.note": "不在输入框中输入时，快捷键才会生效。在页面顶部按 Tab 可显示跳转链接。"
 }

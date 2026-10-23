@@ -10,18 +10,29 @@ import * as search from '../search.ts'
 import { session } from '../session.ts'
 import type { Faction, Source } from '../types.ts'
 import { byId } from './dom.ts'
-import { els, renderResults } from './page.ts'
+import { els, renderFilters, renderResults } from './page.ts'
 
 const help = byId<HTMLDialogElement>('shortcuts')
 
 /** Where skip links (and the [ ] shortcuts) move focus. */
 const JUMPS: Record<string, () => HTMLElement | null> = {
   cards: () => els.input,
-  filters: () => els.sources.querySelector('button'),
+  // Folded on a phone: unfold first, or there's nothing to land on.
+  filters: () => {
+    if (session.state.leader !== undefined && !session.view.opponentOpen) {
+      session.view.opponentOpen = true
+      renderFilters()
+    }
+    return els.factions.querySelector('button')
+  },
   results: () => els.resultHead,
   panel: () =>
     session.state.tab === 'craft' ? els.scraps : document.querySelector('[data-freq][aria-pressed="true"]'),
 }
+
+/** The first element matching a selector that's rendered (folded rows on a phone are in the page but hidden). */
+const firstVisible = (selector: string) =>
+  [...document.querySelectorAll<HTMLElement>(selector)].find((el) => el.getClientRects().length > 0)
 
 /** `list` with `item` added, or removed if it's there: a multi-select pill's click. */
 const toggled = <T>(list: T[] | undefined, item: T) =>
@@ -36,13 +47,44 @@ const asPick = (v: string) => (/^\d+$/.test(v) ? Number(v) : v)
  */
 const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: number) => HTMLElement | null }> = {
   skip: { run: (v) => JUMPS[v]?.()?.focus() },
+  filtersToggle: {
+    run: () => {
+      session.view.filtersOpen = !session.view.filtersOpen
+      renderFilters()
+    },
+  },
+  opponentToggle: {
+    run: () => {
+      session.view.opponentOpen = !session.view.opponentOpen
+      renderFilters()
+    },
+  },
+  panelToggle: {
+    run: () => {
+      session.view.panelOpen = !session.view.panelOpen
+      renderResults()
+    },
+  },
   faction: { run: (v) => apply(search.chooseFaction(session.state, session.memory, v as Faction)) },
   source: { run: (v) => update({ sources: toggled(session.state.sources, v as Source) }) },
   budget: { run: (v) => update({ budgets: toggled(session.state.budgets, v as Budget) }) },
   video: { run: () => update({ video: !session.state.video }) },
   guideLang: { run: (v) => update({ langs: toggled(session.state.langs, v) }) },
-  leader: { run: (v) => update({ leader: session.state.leader === Number(v) ? undefined : Number(v) }) },
-  stratagem: { run: (v) => update({ stratagem: session.state.stratagem === Number(v) ? undefined : Number(v) }) },
+  // On a phone, picking a leader or stratagem folds those rows away (see renderFilters): focus goes to the next step.
+  leader: {
+    run: (v) => {
+      session.view.opponentOpen = false
+      update({ leader: session.state.leader === Number(v) ? undefined : Number(v) })
+    },
+    fallback: () => firstVisible('#stratagem [data-stratagem]') ?? els.opponentToggle,
+  },
+  stratagem: {
+    run: (v) => {
+      session.view.opponentOpen = false
+      update({ stratagem: session.state.stratagem === Number(v) ? undefined : Number(v) })
+    },
+    fallback: () => els.opponentToggle,
+  },
   anyStratagem: {
     run: () => update({ stratagem: undefined }),
     fallback: () => els.stratagem.querySelector('button'),
@@ -134,6 +176,25 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
   },
 }
 
+/**
+ * j/k: the next or previous row of the list on screen (decks, or Craft's cards), then its Show more. From outside the
+ * list, the first row. No wrapping at either end: the far end of a paged list isn't its real end.
+ *
+ * @param by - 1 for the next row, -1 for the previous
+ */
+function stepRow(by: 1 | -1) {
+  const rows = [
+    ...document.querySelectorAll<HTMLElement>(
+      session.state.tab === 'craft'
+        ? '#craft-body [data-craft-pick], #craft-body [data-more]'
+        : '#results [data-toggle], #results [data-more]',
+    ),
+  ]
+  // A row is its <li> or <tr>: focus may be on any of its buttons, or in an opened deck's card list.
+  const at = rows.findIndex((r) => r.closest('li, tr')?.contains(document.activeElement))
+  ;(at < 0 ? rows[0] : rows[Math.min(Math.max(at + by, 0), rows.length - 1)])?.focus()
+}
+
 // Page shortcuts, outside text fields. Each matches the printed key, then the physical key, so layouts without
 // / [ ] (e.g. Russian) still work.
 // shortcut: single-key shortcuts can't be turned off (WCAG 2.1.4), add a toggle once user settings exist.
@@ -142,6 +203,8 @@ const SHORTCUTS: [matches: (e: KeyboardEvent) => boolean, run: () => void][] = [
   [(e) => e.key === '/' || (e.code === 'Slash' && !e.shiftKey), () => els.input.focus()],
   [(e) => e.key === '[' || (e.code === 'BracketLeft' && !e.shiftKey), () => JUMPS.filters()?.focus()],
   [(e) => e.key === ']' || (e.code === 'BracketRight' && !e.shiftKey), () => JUMPS.panel()?.focus()],
+  [(e) => e.key === 'j' || (e.code === 'KeyJ' && !e.shiftKey), () => stepRow(1)],
+  [(e) => e.key === 'k' || (e.code === 'KeyK' && !e.shiftKey), () => stepRow(-1)],
   [
     (e) => e.key === 'Backspace' && e.shiftKey,
     () => {
@@ -167,7 +230,7 @@ export function initActions() {
     // An action that placed focus itself is left alone.
     const lost = !document.activeElement || document.activeElement === document.body
     if (t.isConnected || !lost) return
-    ;(document.querySelector<HTMLElement>(`[${attr}="${CSS.escape(value)}"]`) ?? ACTIONS[key].fallback?.(at))?.focus()
+    ;(firstVisible(`[${attr}="${CSS.escape(value)}"]`) ?? ACTIONS[key].fallback?.(at))?.focus()
   })
 
   // Have it: a checkbox, so it's handled on change; re-rendering replaces it, so focus goes to its new copy.
@@ -209,6 +272,11 @@ export function initActions() {
     render()
   })
 
+  // Help links to Credits too (phones have no room for its header button): one dialog at a time.
+  byId('help-credits').addEventListener('click', () => {
+    help.close()
+    byId<HTMLDialogElement>('credits').showModal()
+  })
   // Credits and Help: a native <dialog> handles Esc and focus; a click on the backdrop (the dialog itself) closes it.
   for (const id of ['credits', 'shortcuts']) {
     const dialog = byId<HTMLDialogElement>(id)

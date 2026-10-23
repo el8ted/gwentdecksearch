@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -442,11 +443,12 @@
   "shortcuts.cards": "검색 칸으로 이동",
   "shortcuts.filters": "필터로 이동",
   "shortcuts.panel": "카드 빈도로 이동",
+  "shortcuts.decks": "다음 또는 이전 덱 (제작에서는 카드)",
   "shortcuts.clear": "모두 지우기 (뒤로 가기로 되돌림)",
   "shortcuts.help": "이 도움말 표시/숨기기",
   "shortcuts.suggestions": "추천 항목 이동",
   "shortcuts.add": "선택한 추천 항목 추가",
   "shortcuts.removeLast": "마지막 항목 제거 (검색 칸이 비어 있을 때)",
-  "shortcuts.esc": "추천 목록, 메뉴, 이 도움말 닫기",
+  "shortcuts.esc": "추천 목록, 메뉴, 이 도움말 닫기. 한 번 더 누르면 검색창에서 나가기",
   "shortcuts.note": "입력 칸에 입력 중이 아닐 때 단축키가 작동합니다. 페이지 맨 위에서 Tab을 누르면 건너뛰기 링크가 나옵니다."
 }

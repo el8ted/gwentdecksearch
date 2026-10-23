@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -442,11 +443,12 @@
   "shortcuts.cards": "検索欄へ移動",
   "shortcuts.filters": "フィルターへ移動",
   "shortcuts.panel": "カードの出現頻度へ移動",
+  "shortcuts.decks": "次または前のデッキ（作成ではカード）",
   "shortcuts.clear": "すべてクリア（「戻る」で元に戻せます）",
   "shortcuts.help": "このヘルプを表示／非表示",
   "shortcuts.suggestions": "候補を移動",
   "shortcuts.add": "選択中の候補を追加",
   "shortcuts.removeLast": "最後に追加した項目を削除（検索欄が空のとき）",
-  "shortcuts.esc": "候補、メニュー、このヘルプを閉じる",
+  "shortcuts.esc": "候補、メニュー、このヘルプを閉じる。もう一度押すと検索欄から離れる",
   "shortcuts.note": "入力欄で入力中でなければショートカットが使えます。ページの先頭で Tab を押すとスキップリンクが表示されます。"
 }

@@ -53,7 +53,17 @@ export const els = {
   craftBody: byId('craft-body'),
   scraps: byId<HTMLInputElement>('scraps'),
   skipPast: byId('skip-past'),
+  filters: byId('filters'),
+  filtersToggle: byId<HTMLButtonElement>('filters-toggle'),
+  opponentToggle: byId<HTMLButtonElement>('opponent-toggle'),
+  panelToggle: byId<HTMLButtonElement>('panel-toggle'),
 }
+
+// The filters stay pinned on wide screens, and focus scrolled into view (Tab, shortcuts) would land under them: the
+// page keeps their height so the stylesheet's scroll-padding leaves room for it (WCAG 2.4.11, focus not obscured).
+new ResizeObserver(([entry]) =>
+  document.documentElement.style.setProperty('--filters-height', `${entry.borderBoxSize[0].blockSize}px`),
+).observe(els.filters)
 
 /** The repository's page for this language's guide: each translated README links on to the full English guide. */
 const guideUrl = (lang: string) =>
@@ -99,7 +109,7 @@ export function applyStatic() {
 
 /** Sizes the filter label column to the longest label in this language (Russian labels are much longer). */
 function sizeFilterLabels() {
-  const filters = byId('filters')
+  const { filters } = els
   filters.style.setProperty('--label-width', 'max-content')
   const labels = [...filters.querySelectorAll<HTMLElement>('.label')]
   const em = Number.parseFloat(getComputedStyle(labels[0]).fontSize)
@@ -119,7 +129,7 @@ export const pickName = (pick: number | string) =>
 
 /** Draws the filter rows, the Search box's chips and the note under them. */
 export function renderFilters() {
-  const { state, current, loc, memory } = session
+  const { state, current, loc, memory, view } = session
   for (const b of els.match.querySelectorAll<HTMLButtonElement>('[data-match]')) {
     b.setAttribute('aria-pressed', String(b.dataset.match === (state.match ?? 'all')))
   }
@@ -137,6 +147,18 @@ export function renderFilters() {
     near: deckById(state.near),
   })
   for (const k of Object.keys(rows) as (keyof FilterRows)[]) els[k].innerHTML = rows[k]
+  // Phones fold rows the way a match goes: faction and leader once a leader is picked, the stratagem once it's picked or
+  // a card is added; desktop CSS ignores all of this.
+  const compact = state.leader !== undefined && !view.opponentOpen
+  const answered = state.stratagem !== undefined || state.picks.length > 0
+  const hideStratagem = !view.opponentOpen && (state.leader !== undefined ? answered : state.stratagem === undefined)
+  els.filters.classList.toggle('folded', !view.filtersOpen)
+  els.filters.classList.toggle('opponent-folded', compact)
+  els.filters.classList.toggle('stratagem-folded', hideStratagem)
+  els.filters.classList.toggle('has-faction', state.factions.length > 0)
+  els.filtersToggle.setAttribute('aria-expanded', String(view.filtersOpen))
+  els.opponentToggle.hidden = state.leader === undefined
+  els.opponentToggle.setAttribute('aria-expanded', String(!compact))
   els.deckNote.hidden = !(deck && memory.deckReplaced)
   els.deckNote.textContent = loc.t('cards.deckReplaced')
 }
@@ -250,6 +272,8 @@ function renderResultBar(near: IndexedDeck | undefined) {
  */
 function renderPanel(matches: IndexedDeck[], picked: number[]) {
   const { view, loc } = session
+  els.panel.classList.toggle('folded', !view.panelOpen)
+  els.panelToggle.setAttribute('aria-expanded', String(view.panelOpen))
   for (const b of document.querySelectorAll<HTMLButtonElement>('[data-freq]')) {
     b.setAttribute('aria-pressed', String(b.dataset.freq === view.freq))
   }

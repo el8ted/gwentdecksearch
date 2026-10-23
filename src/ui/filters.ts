@@ -1,5 +1,5 @@
 import { CARD_ART } from '../art.ts'
-import { BUDGETS, budgetSide, type Facets, type FilterState, type IndexedDeck } from '../filter.ts'
+import { BUDGETS, type Budget, budgetSide, type Facets, type FilterState, type IndexedDeck } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { type Dataset, FACTIONS, SOURCES } from '../types.ts'
 import { esc } from './dom.ts'
@@ -24,6 +24,9 @@ export interface FilterContext {
   near?: IndexedDeck
 }
 
+/** A provision step's short label: `3+`, `2`, `1`, or empty for Exact. */
+const budgetStep = (b: Budget) => (b === 'exact' ? '' : b.endsWith('3') ? '3+' : b.slice(-1))
+
 /** Each filter row's HTML, keyed like the elements it fills. */
 export interface FilterRows {
   factions: string
@@ -34,6 +37,10 @@ export interface FilterRows {
   stratagem: string
   stratagemNote: string
   chips: string
+  /** Phones: the line Faction and Leader (then Stratagem) fold into once a leader is picked. */
+  opponentToggle: string
+  /** Phones: the button that folds Source, Guide & video and Provisions, naming what's set in them. */
+  filtersToggle: string
 }
 
 /**
@@ -76,7 +83,7 @@ export function filterRows(c: FilterContext): FilterRows {
       const pills = BUDGETS.filter((b) => budgetSide(b) === side).map((b) => {
         const n = current.budgets.get(b) ?? 0
         const on = !!state.budgets?.includes(b)
-        const step = b === 'exact' ? '' : b.endsWith('3') ? '3+' : b.slice(-1)
+        const step = budgetStep(b)
         const label = esc(step ? `${t(`budget.${side}`)} ${step}` : t('budget.exact'))
         return `<button type="button" class="pill b-${side}${n ? '' : ' empty'}" data-budget="${b}" aria-pressed="${on}" aria-label="${label} (${n})" title="${label} (${n})">${step || label}<span>${n}</span></button>`
       })
@@ -152,5 +159,25 @@ export function filterRows(c: FilterContext): FilterRows {
         return `<li class="chip f-${card.faction}${dual}${cls}">${flip}${remove}</li>`
       })
       .join('')
-  return { factions, sources, budgets, media, leader, stratagem, stratagemNote, chips }
+  // The fold buttons name what's set behind them with the pills' own short labels, in row order.
+  const fold = (title: string | undefined, set: string[]) =>
+    `<span class="fold-chev" aria-hidden="true">▸</span>${[...(title ? [title] : []), ...set]
+      .map((s, i) =>
+        i === 0 && title ? `<span class="fold-title">${esc(s)}</span>` : `<span class="filters-set">${esc(s)}</span>`,
+      )
+      .join('<span class="filters-sep" aria-hidden="true"> · </span>')}`
+  const opponentToggle = fold(undefined, [
+    ...state.factions,
+    ...(state.leader === undefined ? [] : [loc.card(state.leader)]),
+    ...(state.stratagem === undefined ? [] : [loc.card(state.stratagem)]),
+  ])
+  const filtersToggle = fold(t('filters.label'), [
+    ...(state.sources ?? []).map((s) => sourceLabel(s, loc)),
+    ...(state.video ? [t('results.hasVideo')] : []),
+    ...(state.langs ?? []).map(langCode),
+    ...BUDGETS.filter((b) => state.budgets?.includes(b)).map((b) =>
+      b === 'exact' ? t('budget.exact') : `${t(`budget.${budgetSide(b)}`)} ${budgetStep(b)}`,
+    ),
+  ])
+  return { factions, sources, budgets, media, leader, stratagem, stratagemNote, chips, opponentToggle, filtersToggle }
 }

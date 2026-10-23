@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -469,11 +470,12 @@
   "shortcuts.cards": "Przejdź do pola wyszukiwania",
   "shortcuts.filters": "Przejdź do filtrów",
   "shortcuts.panel": "Przejdź do częstości kart",
+  "shortcuts.decks": "Następna lub poprzednia talia (lub karta w Wytwarzaniu)",
   "shortcuts.clear": "Wyczyść wszystko (Wstecz cofa)",
   "shortcuts.help": "Pokaż lub ukryj tę pomoc",
   "shortcuts.suggestions": "Przechodź między podpowiedziami",
   "shortcuts.add": "Dodaj zaznaczoną podpowiedź",
   "shortcuts.removeLast": "Usuń ostatni wpis (w pustym polu wyszukiwania)",
-  "shortcuts.esc": "Zamknij podpowiedzi, menu i tę pomoc",
+  "shortcuts.esc": "Zamknij podpowiedzi, menu i tę pomoc; ponownie, aby opuścić pole wyszukiwania",
   "shortcuts.note": "Skróty działają, gdy nie piszesz w polu. Naciśnij Tab na początku strony, aby zobaczyć linki pomijania."
 }

@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -451,11 +452,12 @@
   "shortcuts.cards": "Aller au champ de recherche",
   "shortcuts.filters": "Aller aux filtres",
   "shortcuts.panel": "Aller à la fréquence des cartes",
+  "shortcuts.decks": "Deck suivant ou précédent (ou carte dans Fabriquer)",
   "shortcuts.clear": "Tout effacer (Retour l'annule)",
   "shortcuts.help": "Afficher ou masquer cette aide",
   "shortcuts.suggestions": "Parcourir les suggestions",
   "shortcuts.add": "Ajouter la suggestion en surbrillance",
   "shortcuts.removeLast": "Retirer le dernier ajout (champ de recherche vide)",
-  "shortcuts.esc": "Fermer les suggestions, les menus et cette aide",
+  "shortcuts.esc": "Fermer les suggestions, les menus et cette aide ; à nouveau pour quitter le champ de recherche",
   "shortcuts.note": "Les raccourcis fonctionnent quand vous ne tapez pas dans une zone de saisie. Appuyez sur Tab en haut de la page pour afficher les liens d'évitement."
 }

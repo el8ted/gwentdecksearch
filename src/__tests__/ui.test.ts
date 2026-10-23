@@ -116,6 +116,21 @@ describe('filterRows', () => {
     expect(picked).toContain('<strong class="picked">Arachas Swarm</strong>')
   })
 
+  it('names what the folded rows have set, in row order, and nothing for picks', () => {
+    // Act
+    const none = rows(state({ picks: [103] }))
+    const some = rows(
+      state({ factions: ['MO'], leader: 1, budgets: ['over1', 'exact'], video: true, langs: ['pt-BR'], picks: [103] }),
+    )
+
+    // Assert
+    const text = (html: string) => html.replace(/<[^>]+>/g, '')
+    expect(text(none.filtersToggle)).toBe('▸Filters')
+    expect(text(none.opponentToggle)).toBe('▸')
+    expect(text(some.filtersToggle)).toBe('▸Filters · Has video · PT · Exact · Over 1')
+    expect(text(some.opponentToggle)).toBe('▸MO · Arachas Swarm')
+  })
+
   it('draws an excluded pick pressed and a tag with its mark, escaping names', () => {
     // Act
     const { chips } = rows(state({ picks: [103, 'deploy'], excludes: [103] }))

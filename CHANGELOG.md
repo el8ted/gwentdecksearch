@@ -8,6 +8,15 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The filters follow a match: Faction, Leader, Stratagem and Search come first, and Source, Guide & video and
+  Provisions sit below Search to refine the list.
+- On phones the filters fold away as you go: picking a leader folds Faction and Leader into one line and shows only
+  the stratagems that faction's decks run; a stratagem or your first card folds that too. Source, Guide & video and
+  Provisions fold behind one **Filters** line, and **Card frequency** can fold away to reach the decks. The header
+  fits on one line: the language shows as its code, and Credits is at the bottom of Help.
+- Keyboard: <kbd>j</kbd> and <kbd>k</kbd> move to the next and previous deck (or Craft card); <kbd>Esc</kbd> in the
+  Search box, pressed again after the suggestions close, takes you to the results. A deck you move to is no longer
+  hidden under the filters at the top of the page.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).

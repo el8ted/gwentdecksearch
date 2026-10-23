@@ -430,6 +430,9 @@ h1 span {
   font-weight: 400;
   margin-left: 0.25rem;
 }
+.lang-code {
+  display: none;
+}
 .display-panel {
   position: absolute;
   right: 0;
@@ -490,6 +493,14 @@ h1 span {
     margin: 0;
     width: 100%;
   }
+  /* One line of buttons on any phone: the language as its code, and Credits reached from Help. */
+  #lang-current,
+  #credits-open {
+    display: none;
+  }
+  .lang-code {
+    display: inline;
+  }
   /* The menus open under the header, inset from both edges: anchored to a wrapped button they ran off the screen. */
   .display {
     position: static;
@@ -504,6 +515,10 @@ h1 span {
 
 /* ---------- 6. FILTERS ---------- */
 
+/* Scrolling to a focused element leaves room for the pinned filters (their height is kept by ui/page.ts). */
+html {
+  scroll-padding-top: calc(var(--filters-height, 0px) + 0.5rem);
+}
 .filters {
   position: sticky;
   top: 0;
@@ -631,7 +646,79 @@ h1 span {
   gap: 0.4rem;
 }
 
+/* Phones only (see below): the rows fold behind one button. On wider screens the wrapper is invisible to layout. */
+.filters-toggle {
+  display: none;
+}
+.filter-rows {
+  display: contents;
+}
+/* The rows that refine a search, below it: their own block under a hairline (a "Filters" button on phones). */
+#filter-rows {
+  display: grid;
+  gap: 0.6rem;
+  /* Edge to edge, like the section's own bottom border: out through its side padding, then back in. */
+  margin-inline: -1.25rem;
+  padding: 0.6rem 1.25rem 0;
+  border-top: 1px solid var(--border);
+}
+
 @media (max-width: 860px) {
+  .filters-toggle:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 0.4rem;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+  .filters-toggle:hover {
+    border-color: var(--border-hover);
+  }
+  .filters-set,
+  .filters-sep {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  /* The opponent line has no title: its first item (the faction) leads. */
+  .opponent-toggle .filters-set:first-of-type {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .fold-chev {
+    color: var(--muted);
+    transition: transform 0.15s;
+  }
+  .filters-toggle[aria-expanded="true"] .fold-chev {
+    transform: rotate(90deg);
+  }
+  #filter-rows {
+    margin-inline: 0;
+    padding: 0;
+    border-top: 0;
+  }
+  .filters.folded #filter-rows,
+  .filters.opponent-folded :is(.row-faction, .row-leader),
+  .filters.stratagem-folded :is(.row-stratagem, #stratagem-note),
+  .panel.folded #panel-body {
+    display: none;
+  }
+  /* A faction picked: only the stratagems its decks run (the others' are all at 0). */
+  .filters.has-faction #stratagem .pill.empty:not([aria-pressed="true"]) {
+    display: none;
+  }
+  html {
+    scroll-padding-top: 0;
+  }
   .filters {
     /* Not sticky on phones, but still positioned: its blur makes it a layer of its own, and its z-index keeps that
        layer (with the card suggestions in it) above the card frequency list. */

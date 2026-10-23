@@ -234,11 +234,12 @@
   "shortcuts.cards": "Jump to the search box",
   "shortcuts.filters": "Jump to the filters",
   "shortcuts.panel": "Jump to card frequency",
+  "shortcuts.decks": "Next or previous deck (or Craft card)",
   "shortcuts.clear": "Clear all (Back undoes it)",
   "shortcuts.help": "Show or hide this help",
   "shortcuts.suggestions": "Move through suggestions",
   "shortcuts.add": "Add the highlighted suggestion",
   "shortcuts.removeLast": "Remove the last pick (in an empty search box)",
-  "shortcuts.esc": "Close suggestions, menus and this help",
+  "shortcuts.esc": "Close suggestions, menus and this help; again to leave the search box",
   "shortcuts.note": "Shortcuts work when you're not typing in a box. Tab from the top of the page for skip links."
 }

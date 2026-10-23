@@ -42,6 +42,12 @@ export const session = {
      * through Clear all, but only for this visit (nothing is stored). */
     have: new Set<number>(),
     scraps: undefined as number | undefined,
+    /** Phones: Source, Guide & video and Provisions unfolded; folded at first, since a match needs the opponent's rows. */
+    filtersOpen: false,
+    /** Phones: Faction, Leader and Stratagem unfolded again after picking a leader folded them (see renderFilters). */
+    opponentOpen: false,
+    /** Phones: the card list shown; it can fold away to get to the decks below it. */
+    panelOpen: true,
   },
   /** Deck IDs listed now, for Expand/Collapse all, and whether they're all open. */
   shown: [] as string[],

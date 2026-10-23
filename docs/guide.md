@@ -106,8 +106,8 @@ Council change all matter more than a percentage.
 
 | Area | What it's for |
 |---|---|
-| **Header** | How many decks there are and when the data was collected. Buttons for **Language**, **?** (Help), **Credits** and **Aa Display**. |
-| **Filters** | Source, Guide & video, Provisions, Faction, Leader, Stratagem and Search. Each option shows how many decks match it. |
+| **Header** | How many decks there are and when the data was collected. Buttons for **Language**, **?** (Help), **Credits** and **Aa Display**. On phones the language shows as its code (🌐 EN) and Credits is a link at the bottom of Help. |
+| **Filters** | Faction, Leader, Stratagem and Search first, in the order you'd identify an opponent's deck; then Source, Guide & video and Provisions, which refine the list. Each option shows how many decks match it. |
 | **Results** (left) | The matching decks. Click one to open its card list. |
 | **Card frequency** (right) | How many of the matching decks run each card you haven't added yet. |
 
@@ -172,14 +172,23 @@ rarity.
 
 | Filter | How it works |
 |---|---|
-| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
-| **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
-| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
 | **Faction** | One at a time. Click the selected faction again to clear it. |
 | **Leader** | Appears once a faction is picked. Click the selected leader again to clear it. Changing faction clears it. |
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
 | **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
 | **Clear all** | Resets every filter except All/Any and the Decks/Craft view, empties the Search box, and turns off Dim common. |
+| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
+| **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
+| **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
+
+**On a phone** the filters fold away as you go, so the decks stay close:
+
+- Source, Guide & video and Provisions start folded behind one **Filters** line, which lists what's set. Tap it to
+  open them.
+- Picking a leader folds Faction and Leader into one line (for example **MO · Arachas Swarm**) and shows only the
+  stratagems that faction's decks run. Picking a stratagem, or adding a card, folds the stratagem too. Tap the line to
+  change any of them.
+- **Card frequency** has its own button to fold it out of the way of the decks below; it starts open.
 
 **About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
 the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**
@@ -327,15 +336,16 @@ Press <kbd>?</kbd> on the page and open **Keyboard shortcuts** for this list.
 | <kbd>/</kbd> | Jump to the Search box |
 | <kbd>[</kbd> | Jump to the filters |
 | <kbd>]</kbd> | Jump to card frequency (Most/Least common) |
+| <kbd>j</kbd> <kbd>k</kbd> | Next or previous deck (on Craft, card). The first press goes to the first one; after the last comes **Show more**. |
 | <kbd>Shift</kbd>+<kbd>Backspace</kbd> | Clear all (the browser's Back undoes it) |
 | <kbd>?</kbd> | Show or hide Help |
 | <kbd>↑</kbd> <kbd>↓</kbd> or <kbd>Tab</kbd> | Move through suggestions |
 | <kbd>Enter</kbd> | Add the highlighted suggestion |
 | <kbd>Backspace</kbd> | Remove the last pick (when the Search box is empty) |
-| <kbd>Esc</kbd> | Close suggestions, menus and Help |
+| <kbd>Esc</kbd> | Close suggestions, menus and Help. In the Search box, press it again to leave the box for the results. |
 
-Shortcuts work when you aren't typing in a box. On keyboards where <kbd>/</kbd> <kbd>[</kbd> <kbd>]</kbd> are
-elsewhere (for example Russian), the keys in the US positions work. Press <kbd>Tab</kbd> at the top of the page for
+Shortcuts work when you aren't typing in a box. On keyboards where <kbd>/</kbd> <kbd>[</kbd> <kbd>]</kbd>
+<kbd>j</kbd> <kbd>k</kbd> are elsewhere (for example Russian), the keys in the US positions work. Press <kbd>Tab</kbd> at the top of the page for
 links that skip to the search, results or card frequency.
 
 ![The Help panel: the quick guide open, then Search tips, Similar decks, Filters and Keyboard shortcuts, each opening on a click](screenshots/help.png)

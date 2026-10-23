@@ -54,7 +54,7 @@ test.describe('skip links', () => {
 test.describe('shortcuts', () => {
   for (const [key, target] of [
     ['/', '#card-input'],
-    ['[', '[data-source="community"]'],
+    ['[', '[data-faction="MO"]'],
     [']', PANEL],
   ] as const) {
     test(`${key} focuses ${target}`, async ({ page, open }) => {
@@ -119,7 +119,7 @@ test.describe('shortcuts', () => {
     await press({ key: '[', code: 'BracketLeft', isComposing: true })
     await expect(page.locator('body')).toBeFocused()
     await press({ key: 'х', code: 'BracketLeft' })
-    await expect(page.locator('[data-source="community"]')).toBeFocused()
+    await expect(page.locator('[data-faction="MO"]')).toBeFocused()
   })
 
   test('shortcuts are off while a dialog is open', async ({ page, open }) => {
@@ -132,7 +132,7 @@ test.describe('shortcuts', () => {
 
     // Assert
     await expect(page.locator('#credits')).toBeVisible()
-    await expect(page.locator('[data-source="community"]')).not.toBeFocused()
+    await expect(page.locator('[data-faction="MO"]')).not.toBeFocused()
   })
 })
 
@@ -175,6 +175,109 @@ test.describe('shortcuts help', () => {
 
     // Assert
     await expect(page.locator('#shortcuts')).toBeVisible()
-    await expect(page.locator('#shortcuts dt')).toHaveCount(9)
+    await expect(page.locator('#shortcuts dt')).toHaveCount(10)
   })
+})
+
+test.describe('j and k', () => {
+  const toggles = '#results [data-toggle]'
+
+  test('j goes to the first deck, then down the list; k comes back up and stops at the first', async ({
+    page,
+    open,
+  }) => {
+    // Arrange
+    await open()
+    const rows = page.locator(toggles)
+
+    // Act / Assert
+    await page.keyboard.press('j')
+    await expect(rows.nth(0)).toBeFocused()
+    await page.keyboard.press('j')
+    await page.keyboard.press('j')
+    await expect(rows.nth(2)).toBeFocused()
+    await page.keyboard.press('k')
+    await expect(rows.nth(1)).toBeFocused()
+    await page.keyboard.press('k')
+    await page.keyboard.press('k')
+    await expect(rows.nth(0)).toBeFocused()
+  })
+
+  test('from a button inside a deck, j goes to the next deck; a Russian layout uses the physical key', async ({
+    page,
+    open,
+  }) => {
+    // Arrange
+    await open()
+    await page.locator('#results [data-near]').nth(3).focus()
+
+    // Act
+    await page.evaluate(() =>
+      document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'о', code: 'KeyJ' })),
+    )
+
+    // Assert
+    await expect(page.locator(toggles).nth(4)).toBeFocused()
+  })
+
+  test('after the last deck on the page, j reaches Show more, and no further', async ({ page, open }) => {
+    // Arrange
+    await open()
+    await page.locator(toggles).last().focus()
+
+    // Act
+    await page.keyboard.press('j')
+    await page.keyboard.press('j')
+
+    // Assert
+    await expect(page.locator('#results [data-more]')).toBeFocused()
+  })
+
+  test('on Craft, j and k move through its cards', async ({ page, open }) => {
+    // Arrange
+    await open('#t=craft')
+
+    // Act
+    await page.keyboard.press('j')
+    await page.keyboard.press('j')
+
+    // Assert
+    await expect(page.locator('#craft-body [data-craft-pick]').nth(1)).toBeFocused()
+  })
+})
+
+test('Esc in the search box closes the suggestions, then leaves the box for the results heading', async ({
+  page,
+  open,
+}) => {
+  // Arrange
+  await open()
+  const input = page.locator('#card-input')
+  await input.fill('gri')
+  await expect(page.locator('#suggestions')).toBeVisible()
+
+  // Act / Assert
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#suggestions')).toBeHidden()
+  await expect(input).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#result-head')).toBeFocused()
+  await expect(input).toHaveValue('gri')
+  await page.keyboard.press('j')
+  await expect(page.locator('#results [data-toggle]').first()).toBeFocused()
+})
+test('a deck focused while scrolling up is not hidden under the pinned filters', async ({ page, open }) => {
+  // Arrange: a deck far down, then back up as Shift+Tab does
+  await open()
+  await page.locator('#results [data-toggle]').nth(20).focus()
+
+  // Act
+  for (let i = 0; i < 5; i++) await page.keyboard.press('Shift+Tab')
+
+  // Assert
+  const [filtersBottom, focusedTop] = await page.evaluate(() => [
+    document.querySelector('#filters')?.getBoundingClientRect().bottom ?? 0,
+    document.activeElement?.getBoundingClientRect().top ?? 0,
+  ])
+  expect(focusedTop).toBeGreaterThanOrEqual(filtersBottom)
 })

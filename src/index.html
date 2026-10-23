@@ -39,6 +39,8 @@
             <path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5M12 2.5C9.4 5.3 8.1 8.5 8.1 12s1.3 6.7 3.9 9.5" />
           </svg>
           <span id="lang-current">English</span>
+          <!-- Phones: the code alone (the summary's label names the menu for screen readers). -->
+          <span class="lang-code" id="lang-code" aria-hidden="true">EN</span>
         </summary>
         <fieldset class="display-panel lang-panel" id="lang-panel" data-i18n-label="language.button"></fieldset>
       </details>
@@ -82,32 +84,24 @@
       </details>
     </header>
 
-    <section class="filters" id="filters" data-i18n-label="filters.label">
-      <div class="row">
-        <span class="label" id="source-label" data-i18n="filter.source">Source</span>
-        <fieldset class="pills" id="sources" aria-labelledby="source-label"></fieldset>
+    <section class="filters folded" id="filters" data-i18n-label="filters.label">
+      <!-- Phones only: once a leader is picked, faction and leader (then the stratagem) fold into this one line. -->
+      <button type="button" class="filters-toggle opponent-toggle" id="opponent-toggle" data-opponent-toggle="1" aria-expanded="false" aria-controls="opponent-rows"></button>
+      <div class="filter-rows" id="opponent-rows">
+        <div class="row row-faction">
+          <span class="label" id="faction-label" data-i18n="filter.faction">Faction</span>
+          <fieldset class="pills" id="factions" aria-labelledby="faction-label"></fieldset>
+        </div>
+        <div class="row row-leader">
+          <span class="label" id="leader-label" data-i18n="filter.leader">Leader</span>
+          <fieldset class="pills" id="leader" aria-labelledby="leader-label"></fieldset>
+        </div>
+        <div class="row row-stratagem">
+          <span class="label" id="stratagem-label" data-i18n="filter.stratagem">Stratagem</span>
+          <fieldset class="stack" id="stratagem" aria-labelledby="stratagem-label"></fieldset>
+        </div>
+        <p class="note indent" id="stratagem-note"></p>
       </div>
-      <div class="row">
-        <span class="label" id="media-label" data-i18n="filter.media">Guide &amp; video</span>
-        <fieldset class="pills" id="media" aria-labelledby="media-label"></fieldset>
-      </div>
-      <div class="row">
-        <span class="label" id="budget-label" data-i18n="filter.provisions">Provisions</span>
-        <fieldset class="pills" id="budgets" aria-labelledby="budget-label"></fieldset>
-      </div>
-      <div class="row">
-        <span class="label" id="faction-label" data-i18n="filter.faction">Faction</span>
-        <fieldset class="pills" id="factions" aria-labelledby="faction-label"></fieldset>
-      </div>
-      <div class="row">
-        <span class="label" id="leader-label" data-i18n="filter.leader">Leader</span>
-        <fieldset class="pills" id="leader" aria-labelledby="leader-label"></fieldset>
-      </div>
-      <div class="row">
-        <span class="label" id="stratagem-label" data-i18n="filter.stratagem">Stratagem</span>
-        <fieldset class="stack" id="stratagem" aria-labelledby="stratagem-label"></fieldset>
-      </div>
-      <p class="note indent" id="stratagem-note"></p>
       <div class="row">
         <label class="label" for="card-input" id="cards-label" data-i18n="filter.cards">Search</label>
         <div class="chips-box">
@@ -134,6 +128,22 @@
         <button type="button" class="clear" id="clear" data-clear-all="1" data-i18n="clearAll">Clear all</button>
       </div>
       <p class="note indent" id="deck-note" role="status" hidden></p>
+      <!-- Phones only: folds the rows that refine the search into one line that lists what's set. -->
+      <button type="button" class="filters-toggle" id="filters-toggle" data-filters-toggle="1" aria-expanded="false" aria-controls="filter-rows"></button>
+      <div class="filter-rows" id="filter-rows">
+        <div class="row">
+          <span class="label" id="source-label" data-i18n="filter.source">Source</span>
+          <fieldset class="pills" id="sources" aria-labelledby="source-label"></fieldset>
+        </div>
+        <div class="row">
+          <span class="label" id="media-label" data-i18n="filter.media">Guide &amp; video</span>
+          <fieldset class="pills" id="media" aria-labelledby="media-label"></fieldset>
+        </div>
+        <div class="row">
+          <span class="label" id="budget-label" data-i18n="filter.provisions">Provisions</span>
+          <fieldset class="pills" id="budgets" aria-labelledby="budget-label"></fieldset>
+        </div>
+      </div>
     </section>
 
     <div class="layout">
@@ -173,12 +183,16 @@
         </section>
       </main>
       <aside class="panel" id="panel" aria-labelledby="panel-head">
-        <fieldset class="mode freq" id="freq" data-i18n-label="freq.label">
-          <button type="button" data-freq="most" data-i18n-title="freq.mostTip" data-i18n="freq.most">Most common</button>
-          <button type="button" data-freq="least" data-i18n-title="freq.leastTip" data-i18n="freq.least">Least common</button>
-        </fieldset>
-        <h2 id="panel-head">Cards</h2>
-        <ol class="bars" id="bars"></ol>
+        <!-- Phones only: folds the card list away, to get to the decks below it. -->
+        <button type="button" class="filters-toggle panel-toggle" id="panel-toggle" data-panel-toggle="1" aria-expanded="true" aria-controls="panel-body"><span class="fold-chev" aria-hidden="true">▸</span><span data-i18n="freq.label">Card frequency</span></button>
+        <div class="filter-rows" id="panel-body">
+          <fieldset class="mode freq" id="freq" data-i18n-label="freq.label">
+            <button type="button" data-freq="most" data-i18n-title="freq.mostTip" data-i18n="freq.most">Most common</button>
+            <button type="button" data-freq="least" data-i18n-title="freq.leastTip" data-i18n="freq.least">Least common</button>
+          </fieldset>
+          <h2 id="panel-head">Cards</h2>
+          <ol class="bars" id="bars"></ol>
+        </div>
       </aside>
     </div>
 
@@ -244,6 +258,8 @@
           <dd data-i18n="shortcuts.filters">Jump to the filters</dd>
           <dt><kbd>]</kbd></dt>
           <dd data-i18n="shortcuts.panel">Jump to card frequency</dd>
+          <dt><kbd>j</kbd> <kbd>k</kbd></dt>
+          <dd data-i18n="shortcuts.decks">Next or previous deck (or Craft card)</dd>
           <dt><kbd>Shift</kbd> + <kbd>Backspace</kbd></dt>
           <dd data-i18n="shortcuts.clear">Clear all (Back undoes it)</dd>
           <dt><kbd>?</kbd></dt>
@@ -255,11 +271,11 @@
           <dt><kbd>Backspace</kbd></dt>
           <dd data-i18n="shortcuts.removeLast">Remove the last pick (in an empty search box)</dd>
           <dt><kbd>Esc</kbd></dt>
-          <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help</dd>
+          <dd data-i18n="shortcuts.esc">Close suggestions, menus and this help; again to leave the search box</dd>
         </dl>
         <p data-i18n="shortcuts.note">Shortcuts work when you're not typing in a box. Tab from the top of the page for skip links.</p>
       </details>
-      <p><a id="help-readme" href="https://github.com/el8ted/gwentdecksearch/blob/main/docs/guide.md" data-repo="/blob/main/docs/guide.md" target="_blank" rel="noopener" data-i18n="help.readme">Full guide</a> · <a id="help-news" href="https://github.com/el8ted/gwentdecksearch/releases" data-repo="/releases" target="_blank" rel="noopener" data-i18n="help.whatsNew">What's new</a></p>
+      <p><a id="help-readme" href="https://github.com/el8ted/gwentdecksearch/blob/main/docs/guide.md" data-repo="/blob/main/docs/guide.md" target="_blank" rel="noopener" data-i18n="help.readme">Full guide</a> · <a id="help-news" href="https://github.com/el8ted/gwentdecksearch/releases" data-repo="/releases" target="_blank" rel="noopener" data-i18n="help.whatsNew">What's new</a> · <button type="button" class="link" id="help-credits" aria-haspopup="dialog" data-i18n="credits.button">Credits</button></p>
     </dialog>
 
     <dialog class="credits" id="credits" aria-labelledby="credits-title">

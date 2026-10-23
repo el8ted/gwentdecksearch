@@ -188,6 +188,7 @@
     "shortcuts.add",
     "shortcuts.cards",
     "shortcuts.clear",
+    "shortcuts.decks",
     "shortcuts.esc",
     "shortcuts.filters",
     "shortcuts.help",
@@ -451,11 +452,12 @@
   "shortcuts.cards": "Ir al cuadro de búsqueda",
   "shortcuts.filters": "Ir a los filtros",
   "shortcuts.panel": "Ir a la frecuencia de cartas",
+  "shortcuts.decks": "Mazo siguiente o anterior (o carta en Fabricar)",
   "shortcuts.clear": "Borrar todo (Atrás lo deshace)",
   "shortcuts.help": "Mostrar u ocultar esta ayuda",
   "shortcuts.suggestions": "Recorrer las sugerencias",
   "shortcuts.add": "Añadir la sugerencia resaltada",
   "shortcuts.removeLast": "Quitar lo último añadido (con el cuadro de búsqueda vacío)",
-  "shortcuts.esc": "Cerrar sugerencias, menús y esta ayuda",
+  "shortcuts.esc": "Cerrar sugerencias, menús y esta ayuda; otra vez para salir del cuadro de búsqueda",
   "shortcuts.note": "Los atajos funcionan cuando no estás escribiendo en un cuadro. Pulsa Tab al principio de la página para ver los enlaces de salto."
 }
