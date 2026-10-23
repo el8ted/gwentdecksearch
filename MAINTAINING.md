@@ -139,8 +139,7 @@ The tag starts `.github/workflows/release.yml`, which:
 1. runs every check (the same jobs as CI);
 2. stops if the tag doesn't match the data date;
 3. builds `dist/` and deploys it to the live site;
-4. creates a GitHub Release named after the tag, with `gwent-deck-search-<tag>.zip` (the offline site) and
-   `gwent-deck-data-<tag>.zip` (`pnpm export`: the decks as spreadsheets) attached and notes built from the
+4. creates a GitHub Release named after the tag, with `gwent-deck-search-<tag>.zip` attached and notes built from the
    changelog and the data changes;
 5. moves the changelog's Unreleased lines under the tag and commits that to `main`.
 
@@ -182,5 +181,5 @@ Done once, in the repo's **Settings**:
 
 `pnpm whatif`, `pnpm poll`, `pnpm package`, `pnpm kegs`, `pnpm export` and `pnpm reddit` read the local data: what a
 Balance Council ballot or poll does to the published decks, the decks built around a card or tag, keg values, the
-decks as spreadsheets (attached to each release), and a reply for a deck shared on Reddit. The site doesn't need
+decks as spreadsheets, and a reply for a deck shared on Reddit. The site doesn't need
 them. See [scripts/README.md](scripts/README.md).

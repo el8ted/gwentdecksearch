@@ -1,7 +1,6 @@
 name: Release
 
-# Publishes the live site and a GitHub Release with the offline zip and the deck data as spreadsheets, named after the
-# data date.
+# Publishes the live site and a GitHub Release with the offline zip, named after the data date.
 # - By hand: tag main and push the tag:  git tag 2026-10-16 && git push origin 2026-10-16
 # - Automatically: update.yml calls this after committing new data, with the tag it created.
 # A second release of the same data adds a two-digit suffix: 2026-10-16.02
@@ -53,16 +52,11 @@ jobs:
         run: |
           cp -r dist gwent-deck-search
           zip -qr "gwent-deck-search-$TAG.zip" gwent-deck-search
-      - name: Zip the deck data
-        run: |
-          node scripts/export.ts --out gwent-deck-data
-          zip -qr "gwent-deck-data-$TAG.zip" gwent-deck-data
       - uses: actions/upload-artifact@v7
         with:
           name: release
           path: |
             gwent-deck-search-*.zip
-            gwent-deck-data-*.zip
             release-notes.md
       - uses: actions/upload-pages-artifact@v5
         with:
@@ -97,7 +91,7 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: release
-      - run: gh release create "$TAG" gwent-deck-search-*.zip gwent-deck-data-*.zip --title "$TAG" --notes-file release-notes.md
+      - run: gh release create "$TAG" gwent-deck-search-*.zip --title "$TAG" --notes-file release-notes.md
         env:
           GH_TOKEN: ${{ github.token }}
       # File this release's changelog entries under its tag, leaving Unreleased empty for the next changes.

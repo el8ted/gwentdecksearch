@@ -115,8 +115,8 @@ faction's, or every deck for a neutral). Tags miss some roles, so `ROLE_EXTRAS` 
 ## `pnpm export [--out <folder>]`
 
 The decks and cards as spreadsheets, for analysis in Excel, Google Sheets, LibreOffice, Python or R without running
-anything here. Each release attaches it as `gwent-deck-data-<tag>.zip`; `pnpm export` writes the same folder locally
-(`gwent-deck-data/` by default, emptied first).
+anything here. `pnpm export` writes the folder locally (`gwent-deck-data/` by default, emptied first); zip it to share.
+Releases don't attach it.
 
 - `decks.csv`: a row per deck: faction, leader, stratagem, provisions against today's limit, sources, author, guide
   date, video.

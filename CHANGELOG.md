@@ -14,14 +14,11 @@ the release tag and starts a new Unreleased section. -->
 - MetallicDanny's archetype list is read too: about 110 decks he files by faction and archetype, 34 of them new to
   the site.
 - For anyone digging into the data: `pnpm whatif` shows what a Balance Council ballot (power and provision changes,
-  ranked) would do to the published decks; `pnpm poll` turns a Balance Council poll (a Google Form) into one; and
+  ranked) would do to the published decks; `pnpm poll` turns a Balance Council poll (a Google Form) into one;
   `pnpm package` shows the decks built around a card or tag and what they run with; `pnpm kegs` estimates what each
   kind of keg is worth as your collection fills, counting either every card or only the cards decks play (a card in
-  two factions counts against both factions' decks). Card names work in any of the site's languages. See
-  scripts/README.md.
-- Each release now also has the deck data as spreadsheets (`gwent-deck-data-….zip`): every deck and its cards, every
-  card with its name in all 11 languages, and which cards are played together, for your own analysis in Excel, Google
-  Sheets or anything that reads CSV. Its README explains each file, in every language the site has.
+  two factions counts against both factions' decks); and `pnpm export` writes the decks and cards as spreadsheets.
+  Card names work in any of the site's languages. See scripts/README.md.
 - Cards that tie in **Craft** and **Most/Least common** are listed legendary first, then by name, instead of in an
   arbitrary order. On a single deck, where every card ties, Craft now goes from the most expensive cards down.
 - Decks are listed in alphabetical order of the name you see: a deck shown under its author's own name, in your

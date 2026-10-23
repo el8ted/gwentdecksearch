@@ -2,7 +2,7 @@
  * Writes the deck data as spreadsheets for anyone's own analysis: decks.csv, deck-cards.csv, cards.csv (names in all
  * 11 languages), card-pairs.csv (cards played together, and how much more often than chance), a report per leader in
  * each language, manifest.json, and a README in each language. Uses the local data, so pull or `pnpm build:data`
- * first. The release workflow zips it as gwent-deck-data-<tag>.zip.
+ * first. Not part of a release: run it and zip the folder to share.
  *
  * Run: `pnpm export [--out <folder>]` (default: gwent-deck-data/, gitignored). The folder is emptied first.
  */
