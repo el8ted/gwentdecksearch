@@ -8,6 +8,13 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
+  stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
+  to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).
+- Scripts: a mistyped option (`--detial`) or one missing its value now stops with the usage line instead of being
+  ignored; `pnpm package --min` must be a whole number; and `pnpm export --out` only empties a new folder or an
+  earlier export, so a typo can't delete anything else.
+
 ## 2026-10-22
 
 - More decks: community guides from the last 18 months (was 12) and the sheets' per-patch tabs from the last 12
