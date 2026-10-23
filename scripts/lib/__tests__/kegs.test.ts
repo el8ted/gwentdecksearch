@@ -36,6 +36,8 @@ const CATALOG: Record<string, CatalogCard> = {
   21: card('NE', 15),
   22: card('NE', 20),
   23: card('NE', 25),
+  // Syndicate, also playable in Monsters decks.
+  30: { ...card('SY', 15), secondaryFaction: 'MO' },
 }
 const { pools, rarity } = kegPools(CATALOG)
 /** Replays fixed numbers, then repeats the last. */
@@ -53,20 +55,20 @@ describe('kegPools', () => {
 })
 
 describe('playedCards', () => {
-  it("measures faction cards against their faction's decks and neutrals against every deck", () => {
-    // Arrange: two MO decks and two SK decks; 10 is in 1 of 2 MO decks, 20 in 1 of 4 decks, 1 is a leader
+  it("measures a card against the decks that could run it: its factions', or every deck for a neutral", () => {
+    // Arrange: two MO decks and two SK decks; 10 is in 1 of 2 MO decks, 20 in 1 of 4 decks, 1 is a leader; 30 is a
+    // Syndicate card also playable in Monsters, so it's in 1 of the 2 decks (no Syndicate ones) that could run it
     const deck = (faction: IndexedDeck['faction'], ids: number[]) =>
       ({ faction, leader: 1, stratagem: 2, deck: { cards: ids.map((id) => [id, 1]) } }) as unknown as IndexedDeck
-    const cards = CATALOG as unknown as Dataset['cards']
-    const decks = [deck('MO', [1, 10, 20]), deck('MO', [1, 11]), deck('SK', []), deck('SK', [])]
-    const factionOf = (id: number) => CATALOG[id].faction
+    const decks = [deck('MO', [1, 10, 20, 30]), deck('MO', [1, 11]), deck('SK', []), deck('SK', [])]
+    const data = { decks, catalog: CATALOG, dataset: { cards: CATALOG } as unknown as Dataset }
 
     // Act
-    const [half, quarter] = [0.5, 0.25].map((s) => playedCards(decks, cards, rarity, factionOf, s))
+    const [half, quarter] = [0.5, 0.25].map((s) => playedCards(data, rarity, s))
 
     // Assert
-    expect(half).toEqual(new Set([10, 11]))
-    expect(quarter).toEqual(new Set([10, 11, 20]))
+    expect(half).toEqual(new Set([10, 11, 30]))
+    expect(quarter).toEqual(new Set([10, 11, 20, 30]))
   })
 })
 

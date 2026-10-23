@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fold } from '../autocomplete.ts'
+import { fold } from '../../search.ts'
 
 describe('fold', () => {
   it('drops accents and case, so plain typing finds accented names', () => {

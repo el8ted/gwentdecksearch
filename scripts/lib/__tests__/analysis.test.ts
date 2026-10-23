@@ -4,10 +4,17 @@ import {
   cardName,
   caveat,
   describeCards,
+  explainLookup,
+  factionScope,
   halfYear,
+  langError,
+  leaderCounts,
   nameLookup,
+  option,
+  positionals,
   profile,
   readAnalysisData,
+  slug,
 } from '../analysis.ts'
 import { DATA } from './analysis-data.ts'
 
@@ -96,5 +103,73 @@ describe('readAnalysisData', () => {
     expect(data.names.en[202425]).toBe('Azar Javed')
     expect(Object.keys(data.names)).toContain('zh-cn')
     expect(data.tags.en?.defender).toBe('Defender')
+  })
+})
+
+describe('explainLookup', () => {
+  it('asks for the ID when cards share a name, and lists suggestions otherwise', () => {
+    // Act / Assert
+    expect(explainLookup({ ok: false, exact: true, matches: [105, 106] }, '先知', DATA)).toBe(
+      '"先知" could be any of these; use the ID:\n  105  Prophet (NG unit, 7 provisions)\n  106  Farseer (ST unit, 6 provisions)',
+    )
+    expect(explainLookup({ ok: false, exact: false, matches: [104] }, 'Kolg', DATA)).toBe(
+      'no card is called "Kolg"; did you mean:\n  104  Kolgrim (NG unit, 10 provisions)',
+    )
+    expect(explainLookup({ ok: false, exact: false, matches: [] }, 'Zzz', DATA)).toBe('no card is called "Zzz"')
+  })
+})
+
+describe('factionScope', () => {
+  it("counts the decks that could run a card: its faction's, both of a dual-faction card's, or every deck", () => {
+    // Arrange: 3 Monsters decks, 1 Nilfgaard, 1 Syndicate; 107 is Syndicate, also playable in Nilfgaard
+    const dual = { ...DATA.catalog[105], faction: 'SY' as const, secondaryFaction: 'NG' as const }
+    const data = { ...DATA, catalog: { ...DATA.catalog, 107: dual } }
+
+    // Act
+    const { allowed, decksThatCould } = factionScope(data)
+
+    // Assert
+    expect(decksThatCould(100)).toBe(3)
+    expect(decksThatCould(102)).toBe(5)
+    expect(decksThatCould(107)).toBe(2)
+    expect(allowed(107)).toEqual(['SY', 'NG'])
+    expect(decksThatCould(999)).toBe(5)
+  })
+})
+
+describe('leaderCounts and slug', () => {
+  it('counts decks per leader, most first', () => {
+    // Act / Assert
+    expect(leaderCounts(DATA.decks)).toEqual([
+      [1, 3],
+      [2, 1],
+      [3, 1],
+    ])
+  })
+
+  it('makes file names: accents off, other characters joined by -, at most 60 characters', () => {
+    // Act / Assert
+    expect(slug('Shinmiri’s & Lerio’s BC37 Ideas!')).toBe('shinmiri-s-lerio-s-bc37-ideas')
+    expect(slug('Ça va? Łódź')).toBe('ca-va-lodz')
+    expect(slug('!!!')).toBe('')
+    expect(slug(`${'a'.repeat(59)} b`)).toBe('a'.repeat(59))
+  })
+})
+
+describe('option, positionals and langError', () => {
+  it('reads options and the arguments that are not options or their values', () => {
+    // Arrange
+    const args = ['ballot.txt', '--lang', 'zh-cn', '--detail', 'more']
+
+    // Act / Assert
+    expect(option(args, '--lang')).toBe('zh-cn')
+    expect(option(args, '--out')).toBeUndefined()
+    expect(positionals(args, ['--lang'])).toEqual(['ballot.txt', 'more'])
+  })
+
+  it('says which languages have names when one has none', () => {
+    // Act / Assert
+    expect(langError(DATA, 'zh-cn')).toBeUndefined()
+    expect(langError(DATA, 'xx')).toBe('No card names in "xx"; try one of: en, ru, zh-cn')
   })
 })

@@ -71,9 +71,7 @@ describe('parseChanges', () => {
     expect(errors[0]).toBe(
       'line 1: put "Kolgrim" under a heading: Power increase, Power decrease, Provision increase, Provision decrease',
     )
-    expect(errors[1]).toMatch(
-      /^line 3: "先知" could be any of these; use the full name or the ID:\n {2}105 .*\n {2}106 /,
-    )
+    expect(errors[1]).toMatch(/^line 3: "先知" could be any of these; use the ID:\n {2}105 .*\n {2}106 /)
     expect(errors[2]).toMatch(/^line 4: no card is called "Caranthir"; did you mean:\n {2}100 {2}卡兰希尔/)
     expect(errors[3]).toBe('line 5: no card is called "Zzz"')
     expect(errors[4]).toBe('line 7: Kolgrim is already under Power increase')

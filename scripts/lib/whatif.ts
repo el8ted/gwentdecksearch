@@ -1,6 +1,15 @@
 import { type IndexedDeck, provisionStatus } from '../../src/filter.ts'
 import type { Dataset } from '../../src/types.ts'
-import { type AnalysisData, cardLookup, cardName, caveat, describeCards, halfYear, profile } from './analysis.ts'
+import {
+  type AnalysisData,
+  cardLookup,
+  cardName,
+  caveat,
+  explainLookup,
+  halfYear,
+  leaderCounts,
+  profile,
+} from './analysis.ts'
 
 /**
  * The Balance Council ballot's four lists, in ballot order. Each passed change moves a card by one: a unit's power,
@@ -73,11 +82,7 @@ export function parseChanges(
     }
     const found = lookup(name)
     if (!found.ok) {
-      errors.push(
-        found.exact
-          ? `line ${n + 1}: "${name}" could be any of these; use the full name or the ID:\n${describeCards(data, found.matches, lang)}`
-          : `line ${n + 1}: no card is called "${name}"${found.matches.length ? `; did you mean:\n${describeCards(data, found.matches, lang)}` : ''}`,
-      )
+      errors.push(`line ${n + 1}: ${explainLookup(found, name, data, lang)}`)
       continue
     }
     const kind = category.kind
@@ -138,7 +143,8 @@ export function effectOn(
   return { effect, before, after }
 }
 
-const hits = (deck: IndexedDeck, c: Change) => deck.leader === c.id || deck.ids.has(c.id)
+// A deck's ids include its leader, so a leader change hits its decks too.
+const hits = (deck: IndexedDeck, c: Change) => deck.ids.has(c.id)
 const rankOf = (c: Change) => (c.rank === undefined ? 'extra' : String(c.rank))
 
 /**
@@ -189,9 +195,7 @@ export function whatifReport(
     .sort()
     .slice(-4)
   const topLeader = (decks: IndexedDeck[]) => {
-    const n = new Map<number, number>()
-    for (const d of decks) n.set(d.leader, (n.get(d.leader) ?? 0) + 1)
-    const [id, k] = [...n].sort((a, b) => b[1] - a[1])[0] ?? []
+    const [id, k] = leaderCounts(decks)[0] ?? []
     return id === undefined ? '' : `${cardName(data, id, lang)} ${Math.round((k / decks.length) * 100)}%`
   }
   const table = (decks: IndexedDeck[], set: Change[]) => {

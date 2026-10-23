@@ -9,13 +9,13 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { consola } from 'consola'
-import { readAnalysisData } from './lib/analysis.ts'
+import { option, positionals, readAnalysisData } from './lib/analysis.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
 import { isFormUrl, parseForm, pollBallot, pollFileName } from './lib/poll.ts'
 
 const args = process.argv.slice(2)
-const out = args.includes('--out') ? args[args.indexOf('--out') + 1] : undefined
-const url = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--out')
+const out = option(args, '--out')
+const [url] = positionals(args, ['--out'])
 if (!url || !isFormUrl(url)) {
   consola.error('Usage: pnpm poll <Google Form link (docs.google.com/forms/… or forms.gle/…)> [--out <file>]')
   process.exit(2)

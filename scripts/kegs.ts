@@ -6,22 +6,18 @@
  *
  * Run: `pnpm kegs [faction]` (default MO; any of MO NG NR SK ST SY).
  */
-import { readFileSync } from 'node:fs'
 import { consola } from 'consola'
-import { indexDecks } from '../src/filter.ts'
-import { type Dataset, FACTIONS, type Faction } from '../src/types.ts'
+import { FACTIONS, type Faction } from '../src/types.ts'
+import { readAnalysisData } from './lib/analysis.ts'
 import { cardsIn, type Keg, kegPools, type Plan, playedCards, seeded, simulate } from './lib/kegs.ts'
-import { type CatalogCard, readJson, STORE_PATHS } from './lib/store.ts'
 
 const faction = (process.argv[2] ?? 'MO').toUpperCase() as Faction
 if (!FACTIONS.includes(faction)) {
   consola.error(`Usage: pnpm kegs [${FACTIONS.join('|')}]`)
   process.exit(2)
 }
-const catalog = await readJson<Record<string, CatalogCard>>(STORE_PATHS.cards, {})
-const data: Dataset = JSON.parse(readFileSync('data/decks.json', 'utf8'))
-const { pools, rarity } = kegPools(catalog)
-const decks = indexDecks(data)
+const data = await readAnalysisData()
+const { pools, rarity } = kegPools(data.catalog)
 const KEGS = 300
 const WINDOWS = [
   [1, 10],
@@ -38,7 +34,7 @@ const VIEWS: [string, Set<number> | undefined][] = [
   ['You want every card', undefined],
   ...[0.01, 0.05].map((s): [string, Set<number>] => [
     `You want cards in at least ${s * 100}% of the ${data.decks.length} published decks that could run them`,
-    playedCards(decks, data.cards, rarity, (id) => catalog[id].faction, s),
+    playedCards(data, rarity, s),
   ]),
 ]
 const fmt = (n: number | undefined) => n ?? `>${KEGS}`

@@ -1,5 +1,14 @@
 import { budgetSide, craftList, type IndexedDeck } from '../../src/filter.ts'
-import { type AnalysisData, cardLookup, cardName, caveat, describeCards, nameLookup, profile } from './analysis.ts'
+import {
+  type AnalysisData,
+  cardLookup,
+  cardName,
+  caveat,
+  explainLookup,
+  factionScope,
+  nameLookup,
+  profile,
+} from './analysis.ts'
 
 /**
  * Cards that play a tag's role without carrying the tag, which deck lists can't show otherwise.
@@ -50,12 +59,7 @@ export function parseSeed(
   for (const a of args) {
     const found = lookup(a)
     if (found.ok) cards.push(found.value)
-    else if (found.exact)
-      errors.push(`"${a}" could be any of these; use the ID:\n${describeCards(data, found.matches, lang)}`)
-    else
-      errors.push(
-        `no card is called "${a}"${found.matches.length ? `; did you mean:\n${describeCards(data, found.matches, lang)}` : ''}`,
-      )
+    else errors.push(explainLookup(found, a, data, lang))
   }
   const need = min ?? cards.length
   if (!errors.length && !cards.length) errors.push('name a card, or a tag as tag:<name>')
@@ -86,7 +90,7 @@ export function packageDecks(
         ])
       : new Set(seed.cards)
   const min = 'tag' in seed ? 1 : seed.min
-  const decks = data.decks.filter((d) => [...core].filter((id) => d.ids.has(id) || d.leader === id).length >= min)
+  const decks = data.decks.filter((d) => [...core].filter((id) => d.ids.has(id)).length >= min)
   return { decks, core }
 }
 
@@ -109,18 +113,12 @@ export function companions(
     new Map(craftList(set, [...core], data.dataset.cards).map((r): [number, number] => [r.id, r.decks]))
   const inPackage = count(decks)
   const everywhere = count(data.decks)
-  const perFaction = new Map<string, number>()
-  for (const d of data.decks) perFaction.set(d.faction, (perFaction.get(d.faction) ?? 0) + 1)
+  const { decksThatCould } = factionScope(data)
   return [...inPackage]
     .filter(([id, n]) => data.catalog[id] && n >= MIN_SHARE * decks.length)
     .map(([id, n]): [number, number, number] => {
-      const c = data.catalog[id]
-      const could =
-        c.faction === 'NE'
-          ? data.decks.length
-          : (perFaction.get(c.faction) ?? 0) + (c.secondaryFaction ? (perFaction.get(c.secondaryFaction) ?? 0) : 0)
       const share = n / decks.length
-      return [id, share, share / ((everywhere.get(id) ?? 1) / Math.max(could, 1))]
+      return [id, share, share / ((everywhere.get(id) ?? 1) / Math.max(decksThatCould(id), 1))]
     })
     .sort((a, b) => b[2] - a[2] || b[1] - a[1])
     .slice(0, MAX_ROWS)

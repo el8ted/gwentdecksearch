@@ -10,12 +10,12 @@ import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { consola } from 'consola'
 import { LANGUAGES } from '../src/i18n.ts'
-import { readAnalysisData } from './lib/analysis.ts'
+import { option, readAnalysisData } from './lib/analysis.ts'
 import { cardPairsCsv, cardsCsv, deckCardsCsv, decksCsv, leaderReports, manifest } from './lib/export.ts'
 import { exportReadme } from './lib/export-readme.ts'
 
 const args = process.argv.slice(2)
-const out = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'gwent-deck-data'
+const out = option(args, '--out') ?? 'gwent-deck-data'
 if (!out || out === '/' || out === '.') {
   consola.error('Usage: pnpm export [--out <folder>]  (a folder of its own: it is emptied first)')
   process.exit(2)

@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { type IndexedDeck, indexDecks } from '../../src/filter.ts'
-import type { Dataset } from '../../src/types.ts'
-import { fold, loose, matchRank } from '../../src/ui/autocomplete.ts'
+import { fold, loose, matchRank } from '../../src/search.ts'
+import type { Dataset, Faction } from '../../src/types.ts'
 import { type CatalogCard, readJson, STORE_PATHS } from './store.ts'
 
 /** Everything the analysis scripts read: the built decks, plus the full card catalog and names in every language. */
@@ -130,6 +130,106 @@ export function describeCards(data: Pick<AnalysisData, 'catalog' | 'names'>, ids
 }
 
 /**
+ * Why a name didn't resolve, for a line the user must fix: the cards sharing it (only an ID tells them apart), or
+ * the suggestions, if any.
+ *
+ * @param found - The failed lookup
+ * @param name - The name as written
+ * @param data - Catalog and names
+ * @param lang - Language for the names
+ * @returns The explanation
+ */
+export function explainLookup(
+  found: Extract<Lookup<number>, { ok: false }>,
+  name: string,
+  data: Pick<AnalysisData, 'catalog' | 'names'>,
+  lang = 'en',
+): string {
+  const list = describeCards(data, found.matches, lang)
+  if (found.exact) return `"${name}" could be any of these; use the ID:\n${list}`
+  return `no card is called "${name}"${found.matches.length ? `; did you mean:\n${list}` : ''}`
+}
+
+/**
+ * Which decks could run a card: its faction's (both, for a dual-faction card), or every deck for a neutral. The one
+ * base the scripts measure a card's share against.
+ *
+ * @param data - Decks and catalog
+ * @returns `allowed(id)`, the factions that can play a card; `decksIn(factions)`, their decks; and
+ *   `decksThatCould(id)`, the two together
+ */
+export function factionScope(data: Pick<AnalysisData, 'decks' | 'catalog'>) {
+  const perFaction = new Map<Faction, number>()
+  for (const e of data.decks) perFaction.set(e.faction, (perFaction.get(e.faction) ?? 0) + 1)
+  const allowed = (id: number): Faction[] => {
+    const c = data.catalog[id]
+    if (!c || c.faction === 'NE') return [...perFaction.keys()]
+    return [c.faction, ...(c.secondaryFaction ? [c.secondaryFaction] : [])]
+  }
+  const decksIn = (factions: Faction[]) => factions.reduce((n, f) => n + (perFaction.get(f) ?? 0), 0)
+  return { allowed, decksIn, decksThatCould: (id: number) => decksIn(allowed(id)) }
+}
+
+/**
+ * Decks per leader, most first.
+ *
+ * @param decks - The decks
+ * @returns `[leader, decks]`
+ */
+export function leaderCounts(decks: IndexedDeck[]): [number, number][] {
+  const n = new Map<number, number>()
+  for (const d of decks) n.set(d.leader, (n.get(d.leader) ?? 0) + 1)
+  return [...n].sort((a, b) => b[1] - a[1])
+}
+
+/**
+ * A file name from a title: lower case, accents off, letters and digits joined by `-`, at most 60 characters.
+ *
+ * @param title - Any title
+ * @returns E.g. `shinmiri-s-lerio-s-bc37-ideas`; empty if nothing is left
+ */
+export function slug(title: string): string {
+  return fold(title)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 60)
+    .replace(/-$/, '')
+}
+
+/**
+ * A command-line option's value (`--lang zh-cn`).
+ *
+ * @param args - The arguments
+ * @param name - The option, e.g. `--lang`
+ * @returns Its value, or `undefined` if it isn't given
+ */
+export function option(args: string[], name: string): string | undefined {
+  return args.includes(name) ? args[args.indexOf(name) + 1] : undefined
+}
+
+/**
+ * The arguments that aren't options or their values.
+ *
+ * @param args - The arguments
+ * @param valued - Options that take a value, e.g. `['--lang', '--out']`
+ * @returns The rest, in order
+ */
+export function positionals(args: string[], valued: string[]): string[] {
+  return args.filter((a, i) => !a.startsWith('--') && !valued.includes(args[i - 1]))
+}
+
+/**
+ * What's wrong with a `--lang` value, if anything.
+ *
+ * @param data - Names by language
+ * @param lang - The language asked for
+ * @returns A message, or `undefined` if there are names in it
+ */
+export function langError(data: Pick<AnalysisData, 'names'>, lang: string): string | undefined {
+  return data.names[lang] ? undefined : `No card names in "${lang}"; try one of: ${Object.keys(data.names).join(', ')}`
+}
+
+/**
  * The half-year a deck's guide was last edited, for telling a live archetype from a fading one.
  *
  * @param deck - The deck
@@ -156,7 +256,7 @@ export function profile(data: Pick<AnalysisData, 'catalog' | 'names'>, decks: In
       .slice(0, n)
       .map(([k, v]) => `${k} ${v}`)
       .join(' · ')
-  const leaders = count(decks.map((d) => d.leader)).map(([id, n]): [string, number] => [cardName(data, id, lang), n])
+  const leaders = leaderCounts(decks).map(([id, n]): [string, number] => [cardName(data, id, lang), n])
   const halves = count(decks.map(halfYear)).sort(([a], [b]) => a.localeCompare(b))
   return [
     `Factions: ${top(count(decks.map((d) => d.faction)))}`,

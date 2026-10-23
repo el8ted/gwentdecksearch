@@ -1,5 +1,6 @@
-import { craftList, type IndexedDeck } from '../../src/filter.ts'
-import { type Dataset, type Faction, RARITIES, type Rarity } from '../../src/types.ts'
+import { craftList } from '../../src/filter.ts'
+import { type Faction, RARITIES, type Rarity } from '../../src/types.ts'
+import { type AnalysisData, factionScope } from './analysis.ts'
 import { rarityOf } from './cards.ts'
 import type { CatalogCard } from './store.ts'
 
@@ -66,29 +67,24 @@ export function cardsIn(pools: Pools, kegs: Keg[]): Set<number> {
 /**
  * Cards the published decks actually play: the "you want what decks use" view of a collection.
  *
- * A faction card is measured against that faction's decks, a neutral against every deck, since only those could run it.
+ * A card is measured against the decks that could run it ({@link factionScope}): its faction's, both for a
+ * dual-faction card, every deck for a neutral.
  *
- * @param decks - Published decks
- * @param cards - The decks' card data (the site's), for counting decks per card as the Craft list does
+ * @param data - Published decks, card catalog and the site's card data (decks per card are counted as the Craft list
+ *   counts them)
  * @param rarity - Each keg card's rarity, from {@link kegPools}; other cards (leaders, stratagems) are skipped
- * @param factionOf - A card's faction
- * @param share - Smallest share of those decks a card must be in, e.g. 0.05
+ * @param share - Smallest share of the decks that could run a card it must be in, e.g. 0.05
  * @returns The played card IDs
  */
 export function playedCards(
-  decks: IndexedDeck[],
-  cards: Dataset['cards'],
+  data: Pick<AnalysisData, 'decks' | 'catalog' | 'dataset'>,
   rarity: Map<number, Rarity>,
-  factionOf: (id: number) => Faction,
   share: number,
 ): Set<number> {
-  const perFaction = new Map<Faction, number>()
-  for (const d of decks) perFaction.set(d.faction, (perFaction.get(d.faction) ?? 0) + 1)
+  const { decksThatCould } = factionScope(data)
   const played = new Set<number>()
-  for (const { id, decks: n } of craftList(decks, [], cards)) {
-    if (!rarity.has(id)) continue
-    const f = factionOf(id)
-    if (n >= share * (f === 'NE' ? decks.length : (perFaction.get(f) ?? Infinity))) played.add(id)
+  for (const { id, decks: n } of craftList(data.decks, [], data.dataset.cards)) {
+    if (rarity.has(id) && n >= share * decksThatCould(id)) played.add(id)
   }
   return played
 }

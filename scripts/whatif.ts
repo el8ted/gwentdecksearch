@@ -11,19 +11,20 @@
  */
 import { readFile } from 'node:fs/promises'
 import { consola } from 'consola'
-import { readAnalysisData } from './lib/analysis.ts'
+import { langError, option, positionals, readAnalysisData } from './lib/analysis.ts'
 import { parseChanges, whatifReport } from './lib/whatif.ts'
 
 const args = process.argv.slice(2)
-const lang = args.includes('--lang') ? args[args.indexOf('--lang') + 1] : 'en'
-const file = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--lang')
+const lang = option(args, '--lang') ?? 'en'
+const [file] = positionals(args, ['--lang'])
 if (!file) {
   consola.error('Usage: pnpm whatif <ballot file> [--detail] [--lang <code>]')
   process.exit(2)
 }
 const data = await readAnalysisData()
-if (lang !== 'en' && !data.names[lang]) {
-  consola.error(`No card names in "${lang}"; try one of: ${Object.keys(data.names).join(', ')}`)
+const badLang = langError(data, lang)
+if (badLang) {
+  consola.error(badLang)
   process.exit(2)
 }
 const parsed = parseChanges(await readFile(file, 'utf8'), data, lang)

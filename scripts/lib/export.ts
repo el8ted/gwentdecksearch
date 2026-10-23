@@ -1,7 +1,7 @@
 import { budgetSide, provisionStatus } from '../../src/filter.ts'
 import { LANGUAGES } from '../../src/i18n.ts'
 import type { Faction } from '../../src/types.ts'
-import type { AnalysisData } from './analysis.ts'
+import { type AnalysisData, factionScope, slug } from './analysis.ts'
 import { rarityOf } from './cards.ts'
 import { COMMUNITY_WINDOW_MONTHS, SHEET_WINDOW_MONTHS } from './entries.ts'
 import { packageReport } from './packages.ts'
@@ -121,19 +121,6 @@ export function deckCardsCsv(data: Pick<AnalysisData, 'decks' | 'catalog'>): str
   )
 }
 
-/** Decks per faction, and the factions a card can be played in. */
-function factionScope(data: Pick<AnalysisData, 'decks' | 'catalog'>) {
-  const perFaction = new Map<Faction, number>()
-  for (const e of data.decks) perFaction.set(e.faction, (perFaction.get(e.faction) ?? 0) + 1)
-  const allowed = (id: number): Faction[] => {
-    const c = data.catalog[id]
-    if (!c || c.faction === 'NE') return [...perFaction.keys()]
-    return [c.faction, ...(c.secondaryFaction ? [c.secondaryFaction] : [])]
-  }
-  const decksIn = (factions: Faction[]) => factions.reduce((n, f) => n + (perFaction.get(f) ?? 0), 0)
-  return { allowed, decksIn }
-}
-
 /**
  * Every card with its stats and tags, how many decks run it out of those that could (its faction's, or every deck
  * for a neutral), and its name in each of the site's languages.
@@ -144,7 +131,7 @@ function factionScope(data: Pick<AnalysisData, 'decks' | 'catalog'>) {
 export function cardsCsv(data: Pick<AnalysisData, 'decks' | 'catalog' | 'names' | 'tags'>): string {
   const runs = new Map<number, number>()
   for (const e of data.decks) for (const id of e.ids) runs.set(id, (runs.get(id) ?? 0) + 1)
-  const { allowed, decksIn } = factionScope(data)
+  const { decksThatCould } = factionScope(data)
   const ids = Object.keys(data.catalog)
     .map(Number)
     .sort((a, b) => a - b)
@@ -168,7 +155,7 @@ export function cardsCsv(data: Pick<AnalysisData, 'decks' | 'catalog' | 'names' 
     ids.map((id) => {
       const c = data.catalog[id]
       const n = runs.get(id) ?? 0
-      const could = decksIn(allowed(id))
+      const could = decksThatCould(id)
       return [
         id,
         c.faction,
@@ -263,11 +250,6 @@ export function cardPairsCsv(data: Pick<AnalysisData, 'decks' | 'catalog'>, min 
  */
 export function leaderReports(data: AnalysisData, lang: string): Map<string, string> {
   const leaders = [...new Set(data.decks.map((e) => e.leader))]
-  const slug = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
   return new Map(
     leaders
       .map((id): [string, string] => [

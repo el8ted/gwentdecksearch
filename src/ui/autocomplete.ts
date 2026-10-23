@@ -1,44 +1,13 @@
 import { CONFIG } from '../config.ts'
 import { DECK_URL } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
+import { fold, loose, matchRank } from '../search.ts'
 import type { Dataset } from '../types.ts'
 import { esc } from './dom.ts'
 
 /** Option element ID: tag keys are slugs or `c{id}`, so they can't collide with card IDs; author keys are encoded. */
 const optionId = (item: number | string) =>
   `sug-${typeof item === 'number' ? item : item.startsWith('@') ? `a-${encodeURIComponent(item.slice(1))}` : `t-${item}`}`
-
-// Letters that aren't a base letter plus an accent mark, so decomposing doesn't reach them.
-const LETTERS: Record<string, string> = {
-  ł: 'l',
-  ø: 'o',
-  đ: 'd',
-  ß: 'ss',
-  æ: 'ae',
-  œ: 'oe',
-  '’': "'",
-  '‘': "'",
-  ʼ: "'",
-}
-
-/**
- * Text as it's matched: lower case, accents off, so "coen" finds Coën and a straight ' finds Raffard’s. Only Latin and
- * Cyrillic accent marks (U+0300–U+036F) go: kana and hangul compare as typed.
- *
- * @param text - A name or the typed query
- * @returns The folded text
- */
-export function fold(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .normalize('NFC')
-    .replace(/[łøđßæœ’‘ʼ]/g, (ch) => LETTERS[ch])
-}
-
-/** For matching typed text to an author: spacing and punctuation ignored, so "metallic d" finds MetallicDanny. */
-export const loose = (text: string) => fold(text).replace(/[^\p{L}\p{N}]/gu, '')
 
 /** Options for {@link createAutocomplete}. */
 export interface AutocompleteOptions {
@@ -76,13 +45,6 @@ const EXCLUDE = /^[-!－！]\s*/
 
 // Typing out a URL: card names never start like this, so suggestions would only flash irrelevant cards.
 const URL_START = /^(?:http|www\.|playgwent)/i
-
-/** How a name matches the query: 0 prefix, 1 substring, -1 not at all. `loose` also counts a query that extends the name. */
-export function matchRank(name: string, q: string, loose = false): number {
-  const lower = fold(name)
-  const at = lower.indexOf(q)
-  return at === 0 || (loose && q.startsWith(lower)) ? 0 : at > 0 ? 1 : -1
-}
 
 /**
  * Wires an accessible combobox for adding cards and tags. Both match by their name in the current language or in

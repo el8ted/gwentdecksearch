@@ -6,21 +6,18 @@
  * Run: `pnpm reddit <playgwent.com deck or guide link> [--author]`, then copy the output into a Reddit comment.
  * `--author` adds a line saying you made the site: only for its author.
  */
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
 import { consola } from 'consola'
-import { indexDecks } from '../src/filter.ts'
-import type { Dataset } from '../src/types.ts'
+import { positionals, readAnalysisData } from './lib/analysis.ts'
 import { redditReply } from './lib/reddit.ts'
 
 const args = process.argv.slice(2)
-const url = args.find((a) => !a.startsWith('--'))
+const [url] = positionals(args, [])
 if (!url) {
   consola.error('Usage: pnpm reddit <playgwent.com deck or guide link> [--author]')
   process.exit(2)
 }
-const data: Dataset = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'data', 'decks.json'), 'utf8'))
-const reply = redditReply(data, indexDecks(data), url, { author: args.includes('--author') })
+const { dataset, decks } = await readAnalysisData()
+const reply = redditReply(dataset, decks, url, { author: args.includes('--author') })
 if (!reply.ok) {
   consola.warn(reply.reason)
   process.exit(1)

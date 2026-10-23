@@ -9,21 +9,21 @@
  * run and lists them.
  */
 import { consola } from 'consola'
-import { readAnalysisData } from './lib/analysis.ts'
+import { langError, option, positionals, readAnalysisData } from './lib/analysis.ts'
 import { packageReport, parseSeed } from './lib/packages.ts'
 
 const args = process.argv.slice(2)
-const option = (name: string) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined)
-const lang = option('--lang') ?? 'en'
-const min = option('--min')
-const seeds = args.filter((a, i) => !a.startsWith('--') && !['--lang', '--min'].includes(args[i - 1]))
+const lang = option(args, '--lang') ?? 'en'
+const min = option(args, '--min')
+const seeds = positionals(args, ['--lang', '--min'])
 if (!seeds.length) {
   consola.error('Usage: pnpm package <card…> [--min <n>] [--lang <code>]  or  pnpm package tag:<tag>')
   process.exit(2)
 }
 const data = await readAnalysisData()
-if (lang !== 'en' && !data.names[lang]) {
-  consola.error(`No card names in "${lang}"; try one of: ${Object.keys(data.names).join(', ')}`)
+const badLang = langError(data, lang)
+if (badLang) {
+  consola.error(badLang)
   process.exit(2)
 }
 const parsed = parseSeed(seeds, min === undefined ? undefined : Number(min), data, lang)

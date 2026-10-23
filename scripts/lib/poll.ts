@@ -1,4 +1,4 @@
-import { type AnalysisData, cardLookup } from './analysis.ts'
+import { type AnalysisData, cardLookup, slug } from './analysis.ts'
 import { CATEGORIES, type Category } from './whatif.ts'
 
 /** A Balance Council poll read from a Google Form: its title, and the candidate cards for each ballot list. */
@@ -120,20 +120,12 @@ export function pollBallot(
 }
 
 /**
- * A file name for a poll: its title in lower case, letters and digits only, then the date.
+ * A file name for a poll: its title as a {@link slug}, then the date.
  *
  * @param title - The poll's title
  * @param date - `YYYY-MM-DD`
  * @returns E.g. `ofir-x-qcento-balance-poll-no-37-2026-10-22.txt`
  */
 export function pollFileName(title: string, date: string): string {
-  const slug = title
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 60)
-    .replace(/-$/, '')
-  return `${slug || 'poll'}-${date}.txt`
+  return `${slug(title) || 'poll'}-${date}.txt`
 }
