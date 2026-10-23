@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { CONFIG } from '../../../src/config.ts'
 import { indexDecks } from '../../../src/filter.ts'
 import type { Card, Dataset, Deck } from '../../../src/types.ts'
-import { redditReply, SITE } from '../reddit.ts'
+import { redditReply } from '../reddit.ts'
 
 // Two Monsters leaders (+15, so a 165 limit), a stratagem, and 30 one-provision units to build decks from.
 const unit = (n: number): [number, Card] => [
@@ -52,7 +53,9 @@ describe('redditReply', () => {
     // Assert
     if (!result.ok) throw new Error(result.reason)
     expect(result.markdown).toContain('**Gameplay video** (French): [watch it here](https://youtu.be/AAAAAAAAAAA)')
-    expect(result.markdown).toContain(`${SITE}?deck=${encodeURIComponent('https://www.playgwent.com/decks/guides/1')}`)
+    expect(result.markdown).toContain(
+      `${CONFIG.siteUrl}?deck=${encodeURIComponent('https://www.playgwent.com/decks/guides/1')}`,
+    )
     expect(result.markdown).toContain("it's **1 over** the provision limit (166/165)")
     expect(result.markdown).toContain('[2 similar decks that fit](')
     expect(result.markdown).toContain(`&n=${DATA.decks[0].id})`)

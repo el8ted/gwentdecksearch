@@ -63,8 +63,8 @@ export function parseSeed(
   }
   const need = min ?? cards.length
   if (!errors.length && !cards.length) errors.push('name a card, or a tag as tag:<name>')
-  else if (!errors.length && (need < 1 || need > cards.length))
-    errors.push(`--min must be between 1 and ${cards.length}`)
+  else if (!errors.length && (!Number.isInteger(need) || need < 1 || need > cards.length))
+    errors.push(`--min must be a whole number from 1 to ${cards.length}`)
   return errors.length ? { ok: false, errors } : { ok: true, seed: { cards, min: need } }
 }
 

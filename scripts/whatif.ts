@@ -12,15 +12,19 @@
  */
 import { readFile, writeFile } from 'node:fs/promises'
 import { consola } from 'consola'
-import { langError, option, positionals, readAnalysisData } from './lib/analysis.ts'
+import { cliArgs, langError, readAnalysisData } from './lib/analysis.ts'
 import { askNames, canAsk } from './lib/ask.ts'
 import { parseChanges, whatifReport } from './lib/whatif.ts'
 
-const args = process.argv.slice(2)
-const lang = option(args, '--lang') ?? 'en'
-const [file] = positionals(args, ['--lang'])
+const USAGE = 'pnpm whatif <ballot file> [--detail] [--lang <code>]'
+const { values, positionals } = cliArgs(
+  { lang: { type: 'string', default: 'en' }, detail: { type: 'boolean', default: false } },
+  USAGE,
+)
+const { lang, detail } = values
+const [file] = positionals
 if (!file) {
-  consola.error('Usage: pnpm whatif <ballot file> [--detail] [--lang <code>]')
+  consola.error(`Usage: ${USAGE}`)
   process.exit(2)
 }
 const data = await readAnalysisData()
@@ -47,4 +51,4 @@ if (!parsed.changes.length) {
   consola.error(`No cards in ${file}: fill in the slots (see scripts/examples/ballot-template.txt)`)
   process.exit(1)
 }
-console.log(whatifReport(data, parsed.changes, lang, { poll: parsed.poll, detail: args.includes('--detail') }))
+console.log(whatifReport(data, parsed.changes, lang, { poll: parsed.poll, detail }))

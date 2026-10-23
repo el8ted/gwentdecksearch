@@ -1,4 +1,4 @@
-import { budgetSide, type cardChanges, type IndexedDeck, MIN_DECK_CARDS, provisionStatus } from '../filter.ts'
+import { budgetSide, type cardChanges, deckBody, type IndexedDeck, MIN_DECK_CARDS, provisionStatus } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
@@ -53,9 +53,9 @@ function decklist(
   changes?: Changes,
 ): string {
   const { cards } = data
-  const rest = entry.deck.cards
-    .filter(([id]) => id !== entry.leader && id !== entry.stratagem)
-    .sort(([a], [b]) => cards[b].provisions - cards[a].provisions || loc.card(a).localeCompare(loc.card(b), loc.lang))
+  const rest = deckBody(entry).sort(
+    ([a], [b]) => cards[b].provisions - cards[a].provisions || loc.card(a).localeCompare(loc.card(b), loc.lang),
+  )
   const power = loc.t('deck.power')
   // Cost and power are fixed-width columns (power blank for non-units) so names line up.
   // Comparing with This deck: + marks what this deck added (+1 for one extra copy), and everything else is common.
@@ -95,26 +95,17 @@ const glyph = (symbol: string, word: string) =>
   `<span aria-hidden="true">${symbol}</span><span class="btn-word" aria-hidden="true">${esc(word)}</span>`
 
 /** A language's short code for a badge: `pt-BR` → `PT`. */
-const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
-
-/** A language's name in the page language (`ru` → "Russian"), or its code if the browser doesn't know it. */
-function langName(lang: string, loc: Locale): string {
-  try {
-    return new Intl.DisplayNames(loc.lang, { type: 'language' }).of(lang) ?? lang
-  } catch {
-    return lang
-  }
-}
+export const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
 
 /** The video link and the guide's language, before the deck's buttons; one badge when both are the same language. */
 function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): string {
-  const guideTip = deck.guideLang && loc.t('deck.guideLang', { lang: langName(deck.guideLang, loc) })
+  const guideTip = deck.guideLang && loc.t('deck.guideLang', { lang: loc.langName(deck.guideLang) })
   if (!deck.video) {
     return deck.guideLang
       ? `<span class="lang" title="${esc(guideTip ?? '')}">${esc(langCode(deck.guideLang))}</span>`
       : ''
   }
-  const lang = langName(deck.video.lang, loc)
+  const lang = loc.langName(deck.video.lang)
   // ▶ EN alone says both, so the guide's own badge would only repeat it; its tooltip says so instead.
   const same = deck.guideLang !== undefined && langCode(deck.guideLang) === langCode(deck.video.lang)
   const guide =

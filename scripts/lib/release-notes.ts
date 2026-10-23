@@ -3,6 +3,9 @@ import { type Card, type Dataset, SOURCE_NAMES, SOURCES } from '../../src/types.
 
 const num = new Intl.NumberFormat('en')
 const signed = (n: number) => (n > 0 ? `+${num.format(n)}` : n < 0 ? `−${num.format(-n)}` : '±0')
+/** Decks a source lists; none without a dataset (the first release). */
+const listed = (data: Dataset | undefined, src: string) =>
+  data?.decks.filter((d) => (d.sources as string[]).includes(src)).length ?? 0
 
 /**
  * The `## Unreleased` section of the changelog.
@@ -69,9 +72,8 @@ export function cardChanges(before: Record<number, CardFields>, after: Record<nu
  * @returns One line per shrunken source; empty if all is well
  */
 export function shrunkSources(before: Dataset, after: Dataset): string[] {
-  const count = (data: Dataset, src: string) => data.decks.filter((d) => (d.sources as string[]).includes(src)).length
   return SOURCES.flatMap((s) => {
-    const [was, now] = [count(before, s), count(after, s)]
+    const [was, now] = [listed(before, s), listed(after, s)]
     return now < was * (1 - CONFIG.maxSourceLoss) ? [`${SOURCE_NAMES[s]}: ${was} → ${now} decks`] : []
   })
 }
@@ -85,8 +87,6 @@ export function shrunkSources(before: Dataset, after: Dataset): string[] {
  * @returns Markdown
  */
 export function dataNotes(before: Dataset | undefined, after: Dataset): string {
-  const listed = (data: Dataset | undefined, src: string) =>
-    data?.decks.filter((d) => (d.sources as string[]).includes(src)).length ?? 0
   const total = after.decks.length
   const lines = [
     `**${num.format(total)} decks** (${signed(total - (before?.decks.length ?? 0))}), data as of ${after.scrapedAt.slice(0, 16).replace('T', ' ')} UTC.`,

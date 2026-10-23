@@ -10,16 +10,18 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { consola } from 'consola'
-import { option, positionals, readAnalysisData } from './lib/analysis.ts'
+import { cliArgs, readAnalysisData } from './lib/analysis.ts'
 import { askNames, canAsk } from './lib/ask.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
 import { isFormUrl, parseForm, pollBallot, pollFileName } from './lib/poll.ts'
 
-const args = process.argv.slice(2)
-const out = option(args, '--out')
-const [url] = positionals(args, ['--out'])
+const USAGE = 'pnpm poll <Google Form link (docs.google.com/forms/… or forms.gle/…)> [--out <file>]'
+const {
+  values: { out },
+  positionals: [url],
+} = cliArgs({ out: { type: 'string' } }, USAGE)
 if (!url || !isFormUrl(url)) {
-  consola.error('Usage: pnpm poll <Google Form link (docs.google.com/forms/… or forms.gle/…)> [--out <file>]')
+  consola.error(`Usage: ${USAGE}`)
   process.exit(2)
 }
 // Google's robots.txt allows /forms with a one-second crawl delay.

@@ -12,9 +12,6 @@ import {
 import { encodeState } from '../../src/hash.ts'
 import type { Dataset } from '../../src/types.ts'
 
-/** The live site, which every link in a reply opens. */
-export const SITE = CONFIG.siteUrl
-
 /** A reply to post, or why there's nothing worth posting. */
 export type RedditReply = { ok: true; markdown: string } | { ok: false; reason: string }
 
@@ -50,8 +47,11 @@ export function redditReply(
     return { ok: false, reason: `No gameplay video, and ${why}: nothing worth posting.` }
   }
 
-  const deckLink = `${SITE}?deck=${encodeURIComponent(deck.deck.url)}`
-  const lines = [`Hi! I looked this deck up on [Gwent Deck Search](${SITE}), a free fan-made deck finder:`, '']
+  const deckLink = `${CONFIG.siteUrl}?deck=${encodeURIComponent(deck.deck.url)}`
+  const lines = [
+    `Hi! I looked this deck up on [Gwent Deck Search](${CONFIG.siteUrl}), a free fan-made deck finder:`,
+    '',
+  ]
   if (video) {
     const lang = new Intl.DisplayNames('en', { type: 'language' }).of(video.lang) ?? video.lang
     lines.push(
@@ -65,7 +65,7 @@ export function redditReply(
       const closest = overlap(deck, fixes[0])
       const decks = fixes.length === 1 ? '1 similar deck' : `${fixes.length} similar decks`
       lines.push(
-        `* **Provisions:** ${over}. [${decks} that fit](${SITE}${encodeState(similar)}) share most of its cards, the closest ${closest} of ${size}.`,
+        `* **Provisions:** ${over}. [${decks} that fit](${CONFIG.siteUrl}${encodeState(similar)}) share most of its cards, the closest ${closest} of ${size}.`,
       )
     } else lines.push(`* **Provisions:** ${over}, so it needs a cheaper card or two before it's playable.`)
   }

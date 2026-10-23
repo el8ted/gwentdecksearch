@@ -29,12 +29,21 @@ const PHRASES = { en, de, es, fr, it, ja, ko, pl, 'pt-BR': ptBR, ru, 'zh-cn': zh
 export function makeLocale(lang: Lang, pack?: LanguagePack): Locale {
   const num = new Intl.NumberFormat(lang)
   const date = new Intl.DateTimeFormat(lang, { dateStyle: 'medium', timeZone: 'UTC' })
+  const names = new Intl.DisplayNames(lang, { type: 'language' })
   return {
     lang,
     t: createTranslator(lang, PHRASES, pack?.terms),
     card: (id) => pack?.cards[id] ?? data.cards[id]?.name ?? String(id),
     tag: (key) => pack?.tags?.[key] ?? data.tags[key] ?? key,
     num: (n) => num.format(n),
+    langName: (code) => {
+      try {
+        return names.of(code) ?? code
+      } catch {
+        // A code that isn't a language tag at all.
+        return code
+      }
+    },
     date: (iso) => date.format(new Date(iso)),
     pg: (url) => playgwentUrl(url, lang),
   }

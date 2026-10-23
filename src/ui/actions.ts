@@ -3,10 +3,11 @@
  * which also says where focus goes when a click redraws the button away.
  */
 import { addPick, apply, clearAll, removeDeck, removeNear, removePick, render, showDeck, update } from '../app.ts'
+import { CONFIG } from '../config.ts'
 import { data, deckById, readHash } from '../data.ts'
 import type { Budget, FilterState } from '../filter.ts'
 import * as search from '../search.ts'
-import { PAGE, session } from '../session.ts'
+import { session } from '../session.ts'
 import type { Faction, Source } from '../types.ts'
 import { byId } from './dom.ts'
 import { els, renderResults } from './page.ts'
@@ -112,14 +113,14 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
   },
   more: {
     run: () => {
-      session.view.limit += PAGE
+      session.view.limit += CONFIG.resultsPageSize
       renderResults()
       // Continue reading where the new rows start, rather than on the button that moved below them.
       const rows =
         session.state.tab === 'craft'
           ? els.craftBody.querySelectorAll('[data-craft-pick]')
           : els.results.querySelectorAll('[data-toggle]')
-      ;(rows[session.view.limit - PAGE] as HTMLElement | undefined)?.focus()
+      ;(rows[session.view.limit - CONFIG.resultsPageSize] as HTMLElement | undefined)?.focus()
     },
   },
   tab: { run: (v) => update({ tab: v === 'craft' ? 'craft' : undefined }, { push: true }) },
@@ -204,7 +205,7 @@ export function initActions() {
   window.addEventListener('hashchange', () => {
     session.memory = { ...search.NO_MEMORY, deckReplaced: session.memory.deckReplaced }
     session.state = readHash()
-    session.view.limit = PAGE
+    session.view.limit = CONFIG.resultsPageSize
     render()
   })
 

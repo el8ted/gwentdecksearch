@@ -3,7 +3,7 @@ import { BUDGETS, budgetSide, type Facets, type FilterState, type IndexedDeck } 
 import type { Locale } from '../i18n.ts'
 import { type Dataset, FACTIONS, SOURCES } from '../types.ts'
 import { esc } from './dom.ts'
-import { deckName, sourceLabel } from './results.ts'
+import { deckName, langCode, sourceLabel } from './results.ts'
 
 /** What the filter rows are drawn from. */
 export interface FilterContext {
@@ -85,15 +85,14 @@ export function filterRows(c: FilterContext): FilterRows {
       return `<span class="pill-group">${side === 'over' ? '' : word}${pills.join('')}${side === 'over' ? word : ''}</span>`
     })
     .join('')
-  const langName = new Intl.DisplayNames(loc.lang, { type: 'language' })
   const video = `<button type="button" class="pill${current.videos ? '' : ' empty'}" data-video="1" aria-pressed="${!!state.video}" aria-label="${esc(t('results.hasVideo'))} (${current.videos})" title="${esc(t('results.hasVideoTip'))} (${current.videos})">▶ ${esc(t('results.hasVideo'))}<span>${current.videos}</span></button>`
   const media =
     video +
     c.langs
       .map((l) => {
         const n = current.langs.get(l) ?? 0
-        const label = esc(t('filter.langTip', { lang: langName.of(l) ?? l }))
-        return `<button type="button" class="pill${n ? '' : ' empty'}" data-guide-lang="${l}" aria-pressed="${!!state.langs?.includes(l)}" aria-label="${label} (${n})" title="${label} (${n})">${l.split('-')[0].toUpperCase()}<span>${n}</span></button>`
+        const label = esc(t('filter.langTip', { lang: loc.langName(l) }))
+        return `<button type="button" class="pill${n ? '' : ' empty'}" data-guide-lang="${l}" aria-pressed="${!!state.langs?.includes(l)}" aria-label="${label} (${n})" title="${label} (${n})">${langCode(l)}<span>${n}</span></button>`
       })
       .join('')
   // Leaders only make sense within one faction: the selected one, else the selected leader's (from a shared link).

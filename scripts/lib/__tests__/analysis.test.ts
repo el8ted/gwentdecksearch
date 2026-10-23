@@ -1,8 +1,10 @@
-import { describe, expect, it } from 'vitest'
+import { consola } from 'consola'
+import { describe, expect, it, vi } from 'vitest'
 import {
   cardLookup,
   cardName,
   caveat,
+  cliArgs,
   describeCards,
   explainLookup,
   factionScope,
@@ -10,8 +12,6 @@ import {
   langError,
   leaderCounts,
   nameLookup,
-  option,
-  positionals,
   profile,
   readAnalysisData,
   slug,
@@ -167,15 +167,36 @@ describe('leaderCounts and slug', () => {
   })
 })
 
-describe('option, positionals and langError', () => {
-  it('reads options and the arguments that are not options or their values', () => {
+describe('cliArgs and langError', () => {
+  it('reads options and the other arguments', () => {
+    // Act
+    const { values, positionals } = cliArgs({ lang: { type: 'string' }, detail: { type: 'boolean' } }, 'usage', [
+      'ballot.txt',
+      '--lang',
+      'zh-cn',
+      '--detail',
+      'more',
+    ])
+
+    // Assert
+    expect(values).toEqual({ lang: 'zh-cn', detail: true })
+    expect(positionals).toEqual(['ballot.txt', 'more'])
+  })
+
+  it('stops the run on an unknown option or a missing value, with the usage line', () => {
     // Arrange
-    const args = ['ballot.txt', '--lang', 'zh-cn', '--detail', 'more']
+    const exit = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('exit')
+    })
+    const error = vi.spyOn(consola, 'error').mockImplementation(() => {})
+    const options = { lang: { type: 'string' } } as const
 
     // Act / Assert
-    expect(option(args, '--lang')).toBe('zh-cn')
-    expect(option(args, '--out')).toBeUndefined()
-    expect(positionals(args, ['--lang'])).toEqual(['ballot.txt', 'more'])
+    expect(() => cliArgs(options, 'pnpm x', ['--detial'])).toThrow('exit')
+    expect(() => cliArgs(options, 'pnpm x', ['--lang'])).toThrow('exit')
+    expect(exit).toHaveBeenCalledWith(2)
+    expect(error.mock.calls[0][0]).toMatch(/--detial[\s\S]*Usage: pnpm x/)
+    vi.restoreAllMocks()
   })
 
   it('says which languages have names when one has none', () => {

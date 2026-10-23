@@ -4,20 +4,25 @@
  * each language, manifest.json, and a README in each language. Uses the local data, so pull or `pnpm build:data`
  * first. Not part of a release: run it and zip the folder to share.
  *
- * Run: `pnpm export [--out <folder>]` (default: gwent-deck-data/, gitignored). The folder is emptied first.
+ * Run: `pnpm export [--out <folder>]` (default: gwent-deck-data/, gitignored). The folder is emptied first, so it
+ * must be new or an earlier export (one with a manifest.json); any other folder stops the run.
  */
+import { existsSync } from 'node:fs'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { consola } from 'consola'
 import { LANGUAGES } from '../src/i18n.ts'
-import { option, readAnalysisData } from './lib/analysis.ts'
+import { cliArgs, readAnalysisData } from './lib/analysis.ts'
 import { cardPairsCsv, cardsCsv, deckCardsCsv, decksCsv, leaderReports, manifest } from './lib/export.ts'
 import { exportReadme } from './lib/export-readme.ts'
 
-const args = process.argv.slice(2)
-const out = option(args, '--out') ?? 'gwent-deck-data'
-if (!out || out === '/' || out === '.') {
-  consola.error('Usage: pnpm export [--out <folder>]  (a folder of its own: it is emptied first)')
+const USAGE = 'pnpm export [--out <folder>]  (a new folder, or an earlier export: it is emptied first)'
+const {
+  values: { out },
+} = cliArgs({ out: { type: 'string', default: 'gwent-deck-data' } }, USAGE)
+// Only an earlier export (it has a manifest) is emptied, so a mistyped --out can't delete anything else.
+if (existsSync(out) && !existsSync(join(out, 'manifest.json'))) {
+  consola.error(`${out} exists and isn't an earlier export (no manifest.json); pick a new folder.\nUsage: ${USAGE}`)
   process.exit(2)
 }
 const data = await readAnalysisData()

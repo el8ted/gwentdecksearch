@@ -10,9 +10,6 @@ import { NO_MEMORY, type SearchMemory } from './search.ts'
 import { readStorage } from './ui/dom.ts'
 import { makeLocale } from './ui/locale.ts'
 
-/** Deck rows rendered at a time; "Show more" adds this many, so a phone isn't handed 2,000+ rows at once. */
-export const PAGE = CONFIG.resultsPageSize
-
 /** View choices Clear all resets; they aren't in the URL, so a shared link opens without them. */
 export const freshView = () => ({
   /** Decks opened to their card list, by ID. */
@@ -21,7 +18,7 @@ export const freshView = () => ({
    * This deck instead (Show changes). */
   dimCommon: false,
   /** Deck rows rendered; back to one page whenever the results change. */
-  limit: PAGE,
+  limit: CONFIG.resultsPageSize,
 })
 
 const state: FilterState = readHash()

@@ -9,15 +9,17 @@
  * run and lists them.
  */
 import { consola } from 'consola'
-import { langError, option, positionals, readAnalysisData } from './lib/analysis.ts'
+import { cliArgs, langError, readAnalysisData } from './lib/analysis.ts'
 import { packageReport, parseSeed } from './lib/packages.ts'
 
-const args = process.argv.slice(2)
-const lang = option(args, '--lang') ?? 'en'
-const min = option(args, '--min')
-const seeds = positionals(args, ['--lang', '--min'])
+const USAGE = 'pnpm package <card…> [--min <n>] [--lang <code>]  or  pnpm package tag:<tag>'
+const { values, positionals: seeds } = cliArgs(
+  { lang: { type: 'string', default: 'en' }, min: { type: 'string' } },
+  USAGE,
+)
+const { lang, min } = values
 if (!seeds.length) {
-  consola.error('Usage: pnpm package <card…> [--min <n>] [--lang <code>]  or  pnpm package tag:<tag>')
+  consola.error(`Usage: ${USAGE}`)
   process.exit(2)
 }
 const data = await readAnalysisData()

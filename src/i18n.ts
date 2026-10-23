@@ -110,6 +110,8 @@ export interface Locale {
   /** Tag name in this language (English until the language pack loads). */
   tag: (key: string) => string
   num: (n: number) => string
+  /** A language's name in this language (`ru` → "Russian"), or its code if the browser doesn't know it. */
+  langName: (code: string) => string
   /** A date in this language, as its UTC day (like the data date, the same for everyone). */
   date: (iso: string) => string
   /** A playgwent URL with this language's path prefix (`https://www.playgwent.com/ru/decks/…`). */

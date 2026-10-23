@@ -1,4 +1,6 @@
 import { readFile } from 'node:fs/promises'
+import { type ParseArgsOptionsConfig, parseArgs } from 'node:util'
+import { consola } from 'consola'
 import { type IndexedDeck, indexDecks } from '../../src/filter.ts'
 import { fold, loose, matchRank } from '../../src/search.ts'
 import type { Dataset, Faction } from '../../src/types.ts'
@@ -226,25 +228,25 @@ export function slug(title: string): string {
 }
 
 /**
- * A command-line option's value (`--lang zh-cn`).
+ * Reads a script's command line with Node's `parseArgs`: an unknown option, or one missing its value, stops the run
+ * with the usage line instead of being ignored.
  *
- * @param args - The arguments
- * @param name - The option, e.g. `--lang`
- * @returns Its value, or `undefined` if it isn't given
+ * @param options - The options, as `parseArgs` takes them
+ * @param usage - The usage line to print on a mistake
+ * @param args - The arguments (default: the command line)
+ * @returns The options' values and the other arguments
  */
-export function option(args: string[], name: string): string | undefined {
-  return args.includes(name) ? args[args.indexOf(name) + 1] : undefined
-}
-
-/**
- * The arguments that aren't options or their values.
- *
- * @param args - The arguments
- * @param valued - Options that take a value, e.g. `['--lang', '--out']`
- * @returns The rest, in order
- */
-export function positionals(args: string[], valued: string[]): string[] {
-  return args.filter((a, i) => !a.startsWith('--') && !valued.includes(args[i - 1]))
+export function cliArgs<const O extends ParseArgsOptionsConfig>(
+  options: O,
+  usage: string,
+  args = process.argv.slice(2),
+) {
+  try {
+    return parseArgs({ args, options, allowPositionals: true })
+  } catch (e) {
+    consola.error(`${(e as Error).message}\nUsage: ${usage}`)
+    return process.exit(2)
+  }
 }
 
 /**

@@ -6,6 +6,7 @@ import { createTranslator, type Locale } from '../i18n.ts'
 import type { Card, Dataset } from '../types.ts'
 import { craftView } from '../ui/craft.ts'
 import { filterRows } from '../ui/filters.ts'
+import { makeLocale } from '../ui/locale.ts'
 import { barsHtml } from '../ui/panel.ts'
 import { deckRow } from '../ui/results.ts'
 
@@ -66,6 +67,7 @@ const loc: Locale = {
   card: (id) => DATA.cards[id].name,
   tag: (key) => DATA.tags[key] ?? key,
   num: String,
+  langName: makeLocale('en').langName,
   date: (iso) => iso,
   pg: (url) => url,
 }

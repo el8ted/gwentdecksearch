@@ -2,12 +2,13 @@
  * Applies search changes: sets the filters, keeps the URL and history in step, and redraws. The rules for each
  * change are in `search.ts`; this module only carries them out.
  */
+import { CONFIG } from './config.ts'
 import { AUTHORS, data, deckById, decks, LIST_SIZE } from './data.ts'
 import { type FilterState, facets, listForUrl } from './filter.ts'
 import { encodeState } from './hash.ts'
 import { LANG_KEY, type Lang } from './i18n.ts'
 import * as search from './search.ts'
-import { freshView, PAGE, session } from './session.ts'
+import { freshView, session } from './session.ts'
 import { createAutocomplete } from './ui/autocomplete.ts'
 import { writeStorage } from './ui/dom.ts'
 import { initLanguageMenu } from './ui/language-menu.ts'
@@ -31,7 +32,7 @@ export function update(next: Partial<FilterState>, { push = false } = {}) {
     next = { ...next, leader: undefined }
   }
   session.state = { ...state, ...next }
-  session.view.limit = PAGE
+  session.view.limit = CONFIG.resultsPageSize
   const hash = encodeState(session.state)
   const url = hash || location.pathname + location.search
   if (push && hash !== before) history.pushState(null, '', url)

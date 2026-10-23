@@ -7,17 +7,20 @@
  * `--author` adds a line saying you made the site: only for its author.
  */
 import { consola } from 'consola'
-import { positionals, readAnalysisData } from './lib/analysis.ts'
+import { cliArgs, readAnalysisData } from './lib/analysis.ts'
 import { redditReply } from './lib/reddit.ts'
 
-const args = process.argv.slice(2)
-const [url] = positionals(args, [])
+const USAGE = 'pnpm reddit <playgwent.com deck or guide link> [--author]'
+const {
+  values: { author },
+  positionals: [url],
+} = cliArgs({ author: { type: 'boolean', default: false } }, USAGE)
 if (!url) {
-  consola.error('Usage: pnpm reddit <playgwent.com deck or guide link> [--author]')
+  consola.error(`Usage: ${USAGE}`)
   process.exit(2)
 }
 const { dataset, decks } = await readAnalysisData()
-const reply = redditReply(dataset, decks, url, { author: args.includes('--author') })
+const reply = redditReply(dataset, decks, url, { author })
 if (!reply.ok) {
   consola.warn(reply.reason)
   process.exit(1)

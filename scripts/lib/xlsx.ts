@@ -1,4 +1,5 @@
 import { inflateRawSync } from 'node:zlib'
+import { decodeEntities } from './extract.ts'
 
 /** A sheet's hyperlinks by 1-based row, as `[0-based column, url]`. */
 export type SheetLinks = Map<number, [col: number, url: string][]>
@@ -30,13 +31,10 @@ export function unzip(zip: Buffer, name: string): Buffer | undefined {
   return undefined
 }
 
-const attr = (tag: string, name: string) =>
-  tag
-    .match(new RegExp(`\\s${name}="([^"]*)"`))?.[1]
-    ?.replaceAll('&quot;', '"')
-    .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>')
-    .replaceAll('&amp;', '&')
+const attr = (tag: string, name: string) => {
+  const raw = tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.[1]
+  return raw === undefined ? undefined : decodeEntities(raw)
+}
 
 /**
  * Lists the hyperlinks of a one-tab sheet export (`export?format=xlsx&gid=…`). The CSV export keeps only a link's
