@@ -46,11 +46,28 @@ const words = (text: string) =>
     .split(/[^\p{L}\p{N}]+/u)
     .filter(Boolean)
 
+// Edits (insert, delete, substitute, swap two neighbours) to turn a into b.
+const distance = (a: string, b: string) => {
+  let prev: number[] = []
+  let row = Array.from({ length: b.length + 1 }, (_, j) => j)
+  for (let i = 1; i <= a.length; i++) {
+    const next = [i]
+    for (let j = 1; j <= b.length; j++) {
+      next[j] = Math.min(row[j] + 1, next[j - 1] + 1, row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1))
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) next[j] = Math.min(next[j], prev[j - 2] + 1)
+    }
+    prev = row
+    row = next
+  }
+  return row[b.length]
+}
+
 /**
  * Looks up names typed in any of the site's languages. An exact match, compared as the site compares author names
  * (case, accents, spacing and punctuation ignored, so "Vilgefortz Renegade" is Vilgefortz: Renegade), wins. With none,
  * suggestions come back, never picked: names the site's search would suggest (they start with or contain the text),
- * plus names whose words start with each typed word, for the shortened names lists use ("E. Eclipse Deacon").
+ * plus names whose words start with each typed word, for the shortened names lists use ("E. Eclipse Deacon"). If
+ * neither finds any, the names (or their starts) a few typos away, closest first, so "Caranthr" suggests Caranthir.
  *
  * @param byLang - Names by language, then key
  * @returns The lookup: one key, or every key it could be
@@ -78,6 +95,18 @@ export function nameLookup(byLang: Record<string, Record<string, string>>): (que
         })
         .map(([key]) => key),
     )
+    if (!near.size) {
+      // A typo per four letters, against the whole name or its start (for shortened names).
+      const lq = loose(query)
+      const most = Math.floor(lq.length / 4)
+      const close = new Map<string, number>()
+      for (const [key, name] of most ? all : []) {
+        const ln = loose(name)
+        const d = Math.min(distance(lq, ln), distance(lq, ln.slice(0, lq.length)))
+        if (d <= most && d < (close.get(key) ?? Infinity)) close.set(key, d)
+      }
+      for (const [key] of [...close].sort((a, b) => a[1] - b[1])) near.add(key)
+    }
     return { ok: false, exact: false, matches: [...near].slice(0, 8) }
   }
 }

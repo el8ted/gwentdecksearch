@@ -111,7 +111,7 @@ export function pollBallot(
   const out = [
     `# ${poll.title}`,
     `# Read from ${url} on ${date}: every option, unranked. Notes from the form are kept as comments.`,
-    '# A name the run stops on: write the card’s full name or ID (the error lists suggestions).',
+    '# A name that isn’t one card: pnpm whatif asks which (in a terminal), or write its full name or ID.',
     'Poll',
   ]
   for (const { category, options } of poll.lists)

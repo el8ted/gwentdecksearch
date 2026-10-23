@@ -70,7 +70,12 @@ Provision decrease
   The newest half-year is only as far as the data goes, so it's usually partial.
 
 Lists posted online often shorten names ("E. Eclipse Deacon", "DB Archer"). Punctuation doesn't matter, but a name
-that isn't a card's full name stops the run with suggestions where it can find some; write the full name or the ID.
+that isn't a card's full name needs fixing. Suggestions are names that contain it, names whose words start with the
+typed ones, or, failing those, names a typo or two away ("Kolgirm"). In a terminal, `pnpm whatif` asks about each
+such line: pick a suggestion, type the card's name (any language) or ID, or skip the line. Your picks are saved to the
+ballot: the card's full name in place, the name as written kept as a `# was:` comment, a skipped line commented out.
+Power lists only offer units. Ctrl+C stops without writing. When it can't ask (output piped or redirected, e.g.
+`> report.md`), it stops and lists the lines with their suggestions instead; write the full name or the ID.
 
 ## `pnpm poll <form link> [--out <file>]`
 
@@ -90,8 +95,9 @@ pnpm whatif data/cache/polls/bc37-ideas-2026-10-22.txt
 - Every option is written unranked. Its notes in brackets ("(nerf)", "(if … is buffed)") stay as a comment beside it,
   and so does the option as written whenever the line differs from it.
 - A name is written in full only when exactly one card matches it: as written, then as the translation after a `/`,
-  then, if neither, split at ` & ` when that's two cards. Anything else stays as written, for `pnpm whatif` to stop on
-  with suggestions: short names ("Caranthir"), misspellings, a card the data doesn't have. Fix those lines and rerun.
+  then, if neither, split at ` & ` when that's two cards. Anything else (short names like "Caranthir", misspellings,
+  a card the data doesn't have) is asked about before the file is written, as `pnpm whatif` does. Run without a
+  terminal, those lines stay as written for `pnpm whatif` to ask about or stop on.
 - The file starts with a `Poll` line, which tells `pnpm whatif` it holds candidates, not a ballot: a card may be on
   both lists of a kind (a power increase or decrease), each candidate is counted on its own, and there is no
   all-together total, since they won't all pass. Candidates are unranked, so the tables drop the Rank column and
@@ -153,5 +159,5 @@ only where it helps, and check the subreddit's rules on links and self-promotion
 
 Each script is a thin command line in this folder over pure, tested functions in `lib/`: `analysis.ts` holds the
 shared loading and name lookup; `whatif.ts`, `poll.ts`, `packages.ts`, `export.ts` (with `export-readme.ts`),
-`kegs.ts` and `reddit.ts` the reports. Tests are in `lib/__tests__/`; the example ballot above is tested against the
-real data, so it can't go stale unnoticed.
+`kegs.ts` and `reddit.ts` the reports; `ask.ts` the prompts for names that aren't one card. Tests are in
+`lib/__tests__/`; the example ballot above is tested against the real data, so it can't go stale unnoticed.

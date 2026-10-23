@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import { readAnalysisData } from '../analysis.ts'
-import { CATEGORIES, type Change, effectOn, parseChanges, whatifReport } from '../whatif.ts'
+import { CATEGORIES, type Change, effectOn, fixLine, parseChanges, whatifReport } from '../whatif.ts'
 import { DATA } from './analysis-data.ts'
 
 const deck = (id: string) => DATA.decks.find((d) => d.deck.id === id) ?? DATA.decks[0]
@@ -85,12 +85,23 @@ describe('parseChanges', () => {
     const parsed = parseChanges(text, DATA)
 
     // Assert
-    expect(parsed).toEqual({ ok: false, errors: ['line 6: Kolgrim is already under Power decrease'] })
+    expect(parsed).toEqual({ ok: false, errors: ['line 6: Kolgrim is already under Power decrease'], unresolved: [] })
     expect(parseChanges(text.split('\n').slice(0, 5).join('\n'), DATA)).toEqual({
       ok: true,
       changes: [change(104, POWER_UP), change(104, POWER_DOWN)],
       poll: true,
     })
+  })
+})
+
+describe('fixLine', () => {
+  it('puts the card in place of the name, keeping the name as written, or comments the line out', () => {
+    // Act / Assert
+    expect(fixLine('3. Caranthir', 'Caranthir', 'Caranthir Ar-Feiniel')).toBe(
+      '3. Caranthir Ar-Feiniel   # was: Caranthir',
+    )
+    expect(fixLine('- Caranthir   # Caranthir (nerf)', 'Caranthir', '100')).toBe('- 100   # Caranthir (nerf)')
+    expect(fixLine('- Zzz', 'Zzz', undefined)).toBe('# skipped: - Zzz')
   })
 })
 

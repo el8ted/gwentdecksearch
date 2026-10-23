@@ -54,6 +54,17 @@ describe('nameLookup', () => {
     expect(lookup('DB Archer')).toEqual({ ok: false, exact: false, matches: [] })
   })
 
+  it('suggests names a few typos away when nothing contains the text, closest first', () => {
+    // Arrange
+    const lookup = nameLookup({ en: { a: 'Caranthir Ar-Feiniel', b: 'Kolgrim', c: 'Caranthor' } })
+
+    // Act / Assert
+    expect(lookup('Caranthr')).toEqual({ ok: false, exact: false, matches: ['a', 'c'] })
+    expect(lookup('Kolgirm')).toEqual({ ok: false, exact: false, matches: ['b'] })
+    expect(lookup('Kol')).toEqual({ ok: false, exact: false, matches: ['b'] })
+    expect(lookup('Zzz')).toEqual({ ok: false, exact: false, matches: [] })
+  })
+
   it('suggests nothing for an empty query', () => {
     // Act
     const found = nameLookup({ en: { a: 'Defender' } })('')

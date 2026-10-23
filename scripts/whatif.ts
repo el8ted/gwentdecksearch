@@ -5,13 +5,15 @@
  *
  * Run: `pnpm whatif <ballot file> [--detail] [--lang <code>]`. Start from scripts/examples/ballot-template.txt:
  * four lists (power and provision, increase and decrease) of ranked picks, cards by name in any of the site's
- * languages or by ID. A name that could mean more than one card stops the run and lists them; nothing is guessed.
+ * languages or by ID. A name that isn't one card is asked about in a terminal (pick a suggestion, type the card or
+ * skip the line) and the fix saved to the file; otherwise it stops the run with suggestions. Nothing is guessed.
  * The report is one table, a row per change; `--detail` adds a section per change. `--lang` shows card names in that
  * language too (e.g. `--lang zh-cn`). See scripts/README.md.
  */
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { consola } from 'consola'
 import { langError, option, positionals, readAnalysisData } from './lib/analysis.ts'
+import { askNames, canAsk } from './lib/ask.ts'
 import { parseChanges, whatifReport } from './lib/whatif.ts'
 
 const args = process.argv.slice(2)
@@ -27,7 +29,16 @@ if (badLang) {
   consola.error(badLang)
   process.exit(2)
 }
-const parsed = parseChanges(await readFile(file, 'utf8'), data, lang)
+let text = await readFile(file, 'utf8')
+if (canAsk()) {
+  const asked = await askNames(text, data, lang)
+  if (asked.changed) {
+    text = asked.text
+    await writeFile(file, text)
+    consola.success(`Saved your picks to ${file}`)
+  }
+}
+const parsed = parseChanges(text, data, lang)
 if (!parsed.ok) {
   consola.error(`Fix these lines and run again:\n${parsed.errors.join('\n')}`)
   process.exit(1)

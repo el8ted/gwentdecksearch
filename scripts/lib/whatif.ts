@@ -39,6 +39,14 @@ const heading = (line: string) =>
   )
 const ENTRY = /^(?:(\d+)[.)]|-)?\s*(.*)$/
 
+/** A ballot line whose name isn't one card: its index in the text's lines, the name, its list and the suggestions. */
+export interface Unresolved {
+  line: number
+  name: string
+  category: Category
+  matches: number[]
+}
+
 /**
  * Reads a ballot: a heading per list (`Power increase`, `Power decrease`, `Provision increase`, `Provision
  * decrease`), then its cards, one per line, by name in any of the site's languages or by ID. `3. Card` ranks a pick
@@ -50,16 +58,17 @@ const ENTRY = /^(?:(\d+)[.)]|-)?\s*(.*)$/
  * @param data - Catalog and names
  * @param lang - Language for card names in error messages
  * @returns The changes and whether it's a poll, or, if any line is unknown, ambiguous, outside a list or
- *   contradictory, every such line explained (nothing guessed)
+ *   contradictory, every such line explained (nothing guessed), and the names that aren't one card, to ask about
  */
 export function parseChanges(
   text: string,
   data: Pick<AnalysisData, 'catalog' | 'names'>,
   lang = 'en',
-): { ok: true; changes: Change[]; poll: boolean } | { ok: false; errors: string[] } {
+): { ok: true; changes: Change[]; poll: boolean } | { ok: false; errors: string[]; unresolved: Unresolved[] } {
   const lookup = cardLookup(data)
   const changes: Change[] = []
   const errors: string[] = []
+  const unresolved: Unresolved[] = []
   let category: Category | undefined
   let poll = false
   for (const [n, raw] of text.split('\n').entries()) {
@@ -83,6 +92,7 @@ export function parseChanges(
     const found = lookup(name)
     if (!found.ok) {
       errors.push(`line ${n + 1}: ${explainLookup(found, name, data, lang)}`)
+      unresolved.push({ line: n, name, category, matches: found.matches })
       continue
     }
     const kind = category.kind
@@ -101,7 +111,22 @@ export function parseChanges(
     }
     changes.push({ id: found.value, category, ...(rank && { rank: Number(rank) }) })
   }
-  return errors.length ? { ok: false, errors } : { ok: true, changes, poll }
+  return errors.length ? { ok: false, errors, unresolved } : { ok: true, changes, poll }
+}
+
+/**
+ * A ballot line with its name fixed: the card's English name in its place, the name as written kept as a comment
+ * (unless the line has one already, as `pnpm poll` writes it); or, with no card, the line commented out.
+ *
+ * @param raw - The line
+ * @param name - The name as {@link parseChanges} read it
+ * @param card - The card's English name, or undefined to skip the line
+ * @returns The new line
+ */
+export function fixLine(raw: string, name: string, card: string | undefined): string {
+  if (card === undefined) return `# skipped: ${raw}`
+  const line = raw.replace(name, () => card)
+  return raw.includes('#') ? line : `${line}   # was: ${name}`
 }
 
 /** What a set of changes does to a deck. */
