@@ -52,3 +52,15 @@ test('on a phone, a deck name with no spaces wraps instead of widening the page'
   expect(scroll).toBeLessThanOrEqual(viewport)
   expect(await page.locator('#bars').evaluate((b) => getComputedStyle(b).gridTemplateColumns.split(' ').length)).toBe(1)
 })
+
+test('at 320px wide and the largest text size, nothing makes the page scroll sideways', async ({ page, open }) => {
+  // Arrange: 320 CSS px is the narrow width WCAG's reflow rule (1.4.10) asks for
+  await page.setViewportSize({ width: 320, height: 800 })
+  await page.addInitScript(() => localStorage.setItem('gwent-deck-search:display', JSON.stringify({ text: 4 })))
+
+  // Act
+  await open('#f=MO')
+
+  // Assert
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+})

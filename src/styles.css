@@ -55,7 +55,11 @@
   --source-community: #3fb5a3;
   --source-shinmiri2: #a3c94a;
   --source-metallic-danny: #c76bc4;
-  --radius: 8px;
+  /* Shapes, one per kind of thing: popups and dialogs; boxes (deck rows, the search box); choices and buttons. Leader
+     and stratagem art stays round, as the game draws it. */
+  --radius-pop: 8px;
+  --radius-box: 4px;
+  --radius-choice: 3px;
   --gap: 0.75rem;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -212,6 +216,8 @@ body {
   color: var(--text);
   /* rem, so the Display text-size setting (root font-size) scales everything. */
   font: 0.9375rem / 1.45 var(--font);
+  /* Equal-width digits everywhere, so counts line up in columns and don't jitter as they change. */
+  font-variant-numeric: tabular-nums;
 }
 
 button,
@@ -232,16 +238,24 @@ a {
 /* Text buttons: outlined (Clear all, Dim common…), or a plain link-like one inside a sentence. */
 .clear,
 .link {
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   background: none;
   color: var(--muted);
   padding: 0.35rem 0.8rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-choice);
   cursor: pointer;
 }
 .clear:hover {
   color: var(--text);
+  text-decoration: underline;
+}
+/* Clear all keeps its box: it resets the whole search, so it shouldn't fade into the row like the smaller actions. */
+#clear {
+  border-color: var(--border);
+}
+#clear:hover {
   border-color: var(--border-hover);
+  text-decoration: none;
 }
 .link {
   border: 0;
@@ -257,14 +271,14 @@ a {
   padding: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-choice);
 }
 .mode button,
 .seg button {
   border: 0;
   background: none;
   padding: 0.3rem 0.9rem;
-  border-radius: 999px;
+  border-radius: 2px;
   color: var(--muted);
   cursor: pointer;
 }
@@ -295,7 +309,6 @@ a {
 .seg output {
   min-width: 3.5rem;
   text-align: center;
-  font-variant-numeric: tabular-nums;
 }
 
 /* Popups: suggestions, the menus, the dialogs and the skip links, raised over the page. */
@@ -305,7 +318,7 @@ a {
 .skip {
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pop);
   box-shadow: 0 12px 32px var(--shadow);
 }
 
@@ -403,7 +416,7 @@ h1 span {
 .credits-open {
   padding: 0.3rem 0.8rem;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-choice);
   color: var(--muted);
   font-weight: 600;
   cursor: pointer;
@@ -474,7 +487,7 @@ h1 span {
   border: 0;
   background: none;
   padding: 0.35rem 0.8rem;
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   text-align: left;
   color: var(--text);
   cursor: pointer;
@@ -492,6 +505,15 @@ h1 span {
   .meta {
     margin: 0;
     width: 100%;
+  }
+  /* Tighter on phones, so the three buttons share one line even at the largest text size. */
+  .topbar {
+    padding-inline: 1rem;
+    column-gap: 0.4rem;
+  }
+  .display summary,
+  .credits-open {
+    padding-inline: 0.6rem;
   }
   /* One line of buttons on any phone: the language as its code, and Credits reached from Help. */
   #lang-current,
@@ -566,7 +588,7 @@ html {
   gap: 0.4rem;
   padding: 0.25rem 0.7rem;
   border: 1px solid color-mix(in srgb, var(--fc) 45%, var(--border));
-  border-radius: 999px;
+  border-radius: var(--radius-choice);
   background: var(--surface);
   font-weight: 600;
   cursor: pointer;
@@ -598,6 +620,33 @@ html {
 [data-contrast="high"] .pill.empty {
   opacity: 0.6;
 }
+/* Faction: pick one, so one joined bar (a switch), unlike the pick-several pills below it. Neighbours share a border;
+   the pressed one sits on top so its whole border shows. */
+#factions {
+  gap: 0;
+}
+#factions .pill {
+  border-radius: 0;
+  margin-left: -1px;
+  padding: 0.35rem 0.9rem;
+}
+#factions .pill:first-child {
+  margin-left: 0;
+  border-radius: var(--radius-choice) 0 0 var(--radius-choice);
+}
+#factions .pill:last-child {
+  border-radius: 0 var(--radius-choice) var(--radius-choice) 0;
+}
+/* Shared edges in the plain border colour, so no divider belongs to either neighbour; each faction's colour is a bar
+   along its top edge, and fills the pressed one. */
+#factions .pill:not([aria-pressed="true"]) {
+  border-color: var(--border);
+  box-shadow: inset 0 2px 0 var(--fc);
+}
+#factions .pill:is([aria-pressed="true"], :hover, :focus-visible) {
+  position: relative;
+  z-index: 1;
+}
 /* Guide & video pills: neutral, so they read as neither a source nor a provision step. */
 #media .pill {
   --fc: var(--muted);
@@ -617,6 +666,7 @@ html {
 /* Leader and stratagem icon pills: the art, then a fixed-width count so every tile is the same size. */
 .pill.art {
   padding: 0.2rem 0.55rem 0.2rem 0.2rem;
+  border-radius: 999px;
 }
 .art img {
   width: 2.5rem;
@@ -624,7 +674,6 @@ html {
 }
 .pill.art span {
   min-width: 3ch;
-  font-variant-numeric: tabular-nums;
 }
 /* Faction and source colours double as text on tinted pills; darken them on the light background. */
 [data-theme="light"] .pill:not([aria-pressed="true"]) span {
@@ -664,6 +713,37 @@ html {
 }
 
 @media (max-width: 860px) {
+  /* Phones: the faction bar as two rows of three, a little apart so each colour bar sits on its own row. */
+  #factions {
+    display: grid;
+    /* minmax(0, …): a cell never grows past a third of the row, even at the largest text size. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 0.3rem;
+    width: 100%;
+  }
+  #factions .pill {
+    justify-content: center;
+    padding-inline: 0.4rem;
+  }
+  #factions .pill:nth-child(3n + 1) {
+    margin-left: 0;
+    border-radius: var(--radius-choice) 0 0 var(--radius-choice);
+  }
+  #factions .pill:nth-child(3n) {
+    border-radius: 0 var(--radius-choice) var(--radius-choice) 0;
+  }
+  #factions .pill:first-child {
+    border-radius: var(--radius-choice) 0 0 0;
+  }
+  #factions .pill:nth-child(3) {
+    border-radius: 0 var(--radius-choice) 0 0;
+  }
+  #factions .pill:nth-child(4) {
+    border-radius: 0 0 0 var(--radius-choice);
+  }
+  #factions .pill:last-child {
+    border-radius: 0 0 var(--radius-choice) 0;
+  }
   .filters-toggle:not([hidden]) {
     display: flex;
     flex-wrap: wrap;
@@ -673,7 +753,7 @@ html {
     min-height: 2.75rem;
     padding: 0.4rem 0.75rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-box);
     background: var(--surface);
     color: var(--text);
     font: inherit;
@@ -747,7 +827,7 @@ html {
   min-height: 2.4rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-box);
 }
 .chips-box:hover {
   border-color: var(--border-hover);
@@ -769,7 +849,7 @@ html {
   align-items: center;
   gap: 0.3rem;
   padding: 0.15rem 0.3rem 0.15rem 0.6rem;
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   background: color-mix(in srgb, var(--fc) 22%, var(--surface-2));
   border-left: 3px solid var(--fc);
   font-size: 0.9rem;
@@ -785,7 +865,7 @@ html {
   color: var(--muted);
   cursor: pointer;
   padding: 0 0.25rem;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 .chip button:hover {
   color: var(--text);
@@ -820,7 +900,8 @@ html {
 .combo {
   position: relative;
   flex: 1;
-  min-width: 14rem;
+  /* Room to type beside the chips, but never wider than the row (14rem is 336px at the largest text size). */
+  min-width: min(14rem, 100%);
 }
 .combo input {
   width: 100%;
@@ -843,7 +924,7 @@ html {
   align-items: center;
   gap: 0.6rem;
   padding: 0.35rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   border-left: 3px solid var(--fc, transparent);
   cursor: pointer;
 }
@@ -945,7 +1026,9 @@ html {
 }
 .result-bar .clear[aria-pressed="true"] {
   color: var(--accent);
-  border-color: var(--accent);
+  /* A fill, not just a colour, marks it on (and it keeps its own box only while pressed). */
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 .result-bar .clear:disabled {
   opacity: 0.4;
@@ -973,7 +1056,7 @@ html {
   text-align: center;
   color: var(--muted);
   border: 1px dashed var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-box);
 }
 
 .deck {
@@ -981,7 +1064,7 @@ html {
   padding: 0.6rem 0.9rem 0.6rem 1.1rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-box);
   transition: border-color 0.15s;
   /* The buttons' words show by the row's own width (see the @container rule below). */
   container-type: inline-size;
@@ -1068,12 +1151,11 @@ html {
 }
 .src {
   padding: 0 0.45rem;
-  border-radius: 999px;
+  border-radius: var(--radius-choice);
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--fc);
   background: color-mix(in srgb, var(--fc) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--fc) 40%, transparent);
 }
 /* Source colours double as text on tinted badges; darken them on the light background. */
 [data-theme="light"] .src {
@@ -1093,7 +1175,7 @@ html {
   width: 2rem;
   height: 2rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   color: var(--muted);
 }
 /* ▸ spans the name area's rows, and turns down (accent) when the deck is open. */
@@ -1161,7 +1243,7 @@ html {
   font: 600 0.72rem var(--mono);
   color: var(--muted);
   padding: 0.1rem 0.35rem;
-  border-radius: 4px;
+  border-radius: var(--radius-choice);
   border: 1px solid var(--border);
   white-space: nowrap;
 }
@@ -1171,7 +1253,7 @@ html {
   gap: 0.25rem;
   min-height: 2rem;
   padding: 0 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   text-decoration: none;
   color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
@@ -1192,7 +1274,6 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-variant-numeric: tabular-nums;
 }
 .stat img {
   height: 1rem;
@@ -1206,7 +1287,7 @@ html {
 .badge {
   margin-left: -0.5rem;
   padding: 0.05rem 0.5rem;
-  border-radius: 999px;
+  border-radius: var(--radius-choice);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: help;
@@ -1234,6 +1315,7 @@ html {
   }
   .deck-links {
     flex-basis: 100%;
+    flex-wrap: wrap;
     justify-content: flex-end;
   }
 }
@@ -1330,8 +1412,7 @@ html {
   padding: 0.35rem 0.6rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  font-variant-numeric: tabular-nums;
+  border-radius: var(--radius-choice);
 }
 .craft-summary {
   margin: 0;
@@ -1340,7 +1421,6 @@ html {
 .craft-table {
   width: 100%;
   border-collapse: collapse;
-  font-variant-numeric: tabular-nums;
 }
 .craft-table :is(th, td) {
   padding: 0.35rem 0.5rem;
@@ -1460,7 +1540,7 @@ html {
   gap: 0.5rem;
   padding: 0.3rem 0.5rem;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-choice);
   background: none;
   text-align: left;
   cursor: pointer;
@@ -1482,7 +1562,6 @@ html {
   min-width: 2.2rem;
   text-align: right;
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 /* Crafting cost: fixed width, and well apart from the deck count, so the two numbers read as separate columns. */
 .bar-cost {
@@ -1494,7 +1573,6 @@ html {
   min-width: 3.4rem;
   margin-right: 0.6rem;
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 .bar-cost img {
   height: 0.85rem;
