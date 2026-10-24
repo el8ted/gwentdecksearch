@@ -48,6 +48,8 @@ export const session = {
     opponentOpen: false,
     /** Phones: the card list shown; it can fold away to get to the decks below it. */
     panelOpen: true,
+    /** Desktop, scrolled into the decks: the pinned filters shrunk to their fold lines and Search (ui/actions.ts). */
+    pinnedCompact: false,
   },
   /** Deck IDs listed now, for Expand/Collapse all, and whether they're all open. */
   shown: [] as string[],

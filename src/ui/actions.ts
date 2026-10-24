@@ -18,8 +18,9 @@ const help = byId<HTMLDialogElement>('shortcuts')
 /** Where skip links (and the [ ] shortcuts) move focus. */
 const JUMPS: Record<string, () => HTMLElement | null> = {
   cards: () => els.input,
-  // Folded on a phone: unfold first, or there's nothing to land on.
+  // Folded on a phone, or shrunk on a scrolled desktop: unfold first, or there's nothing to land on.
   filters: () => {
+    if (session.view.pinnedCompact) unpin()
     if (session.state.leader !== undefined && !session.view.opponentOpen) {
       session.view.opponentOpen = true
       renderFilters()
@@ -63,6 +64,66 @@ async function copyLink() {
   }
 }
 
+// Desktop: the pinned filters take half a laptop screen. Once the visitor scrolls a screenful of them into the decks
+// they shrink to their fold lines and Search, and come back at the top of the page or from a line. The scroll
+// position moves by what they lost or gained, so the decks on screen stay where they are.
+const wide = matchMedia('(min-width: 861px)')
+/** Where the visitor unfolded the shrunk filters by hand: they stay until scrolled well past it. */
+let unpinnedAt: number | undefined
+
+/** Shrinks or restores the pinned filters, keeping the decks on screen in place. */
+function setPinned(compact: boolean) {
+  const [before, y] = [els.filters.offsetHeight, scrollY]
+  session.view.pinnedCompact = compact
+  renderFilters()
+  // Chrome and Firefox's scroll anchoring may already have moved the page (Safari's doesn't): only add what's missing.
+  const target = y - (before - els.filters.offsetHeight)
+  if (Math.abs(scrollY - target) > 1) window.scrollTo({ top: target, behavior: 'instant' })
+}
+
+/**
+ * Unfolds the shrunk filters from a fold line or a shortcut.
+ *
+ * @param rows - Where focus goes, since the line it was on disappears
+ */
+function unpin(rows?: HTMLElement) {
+  setPinned(false)
+  unpinnedAt = scrollY
+  rows?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true })
+}
+
+function onScroll() {
+  const { view } = session
+  const top = document.querySelector<HTMLElement>('.topbar')?.offsetHeight ?? 0
+  if (!wide.matches || scrollY < top) {
+    unpinnedAt = undefined
+    // At the top of the page there's nothing to keep in place: the rows simply come back.
+    if (view.pinnedCompact) {
+      view.pinnedCompact = false
+      renderFilters()
+    }
+    return
+  }
+  if (!view.pinnedCompact && scrollY > top + els.filters.offsetHeight && (unpinnedAt ?? -Infinity) + 300 < scrollY) {
+    unpinnedAt = undefined
+    setPinned(true)
+  }
+}
+
+/**
+ * A new list from a button deep in the old one (⧉, ≈, a Craft card): its heading, at the top, the filters in full.
+ * The results bar is pinned on wide screens, so focusing it alone would leave the page mid-way down the new list.
+ */
+function toListTop() {
+  if (!wide.matches) return els.resultHead.focus()
+  if (session.view.pinnedCompact) {
+    session.view.pinnedCompact = false
+    renderFilters()
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' })
+  els.resultHead.focus({ preventScroll: true })
+}
+
 /** The first element matching a selector that's rendered (folded rows on a phone are in the page but hidden). */
 const firstVisible = (selector: string) =>
   [...document.querySelectorAll<HTMLElement>(selector)].find((el) => el.getClientRects().length > 0)
@@ -83,12 +144,14 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
   copyLink: { run: () => void copyLink() },
   filtersToggle: {
     run: () => {
+      if (session.view.pinnedCompact) return unpin(els.sources)
       session.view.filtersOpen = !session.view.filtersOpen
       renderFilters()
     },
   },
   opponentToggle: {
     run: () => {
+      if (session.view.pinnedCompact) return unpin(els.factions)
       session.view.opponentOpen = !session.view.opponentOpen
       renderFilters()
     },
@@ -170,14 +233,17 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
       const target = deckById(id)
       if (target) apply(search.showNear(session.state, session.memory, target))
     },
-    fallback: () => els.resultHead,
+    fallback: () => {
+      toListTop()
+      return els.resultHead
+    },
   },
   // ⧉: the same as pasting the deck's link; pressed again (on the only deck left) it shows the others.
   select: {
     run: (list) => {
       if (session.state.deck === list) removeDeck()
       else showDeck(list)
-      els.resultHead.focus()
+      toListTop()
     },
   },
   showNear: {
@@ -205,7 +271,7 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
     run: (v) => {
       const step = search.addPick(session.state, session.memory, Number(v), data.cards)
       if (step) apply({ ...step, next: { ...step.next, tab: undefined }, push: true })
-      els.resultHead.focus()
+      toListTop()
     },
   },
 }
@@ -277,6 +343,8 @@ export function initActions() {
     renderResults()
     document.querySelector<HTMLElement>(`[data-have="${id}"]`)?.focus()
   })
+  addEventListener('scroll', onScroll, { passive: true })
+  wide.addEventListener('change', onScroll)
   els.scraps.addEventListener('input', () => {
     const n = els.scraps.valueAsNumber
     session.view.scraps = Number.isFinite(n) && n >= 0 ? Math.floor(n) : undefined

@@ -55,6 +55,7 @@ export const els = {
   craftBody: byId('craft-body'),
   scraps: byId<HTMLInputElement>('scraps'),
   skipPast: byId('skip-past'),
+  resultBar: document.querySelector('.result-bar') as HTMLElement,
   copyStatus: byId('copy-status'),
   shareFallback: byId('share-fallback'),
   shareUrl: byId<HTMLInputElement>('share-url'),
@@ -66,9 +67,15 @@ export const els = {
 
 // The filters stay pinned on wide screens, and focus scrolled into view (Tab, shortcuts) would land under them: the
 // page keeps their height so the stylesheet's scroll-padding leaves room for it (WCAG 2.4.11, focus not obscured).
-new ResizeObserver(([entry]) =>
-  document.documentElement.style.setProperty('--filters-height', `${entry.borderBoxSize[0].blockSize}px`),
-).observe(els.filters)
+// The results bar is pinned under them on wide screens, so it counts too.
+const pinned = new ResizeObserver((entries) => {
+  for (const { target, borderBoxSize } of entries) {
+    const name = target === els.filters ? '--filters-height' : '--result-bar-height'
+    document.documentElement.style.setProperty(name, `${borderBoxSize[0].blockSize}px`)
+  }
+})
+pinned.observe(els.filters)
+pinned.observe(els.resultBar)
 
 /** The repository's page for this language's guide: each translated README links on to the full English guide. */
 const guideUrl = (lang: string) =>
@@ -164,8 +171,12 @@ export function renderFilters() {
   els.filters.classList.toggle('stratagem-folded', hideStratagem)
   els.filters.classList.toggle('has-faction', state.factions.length > 0)
   els.filtersToggle.setAttribute('aria-expanded', String(view.filtersOpen))
-  els.opponentToggle.hidden = state.leader === undefined
-  els.opponentToggle.setAttribute('aria-expanded', String(!compact))
+  // Desktop scrolled into the decks: both lines show, folded, the opponent's whenever any of it is set.
+  const opponentSet = state.factions.length > 0 || state.leader !== undefined || state.stratagem !== undefined
+  els.filters.classList.toggle('pinned-compact', view.pinnedCompact)
+  els.opponentToggle.hidden = view.pinnedCompact ? !opponentSet : state.leader === undefined
+  els.opponentToggle.setAttribute('aria-expanded', String(!compact && !view.pinnedCompact))
+  if (view.pinnedCompact) els.filtersToggle.setAttribute('aria-expanded', 'false')
   els.deckNote.hidden = !(deck && memory.deckReplaced)
   els.deckNote.textContent = loc.t('cards.deckReplaced')
 }
