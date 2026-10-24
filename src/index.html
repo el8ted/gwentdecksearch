@@ -34,10 +34,7 @@
       <p class="meta" id="meta"></p>
       <details class="display langmenu" id="langmenu">
         <summary class="lang-summary" data-i18n-label="language.button">
-          <svg class="globe" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="9.5" />
-            <path d="M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5M12 2.5C9.4 5.3 8.1 8.5 8.1 12s1.3 6.7 3.9 9.5" />
-          </svg>
+          <span data-icon="globe"></span>
           <span id="lang-current">English</span>
           <!-- Phones: the code alone (the summary's label names the menu for screen readers). -->
           <span class="lang-code" id="lang-code" aria-hidden="true">EN</span>
@@ -125,10 +122,10 @@
           <button type="button" data-match="all" data-i18n-title="match.allTip" data-i18n="match.all">All</button>
           <button type="button" data-match="any" data-i18n-title="match.anyTip" data-i18n="match.any">Any</button>
         </fieldset>
-        <button type="button" class="clear" id="clear" data-clear-all="1" data-i18n="clearAll">Clear all</button>
+        <button type="button" class="clear" id="clear" data-clear-all="1"><span data-icon="reset"></span><span data-i18n="clearAll">Clear all</span></button>
         <!-- The search is in the address; this copies it. "Link copied" shows under the button, moving nothing. -->
         <span class="copy-wrap">
-          <button type="button" class="clear" id="copy-link" data-copy-link="1" data-i18n="results.copyLink" data-i18n-title="results.copyLinkTip">Copy link</button>
+          <button type="button" class="clear" id="copy-link" data-copy-link="1" data-i18n-title="results.copyLinkTip"><span data-icon="link"></span><span data-i18n="results.copyLink">Copy link</span></button>
           <span class="copy-status" id="copy-status" role="status"></span>
         </span>
       </div>
@@ -194,7 +191,7 @@
       </main>
       <aside class="panel" id="panel" aria-labelledby="panel-head">
         <!-- Phones only: folds the card list away, to get to the decks below it. -->
-        <button type="button" class="filters-toggle panel-toggle" id="panel-toggle" data-panel-toggle="1" aria-expanded="true" aria-controls="panel-body"><span class="fold-chev" aria-hidden="true">▸</span><span data-i18n="freq.label">Card frequency</span></button>
+        <button type="button" class="filters-toggle panel-toggle" id="panel-toggle" data-panel-toggle="1" aria-expanded="true" aria-controls="panel-body"><span class="fold-chev" aria-hidden="true" data-icon="chevron"></span><span data-i18n="freq.label">Card frequency</span></button>
         <div class="filter-rows" id="panel-body">
           <fieldset class="mode freq" id="freq" data-i18n-label="freq.label">
             <button type="button" data-freq="most" data-i18n-title="freq.mostTip" data-i18n="freq.most">Most common</button>
@@ -209,7 +206,7 @@
     <dialog class="credits" id="shortcuts" aria-labelledby="shortcuts-title">
       <div class="credits-head">
         <h2 id="shortcuts-title" data-i18n="help.title">Help</h2>
-        <button type="button" class="clear" id="shortcuts-close" data-i18n-label="help.close">✕</button>
+        <button type="button" class="clear" id="shortcuts-close" data-i18n-label="help.close"><span data-icon="x"></span></button>
       </div>
       <details class="help-more" name="help" open>
         <summary data-i18n="help.guide">How to use it</summary>
@@ -291,7 +288,7 @@
     <dialog class="credits" id="credits" aria-labelledby="credits-title">
       <div class="credits-head">
         <h2 id="credits-title" data-i18n="credits.title">Credits</h2>
-        <button type="button" class="clear" id="credits-close" data-i18n-label="credits.close">✕</button>
+        <button type="button" class="clear" id="credits-close" data-i18n-label="credits.close"><span data-icon="x"></span></button>
       </div>
       <p data-i18n="credits.intro">Deck lists belong to their authors. Please support them: follow, subscribe, drop by a stream.</p>
       <ul class="credit-list">
@@ -337,6 +334,13 @@
             <a href="https://github.com/el8ted/gwentdecksearch" data-repo="" target="_blank" rel="noopener"><svg class="brand gh" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3.97.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg><span data-i18n="credits.source">Source code</span></a>
             <a href="https://github.com/el8ted/gwentdecksearch/issues/new/choose" data-repo="/issues/new/choose" target="_blank" rel="noopener" data-i18n="credits.report">Report a problem</a>
             <a href="https://github.com/el8ted/gwentdecksearch/blob/main/AI.md" data-repo="/blob/main/AI.md" target="_blank" rel="noopener" data-i18n="credits.ai">AI use</a>
+          </span>
+        </li>
+        <li>
+          <span class="credit-name">
+            <strong>Lucide</strong>
+            <a href="https://lucide.dev" target="_blank" rel="noopener">lucide.dev</a>
+            <a href="https://lucide.dev/license" target="_blank" rel="noopener">ISC, MIT</a>
           </span>
         </li>
         <li>

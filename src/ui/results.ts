@@ -2,6 +2,7 @@ import { budgetSide, type cardChanges, deckBody, type IndexedDeck, MIN_DECK_CARD
 import type { Locale } from '../i18n.ts'
 import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
+import { icon } from './icons.ts'
 
 /**
  * A source's display name: "Community" is translated, author names are not.
@@ -119,7 +120,7 @@ function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): s
       ? ''
       : `<span class="lang" title="${esc(guideTip ?? '')}">${esc(langCode(deck.guideLang))}</span>`
   const tip = loc.t('deck.video', { lang }) + (same ? `\n${guideTip}` : '')
-  return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(tip)}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}"><span aria-hidden="true">▶</span>${esc(langCode(deck.video.lang))}</a>`
+  return `${guide}<a class="video" href="${esc(deck.video.url)}" target="_blank" rel="noopener" title="${esc(tip)}" aria-label="${esc(loc.t('deck.videoNamed', { name, lang }))}">${icon('play')}${esc(langCode(deck.video.lang))}</a>`
 }
 
 /**
@@ -155,13 +156,13 @@ export function deckRow(
   return `<li class="deck f-${entry.faction} ${state}">
   <div class="deck-head">
     <button type="button" class="deck-toggle" data-toggle="${esc(deck.id)}" aria-expanded="${expanded}" title="${esc(loc.t(expanded ? 'deck.hideCards' : 'deck.showCards'))}">
-      <span class="chev" aria-hidden="true">▸</span>
+      <span class="chev" aria-hidden="true">${icon('chevron')}</span>
       <span class="deck-name"><span class="fcode">${entry.faction}</span>${esc(name)}</span>
       <span class="deck-sub">${esc(loc.card(entry.leader))} · ${esc(loc.card(entry.stratagem))}</span>
-      <span class="deck-src">${deck.sources.map((s) => `<span class="src s-${s}">${esc(sourceLabel(s, loc))}</span>`).join('')}${
+      <span class="deck-src">${deck.sources.map((s) => `<span class="src s-${s}">${s === 'community' ? icon('community') : ''}${esc(sourceLabel(s, loc))}</span>`).join('')}${
         deck.votes === undefined
           ? ''
-          : `<span class="votes" title="${esc(loc.t('deck.votesTip'))}">▲ ${deck.votes}${deck.author ? ` · ${esc(deck.author)}` : ''}</span>`
+          : `<span class="votes" title="${esc(loc.t('deck.votesTip'))}">${icon('votes')} ${deck.votes}${deck.author ? ` · ${esc(deck.author)}` : ''}</span>`
       }${
         deck.updated === undefined
           ? ''
@@ -169,9 +170,9 @@ export function deckRow(
       }</span>
     </button>
     <span class="deck-links">${deckLinks(deck, name, loc)}
-    <button type="button" class="open" data-select="${esc(entry.list)}" aria-pressed="${only}" title="${esc(loc.t(only ? 'deck.selectedTip' : 'deck.select'))}" aria-label="${esc(loc.t('deck.selectNamed', { name }))}">${glyph('⧉', loc.t('deck.selectWord'))}</button>
-    <button type="button" class="open" data-near="${esc(deck.id)}" title="${esc(loc.t('deck.similar'))}" aria-label="${esc(loc.t('deck.similarNamed', { name }))}">${glyph('≈', loc.t('deck.similarWord'))}</button>
-    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">${glyph('↗', 'playgwent.com')}</a></span>
+    <button type="button" class="open" data-select="${esc(entry.list)}" aria-pressed="${only}" title="${esc(loc.t(only ? 'deck.selectedTip' : 'deck.select'))}" aria-label="${esc(loc.t('deck.selectNamed', { name }))}">${glyph(icon('only'), loc.t('deck.selectWord'))}</button>
+    <button type="button" class="open" data-near="${esc(deck.id)}" title="${esc(loc.t('deck.similar'))}" aria-label="${esc(loc.t('deck.similarNamed', { name }))}">${glyph(icon('similar'), loc.t('deck.similarWord'))}</button>
+    <a class="open" href="${esc(loc.pg(deck.url))}" target="_blank" rel="noopener" title="${esc(loc.t('deck.open'))}" aria-label="${esc(loc.t('deck.openNamed', { name }))}">${glyph(icon('external'), 'playgwent.com')}</a></span>
   </div>
   <div class="stats">
     ${stat('scraps', loc.t('stat.scraps'), loc.num(deck.stats.scraps))}

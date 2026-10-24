@@ -22,6 +22,7 @@ import { session } from '../session.ts'
 import { craftView } from './craft.ts'
 import { byId, esc } from './dom.ts'
 import { type FilterRows, filterRows } from './filters.ts'
+import { GLYPHS, type IconName, icon } from './icons.ts'
 import { barsHtml } from './panel.ts'
 import { deckName, deckRow } from './results.ts'
 
@@ -92,13 +93,15 @@ export function applyStatic() {
   }
   // The threshold is a build setting, so Help reads it rather than repeating the number.
   byId('help-similar').textContent = t('help.similar1', { n: CONFIG.similarMinShared })
-  // Help's ≈ ↗ ▶ ✕ ⧉ drawn like the buttons they name, and the - typed to exclude like a key (a lone -, so hyphenated
+  // Help's ≈ ↗ ▶ ✕ ⧉ ✎ drawn as the icons on the buttons they name (the symbol stays, for screen readers), and the - typed to exclude like a key (a lone -, so hyphenated
   // words like Gameplay-Video stay as they are): easy to spot, in every language.
   for (const el of byId('shortcuts').querySelectorAll<HTMLElement>('summary, li')) {
     el.innerHTML = esc(el.textContent ?? '')
-      .replace(/[≈↗▶✕⧉]/g, (g) => `<span class="glyph">${g}</span>`)
+      .replace(/[≈↗▶✕⧉✎]/g, (g) => `<span class="glyph">${icon(GLYPHS[g])}<span class="sr-only">${g}</span></span>`)
       .replace(/(?<![\p{L}\p{N}])-(?![\p{L}\p{N}])/gu, '<kbd class="glyph">-</kbd>')
   }
+  for (const el of document.querySelectorAll<HTMLElement>('[data-icon]'))
+    el.innerHTML = icon(el.dataset.icon as IconName)
   const version = byId<HTMLAnchorElement>('version')
   version.textContent = t('credits.version', { version: __VERSION__ })
   version.href = `${CONFIG.repoUrl}/releases${__VERSION__ === 'dev' ? '' : `/tag/${__VERSION__}`}`

@@ -279,8 +279,8 @@
   "faction.ST": "Scoia'tael",
   "faction.SY": "Syndicat",
   "faction.NE": "Neutre",
-  "stratagem.caution": "⚠ Les joueurs changent souvent de stratagème sur des listes par ailleurs identiques : utilisez ce filtre avec prudence.",
-  "stratagem.swapped": "⚠ Les joueurs changent souvent de stratagème.",
+  "stratagem.caution": "Les joueurs changent souvent de stratagème sur des listes par ailleurs identiques : utilisez ce filtre avec prudence.",
+  "stratagem.swapped": "Les joueurs changent souvent de stratagème.",
   "stratagem.others": {
     "one": "{n} autre deck correspond avec un autre.",
     "other": "{n} autres decks correspondent avec un autre."

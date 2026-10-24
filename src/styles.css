@@ -500,13 +500,6 @@ h1 span {
   align-items: center;
   gap: 0.4rem;
 }
-.globe {
-  width: 1.05em;
-  height: 1.05em;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-}
 .lang-panel {
   margin: 0;
   gap: 0.15rem;
@@ -1711,6 +1704,24 @@ html {
   gap: 0.4rem;
   margin-top: 0.6rem;
   padding-left: 1.4rem;
+}
+/* Icons (ui/icons.ts): the text's own size and colour, sitting on its baseline. */
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  vertical-align: -0.15em;
+}
+/* An icon before text gets a little room; inside a flex row (pills, chips) the row's gap does it. */
+.note > .icon,
+.votes > .icon,
+.src > .icon,
+[data-icon]:not(:last-child) {
+  margin-inline-end: 0.3em;
+}
+/* The Language button spaces its own parts. */
+.lang-summary [data-icon] {
+  margin: 0;
 }
 /* A button's symbol in Help text, boxed like the button itself. */
 .glyph {

@@ -125,10 +125,10 @@ describe('filterRows', () => {
 
     // Assert
     const text = (html: string) => html.replace(/<[^>]+>/g, '')
-    expect(text(none.filtersToggle)).toBe('▸Filters')
-    expect(text(none.opponentToggle)).toBe('▸')
-    expect(text(some.filtersToggle)).toBe('▸Filters · Has video · PT · Exact · Over 1')
-    expect(text(some.opponentToggle)).toBe('▸MO · Arachas Swarm')
+    expect(text(none.filtersToggle)).toBe('Filters')
+    expect(text(none.opponentToggle)).toBe('')
+    expect(text(some.filtersToggle)).toBe('Filters · Has video · PT · Exact · Over 1')
+    expect(text(some.opponentToggle)).toBe('MO · Arachas Swarm')
   })
 
   it('draws an excluded pick pressed and a tag with its mark, escaping names', () => {
@@ -282,7 +282,7 @@ describe('deckRow', () => {
 
     // Assert
     expect(html).toContain('aria-expanded="false" title="Show the cards"')
-    expect(html).toContain('<span class="chev" aria-hidden="true">▸</span>')
+    expect(html).toContain('<span class="chev" aria-hidden="true"><svg class="icon"')
     expect(html).not.toContain('deck-id')
     expect(html).not.toContain('icons/cards.png')
   })
@@ -350,7 +350,7 @@ describe('deckRow', () => {
     const html = deckRow(deck, DATA, new Set(), false, new Set(), loc, { n: 2, of: 3, self: false })
 
     // Assert
-    expect(html).toContain('▲ 7 · Avajar')
+    expect(html).toContain('</svg> 7 · Avajar')
     expect(html).toContain('<time class="updated" datetime="2026-10-01"')
     expect(html).toContain('<span class="badge shared">2/3 cards in common</span>')
   })

@@ -279,8 +279,8 @@
   "faction.ST": "Scoia'tael",
   "faction.SY": "Sindacato",
   "faction.NE": "Neutrali",
-  "stratagem.caution": "⚠ I giocatori cambiano spesso lo stratagemma su liste per il resto identiche: usa questo filtro con cautela.",
-  "stratagem.swapped": "⚠ I giocatori cambiano spesso lo stratagemma.",
+  "stratagem.caution": "I giocatori cambiano spesso lo stratagemma su liste per il resto identiche: usa questo filtro con cautela.",
+  "stratagem.swapped": "I giocatori cambiano spesso lo stratagemma.",
   "stratagem.others": {
     "one": "Corrisponde {n} altro mazzo con un altro stratagemma.",
     "other": "Corrispondono altri {n} mazzi con un altro stratagemma."

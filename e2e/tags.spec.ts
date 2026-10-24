@@ -12,7 +12,7 @@ test('a plural finds the one tag, Enter adds it, and Backspace removes it', asyn
   await input.press('Enter')
 
   // Assert
-  await expect(page.locator('#chips li')).toHaveText(['#Beast✕'])
+  await expect(page.locator('#chips li')).toHaveText(['#Beast'])
   await expect(page).toHaveURL(/#c=c12$/)
   await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['c12'] })} `))
   await input.press('Backspace')
@@ -39,7 +39,7 @@ test('tags show in the page language', async ({ page, open }) => {
   await open('?lang=de#c=c12')
 
   // Assert
-  await expect(page.locator('#chips li')).toHaveText(['#Bestie✕'])
+  await expect(page.locator('#chips li')).toHaveText(['#Bestie'])
 })
 
 test('chips keep pick order, and Backspace removes the latest pick, card or tag', async ({ page, open }) => {
@@ -63,7 +63,7 @@ test('chips keep pick order, and Backspace removes the latest pick, card or tag'
   await expect(page.locator('#chips li').first()).toContainText('Beast')
   await expect(page.locator('#chips li').last()).toContainText(data.cards[id].name)
   await input.press('Backspace')
-  await expect(page.locator('#chips li')).toHaveText(['#Beast✕'])
+  await expect(page.locator('#chips li')).toHaveText(['#Beast'])
 })
 
 test('an author is suggested by name, spacing and case ignored, and lists their guides and lists', async ({
@@ -79,7 +79,7 @@ test('an author is suggested by name, spacing and case ignored, and lists their 
   await page.locator('[data-tag="@metallicdanny"]').click()
 
   // Assert
-  await expect(page.locator('#chips li')).toHaveText(['✎MetallicDanny✕'])
+  await expect(page.locator('#chips li')).toHaveText(['MetallicDanny'])
   await expect(page).toHaveURL(/#c=%40metallicdanny$/)
   await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@metallicdanny'] })} `))
 })

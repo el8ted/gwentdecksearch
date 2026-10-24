@@ -4,6 +4,7 @@ import type { Locale } from '../i18n.ts'
 import { fold, loose, matchRank } from '../search.ts'
 import type { Dataset } from '../types.ts'
 import { esc } from './dom.ts'
+import { icon } from './icons.ts'
 
 /** Option element ID: tag keys are slugs or `c{id}`, so they can't collide with card IDs; author keys are encoded. */
 const optionId = (item: number | string) =>
@@ -96,7 +97,7 @@ export function createAutocomplete({
     items = []
     list.innerHTML = hit
       ? `<div id="sug-deck" role="option" data-deck="${esc(hit.list)}" class="deck-pick" aria-selected="true">
-        <span class="cost" aria-hidden="true">⧉</span><span class="sug-name">${esc(hit.name)} <span class="sug-kind">${esc(loc.t('cards.deck'))}</span></span>
+        <span class="cost" aria-hidden="true">${icon('only')}</span><span class="sug-name">${esc(hit.name)} <span class="sug-kind">${esc(loc.t('cards.deck'))}</span></span>
         <span class="count" title="${esc(loc.t('cards.deckCount'))}">${hit.count}</span></div>`
       : `<div class="none">${esc(loc.t('cards.deckUnknown'))}</div>`
     list.hidden = false
@@ -166,7 +167,7 @@ export function createAutocomplete({
           .map((item, i) => {
             if (isAuthor(item)) {
               return `<div id="${optionId(item)}" role="option" data-tag="${esc(item)}" class="author" aria-selected="${i === active}">
-              <span class="cost" aria-hidden="true">✎</span><span class="sug-name">${without}${esc(nameOf(item))} <span class="sug-kind">${esc(loc.t('cards.author'))}</span></span>
+              <span class="cost" aria-hidden="true">${icon('user')}</span><span class="sug-name">${without}${esc(nameOf(item))} <span class="sug-kind">${esc(loc.t('cards.author'))}</span></span>
               ${count(item)}</div>`
             }
             if (typeof item === 'string') {

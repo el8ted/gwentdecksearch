@@ -278,8 +278,8 @@
   "faction.ST": "松鼠党",
   "faction.SY": "辛迪加",
   "faction.NE": "中立",
-  "stratagem.caution": "⚠ 玩家常在其余相同的卡组中更换战术牌——请谨慎使用此筛选。",
-  "stratagem.swapped": "⚠ 玩家常更换战术牌。",
+  "stratagem.caution": "玩家常在其余相同的卡组中更换战术牌——请谨慎使用此筛选。",
+  "stratagem.swapped": "玩家常更换战术牌。",
   "stratagem.others": {
     "other": "另有 {n} 套卡组换用其他战术牌后符合条件。"
   },

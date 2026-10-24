@@ -56,8 +56,8 @@
   "faction.ST": "Scoia'tael",
   "faction.SY": "Syndicate",
   "faction.NE": "Neutral",
-  "stratagem.caution": "⚠ Players often swap stratagems on otherwise identical lists — use this filter with care.",
-  "stratagem.swapped": "⚠ Players often swap stratagems.",
+  "stratagem.caution": "Players often swap stratagems on otherwise identical lists — use this filter with care.",
+  "stratagem.swapped": "Players often swap stratagems.",
   "stratagem.others": {
     "one": "{n} more deck matches with another one.",
     "other": "{n} more decks match with another one."

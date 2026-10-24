@@ -278,8 +278,8 @@
   "faction.ST": "스코이아텔",
   "faction.SY": "신디케이트",
   "faction.NE": "중립",
-  "stratagem.caution": "⚠ 나머지가 같은 리스트에서 책략만 바꾸는 경우가 많습니다. 이 필터는 신중하게 사용하세요.",
-  "stratagem.swapped": "⚠ 책략은 자주 바뀝니다.",
+  "stratagem.caution": "나머지가 같은 리스트에서 책략만 바꾸는 경우가 많습니다. 이 필터는 신중하게 사용하세요.",
+  "stratagem.swapped": "책략은 자주 바뀝니다.",
   "stratagem.others": {
     "other": "다른 책략으로는 덱 {n}개가 더 일치합니다."
   },

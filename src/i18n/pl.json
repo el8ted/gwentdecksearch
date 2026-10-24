@@ -281,8 +281,8 @@
   "faction.ST": "Scoia'tael",
   "faction.SY": "Syndykat",
   "faction.NE": "Neutralne",
-  "stratagem.caution": "⚠ Gracze często zmieniają manewr bojowy w poza tym identycznych listach – używaj tego filtra ostrożnie.",
-  "stratagem.swapped": "⚠ Gracze często zmieniają manewr bojowy.",
+  "stratagem.caution": "Gracze często zmieniają manewr bojowy w poza tym identycznych listach – używaj tego filtra ostrożnie.",
+  "stratagem.swapped": "Gracze często zmieniają manewr bojowy.",
   "stratagem.others": {
     "one": "Z innym pasuje jeszcze {n} talia.",
     "few": "Z innym pasują jeszcze {n} talie.",

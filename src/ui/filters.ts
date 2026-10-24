@@ -3,6 +3,7 @@ import { BUDGETS, type Budget, budgetSide, type Facets, type FilterState, type I
 import type { Locale } from '../i18n.ts'
 import { type Dataset, FACTIONS, SOURCES } from '../types.ts'
 import { esc } from './dom.ts'
+import { icon } from './icons.ts'
 import { deckName, langCode, sourceLabel } from './results.ts'
 
 /** What the filter rows are drawn from. */
@@ -74,7 +75,9 @@ export function filterRows(c: FilterContext): FilterRows {
     const n = current.sources.get(src) ?? 0
     const on = !!state.sources?.includes(src)
     const label = esc(sourceLabel(src, loc))
-    return `<button type="button" class="pill s-${src}${n ? '' : ' empty'}" data-source="${src}" aria-pressed="${on}" title="${label} (${n})">${label}<span>${n}</span></button>`
+    // Community: many players' guides, as against one creator's list.
+    const mark = src === 'community' ? icon('community') : ''
+    return `<button type="button" class="pill s-${src}${n ? '' : ' empty'}" data-source="${src}" aria-pressed="${on}" title="${label} (${n})">${mark}${label}<span>${n}</span></button>`
   }).join('')
   // Spare [3+][2][1] · [Exact] · Over [1][2][3+]: each side's word labels its steps, and a group never splits
   // across lines on phones.
@@ -92,7 +95,7 @@ export function filterRows(c: FilterContext): FilterRows {
       return `<span class="pill-group">${side === 'over' ? '' : word}${pills.join('')}${side === 'over' ? word : ''}</span>`
     })
     .join('')
-  const video = `<button type="button" class="pill${current.videos ? '' : ' empty'}" data-video="1" aria-pressed="${!!state.video}" aria-label="${esc(t('results.hasVideo'))} (${current.videos})" title="${esc(t('results.hasVideoTip'))} (${current.videos})">▶ ${esc(t('results.hasVideo'))}<span>${current.videos}</span></button>`
+  const video = `<button type="button" class="pill${current.videos ? '' : ' empty'}" data-video="1" aria-pressed="${!!state.video}" aria-label="${esc(t('results.hasVideo'))} (${current.videos})" title="${esc(t('results.hasVideoTip'))} (${current.videos})">${icon('play')}${esc(t('results.hasVideo'))}<span>${current.videos}</span></button>`
   const media =
     video +
     c.langs
@@ -129,16 +132,16 @@ export function filterRows(c: FilterContext): FilterRows {
       : [...current.stratagems].reduce((n, [id, c]) => (id === state.stratagem ? n : n + c), 0)
   const stratagemNote =
     state.stratagem === undefined
-      ? esc(t('stratagem.caution'))
+      ? `${icon('alert')}${esc(t('stratagem.caution'))}`
       : // Named here too: on touch screens an icon has no tooltip.
-        `<strong>${esc(loc.card(state.stratagem))}</strong> · ${esc(t('stratagem.swapped'))}${others ? ` ${esc(t('stratagem.others', { n: others }))}` : ''} <button type="button" class="link" data-any-stratagem="1">${esc(t('stratagem.any'))}</button>`
+        `<strong>${esc(loc.card(state.stratagem))}</strong> · ${icon('alert')}${esc(t('stratagem.swapped'))}${others ? ` ${esc(t('stratagem.others', { n: others }))}` : ''} <button type="button" class="link" data-any-stratagem="1">${esc(t('stratagem.any'))}</button>`
   const list = c.deck
   const deckChip = list
-    ? `<li class="chip deck-pick"><span aria-hidden="true">⧉</span>${esc(t('cards.deckChip', { name: deckName(list.deck, loc) }))}<button type="button" data-remove-deck="1" aria-label="${esc(t('cards.remove', { name: deckName(list.deck, loc) }))}">✕</button></li>`
+    ? `<li class="chip deck-pick">${icon('only')}${esc(t('cards.deckChip', { name: deckName(list.deck, loc) }))}<button type="button" data-remove-deck="1" aria-label="${esc(t('cards.remove', { name: deckName(list.deck, loc) }))}">${icon('x')}</button></li>`
     : ''
   const near = c.near
   const nearChip = near
-    ? `<li class="chip deck-pick"><span aria-hidden="true">≈</span>${esc(t('cards.nearChip', { name: deckName(near.deck, loc) }))}<button type="button" data-remove-near="1" aria-label="${esc(t('cards.remove', { name: deckName(near.deck, loc) }))}">✕</button></li>`
+    ? `<li class="chip deck-pick">${icon('similar')}${esc(t('cards.nearChip', { name: deckName(near.deck, loc) }))}<button type="button" data-remove-near="1" aria-label="${esc(t('cards.remove', { name: deckName(near.deck, loc) }))}">${icon('x')}</button></li>`
     : ''
   const chips =
     deckChip +
@@ -147,10 +150,10 @@ export function filterRows(c: FilterContext): FilterRows {
       .map((pick) => {
         const name = c.pickName(pick)
         const excluded = !!state.excludes?.includes(pick)
-        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name }))}">✕</button>`
+        const remove = `<button type="button" data-remove="${esc(String(pick))}" aria-label="${esc(t('cards.remove', { name }))}">${icon('x')}</button>`
         // The name toggles wanted/excluded; pressed means excluded, which the label says in words, not just the strike.
         const mark =
-          typeof pick === 'number' ? '' : `<span aria-hidden="true">${pick.startsWith('@') ? '✎' : '#'}</span>`
+          typeof pick === 'number' ? '' : pick.startsWith('@') ? icon('user') : '<span aria-hidden="true">#</span>'
         const flip = `<button type="button" class="chip-name" data-flip="${esc(String(pick))}" aria-pressed="${excluded}" aria-label="${esc(t('cards.exclude', { name }))}" title="${esc(t(excluded ? 'cards.includeTip' : 'cards.excludeTip'))}">${mark}${esc(name)}</button>`
         const cls = excluded ? ' excluded' : ''
         if (typeof pick === 'string') return `<li class="chip tag${cls}">${flip}${remove}</li>`
@@ -161,7 +164,7 @@ export function filterRows(c: FilterContext): FilterRows {
       .join('')
   // The fold buttons name what's set behind them with the pills' own short labels, in row order.
   const fold = (title: string | undefined, set: string[]) =>
-    `<span class="fold-chev" aria-hidden="true">▸</span>${[...(title ? [title] : []), ...set]
+    `<span class="fold-chev" aria-hidden="true">${icon('chevron')}</span>${[...(title ? [title] : []), ...set]
       .map((s, i) =>
         i === 0 && title ? `<span class="fold-title">${esc(s)}</span>` : `<span class="filters-set">${esc(s)}</span>`,
       )

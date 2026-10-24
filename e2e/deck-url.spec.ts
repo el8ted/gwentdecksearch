@@ -42,7 +42,7 @@ test('pasting a URL replaces the search, and Back restores it', async ({ page, o
   await expect(page.locator('#deck-note')).toBeVisible()
   await page.goBack()
   await expect(page).toHaveURL(new RegExp(`${before}$`))
-  await expect(page.locator('#chips li')).toHaveText(['#Beast✕'])
+  await expect(page.locator('#chips li')).toHaveText(['#Beast'])
 })
 
 test('adding a pick drops the deck filter, and Backspace removes the deck chip', async ({ page, open }) => {

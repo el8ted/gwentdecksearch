@@ -279,8 +279,8 @@
   "faction.ST": "Scoia'tael",
   "faction.SY": "Syndikat",
   "faction.NE": "Neutral",
-  "stratagem.caution": "⚠ Spieler tauschen bei sonst identischen Listen oft die Kriegslist – diesen Filter mit Vorsicht nutzen.",
-  "stratagem.swapped": "⚠ Spieler tauschen oft die Kriegslist.",
+  "stratagem.caution": "Spieler tauschen bei sonst identischen Listen oft die Kriegslist – diesen Filter mit Vorsicht nutzen.",
+  "stratagem.swapped": "Spieler tauschen oft die Kriegslist.",
   "stratagem.others": {
     "one": "{n} weiteres Deck passt mit einer anderen.",
     "other": "{n} weitere Decks passen mit einer anderen."

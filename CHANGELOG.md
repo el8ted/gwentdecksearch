@@ -24,6 +24,9 @@ the release tag and starts a new Unreleased section. -->
   share menu. From the offline download it copies the same search on the live site.
 - Searching with **Any** and several cards, each deck shows how many of them it has (**2/3**), which is the order the
   decks are listed in.
+- Icons that look the same on every device replace the text symbols on deck buttons (Similar, Only this,
+  playgwent.com, video), chips, Clear all, Copy link and the language button; Community guides are marked with a
+  group icon. Icons by Lucide (see Credits).
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).
