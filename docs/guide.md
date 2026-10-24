@@ -38,6 +38,9 @@ are left, spot the surprise cards one of them might run. It's a loop: one card i
 **Certain a card isn't in their deck?** You can [exclude it](#search), but only when you're sure: a card they
 haven't played yet can still be in the deck.
 
+**Lost your connection?** Once you've opened the site, it keeps working offline with the data from your last visit;
+its date is at the top of the page.
+
 ## Find a deck to play
 
 Where you start depends on what you have in hand; after that, every search goes the same way.
@@ -135,7 +138,7 @@ stay in the order you added them, so <kbd>Backspace</kbd> in the empty box remov
 
 **All and Any.** **All** (the default) lists decks with every pick. **Any** lists decks with at least one, the decks
 using the most of your picks at the top: add the cards you want to play, own, or have just crafted, and see what's out
-there.
+there. With two or more picks, each deck shows how many of them it has (**2/3**).
 
 ![Any mode with Hive Mind, Golden Nekker and Tatterwing: decks using at least one of them, best matches first](screenshots/any-cards.png)
 
@@ -189,6 +192,11 @@ rarity.
   stratagems that faction's decks run. Picking a stratagem, or adding a card, folds the stratagem too. Tap the line to
   change any of them.
 - **Card frequency** has its own button to fold it out of the way of the decks below; it starts open.
+
+**On a computer or tablet** the filters shrink as you scroll into the decks: each set of filters becomes one line
+listing what's set, with Search beside them. Tap a line to open the filters over the decks; scroll, tap the page or
+press <kbd>Esc</kbd> to shrink them again. Back at the top of the page they open in full, and so does **Clear all**,
+which takes you there.
 
 **About stratagems.** Players often swap the stratagem on an otherwise identical list. If you filter by stratagem,
 the note under the stratagem icons tells you how many more decks match with a different one, and **Any stratagem**

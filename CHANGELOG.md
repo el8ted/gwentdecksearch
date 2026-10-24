@@ -19,6 +19,8 @@ the release tag and starts a new Unreleased section. -->
 - On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
   them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back
   to the top with every filter showing.
+- On computers and tablets, **Decks**/**Craft**, **Dim common** and **Expand all** stay pinned under the filters as
+  you scroll, and a new list from **Only this**, **Similar** or a Craft card starts at the top.
 - The Faction buttons are bigger and easier to tap, as tall as the leader icons.
 - Searching with **Any** and several cards, each deck shows how many of them it has (**2/3**), which is the order the
   decks are listed in.
@@ -34,6 +36,8 @@ the release tag and starts a new Unreleased section. -->
   group icon. Icons by Lucide (see Credits).
 - The site's title has its own lettering (Spectral SC).
 - On narrow phones at the largest text size, the page no longer scrolls sideways.
+- On computers, **Most common** and **Least common** no longer slide under the filters at the top: the switch and
+  the top cards stay in view, and a long list scrolls on its own.
 - **Credits** is a little wider on computers and tablets, so the site's version stays on one line with its name.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved

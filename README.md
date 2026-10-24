@@ -9,8 +9,9 @@ faction, a leader and the cards you've seen. Use it during a match to work out w
 between matches to find a deck to build.
 
 - **Open it:** <https://el8ted.github.io/gwentdecksearch/>
-- **Use it offline:** download the zip from [Releases](https://github.com/el8ted/gwentdecksearch/releases), unzip
-  it and open `index.html`. No install, no account.
+- **Use it offline:** once you've opened the site, it keeps working if you lose your connection, with the data from
+  your last visit. Or download the zip from [Releases](https://github.com/el8ted/gwentdecksearch/releases), unzip it
+  and open `index.html`. No install, no account.
 
 ![The page with the Monsters faction and the Fruits of Ysgith leader picked: filters at the top, matching decks below, and the most common cards in those decks on the right](docs/screenshots/overview.png)
 
