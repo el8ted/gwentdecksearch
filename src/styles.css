@@ -583,7 +583,7 @@ h1 span {
 
 /* Scrolling to a focused element leaves room for the pinned filters (their height is kept by ui/page.ts). */
 html {
-  scroll-padding-top: calc(var(--filters-height, 0px) + 0.5rem);
+  scroll-padding-top: calc(var(--filters-height, 0px) + var(--result-bar-height, 0px) + 0.5rem);
 }
 .filters {
   position: sticky;
@@ -739,12 +739,67 @@ html {
   gap: 0.4rem;
 }
 
-/* Phones only (see below): the rows fold behind one button. On wider screens the wrapper is invisible to layout. */
-.filters-toggle {
-  display: none;
-}
+/* Phones (see below) fold rows behind one-line buttons, and so does a desktop scrolled into the decks. The wrapper
+   is invisible to layout. */
 .filter-rows {
   display: contents;
+}
+/* The fold lines: hidden until a layout below shows them. */
+.filters-toggle {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.4rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-box);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.filters-toggle:hover {
+  border-color: var(--border-hover);
+}
+.filters-set,
+.filters-sep {
+  font-weight: 400;
+  color: var(--muted);
+}
+/* The opponent line has no title: its first item (the faction) leads. */
+.opponent-toggle .filters-set:first-of-type {
+  font-weight: 600;
+  color: var(--text);
+}
+.fold-chev {
+  color: var(--muted);
+  transition: transform 0.15s;
+}
+.filters-toggle[aria-expanded="true"] .fold-chev {
+  transform: rotate(90deg);
+}
+/* Desktop, scrolled into the decks (ui/actions.ts): the pinned filters shrink to their fold lines and Search, so
+   the decks get the screen; a line unfolds them again. */
+@media (min-width: 861px) {
+  .filters.pinned-compact .filters-toggle:not([hidden]) {
+    display: flex;
+    min-height: 2.25rem;
+  }
+  .filters.pinned-compact :is(.row-faction, .row-leader, .row-stratagem, #stratagem-note, #filter-rows) {
+    display: none;
+  }
+  /* Unfolded from a line, over the decks: the page keeps the shrunk height (ui/actions.ts), so nothing below moves. */
+  .filters.pinned-overlay {
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  /* Chrome's scroll anchoring would otherwise follow a row inside them as they unfold, moving the decks. */
+  .filters {
+    overflow-anchor: none;
+  }
 }
 /* The rows that refine a search, below it: their own block under a hairline (a "Filters" button on phones). */
 #filter-rows {
@@ -790,40 +845,6 @@ html {
   }
   .filters-toggle:not([hidden]) {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0 0.4rem;
-    width: 100%;
-    min-height: 2.75rem;
-    padding: 0.4rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-box);
-    background: var(--surface);
-    color: var(--text);
-    font: inherit;
-    font-weight: 600;
-    text-align: start;
-    cursor: pointer;
-  }
-  .filters-toggle:hover {
-    border-color: var(--border-hover);
-  }
-  .filters-set,
-  .filters-sep {
-    font-weight: 400;
-    color: var(--muted);
-  }
-  /* The opponent line has no title: its first item (the faction) leads. */
-  .opponent-toggle .filters-set:first-of-type {
-    font-weight: 600;
-    color: var(--text);
-  }
-  .fold-chev {
-    color: var(--muted);
-    transition: transform 0.15s;
-  }
-  .filters-toggle[aria-expanded="true"] .fold-chev {
-    transform: rotate(90deg);
   }
   #filter-rows {
     margin-inline: 0;
@@ -1058,6 +1079,17 @@ html {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.6rem;
+}
+/* Desktop: pinned under the filters too, so Decks/Craft, Dim common and Expand all work from anywhere in the list. */
+@media (min-width: 861px) {
+  .result-bar {
+    position: sticky;
+    top: var(--filters-height, 0px);
+    z-index: 5;
+    margin-inline: -0.25rem;
+    padding: 0.4rem 0.25rem;
+    background: var(--bg);
+  }
 }
 .result-bar .result-head {
   margin: 0;
@@ -1573,9 +1605,15 @@ html {
 /* ---------- 13. PANEL ---------- */
 
 .panel {
+  /* Pinned just under the pinned filters (their height is kept by ui/page.ts), and scrolling on its own when it's
+     taller than the room left, so the switch, the heading and every card stay reachable. */
+  --panel-top: calc(var(--filters-height, 0px) + 1rem);
   position: sticky;
-  top: 13rem;
+  top: var(--panel-top);
   align-self: start;
+  max-height: calc(100vh - var(--panel-top) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .freq {
   margin-bottom: 0.6rem;
@@ -1657,6 +1695,8 @@ html {
   .panel {
     position: static;
     order: -1;
+    max-height: none;
+    overflow: visible;
   }
   .bars {
     grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));

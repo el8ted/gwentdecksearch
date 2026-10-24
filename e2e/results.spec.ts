@@ -29,6 +29,8 @@ test('a filter change starts the list over at 100', async ({ page, open }) => {
   await open()
   await page.locator('[data-more]').click()
   await expect(page.locator(rows)).toHaveCount(2 * PAGE)
+  // Deep in the list the pinned filters have shrunk to their lines: [ brings them back.
+  await page.keyboard.press('[')
 
   // Act
   await page.locator('[data-budget="over1"]').click()
