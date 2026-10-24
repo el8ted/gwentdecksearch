@@ -25,6 +25,21 @@
 
 /* ---------- 1. TOKENS ---------- */
 
+/* The title's own lettering: Spectral SC (OFL, src/fonts/OFL.txt), cut down to the letters of "Gwent Deck Search" by
+   hand with fontTools' pyftsubset (about 5 KB each). Anything else falls back to the page font. */
+@font-face {
+  font-family: "Spectral SC Title";
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/spectral-sc-400-title.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spectral SC Title";
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/spectral-sc-600-title.woff2") format("woff2");
+}
+
 :root {
   --bg: #0f1115;
   --surface: #171a21;
@@ -425,8 +440,10 @@ a {
 }
 h1 {
   margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: 0.12em;
+  font:
+    600 1.35rem / 1.2 "Spectral SC Title",
+    var(--font);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -527,6 +544,11 @@ h1 span {
   .meta {
     margin: 0;
     width: 100%;
+  }
+  /* Smaller on phones, so the title stays on one line even at the largest text size. */
+  h1 {
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
   }
   /* Tighter on phones, so the three buttons share one line even at the largest text size. */
   .topbar {

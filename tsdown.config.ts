@@ -16,6 +16,8 @@ export default defineConfig({
     'LICENSE',
     'NOTICE.md',
     { from: 'src/icons/*', to: 'dist/icons' },
+    // The title's typeface (cut down to its letters) and its licence.
+    { from: 'src/fonts/*', to: 'dist/fonts' },
     // Site icons, at the root where browsers look for favicon.ico (the 16px source stays behind).
     { from: 'src/favicon/!(source-16).*', to: 'dist' },
     // Language packs, loaded on demand by language.

@@ -27,6 +27,7 @@ the release tag and starts a new Unreleased section. -->
 - Icons that look the same on every device replace the text symbols on deck buttons (Similar, Only this,
   playgwent.com, video), chips, Clear all, Copy link and the language button; Community guides are marked with a
   group icon. Icons by Lucide (see Credits).
+- The site's title has its own lettering (Spectral SC).
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).

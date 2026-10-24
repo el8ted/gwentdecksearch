@@ -85,3 +85,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+### Spectral SC
+
+The title's typeface (`src/fonts/`) is Spectral SC by Production Type, under the SIL Open Font License 1.1. The files
+are cut down to the letters of the title; the full licence is in `src/fonts/OFL.txt`, which ships beside them.
