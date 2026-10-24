@@ -70,6 +70,8 @@ export const els = {
 // The results bar is pinned under them on wide screens, so it counts too.
 const pinned = new ResizeObserver((entries) => {
   for (const { target, borderBoxSize } of entries) {
+    // Unfolded over the decks (ui/actions.ts), they keep their shrunk height: the bar and panel stay put under them.
+    if (target === els.filters && target.classList.contains('pinned-overlay')) continue
     const name = target === els.filters ? '--filters-height' : '--result-bar-height'
     document.documentElement.style.setProperty(name, `${borderBoxSize[0].blockSize}px`)
   }

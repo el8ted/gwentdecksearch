@@ -32,7 +32,7 @@ test.describe('scrolling into the decks on a wide screen', () => {
     await expect(page.locator('[data-freq="most"]')).toBeInViewport()
   })
 
-  test('a line unfolds the rows in place, focus on the first of them; the top of the page restores them too', async ({
+  test('a line unfolds the rows over the decks without moving them; a scroll, a tap, Esc or the top folds them', async ({
     page,
     open,
   }) => {
@@ -40,18 +40,61 @@ test.describe('scrolling into the decks on a wide screen', () => {
     await open('#f=MO')
     await page.evaluate(() => scrollTo(0, 2500))
     await expect(page.locator('#filters')).toHaveClass(/pinned-compact/)
+    // A real tap: Playwright's click scrolls its target into view first, which the pinned filters don't need
+    const tap = async (selector: string) => {
+      const { x, y, width, height } = await box(page, selector)
+      await page.mouse.click(x + width / 2, y + height / 2)
+    }
+    const y = await page.evaluate(() => scrollY)
+    const bar = await box(page, '.result-bar')
 
     // Act
-    await page.locator('#opponent-toggle').evaluate((b: HTMLElement) => b.click())
+    await tap('#opponent-toggle')
 
-    // Assert
-    await expect(page.locator('#filters')).not.toHaveClass(/pinned-compact/)
+    // Assert: unfolded over the bar, which stays where it was, and so does the page
+    await expect(page.locator('#filters')).toHaveClass(/pinned-overlay/)
     await expect(page.locator('[data-faction="MO"]')).toBeFocused()
+    expect(await page.evaluate(() => scrollY)).toBeCloseTo(y, 0)
+    expect((await box(page, '.result-bar')).top).toBeCloseTo(bar.top, 0)
+    expect((await box(page, '#filters')).bottom).toBeGreaterThan(bar.bottom)
+
+    // A small settle doesn't fold them; a deliberate scroll does
+    await page.mouse.move(640, 800)
+    await page.mouse.wheel(0, 10)
+    await expect(page.locator('#filters')).toHaveClass(/pinned-overlay/)
+    await page.mouse.wheel(0, 200)
+    await expect(page.locator('#filters')).toHaveClass(/pinned-compact/)
+    await expect(page.locator('#opponent-toggle')).toBeFocused()
+
+    // A tap on the page beside the decks folds them
+    await tap('#opponent-toggle')
+    await expect(page.locator('#filters')).toHaveClass(/pinned-overlay/)
+    await page.mouse.click(4, 850)
+    await expect(page.locator('#filters')).toHaveClass(/pinned-compact/)
+
+    // So does Esc
+    await tap('#opponent-toggle')
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#filters')).toHaveClass(/pinned-compact/)
 
     // Back at the top, nothing is shrunk
-    await page.evaluate(() => scrollTo(0, 2500))
     await page.evaluate(() => scrollTo(0, 0))
-    await expect(page.locator('#filters')).not.toHaveClass(/pinned-compact/)
+    await expect(page.locator('#filters')).not.toHaveClass(/pinned-compact|pinned-overlay/)
+    await expect(page.locator('#factions')).toBeVisible()
+  })
+
+  test('Clear all, deep in the decks, starts over from the top with every filter showing', async ({ page, open }) => {
+    // Arrange
+    await open('#f=MO')
+    await page.evaluate(() => scrollTo(0, 2500))
+    await expect(page.locator('#filters')).toHaveClass(/pinned-compact/)
+
+    // Act
+    await page.locator('#clear').evaluate((b: HTMLElement) => b.click())
+
+    // Assert
+    await expect(page.locator('#filters')).not.toHaveClass(/pinned-compact|pinned-overlay/)
+    expect(await page.evaluate(() => scrollY)).toBe(0)
     await expect(page.locator('#factions')).toBeVisible()
   })
 })

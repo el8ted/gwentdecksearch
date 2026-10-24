@@ -8,6 +8,9 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
+  them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back
+  to the top with every filter showing.
 - The filters follow a match: Faction, Leader, Stratagem and Search come first, and Source, Guide & video and
   Provisions sit below Search to refine the list.
 - On phones the filters fold away as you go: picking a leader folds Faction and Leader into one line and shows only

@@ -65,13 +65,18 @@ async function copyLink() {
 }
 
 // Desktop: the pinned filters take half a laptop screen. Once the visitor scrolls a screenful of them into the decks
-// they shrink to their fold lines and Search, and come back at the top of the page or from a line. The scroll
-// position moves by what they lost or gained, so the decks on screen stay where they are.
+// they shrink to their fold lines and Search, and the scroll position moves by what they lost, so the decks on screen
+// stay where they are. A line unfolds them over the decks without moving the page (a tablet flick fights a moved
+// page), and a scroll, a tap outside them, Tab past them or Esc folds them again; the top of the page restores them.
 const wide = matchMedia('(min-width: 861px)')
-/** Where the visitor unfolded the shrunk filters by hand: they stay until scrolled well past it. */
-let unpinnedAt: number | undefined
+/** Unfolded over the decks: the scroll position then, and the shrunk height the page keeps for them. */
+let overlay: { at: number; flow: number } | undefined
+/** How far a scroll goes before it folds the unfolded rows: a deliberate flick, not a finger settling. */
+const OVERLAY_SCROLL = 30
+/** When the visitor last turned the wheel, dragged a finger or pressed a scroll key outside the filters. */
+let gestureAt = Number.NEGATIVE_INFINITY
 
-/** Shrinks or restores the pinned filters, keeping the decks on screen in place. */
+/** Shrinks the pinned filters, keeping the decks on screen in place. */
 function setPinned(compact: boolean) {
   const [before, y] = [els.filters.offsetHeight, scrollY]
   session.view.pinnedCompact = compact
@@ -81,22 +86,51 @@ function setPinned(compact: boolean) {
   if (Math.abs(scrollY - target) > 1) window.scrollTo({ top: target, behavior: 'instant' })
 }
 
+/** The unfolded rows hang below the shrunk height the page keeps for them: a negative margin takes back the rest. */
+function fitOverlay() {
+  if (overlay) els.filters.style.marginBottom = `${overlay.flow - els.filters.offsetHeight}px`
+}
+new ResizeObserver(fitOverlay).observe(els.filters)
+
 /**
- * Unfolds the shrunk filters from a fold line or a shortcut.
+ * Unfolds the shrunk filters over the decks from a fold line or a shortcut.
  *
  * @param rows - Where focus goes, since the line it was on disappears
  */
 function unpin(rows?: HTMLElement) {
-  setPinned(false)
-  unpinnedAt = scrollY
+  overlay = { at: scrollY, flow: els.filters.offsetHeight }
+  // Before rendering, so ui/page.ts keeps the shrunk height for what's pinned below.
+  els.filters.classList.add('pinned-overlay')
+  session.view.pinnedCompact = false
+  renderFilters()
+  fitOverlay()
   rows?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true })
+}
+
+/**
+ * Folds the unfolded rows: shrunk again, or in full (top of the page, a phone, a new list). Focus on a row that
+ * disappears moves to the first fold line.
+ */
+function closeOverlay(compact: boolean) {
+  if (!overlay) return
+  overlay = undefined
+  const hadFocus = els.filters.contains(document.activeElement)
+  els.filters.classList.remove('pinned-overlay')
+  els.filters.style.marginBottom = ''
+  session.view.pinnedCompact = compact
+  renderFilters()
+  // The rows may be rebuilt as well as hidden: whatever had focus can be gone.
+  const focused = document.activeElement as HTMLElement | null
+  if (hadFocus && (!focused || !els.filters.contains(focused) || !focused.getClientRects().length)) {
+    firstVisible('.filters-toggle')?.focus({ preventScroll: true })
+  }
 }
 
 function onScroll() {
   const { view } = session
   const top = document.querySelector<HTMLElement>('.topbar')?.offsetHeight ?? 0
   if (!wide.matches || scrollY < top) {
-    unpinnedAt = undefined
+    closeOverlay(false)
     // At the top of the page there's nothing to keep in place: the rows simply come back.
     if (view.pinnedCompact) {
       view.pinnedCompact = false
@@ -104,10 +138,24 @@ function onScroll() {
     }
     return
   }
-  if (!view.pinnedCompact && scrollY > top + els.filters.offsetHeight && (unpinnedAt ?? -Infinity) + 300 < scrollY) {
-    unpinnedAt = undefined
-    setPinned(true)
+  if (overlay) {
+    // Only the visitor's own scrolling folds them: a shorter list after a pick, or a tablet's keyboard opening for
+    // Search, moves the page too.
+    if (performance.now() - gestureAt > 500) overlay.at = scrollY
+    else if (Math.abs(scrollY - overlay.at) > OVERLAY_SCROLL) closeOverlay(true)
+    return
   }
+  if (!view.pinnedCompact && scrollY > top + els.filters.offsetHeight) setPinned(true)
+}
+
+/** Wide screens: the top of the page, the filters in full. */
+function toTop() {
+  closeOverlay(false)
+  if (session.view.pinnedCompact) {
+    session.view.pinnedCompact = false
+    renderFilters()
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' })
 }
 
 /**
@@ -116,12 +164,14 @@ function onScroll() {
  */
 function toListTop() {
   if (!wide.matches) return els.resultHead.focus()
-  if (session.view.pinnedCompact) {
-    session.view.pinnedCompact = false
-    renderFilters()
-  }
-  window.scrollTo({ top: 0, behavior: 'instant' })
+  toTop()
   els.resultHead.focus({ preventScroll: true })
+}
+
+/** Clear all starts a new search: on wide screens from the top, every filter showing (shrunk, empty ones hide). */
+function clearSearch() {
+  clearAll()
+  if (wide.matches) toTop()
 }
 
 /** The first element matching a selector that's rendered (folded rows on a phone are in the page but hidden). */
@@ -187,7 +237,7 @@ const ACTIONS: Record<string, { run: (value: string) => void; fallback?: (at: nu
     fallback: () => els.stratagem.querySelector('button'),
   },
   match: { run: (v) => update({ match: v as FilterState['match'] }) },
-  clearAll: { run: () => clearAll() },
+  clearAll: { run: () => clearSearch() },
   remove: { run: (v) => removePick(asPick(v)), fallback: () => els.input },
   flip: { run: (v) => apply(search.flipPick(session.state, session.memory, asPick(v), data.cards)) },
   removeDeck: { run: () => removeDeck(), fallback: () => els.input },
@@ -309,7 +359,7 @@ const SHORTCUTS: [matches: (e: KeyboardEvent) => boolean, run: () => void][] = [
     (e) => e.key === 'Backspace' && e.shiftKey,
     () => {
       const was = document.activeElement
-      clearAll()
+      clearSearch()
       // A cleared pill was re-rendered away; start the next search from the card box.
       if (!was?.isConnected) els.input.focus()
     },
@@ -345,6 +395,27 @@ export function initActions() {
   })
   addEventListener('scroll', onScroll, { passive: true })
   wide.addEventListener('change', onScroll)
+  const gesture = () => {
+    gestureAt = performance.now()
+  }
+  addEventListener('wheel', gesture, { passive: true })
+  addEventListener('touchmove', gesture, { passive: true })
+  const SCROLL_KEYS = new Set([' ', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown'])
+  addEventListener('keydown', (e) => {
+    if (SCROLL_KEYS.has(e.key) && !els.filters.contains(e.target as Node)) gesture()
+  })
+  // The unfolded rows sit over the decks like a menu: a tap on the page, Tab past them or Esc folds them. The tap
+  // still lands, since folding them doesn't move anything.
+  document.addEventListener('pointerdown', (e) => {
+    if (overlay && !els.filters.contains(e.target as Node)) closeOverlay(true)
+  })
+  els.filters.addEventListener('focusout', (e) => {
+    if (overlay && e.relatedTarget && !els.filters.contains(e.relatedTarget as Node)) closeOverlay(true)
+  })
+  els.filters.addEventListener('keydown', (e) => {
+    // In a text box Esc is its own (suggestions, then the results).
+    if (overlay && e.key === 'Escape' && !(e.target as HTMLElement).closest('input')) closeOverlay(true)
+  })
   els.scraps.addEventListener('input', () => {
     const n = els.scraps.valueAsNumber
     session.view.scraps = Number.isFinite(n) && n >= 0 ? Math.floor(n) : undefined

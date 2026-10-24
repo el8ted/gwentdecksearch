@@ -792,6 +792,14 @@ html {
   .filters.pinned-compact :is(.row-faction, .row-leader, .row-stratagem, #stratagem-note, #filter-rows) {
     display: none;
   }
+  /* Unfolded from a line, over the decks: the page keeps the shrunk height (ui/actions.ts), so nothing below moves. */
+  .filters.pinned-overlay {
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  /* Chrome's scroll anchoring would otherwise follow a row inside them as they unfold, moving the decks. */
+  .filters {
+    overflow-anchor: none;
+  }
 }
 /* The rows that refine a search, below it: their own block under a hairline (a "Filters" button on phones). */
 #filter-rows {
