@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The site keeps working if you lose your connection: once you've visited, it opens and shows every icon offline,
+  using the data from your last visit (its date is at the top of the page).
 - The Faction buttons are bigger and easier to tap, as tall as the leader icons.
 - On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
   them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back

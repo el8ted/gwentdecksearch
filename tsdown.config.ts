@@ -1,4 +1,23 @@
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { defineConfig } from 'tsdown'
+
+/** dist/sw.js from src/sw.js: every file the page loads, and a version that changes when any of them does. */
+function writeServiceWorker() {
+  const top = ['index.html', 'app.iife.js', 'styles.css', 'manifest.webmanifest']
+  const siteIcons = ['favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png']
+  const files = [
+    ...top,
+    ...siteIcons,
+    ...['icons', 'fonts', 'i18n'].flatMap((dir) => readdirSync(`dist/${dir}`).map((f) => `${dir}/${f}`)),
+  ]
+  const hash = createHash('sha256')
+  for (const file of files) hash.update(file).update(readFileSync(`dist/${file}`))
+  const sw = readFileSync('src/sw.js', 'utf8')
+    .replace('__VERSION__', hash.digest('hex').slice(0, 12))
+    .replace('__FILES__', JSON.stringify(['./', ...files]))
+  writeFileSync('dist/sw.js', sw)
+}
 
 export default defineConfig({
   entry: { app: 'src/main.ts' },
@@ -23,4 +42,6 @@ export default defineConfig({
     // Language packs, loaded on demand by language.
     { from: 'data/i18n/*.js', to: 'dist/i18n' },
   ],
+  // After the copies above, so the offline copy lists what's really there.
+  onSuccess: writeServiceWorker,
 })

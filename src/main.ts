@@ -44,3 +44,9 @@ if (incoming !== null && !list) {
   els.input.focus()
   els.input.select()
 }
+
+// The offline copy (src/sw.js), so the page keeps working when the network goes mid-match. Not from file:// (the
+// release zip), which has no service workers and needs none.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {})
+}
