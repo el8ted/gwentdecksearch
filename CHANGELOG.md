@@ -34,6 +34,7 @@ the release tag and starts a new Unreleased section. -->
   group icon. Icons by Lucide (see Credits).
 - The site's title has its own lettering (Spectral SC).
 - On narrow phones at the largest text size, the page no longer scrolls sideways.
+- **Credits** is a little wider on computers and tablets, so the site's version stays on one line with its name.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).

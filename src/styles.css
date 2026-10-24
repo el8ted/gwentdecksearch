@@ -1715,6 +1715,11 @@ html {
   padding: 0;
   color: var(--text);
 }
+/* Credits: wide enough that the site's line (name, licence, a release's version like 2026-10-18.04) stays on one line
+   in every language (Japanese needs about 38rem); phones still wrap it. */
+#credits {
+  width: min(40rem, calc(100vw - 2rem));
+}
 .credits::backdrop {
   background: rgb(0 0 0 / 0.55);
 }
