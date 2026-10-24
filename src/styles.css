@@ -1573,9 +1573,15 @@ html {
 /* ---------- 13. PANEL ---------- */
 
 .panel {
+  /* Pinned just under the pinned filters (their height is kept by ui/page.ts), and scrolling on its own when it's
+     taller than the room left, so the switch, the heading and every card stay reachable. */
+  --panel-top: calc(var(--filters-height, 0px) + 1rem);
   position: sticky;
-  top: 13rem;
+  top: var(--panel-top);
   align-self: start;
+  max-height: calc(100vh - var(--panel-top) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .freq {
   margin-bottom: 0.6rem;
@@ -1657,6 +1663,8 @@ html {
   .panel {
     position: static;
     order: -1;
+    max-height: none;
+    overflow: visible;
   }
   .bars {
     grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
