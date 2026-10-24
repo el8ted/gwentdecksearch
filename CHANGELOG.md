@@ -10,30 +10,30 @@ the release tag and starts a new Unreleased section. -->
 
 - The site keeps working if you lose your connection: once you've visited, it opens and shows every icon offline,
   using the data from your last visit (its date is at the top of the page).
-- The Faction buttons are bigger and easier to tap, as tall as the leader icons.
-- On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
-  them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back
-  to the top with every filter showing.
 - The filters follow a match: Faction, Leader, Stratagem and Search come first, and Source, Guide & video and
   Provisions sit below Search to refine the list.
 - On phones the filters fold away as you go: picking a leader folds Faction and Leader into one line and shows only
   the stratagems that faction's decks run; a stratagem or your first card folds that too. Source, Guide & video and
   Provisions fold behind one **Filters** line, and **Card frequency** can fold away to reach the decks. The header
   fits on one line: the language shows as its code, and Credits is at the bottom of Help.
+- On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
+  them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back
+  to the top with every filter showing.
+- The Faction buttons are bigger and easier to tap, as tall as the leader icons.
+- Searching with **Any** and several cards, each deck shows how many of them it has (**2/3**), which is the order the
+  decks are listed in.
+- **Copy link**, beside Clear all, copies a link to your current search to share or bookmark; on a phone it opens the
+  share menu. From the offline download it copies the same search on the live site.
 - Keyboard: <kbd>j</kbd> and <kbd>k</kbd> move to the next and previous deck (or Craft card); <kbd>Esc</kbd> in the
   Search box, pressed again after the suggestions close, takes you to the results. A deck you move to is no longer
   hidden under the filters at the top of the page.
 - A cleaner look: Faction is one bar (you pick one), set apart from the filters you can combine; buttons, switches and
   badges have squarer corners, leader and stratagem art stays round, and numbers line up in columns.
-- On narrow phones at the largest text size, the page no longer scrolls sideways.
-- **Copy link**, beside Clear all, copies a link to your current search to share or bookmark; on a phone it opens the
-  share menu. From the offline download it copies the same search on the live site.
-- Searching with **Any** and several cards, each deck shows how many of them it has (**2/3**), which is the order the
-  decks are listed in.
 - Icons that look the same on every device replace the text symbols on deck buttons (Similar, Only this,
   playgwent.com, video), chips, Clear all, Copy link and the language button; Community guides are marked with a
   group icon. Icons by Lucide (see Credits).
 - The site's title has its own lettering (Spectral SC).
+- On narrow phones at the largest text size, the page no longer scrolls sideways.
 - `pnpm whatif` and `pnpm poll`: a card name that doesn't match exactly one card is now asked about instead of
   stopping the run. Pick a suggestion, type the card (any language, or its ID) or skip the line; your picks are saved
   to the ballot file. Misspelled names get suggestions too ("Kolgirm" finds Kolgrim).
