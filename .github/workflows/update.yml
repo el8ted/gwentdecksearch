@@ -1,14 +1,15 @@
 name: Update data
 
 # Refreshes the data on a schedule and, if any deck or card changed, commits it to main and publishes a release.
-# - Decks: every Saturday.
-# - Cards: around each month's end, when the Balance Council changes go live with the new season.
-# Run it by hand from the Actions tab (Run workflow) to update now.
+# - Decks: every Saturday at 05:43 UTC, away from GitHub's midnight-UTC rush.
+# - Cards: hourly from 00:07 to 06:07 UTC on the 1st, for the Balance Council changes that go live with the new
+#   season; once they're in, the later runs find nothing new and release nothing.
+# Times are UTC, past the hour since GitHub delays (or drops) runs at :00, its busiest minute. Runs can still start
+# hours late under load. Run it by hand from the Actions tab (Run workflow) to update now.
 on:
   schedule:
-    - cron: '17 0 * * 6'
-    - cron: '7 18,21,23 28-31 * *'
-    - cron: '7 2,6,12 1 * *'
+    - cron: '43 5 * * 6'
+    - cron: '7 0-6 1 * *'
   workflow_dispatch:
     inputs:
       what:
@@ -42,7 +43,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Refresh
         env:
-          WHAT: ${{ inputs.what || (github.event.schedule == '17 0 * * 6' && 'decks' || 'cards') }}
+          WHAT: ${{ inputs.what || (github.event.schedule == '43 5 * * 6' && 'decks' || 'cards') }}
           # Channel videos; without it they're skipped with a warning (see scripts/videos.ts).
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |

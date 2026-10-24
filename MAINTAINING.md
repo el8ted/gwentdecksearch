@@ -72,11 +72,11 @@ needed, and run the update again.
 
 | What | When (UTC) |
 |---|---|
-| Decks | Saturdays at 00:17 |
-| Cards | 18:07, 21:07 and 23:07 on the 28th–31st, and 02:07, 06:07 and 12:07 on the 1st: around each month's end, when the Balance Council changes go live with the new season |
+| Decks | Saturdays at 05:43 |
+| Cards | Hourly from 00:07 to 06:07 on the 1st, when the Balance Council changes go live with the new season (the runs after they're in find nothing new) |
 
-GitHub may start scheduled runs some minutes late. To update now, open **Actions → Update data → Run workflow** and
-choose decks, cards or both.
+GitHub may start scheduled runs late, by hours when it is busy (the 2026-10-24 run started at 04:33). To update
+now, open **Actions → Update data → Run workflow** and choose decks, cards or both.
 
 After an automatic update, check:
 
