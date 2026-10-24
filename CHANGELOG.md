@@ -8,6 +8,7 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- The Faction buttons are bigger and easier to tap, as tall as the leader icons.
 - On computers and tablets, the filters shrink to one line each as you scroll into the decks. Tap a line to open
   them over the list; scroll, tap the page or press <kbd>Esc</kbd> to shrink them again. Clear all takes you back
   to the top with every filter showing.

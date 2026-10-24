@@ -669,9 +669,13 @@ html {
 #factions {
   gap: 0;
 }
+/* The first tap of a match: as tall as a leader tile (a 48px target, past Apple's 44pt) and wide enough for a thumb. */
 #factions .pill {
   border-radius: 0;
   margin-left: -1px;
+  justify-content: center;
+  min-width: 6.5rem;
+  min-height: calc(2.9rem + 2px);
   padding: 0.35rem 0.9rem;
 }
 #factions .pill:first-child {
@@ -821,7 +825,7 @@ html {
     width: 100%;
   }
   #factions .pill {
-    justify-content: center;
+    min-width: 0;
     padding-inline: 0.4rem;
   }
   #factions .pill:nth-child(3n + 1) {

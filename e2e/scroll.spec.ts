@@ -54,8 +54,9 @@ test.describe('scrolling into the decks on a wide screen', () => {
     // Assert: unfolded over the bar, which stays where it was, and so does the page
     await expect(page.locator('#filters')).toHaveClass(/pinned-overlay/)
     await expect(page.locator('[data-faction="MO"]')).toBeFocused()
-    expect(await page.evaluate(() => scrollY)).toBeCloseTo(y, 0)
-    expect((await box(page, '.result-bar')).top).toBeCloseTo(bar.top, 0)
+    // Within a pixel: fractional heights round differently once unfolded
+    expect(Math.abs((await page.evaluate(() => scrollY)) - y)).toBeLessThanOrEqual(1)
+    expect(Math.abs((await box(page, '.result-bar')).top - bar.top)).toBeLessThanOrEqual(1)
     expect((await box(page, '#filters')).bottom).toBeGreaterThan(bar.bottom)
 
     // A small settle doesn't fold them; a deliberate scroll does
