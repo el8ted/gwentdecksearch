@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-24.02
+
 - The site keeps working if you lose your connection: once you've visited, it opens and shows every icon offline,
   using the data from your last visit (its date is at the top of the page).
 - The filters follow a match: Faction, Leader, Stratagem and Search come first, and Source, Guide & video and
