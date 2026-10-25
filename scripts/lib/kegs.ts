@@ -188,6 +188,19 @@ export function kegValue(pool: Record<Rarity, number[]>, owned: Owned, wanted: S
 /** How one simulated player picks kegs: always the same one, or whichever is worth most right now. */
 export type Plan = { always: Keg } | { best: Keg[] }
 
+/** The keg a plan buys next: its fixed keg, or the one worth most right now (the first, on a tie). */
+function pick(
+  plan: Plan,
+  pool: (k: Keg) => Record<Rarity, number[]>,
+  owned: Owned,
+  wanted: Set<number>,
+  prestige: boolean,
+): Keg {
+  if ('always' in plan) return plan.always
+  const values = plan.best.map((k) => kegValue(pool(k), owned, wanted, prestige))
+  return plan.best[values.indexOf(Math.max(...values))]
+}
+
 /** Averages over many simulated players. */
 export interface SimResult {
   /** Mean value of keg #k (index k - 1), in scraps. */
@@ -231,15 +244,7 @@ export function simulate(
     let b = Infinity
     let g = Infinity
     for (let k = 0; k < opts.kegs; k++) {
-      const plan = opts.plan
-      const keg =
-        'always' in plan
-          ? plan.always
-          : plan.best.reduce((a, c) =>
-              kegValue(pool(c), owned, wanted, !!opts.prestige) > kegValue(pool(a), owned, wanted, !!opts.prestige)
-                ? c
-                : a,
-            )
+      const keg = pick(opts.plan, pool, owned, wanted, !!opts.prestige)
       const block = mix[Math.floor(k / 25)]
       block[keg] = (block[keg] ?? 0) + 1 / opts.players
       value[k] += openKeg(pool(keg), owned, wanted, !!opts.prestige, rng) / opts.players
@@ -254,4 +259,60 @@ export function simulate(
     return Number.isFinite(m) ? m : undefined
   }
   return { value, mix, ...(track && { bronzes: median(bronzes), halfGolds: median(halfGolds) }) }
+}
+
+/**
+ * Simulates players opening kegs from an empty collection until it's complete: until the scraps from milling cover
+ * crafting every wanted copy still missing.
+ *
+ * @param pools - From {@link kegPools}
+ * @param rarity - Each card's rarity, from {@link kegPools}
+ * @param opts - What to buy, the cards you want, and how many players
+ * @param rng - Random source
+ * @returns Kegs opened until complete: the median, and the 10th and 90th percentiles
+ */
+export function kegsToComplete(
+  pools: Pools,
+  rarity: Map<number, Rarity>,
+  opts: { plan: Plan; wanted: Set<number>; players: number; prestige?: boolean },
+  rng: Rng,
+): { median: number; p10: number; p90: number } {
+  const pool = (k: Keg) => {
+    const p = pools[k]
+    if (!p) throw new Error(`No cards for keg ${k}`)
+    return p
+  }
+  const { wanted } = opts
+  let full = 0
+  for (const id of wanted) {
+    const r = rarity.get(id)
+    if (!r) throw new Error(`No rarity for card ${id}`)
+    full += COPIES[r] * CRAFT[r]
+  }
+  const runs: number[] = []
+  for (let p = 0; p < opts.players; p++) {
+    const owned: Owned = new Map()
+    // `missing` is the craft cost of wanted copies not owned; a keg's value minus what it took off that is its mills.
+    let missing = full
+    let scraps = 0
+    let k = 0
+    while (scraps < missing) {
+      const value = openKeg(
+        pool(pick(opts.plan, pool, owned, wanted, !!opts.prestige)),
+        owned,
+        wanted,
+        !!opts.prestige,
+        rng,
+      )
+      let left = full
+      for (const [id, n] of owned) left -= n * CRAFT[rarity.get(id) as Rarity]
+      scraps += value - (missing - left)
+      missing = left
+      k++
+    }
+    runs.push(k)
+  }
+  runs.sort((x, y) => x - y)
+  const at = (q: number) => runs[Math.min(runs.length - 1, Math.floor(q * runs.length))]
+  return { median: at(0.5), p10: at(0.1), p90: at(0.9) }
 }
