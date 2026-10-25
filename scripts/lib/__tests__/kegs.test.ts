@@ -5,6 +5,7 @@ import {
   CRAFT,
   cardsIn,
   kegPools,
+  kegsToComplete,
   kegValue,
   MILL,
   type Owned,
@@ -185,6 +186,39 @@ describe('simulate', () => {
     expect(() =>
       simulate(pools, { plan: { always: 'SK' }, wanted: new Set(), kegs: 1, players: 1 }, seeded(1)),
     ).toThrow('SK')
+  })
+})
+
+describe('kegsToComplete', () => {
+  it('opens kegs until mills cover crafting the rest of a small pool', () => {
+    // Act
+    const r = kegsToComplete(
+      pools,
+      rarity,
+      { plan: { best: ['MO', 'NE'] }, wanted: cardsIn(pools, ['MO', 'NE']), players: 20 },
+      seeded(1),
+    )
+
+    // Assert: 8 cards need 2,440 scraps; a keg of duplicates mills for at least 60, so it's done well within 40 kegs
+    expect(r.p10).toBeGreaterThan(0)
+    expect(r.p10).toBeLessThanOrEqual(r.median)
+    expect(r.median).toBeLessThanOrEqual(r.p90)
+    expect(r.p90).toBeLessThan(40)
+  })
+
+  it('needs no kegs when nothing is wanted', () => {
+    // Act
+    const r = kegsToComplete(pools, rarity, { plan: { always: 'MO' }, wanted: new Set(), players: 3 }, seeded(1))
+
+    // Assert
+    expect(r).toEqual({ median: 0, p10: 0, p90: 0 })
+  })
+
+  it('throws for a wanted card with no rarity', () => {
+    // Act / Assert
+    expect(() =>
+      kegsToComplete(pools, rarity, { plan: { always: 'MO' }, wanted: new Set([1]), players: 1 }, seeded(1)),
+    ).toThrow('1')
   })
 })
 

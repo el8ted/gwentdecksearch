@@ -4,12 +4,26 @@
  * is shown two ways: every card in the pools you play, and only the cards published decks run (data/decks.json, so
  * pull or `pnpm build:data` first). Seeded, so a rerun prints the same numbers until the data changes.
  *
+ * Last, kegs until the whole collection is complete (all factions and neutrals), picking the best keg of any kind each
+ * time.
+ *
  * Run: `pnpm kegs [faction]` (default MO; any of MO NG NR SK ST SY).
  */
 import { consola } from 'consola'
 import { FACTIONS, type Faction } from '../src/types.ts'
 import { readAnalysisData } from './lib/analysis.ts'
-import { cardsIn, type Keg, kegPools, type Plan, playedCards, seeded, simulate } from './lib/kegs.ts'
+import {
+  COPIES,
+  CRAFT,
+  cardsIn,
+  type Keg,
+  kegPools,
+  kegsToComplete,
+  type Plan,
+  playedCards,
+  seeded,
+  simulate,
+} from './lib/kegs.ts'
 
 const faction = (process.argv[2] ?? 'MO').toUpperCase() as Faction
 if (!FACTIONS.includes(faction)) {
@@ -68,4 +82,24 @@ for (const [title, played] of VIEWS) {
   console.log(`| Kegs | ${mix.map((_, i) => `${i * 25 + 1}–${i * 25 + 25}`).join(' | ')} |`)
   console.log(`|---|${mix.map(() => '---:').join('|')}|`)
   for (const k of mine) console.log(`| ${k} | ${mix.map((m) => (m[k] ?? 0).toFixed(1)).join(' | ')} |`)
+}
+
+console.log(`\n### Kegs to a complete collection (every faction and neutral; best keg each time)\n`)
+console.log('| You want | Cards | Scraps to craft all | Kegs (median) | 10th–90th percentile | At Prestige 1 |')
+console.log('|---|---:|---:|---:|---:|---:|')
+const kinds = Object.keys(pools) as Keg[]
+for (const [title, played] of VIEWS) {
+  const wanted = played ? new Set([...cardsIn(pools, all)].filter((id) => played.has(id))) : cardsIn(pools, all)
+  let cost = 0
+  for (const id of wanted) {
+    const r = rarity.get(id) ?? 'common'
+    cost += COPIES[r] * CRAFT[r]
+  }
+  const [plain, p1] = [false, true].map((prestige) =>
+    kegsToComplete(pools, rarity, { plan: { best: kinds }, wanted, players: 20, prestige }, seeded(1)),
+  )
+  const name = title.replace(/^You want /, '').replace(/ of the .*/, ' of decks')
+  console.log(
+    `| ${name} | ${wanted.size} | ${cost.toLocaleString('en')} | ${plain.median} | ${plain.p10}–${plain.p90} | ${p1.median} |`,
+  )
 }
