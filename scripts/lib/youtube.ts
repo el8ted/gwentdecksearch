@@ -44,7 +44,7 @@ export function deckLinks(description: string): string[] {
 /**
  * Adds a channel's new uploads that link a deck to `known`, newest first, stopping at the first page that reaches the
  * newest upload already stored. The channel's newest upload is kept even without a link, so the next run knows where
- * to stop; any older such bookmark is dropped.
+ * to stop; any older such bookmark is dropped. Nothing is saved unless every page is read.
  *
  * shortcut: a description edited after its video was stored isn't reread; clear the channel's store to reread all.
  *
@@ -61,6 +61,9 @@ export async function refreshChannel(
   // A channel's uploads playlist is its ID with UC swapped for UU.
   const playlist = `UU${channel.id.slice(2)}`
   const newest = Object.values(known).reduce((max, v) => (v.published > max ? v.published : max), '')
+  // Collected apart and saved only once every page is read: a run that fails partway saves nothing, so the next run
+  // reads those pages again instead of stopping at an upload saved before the failure.
+  const found: Record<string, StoredVideo> = {}
   let added = 0
   let first = true
   let token: string | undefined
@@ -76,11 +79,12 @@ export async function refreshChannel(
       const decks = deckLinks(snippet.description)
       if (decks.length) added++
       if (decks.length || first)
-        known[snippet.resourceId.videoId] = { published: snippet.publishedAt, title: snippet.title, decks }
+        found[snippet.resourceId.videoId] = { published: snippet.publishedAt, title: snippet.title, decks }
       first = false
     }
     token = reachedKnown ? undefined : page.nextPageToken
   } while (token)
+  Object.assign(known, found)
   const latest = Object.values(known).reduce((max, v) => (v.published > max ? v.published : max), '')
   for (const [id, v] of Object.entries(known)) if (!v.decks.length && v.published !== latest) delete known[id]
   return added

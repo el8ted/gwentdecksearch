@@ -210,12 +210,15 @@ header, and the name of the release.
   "scrapedAt": "2026-10-18T17:02:03.534Z",
   "cards": { "122105": { "name": "Lined Pockets", "type": "leader", "faction": "SY", "provisions": 15, "tags": […] } },
   "tags": { "c12": "Beast", "devotion": "Devotion", … },
-  "decks": [ … ]
+  "decks": [ … ],
+  "aliases": { "alkso": ["Electric 000"], … }
 }
 ```
 
 - `cards` holds only cards some deck uses, with only the fields the app needs. `tags` holds the English name of every
   tag on those cards.
+- `aliases` holds, for each creator the decks credit, their other names (another Gwent name, their channels' titles)
+  from `creators.json`, so Search finds them by any of them.
 - `decks` holds each deck once (by deck code):
 
 ```json

@@ -121,10 +121,10 @@ describe('collectEntries', () => {
     const get = sheets({
       '1592369710': [
         SHINMIRI_HEADER,
-        shinmiriRow('Swarm', 'aaaa', 'https://youtu.be/AAAAAAAAAAA'),
-        shinmiriRow('Portal', 'bbbb'),
+        shinmiriRow('Swarm', 'aaaaaaaa', 'https://youtu.be/AAAAAAAAAAA'),
+        shinmiriRow('Portal', 'bbbbbbbb'),
       ].join('\n'),
-      '105': [SHINMIRI_HEADER, shinmiriRow('Portal', 'bbbb'), shinmiriRow('Nekkers', 'cccc')].join('\n'),
+      '105': [SHINMIRI_HEADER, shinmiriRow('Portal', 'bbbbbbbb'), shinmiriRow('Nekkers', 'cccccccc')].join('\n'),
     })
 
     // Act

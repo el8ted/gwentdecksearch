@@ -89,7 +89,7 @@ export interface IndexedDeck {
   tags: Set<TagKey>
   /** The guide's and the video's languages. */
   langs: Set<string>
-  /** {@link authorKey}s: the guide's author, and the owner of each list that has the deck. */
+  /** {@link authorKey}s: the guide's author, the owner of each list that has the deck, and the creators whose videos feature it. */
   authors: Set<string>
   /** The ID of the first deck with exactly this card list (leader and stratagem included), shared by its duplicates. */
   list: string
@@ -157,6 +157,20 @@ export function authorNames(decks: IndexedDeck[]): Map<string, string> {
 }
 
 /**
+ * A card list's identity, the same whatever order its cards are in: decks with the same key are the same deck. The
+ * build merges plain deck links by it, and the page groups decks by it.
+ *
+ * @param cards - `[cardId, copies]`, leader and stratagem included
+ * @returns The key
+ */
+export function listKey(cards: [number, number][]): string {
+  return cards
+    .map(([id, n]) => `${id}x${n}`)
+    .sort()
+    .join(',')
+}
+
+/**
  * Precomputes leader, stratagem, faction and card set per deck.
  *
  * @param data - The dataset
@@ -177,10 +191,7 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     const ids = new Set(deck.cards.map(([id]) => id))
     const tags = new Set([...ids].flatMap((id) => data.cards[id]?.tags ?? []))
     const langs = new Set([deck.guideLang, deck.video?.lang].filter((l) => l !== undefined))
-    const key = deck.cards
-      .map(([id, n]) => `${id}x${n}`)
-      .sort()
-      .join(',')
+    const key = listKey(deck.cards)
     if (!lists.has(key)) lists.set(key, deck.id)
     const list = lists.get(key) as string
     return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors: new Set(deckAuthors(deck)), list }
@@ -189,10 +200,12 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
 
 /**
  * A playgwent deck URL: a guide (`/decks/guides/408411`) or a deck hash (`/decks/3c3e…`), with or without the scheme,
- * `www.` and a language segment (`/en/`, `/pt-BR/`). Group 1 is the guide number, group 2 the hash.
+ * `www.` and a language segment (`/en/`, `/pt-BR/`). Group 1 is the guide number, group 2 the hash. Whatever follows
+ * the number or hash is ignored (a query, `/`, or text a description ran into it, like `(Dwarf`); the scrapers'
+ * `normalizeUrl` reads links with it too.
  */
 export const DECK_URL =
-  /^(?:https?:\/\/)?(?:www\.)?playgwent\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?decks\/(?:guides\/(\d+)|([0-9a-f]{8,}))\/?(?:[?#].*)?$/i
+  /^(?:https?:\/\/)?(?:www\.)?playgwent\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?decks\/(?:guides\/(\d+)|([0-9a-f]{8,}))(?![0-9a-z])/i
 
 /**
  * The card list a pasted playgwent deck URL points to.

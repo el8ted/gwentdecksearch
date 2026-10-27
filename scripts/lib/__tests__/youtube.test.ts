@@ -19,7 +19,7 @@ const upload = (id: string, description = '') => ({
     resourceId: { videoId: id },
   },
 })
-const DECK = 'Deck: https://www.playgwent.com/en/decks/abc'
+const DECK = 'Deck: https://www.playgwent.com/en/decks/abc00000'
 
 describe('deckLinks', () => {
   it('finds each playgwent deck or guide link once, normalized, and ignores other links', () => {
@@ -86,8 +86,23 @@ describe('refreshChannel', () => {
     expect(known.v03).toEqual({
       published: '2026-01-01T00:00:03Z',
       title: 'Video v03',
-      decks: ['https://www.playgwent.com/decks/abc'],
+      decks: ['https://www.playgwent.com/decks/abc00000'],
     })
+  })
+
+  it('saves nothing when a page fails, so the next run reads those uploads again', async () => {
+    // Arrange: the first page reads, the second fails
+    let calls = 0
+    const get = async () => {
+      calls++
+      if (calls > 1) throw new Error('HTTP 503')
+      return JSON.stringify({ nextPageToken: 'p2', items: [upload('v06', DECK), upload('v05')] })
+    }
+    const known: Record<string, StoredVideo> = { v01: { published: '2026-01-01T00:00:01Z', title: 'x', decks: ['d'] } }
+
+    // Act / Assert
+    await expect(refreshChannel(CHANNEL, known, get)).rejects.toThrow('HTTP 503')
+    expect(Object.keys(known)).toEqual(['v01'])
   })
 
   it('stops at the first page that reaches the newest stored upload, and moves the bookmark', async () => {

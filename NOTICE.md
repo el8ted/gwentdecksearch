@@ -18,6 +18,8 @@ Owned by their authors:
 - **playgwent.com community guides**: by the guide authors named on each deck.
 - **MetallicDanny's and Shinmiri2's deck lists**: used with their permission, which was given to this project only.
   It does not extend to copies or forks; ask them directly if you want to use their lists.
+- **Decks from creators' YouTube videos**: the deck links in their public video descriptions, and the video titles
+  used as deck names, belong to the creators credited on each deck (listed in `data/source/creators.json`).
 
 This covers the deck lists, deck names and their English translations in `data/` (`data/source/`, `data/decks.json`,
 `data/decklist.md`).

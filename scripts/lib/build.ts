@@ -1,3 +1,4 @@
+import { listKey } from '../../src/filter.ts'
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
 import { rarityOf } from './cards.ts'
@@ -182,10 +183,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
     // The same saved deck, or (for a plain deck link, not a guide) the same cards saved under another hash: one deck,
     // with every source and creator. Guides stay apart: each has its own author, votes and text.
-    const list = copies
-      .map(([id, n]) => `${id}x${n}`)
-      .sort()
-      .join(',')
+    const list = listKey(copies)
     const known = byHash.get(stored.hash) ?? (entry.guide ? undefined : byList.get(list))
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
