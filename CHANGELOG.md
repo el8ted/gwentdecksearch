@@ -8,6 +8,10 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- Decks from Gwent creators' YouTube videos are now in the list, under **Community**, each with its video. A deck
+  shows who features it in a video (▶ name), and searching a creator finds their guides, lists and videos by their
+  Gwent name or their channel's name.
+
 ## 2026-10-24.02
 
 - The site keeps working if you lose your connection: once you've visited, it opens and shows every icon offline,
