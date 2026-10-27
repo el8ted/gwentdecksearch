@@ -53,7 +53,7 @@ Where you start depends on what you have in hand; after that, every search goes 
 | **Cards or tags you like** | Add them in Search. Switch to **Any** to see decks with at least one of them, best matches first. |
 | **Cards you'd rather not play** | Type `-` before a name: `-golden` leaves out every Golden Nekker deck. |
 | **A faction and leader in mind** | Pick them, then look at **Most common** for the usual cards. |
-| **A favourite creator** | Type their name in Search (**✎**), or pick their list under **Source**. |
+| **A favourite creator** | Type their name in Search (**✎**), their Gwent name or their YouTube channel's, or pick their list under **Source**. |
 | **Time to play, not build** | **▶ Has video** and the **Spare** and **Exact** steps: decks that fit today, with a video. Add your language if you like, but [other languages can still help](#common-questions). |
 
 ![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](screenshots/deck-to-build.png)
@@ -128,8 +128,10 @@ The Search box finds two more kinds of pick, shown after the cards:
 - **Tags** (**#**): a category like Beast, Ogroid or Spell, or an ability like Devotion or Order, keeps the decks with
   at least one such card. They're the tags of the game's deck builder, one per tag however the card text words it, so
   "Orders" or "Beasts" finds the same tag. An expanded deck highlights the cards that carry it.
-- **Authors** (**✎**): a community guide author's playgwent name keeps their decks. Shinmiri2 and MetallicDanny also
-  find their deck lists. Case and spaces don't matter, and at most three authors are suggested.
+- **Authors** (**✎**): a creator's name keeps their decks: the community guides they wrote, their deck list
+  (Shinmiri2, MetallicDanny), and the decks their YouTube videos show. Type their Gwent name or their channel's name
+  (alkso's channel is Electric 000: either finds alkso). Case and spaces don't matter, and at most three authors are
+  suggested.
 
 Only tags and authors that some remaining deck has are suggested. Every pick counts for **All** and **Any**, and picks
 stay in the order you added them, so <kbd>Backspace</kbd> in the empty box removes the latest.
@@ -180,7 +182,7 @@ rarity.
 | **Stratagem** | Neutral stratagems on the first row, faction stratagems on the second. Hover for names. |
 | **Search** | Cards, tags (**#**) and authors (**✎**). **All**: decks with every pick. **Any**: decks with at least one, best matches first. Click a pick's name to exclude it (struck through: decks *without* it, in All and Any mode alike), or type `-` (or `!`) before a name to add it excluded. ✕ removes a pick. Paste a playgwent.com deck link (a guide or a deck) to find that deck, with its guide and video; this replaces your other filters, and Back brings them back. |
 | **Clear all** | Resets every filter except All/Any and the Decks/Craft view, empties the Search box, and turns off Dim common. |
-| **Source** | Community, MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
+| **Source** | Community (guides on playgwent.com and decks from creators' YouTube videos), MetallicDanny, Shinmiri2. Pick one or more; none picked means every source. |
 | **Guide & video** | **▶ Has video** keeps decks with a gameplay video. A language (**EN**, **RU**, **PL**…) keeps decks whose guide or video is in it (filler guides don't count); pick one or more. Hover for the language's name. |
 | **Provisions** | 3+, 2 or 1 spare, Exact, or 1, 2 or 3+ over. Pick one or more; none picked means any. |
 
@@ -230,17 +232,17 @@ results.
 | Part | Meaning |
 |---|---|
 | **Name** | The deck's name, then its leader · stratagem. |
-| **Badges** | Which sources list the deck. Community guides also show votes, author and last update. |
+| **Badges** | Which sources list the deck. Community guides also show votes, author and last update. **▶ name** credits the creator whose video shows the deck (**+1** and more when several do; hover for every name). It says who shows it, not who built it. |
 | **Links** | On the right: the guide's language, **▶** for a video, then **⧉ Only this**, **≈ Similar** and **↗ playgwent.com**. On narrower screens the buttons show just their symbols, and on phones they get their own row under the name. |
 | **Language** | The language a community guide is written in, as a short code (**EN**, **RU**, **PL**…). When the video is in the same language, **▶ EN** alone stands for both. Guides that are only filler ("text text text") show none. It says there's real text, not whether it's useful. Hover for the language's name. |
-| **▶** | A gameplay video, with the language it's narrated in (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or Shinmiri2's YouTube channel. Not your language? [It can still help](#common-questions). |
+| **▶** | A gameplay video, with its language (e.g. **▶ RU**): from the guide itself, Shinmiri2's or MetallicDanny's list, or a creator's YouTube video that links the deck. Not your language? [It can still help](#common-questions). |
 | **⧉** | Shows only this deck, exactly as pasting its link would: your search is replaced (Back brings it back). Then **Craft** lists what it costs you. Press it again to see the other decks. |
 | `≈` | Similar decks: see [`≈` Similar decks](#-similar-decks). |
 | **↗** | Opens the deck on playgwent.com in a new tab, ready to import. |
 | **Stats** | Scraps · units · provisions used / limit. The card count shows only when it isn't 25. |
 | **Card list** | Provision cost, power (units only) and copies, highest cost first. Cards you searched for are highlighted. Each card name links to its playgwent card page. Under the list, the full playgwent deck ID, handy for reporting a problem with a deck. |
 
-**Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 1,360 of them), and a
+**Videos.** **▶ Has video** in the **Guide & video** filter keeps only decks with a video (about 3,500 of them), and a
 language pill keeps decks whose guide or video is in that language: handy for finding guides you can read. A video in
 another language can still help: gameplay mostly speaks for itself, and YouTube can translate its subtitles (see [Common
 questions](#common-questions)).
@@ -315,7 +317,7 @@ Your choice is remembered; on a first visit the page follows your browser's lang
 - **Deck names** are shown as their authors wrote them when they're in your language, and machine-translated into
   English otherwise.
 - **The Search box** finds cards and tags by their name in your language or in English, and authors by their playgwent
-  name.
+  name or their YouTube channel's name.
 - **Shared links** keep the language if `?lang=` is in the address, for example `?lang=ru`.
 
 ![The page in Russian with the language menu open](screenshots/languages.png)
