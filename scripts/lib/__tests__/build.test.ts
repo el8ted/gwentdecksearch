@@ -3,6 +3,10 @@ import { type BuildInput, buildDataset, DEFAULT_STRATAGEM } from '../build.ts'
 import type { DeckEntry } from '../sources.ts'
 import type { CatalogCard } from '../store.ts'
 
+const CREATORS = [
+  { gwent: ['shinmiri2'], channels: [{ id: 'UCZhWZdKjn0e3ctyVZxsMkKQ', title: 'shinmiri2', lang: 'en' }] },
+]
+
 const card = (c: Partial<CatalogCard> & Pick<CatalogCard, 'name' | 'type'>): CatalogCard => ({
   faction: 'NE',
   provisions: 0,
@@ -45,6 +49,7 @@ const input = (i: Partial<BuildInput> = {}): BuildInput => ({
   terms: {},
   tags: {},
   videos: {},
+  creators: CREATORS,
   categories: {},
   translations: {},
   scrapedAt: '2026-10-14T00:00:00.000Z',
@@ -162,8 +167,8 @@ describe('buildDataset', () => {
     // Arrange: DECK's code is h1; the newer upload links it through another address
     const videos = {
       UCZhWZdKjn0e3ctyVZxsMkKQ: {
-        older: { published: '2026-01-01T00:00:00Z', decks: [URL_A] },
-        newer: { published: '2026-05-01T00:00:00Z', decks: ['https://www.playgwent.com/decks/h1'] },
+        older: { published: '2026-01-01T00:00:00Z', title: 'Old', decks: [URL_A] },
+        newer: { published: '2026-05-01T00:00:00Z', title: 'New', decks: ['https://www.playgwent.com/decks/h1'] },
       },
     }
 

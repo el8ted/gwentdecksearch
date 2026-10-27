@@ -51,6 +51,7 @@ const { dataset } = buildDataset({
   terms: {},
   tags: {},
   videos: {},
+  creators: [],
   categories,
   translations,
   scrapedAt: '',

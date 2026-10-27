@@ -1,12 +1,13 @@
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
 import { rarityOf } from './cards.ts'
+import type { Creator } from './creators.ts'
 import type { GuideInfo } from './guide.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
 import { TERM_KEYS } from './terms.ts'
 import { addTerm, type Glossary, translateName } from './translate.ts'
-import { CHANNELS, type StoredVideo } from './youtube.ts'
+import { readChannels, type StoredVideo } from './youtube.ts'
 
 /** Tactical Advantage: playgwent leaves the default stratagem out of a deck's card list. */
 export const DEFAULT_STRATAGEM = 202140
@@ -25,8 +26,10 @@ export interface BuildInput {
   tags: Record<string, Record<string, string>>
   /** Per language: localized category (list) → English. */
   categories: Record<string, Record<string, string>>
-  /** YouTube uploads by channel ID, then video ID. */
+  /** YouTube uploads that link a deck, by channel ID, then video ID. */
   videos: Record<string, Record<string, StoredVideo>>
+  /** The creator registry: whose channels those are. */
+  creators: Creator[]
   /** Per language: original deck name → English (hand-edited or machine-translated). */
   translations: Record<string, Record<string, string>>
   scrapedAt: string
@@ -129,15 +132,12 @@ export function buildDataset(input: BuildInput): BuildOutput {
     return s && !('missing' in s) ? s.hash : url.match(/\/decks\/([^/]+)$/)?.[1]
   }
   const channelVideo = new Map<string, Video>()
-  for (const channel of CHANNELS) {
-    const uploads = Object.entries(input.videos[channel.id] ?? {}).sort((a, b) =>
-      b[1].published.localeCompare(a[1].published),
-    )
-    for (const [id, { decks }] of uploads) {
-      for (const code of decks.map(codeOf)) {
-        if (code && !channelVideo.has(code))
-          channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
-      }
+  const uploads = readChannels(input.creators)
+    .flatMap(({ channel }) => Object.entries(input.videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel })))
+    .sort((a, b) => b.v.published.localeCompare(a.v.published))
+  for (const { id, v, channel } of uploads) {
+    for (const code of v.decks.map(codeOf)) {
+      if (code && !channelVideo.has(code)) channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
     }
   }
   const seen = new Set<string>()
