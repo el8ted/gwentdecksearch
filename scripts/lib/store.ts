@@ -34,7 +34,9 @@ export const STORE_PATHS = {
   entries: 'data/source/entries.json',
   decks: 'data/source/deck-store.json',
   translations: 'data/source/translations.json',
-  /** YouTube uploads by channel ID, then video ID (see `refreshChannel`). */
+  /** Creators: their Gwent names and channels (hand-kept; `pnpm creators` adds guide authors' channels). */
+  creators: 'data/source/creators.json',
+  /** YouTube uploads that link a deck, by channel ID, then video ID (see `refreshChannel`). */
   videos: 'data/source/videos.json',
   /** Guide text by URL: local only (gitignored), for tuning guide measures without refetching. */
   guideText: 'data/cache/guide-text.json',
