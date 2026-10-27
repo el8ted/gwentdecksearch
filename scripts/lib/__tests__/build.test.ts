@@ -179,6 +179,32 @@ describe('buildDataset', () => {
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/newer', lang: 'en' })
   })
 
+  it('credits every creator whose video links the deck, newest first, and ships their other names', () => {
+    // Arrange: DECK's code is h1
+    const creators = [
+      ...CREATORS,
+      { gwent: ['alkso'], channels: [{ id: 'UC2', title: 'Electric 000', lang: 'ru' }] },
+      { channels: [{ id: 'UC3', title: 'Unused', lang: 'en' }] },
+      { gwent: ['Gone'], channels: [{ id: 'UC4', title: 'Gone TV', lang: 'en' }], skip: true },
+    ]
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { a: { published: '2026-01-01T00:00:00Z', title: 'A', decks: [URL_A] } },
+      UC2: {
+        b: { published: '2026-05-01T00:00:00Z', title: 'B', decks: [URL_A] },
+        c: { published: '2026-06-01T00:00:00Z', title: 'C', decks: ['https://www.playgwent.com/decks/h1'] },
+      },
+      UC4: { d: { published: '2026-07-01T00:00:00Z', title: 'D', decks: [URL_A] } },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ videos, creators }))
+
+    // Assert
+    expect(dataset.decks[0].featured).toEqual(['alkso', 'shinmiri2'])
+    expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/c', lang: 'ru' })
+    expect(dataset.aliases).toEqual({ alkso: ['Electric 000'] })
+  })
+
   it("records a guide's language: detected, else declared; padding has none", () => {
     // Arrange
     const guide = { id: 1, modified: '', votes: 2, author: 'x' }

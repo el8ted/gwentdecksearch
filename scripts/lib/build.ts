@@ -1,7 +1,7 @@
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
 import { rarityOf } from './cards.ts'
-import type { Creator } from './creators.ts'
+import { type Creator, creatorAliases, creatorName } from './creators.ts'
 import type { GuideInfo } from './guide.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
@@ -132,12 +132,19 @@ export function buildDataset(input: BuildInput): BuildOutput {
     return s && !('missing' in s) ? s.hash : url.match(/\/decks\/([^/]+)$/)?.[1]
   }
   const channelVideo = new Map<string, Video>()
+  // Who features each deck code, newest video first: credit for the video, not a claim to the deck.
+  const featuredBy = new Map<string, string[]>()
   const uploads = readChannels(input.creators)
-    .flatMap(({ channel }) => Object.entries(input.videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel })))
+    .flatMap(({ channel, creator }) =>
+      Object.entries(input.videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel, creator })),
+    )
     .sort((a, b) => b.v.published.localeCompare(a.v.published))
-  for (const { id, v, channel } of uploads) {
+  for (const { id, v, channel, creator } of uploads) {
     for (const code of v.decks.map(codeOf)) {
-      if (code && !channelVideo.has(code)) channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
+      if (!code) continue
+      if (!channelVideo.has(code)) channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
+      const names = featuredBy.get(code) ?? []
+      if (!names.includes(creatorName(creator))) featuredBy.set(code, [...names, creatorName(creator)])
     }
   }
   const seen = new Set<string>()
@@ -199,6 +206,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
       ...summary,
       ...(video && { video }),
+      ...(featuredBy.has(stored.hash) && { featured: featuredBy.get(stored.hash) }),
       cards: copies,
     }
     // Some guides tagged English carry Russian names.
@@ -242,8 +250,16 @@ export function buildDataset(input: BuildInput): BuildOutput {
     packs[lang] = `;(globalThis.GDS_I18N ??= {})[${JSON.stringify(lang)}] = ${pack}\n`
   }
 
+  // Other names of the creators the decks credit, as guide author or in a video.
+  const credited = new Set(decks.flatMap((d) => [d.author, ...(d.featured ?? [])]).map((n) => n?.toLowerCase()))
+  const aliases = Object.fromEntries(
+    input.creators
+      .filter((c) => !c.skip && credited.has(creatorName(c).toLowerCase()) && creatorAliases(c).length)
+      .map((c) => [creatorName(c), creatorAliases(c)]),
+  )
+
   return {
-    dataset: { scrapedAt: input.scrapedAt, cards: used, tags, decks },
+    dataset: { scrapedAt: input.scrapedAt, cards: used, tags, decks, ...(Object.keys(aliases).length && { aliases }) },
     decklist: decklistMarkdown(decks, used),
     packs,
     warnings,

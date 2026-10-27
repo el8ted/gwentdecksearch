@@ -1,6 +1,9 @@
 import type { Creator, CreatorChannel } from './creators.ts'
 import type { GetBody } from './entries.ts'
-import { normalizeUrl } from './sources.ts'
+import { type DeckEntry, monthsBefore, normalizeUrl } from './sources.ts'
+
+/** Channel videos add decks from this many months back, like the deck sheets' patch tabs. */
+export const VIDEO_WINDOW_MONTHS = 12
 
 /** One upload that links a deck: when it went up, its title, and the deck links (normalized) its description names. */
 export interface StoredVideo {
@@ -81,4 +84,76 @@ export async function refreshChannel(
   const latest = Object.values(known).reduce((max, v) => (v.published > max ? v.published : max), '')
   for (const [id, v] of Object.entries(known)) if (!v.decks.length && v.published !== latest) delete known[id]
   return added
+}
+
+/**
+ * A deck name from a video title: hashtags, dates and "Gwent" (as a word or a bracketed tag) taken out, and the
+ * separators left at either end trimmed. "GWENT | Scoia'tael | Guerilla Tactics #gwent" → "Scoia'tael | Guerilla Tactics".
+ *
+ * @param title - The video's title
+ * @returns The name; empty if nothing is left (the build then names the deck after its leader)
+ */
+export function videoDeckName(title: string): string {
+  return title
+    .replace(/#\S+/g, '')
+    .replace(/[【[(]\s*gwent\s*[】\])]/gi, '')
+    .replace(/\bgwent\b/gi, '')
+    .replace(/\b20\d\d[./-]\d{1,2}(?:[./-]\d{1,2})?\b|(?<!\d)\d{6}(?!\d)/g, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
+    .replace(/\s*([|/·])(?:\s*[|/·:\-–—])+/g, ' $1')
+    .replace(/^[\s|/·:\-–—]+|[\s|/·:\-–—.]+$/g, '')
+    .replace(/\s{2,}/g, ' ')
+}
+
+/**
+ * The language a video title is written in, for translating it as a deck name: by its script (Cyrillic, Japanese
+ * kana, Hangul, Chinese), else English.
+ *
+ * shortcut: Latin-script titles count as English (most are, even on Polish or Indonesian channels); a Polish title
+ * shows untranslated. Upgrade to language detection if that shows up often.
+ *
+ * @param title - The video's title
+ * @returns A playgwent language code
+ */
+export function titleLang(title: string): string {
+  if (/\p{Script=Cyrillic}/u.test(title)) return 'ru'
+  if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(title)) return 'ja'
+  if (/\p{Script=Hangul}/u.test(title)) return 'ko'
+  if (/\p{Script=Han}/u.test(title)) return 'zh-cn'
+  return 'en'
+}
+
+/**
+ * Deck entries from the creators' videos: each deck link (not guide links, which the community listing has) in an
+ * upload from the last {@link VIDEO_WINDOW_MONTHS} months, newest first, as a Community deck named after the video,
+ * with the video in the channel's language.
+ *
+ * @param videos - Stored uploads by channel, then video ID
+ * @param creators - The registry (skipped creators are left out)
+ * @param now - Reference time for the window
+ * @returns Entries, newest upload first; a deck in several videos appears once per video
+ */
+export function videoEntries(
+  videos: Record<string, Record<string, StoredVideo>>,
+  creators: Creator[],
+  now: Date,
+): DeckEntry[] {
+  const since = monthsBefore(now, VIDEO_WINDOW_MONTHS).toISOString()
+  return readChannels(creators)
+    .flatMap(({ channel }) => Object.entries(videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel })))
+    .filter(({ v }) => v.published >= since)
+    .sort((a, b) => b.v.published.localeCompare(a.v.published))
+    .flatMap(({ id, v, channel }) =>
+      v.decks
+        .filter((url) => !url.includes('/decks/guides/'))
+        .map((url) => ({
+          name: videoDeckName(v.title),
+          url,
+          lang: titleLang(v.title),
+          source: 'community' as const,
+          video: { url: `https://youtu.be/${id}`, lang: channel.lang },
+        })),
+    )
 }

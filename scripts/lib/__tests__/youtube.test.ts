@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { Creator } from '../creators.ts'
-import { deckLinks, readChannels, refreshChannel, type StoredVideo } from '../youtube.ts'
+import {
+  deckLinks,
+  readChannels,
+  refreshChannel,
+  type StoredVideo,
+  titleLang,
+  videoDeckName,
+  videoEntries,
+} from '../youtube.ts'
 
 const CHANNEL = { id: 'UCZhWZdKjn0e3ctyVZxsMkKQ' }
 const upload = (id: string, description = '') => ({
@@ -101,5 +109,73 @@ describe('refreshChannel', () => {
     expect(added).toBe(1)
     expect(requested).toHaveLength(1)
     expect(Object.keys(known).sort()).toEqual(['v03', 'v05', 'v06'])
+  })
+})
+
+describe('videoDeckName', () => {
+  it('drops hashtags, dates and "Gwent", and trims the separators left over', () => {
+    // Act / Assert
+    expect(videoDeckName("Gwent | Scoia'tael | Guerilla Tactics #gwent #ST")).toBe("Scoia'tael | Guerilla Tactics")
+    expect(videoDeckName('GWENT: Casino Lippy is Always Fun')).toBe('Casino Lippy is Always Fun')
+    expect(videoDeckName('Compass Renfri! (Gwent Skellige Deck)')).toBe('Compass Renfri! (Skellige Deck)')
+    expect(videoDeckName('【公爵領衛兵隊】『帝国陣形』が強い！【Gwent】')).toBe('【公爵領衛兵隊】『帝国陣形』が強い！')
+    expect(videoDeckName('GWENT / 2026.10 / Precision Strike')).toBe('Precision Strike')
+    expect(videoDeckName('Symbiosis vs #monster Card Game261021')).toBe('Symbiosis vs Card Game')
+    expect(videoDeckName('Collab Guide. Gwent.')).toBe('Collab Guide')
+    expect(videoDeckName('#gwent')).toBe('')
+  })
+})
+
+describe('titleLang', () => {
+  it('reads the language from the script, else English', () => {
+    // Act / Assert
+    expect(['Ахеронтия', '帝国陣形が強い', '제국', '昆特牌', 'Nagroda Główna'].map(titleLang)).toEqual([
+      'ru',
+      'ja',
+      'ko',
+      'zh-cn',
+      'en',
+    ])
+  })
+})
+
+describe('videoEntries', () => {
+  it("turns each deck link of the window's uploads into a Community deck named after its video, newest first", () => {
+    // Arrange
+    const creators: Creator[] = [
+      { gwent: ['Jim'], channels: [{ id: 'UC1', title: 'Jim', lang: 'en' }] },
+      { gwent: ['Agro'], channels: [{ id: 'UC2', title: 'AgroeN', lang: 'pl' }] },
+      { gwent: ['Gone'], channels: [{ id: 'UC3', title: 'Gone', lang: 'en' }], skip: true },
+    ]
+    const deck = (h: string) => `https://www.playgwent.com/decks/${h}`
+    const videos = {
+      UC1: {
+        old: { published: '2025-09-01T00:00:00Z', title: 'Old', decks: [deck('a')] },
+        v1: { published: '2026-10-01T00:00:00Z', title: 'GWENT | Lippy', decks: [deck('b'), `${deck('guides')}/1`] },
+      },
+      UC2: { v2: { published: '2026-10-02T00:00:00Z', title: 'Ахеронтия', decks: [deck('c')] } },
+      UC3: { v3: { published: '2026-10-03T00:00:00Z', title: 'Skipped', decks: [deck('d')] } },
+    }
+
+    // Act
+    const entries = videoEntries(videos, creators, new Date('2026-10-27T00:00:00Z'))
+
+    // Assert: the 2025-09 upload is outside the 12 months, the guide link and the skipped creator are left out
+    expect(entries).toEqual([
+      {
+        name: 'Ахеронтия',
+        url: deck('c'),
+        lang: 'ru',
+        source: 'community',
+        video: { url: 'https://youtu.be/v2', lang: 'pl' },
+      },
+      {
+        name: 'Lippy',
+        url: deck('b'),
+        lang: 'en',
+        source: 'community',
+        video: { url: 'https://youtu.be/v1', lang: 'en' },
+      },
+    ])
   })
 })

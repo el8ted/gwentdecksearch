@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "scrape": "node scripts/cards.ts && node scripts/decks.ts && node --env-file-if-exists=.env scripts/videos.ts && node scripts/build-data.ts",
+    "scrape": "node scripts/cards.ts && node --env-file-if-exists=.env scripts/videos.ts && node scripts/decks.ts && node scripts/build-data.ts",
     "build:data": "node scripts/build-data.ts",
     "scrape:cards": "node scripts/cards.ts",
     "scrape:decks": "node scripts/decks.ts",
