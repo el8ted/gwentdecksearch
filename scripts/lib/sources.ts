@@ -1,3 +1,4 @@
+import { DECK_URL } from '../../src/filter.ts'
 import type { Source, Video } from '../../src/types.ts'
 import type { SheetLinks } from './xlsx.ts'
 
@@ -36,13 +37,13 @@ export interface ListedGuide {
  * Normalizes a playgwent link so the same deck from different sources compares equal.
  *
  * @param url - Any playgwent deck or guide URL, with or without a language segment
- * @returns `https://www.playgwent.com/decks/{hash}` or `…/decks/guides/{id}`, or `undefined` if not a deck link
+ * @returns `https://www.playgwent.com/decks/{hash}` or `…/decks/guides/{id}` (anything after them dropped), or
+ *   `undefined` if not a deck link
  */
 export function normalizeUrl(url: string): string | undefined {
-  const path = url
-    .trim()
-    .match(/^https?:\/\/(?:www\.)?playgwent\.com\/(?:[a-z]{2}(?:-[a-z]{2})?\/)?(decks\/\S+)$/i)?.[1]
-  return path ? `https://www.playgwent.com/${path.replace(/\/+$/, '')}` : undefined
+  const [, guide, hash] = DECK_URL.exec(url.trim()) ?? []
+  if (guide) return `https://www.playgwent.com/decks/guides/${guide}`
+  return hash ? `https://www.playgwent.com/decks/${hash.toLowerCase()}` : undefined
 }
 
 /**

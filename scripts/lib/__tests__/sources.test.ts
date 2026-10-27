@@ -15,8 +15,8 @@ import {
 } from '../sources.ts'
 
 const SHINMIRI = `Faction,Leader,Deck Name,Deck Link,Alternate Version,Alternate Description,Youtube video,Last Edited,
-MO,Arachas Swarm,GN Arachas Swarm,https://www.playgwent.com/en/decks/d8bd,,Bone Talisman version,https://youtu.be/x,12/5/2025,
-MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/5761,https://www.playgwent.com/decks/9873,,,4/26/2026,
+MO,Arachas Swarm,GN Arachas Swarm,https://www.playgwent.com/en/decks/d8bd0000,,Bone Talisman version,https://youtu.be/x,12/5/2025,
+MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/57610000,https://www.playgwent.com/decks/98730000,,,4/26/2026,
 MO,Carapace,Triple Tugo,,,,,,
 NG,Enslave 6,Guide Deck,https://www.playgwent.com/en/decks/guides/405861,,,,,`
 
@@ -31,7 +31,7 @@ describe('parseShinmiriSheet', () => {
     // Assert
     expect(entries[0]).toEqual({
       name: 'GN Arachas Swarm',
-      url: 'https://www.playgwent.com/decks/d8bd',
+      url: 'https://www.playgwent.com/decks/d8bd0000',
       lang: 'en',
       source: 'shinmiri2',
     })
@@ -46,8 +46,8 @@ describe('parseShinmiriSheet', () => {
 
     // Assert
     expect(portal.map((e) => e.url)).toEqual([
-      'https://www.playgwent.com/decks/5761',
-      'https://www.playgwent.com/decks/9873',
+      'https://www.playgwent.com/decks/57610000',
+      'https://www.playgwent.com/decks/98730000',
     ])
   })
 
@@ -73,9 +73,9 @@ describe('normalizeUrl', () => {
   it('removes language segments and normalizes scheme and host', () => {
     // Arrange
     const urls = [
-      'https://www.playgwent.com/ru/decks/369b',
-      'http://www.playgwent.com/decks/369b',
-      'https://playgwent.com/ru/decks/369b/',
+      'https://www.playgwent.com/ru/decks/369b0000',
+      'http://www.playgwent.com/decks/369b0000',
+      'https://playgwent.com/ru/decks/369b0000/',
       'https://www.playgwent.com/en/decks/guides/389873',
     ]
 
@@ -84,22 +84,48 @@ describe('normalizeUrl', () => {
 
     // Assert
     expect(normalized).toEqual([
-      'https://www.playgwent.com/decks/369b',
-      'https://www.playgwent.com/decks/369b',
-      'https://www.playgwent.com/decks/369b',
+      'https://www.playgwent.com/decks/369b0000',
+      'https://www.playgwent.com/decks/369b0000',
+      'https://www.playgwent.com/decks/369b0000',
       'https://www.playgwent.com/decks/guides/389873',
     ])
   })
 
-  it('returns undefined for non-deck links', () => {
-    // Arrange
-    const urls = ['https://gwent.one/ru/card/131101', '', 'GWENT | гайд - YouTube']
+  it('keeps only the deck code, dropping what a description ran into it, and lower-cases it', () => {
+    // Arrange: links as video descriptions write them
+    const urls = [
+      'https://www.playgwent.com/en/decks/9AE2612FE4D76C47A0D5EF1B1A65FA01(#mahakam',
+      'https://www.playgwent.com/decks/a633d3811bea59ad515b16c74efde6c9\\',
+      'https://www.playgwent.com/decks/b4ffcd13cb702816b41716805ddc21a2?fbclid=IwY2',
+      'https://www.playgwent.com/decks/guides/403313/no-cache',
+    ]
 
     // Act
     const normalized = urls.map(normalizeUrl)
 
     // Assert
-    expect(normalized).toEqual([undefined, undefined, undefined])
+    expect(normalized).toEqual([
+      'https://www.playgwent.com/decks/9ae2612fe4d76c47a0d5ef1b1a65fa01',
+      'https://www.playgwent.com/decks/a633d3811bea59ad515b16c74efde6c9',
+      'https://www.playgwent.com/decks/b4ffcd13cb702816b41716805ddc21a2',
+      'https://www.playgwent.com/decks/guides/403313',
+    ])
+  })
+
+  it('returns undefined for non-deck links', () => {
+    // Arrange: a link cut off mid-path ("decks/gu") isn't a deck either
+    const urls = [
+      'https://gwent.one/ru/card/131101',
+      '',
+      'GWENT | гайд - YouTube',
+      'https://www.playgwent.com/decks/gu',
+    ]
+
+    // Act
+    const normalized = urls.map(normalizeUrl)
+
+    // Assert
+    expect(normalized).toEqual([undefined, undefined, undefined, undefined])
   })
 })
 
@@ -126,9 +152,9 @@ describe('parseArchetypeSheet', () => {
     const csv = [
       'Чудовища,,Синдикат,',
       'Дикая Охота,,Охотники за Колдуньями,',
-      `${deck('aa')},,Классическое Баунти,${deck('cc')}`,
+      `${deck('aa000000')},,Классическое Баунти,${deck('cc000000')}`,
       'Завещания,,,',
-      `Классические Завещания,${deck('bb')},,`,
+      `Классические Завещания,${deck('bb000000')},,`,
       ',,Дети Огня,',
     ].join('\n')
 
@@ -142,13 +168,17 @@ describe('parseArchetypeSheet', () => {
       lang: 'ru',
       source: 'metallic-danny',
     })
-    expect(entries).toEqual([e('Дикая Охота', 'aa'), e('Классические Завещания', 'bb'), e('Классическое Баунти', 'cc')])
+    expect(entries).toEqual([
+      e('Дикая Охота', 'aa000000'),
+      e('Классические Завещания', 'bb000000'),
+      e('Классическое Баунти', 'cc000000'),
+    ])
   })
 
   it('skips a link with no archetype above it, and a video in the link column', () => {
     // Act
     const entries = parseArchetypeSheet(
-      ['https://www.playgwent.com/ru/decks/aa,', 'Исцеления,https://youtu.be/x'].join('\n'),
+      ['https://www.playgwent.com/ru/decks/aa000000,', 'Исцеления,https://youtu.be/x'].join('\n'),
     )
 
     // Assert
@@ -164,7 +194,7 @@ describe('parseSheet', () => {
       'Название колоды (и абилки),,Ссылка на колоду,Видео-гайд,',
       'Чудовища,,,,',
       'Панцирь (Защита),,https://gwent.one/ru/card/131101,,',
-      ',Накер Реликты,https://www.playgwent.com/ru/decks/369b,"GWENT | гайд, 13.8 - YouTube",',
+      ',Накер Реликты,https://www.playgwent.com/ru/decks/369b0000,"GWENT | гайд, 13.8 - YouTube",',
       ',Огроиды ,http://www.playgwent.com/ru/decks/guides/389873,,',
     ].join('\n')
 
@@ -173,7 +203,7 @@ describe('parseSheet', () => {
 
     // Assert
     expect(entries).toEqual([
-      { name: 'Накер Реликты', url: 'https://www.playgwent.com/decks/369b', lang: 'ru', source: 'metallic-danny' },
+      { name: 'Накер Реликты', url: 'https://www.playgwent.com/decks/369b0000', lang: 'ru', source: 'metallic-danny' },
       { name: 'Огроиды', url: 'https://www.playgwent.com/decks/guides/389873', lang: 'ru', source: 'metallic-danny' },
     ])
   })
@@ -183,8 +213,8 @@ describe('parseSheet', () => {
     const csv = [
       'Лучшие колоды патча 14.4,,,Сложность:,Видео-гайды:',
       'Тир 1,,,,',
-      ',Мидрейндж Органика (Стая главоглазов):,https://www.playgwent.com/ru/decks/a8d4,⭐⭐,https://youtu.be/x',
-      'Накер Щиты,https://www.playgwent.com/ru/decks/be83',
+      ',Мидрейндж Органика (Стая главоглазов):,https://www.playgwent.com/ru/decks/a8d40000,⭐⭐,https://youtu.be/x',
+      'Накер Щиты,https://www.playgwent.com/ru/decks/be830000',
     ].join('\n')
 
     // Act
@@ -192,8 +222,8 @@ describe('parseSheet', () => {
 
     // Assert
     expect(entries.map((e) => [e.name, e.url])).toEqual([
-      ['Мидрейндж Органика', 'https://www.playgwent.com/decks/a8d4'],
-      ['Накер Щиты', 'https://www.playgwent.com/decks/be83'],
+      ['Мидрейндж Органика', 'https://www.playgwent.com/decks/a8d40000'],
+      ['Накер Щиты', 'https://www.playgwent.com/decks/be830000'],
     ])
   })
 })
@@ -360,7 +390,7 @@ describe('sheet videos', () => {
   it("gives a Shinmiri2 row's video to its main version only, in English", () => {
     // Arrange
     const csv = `${SHINMIRI.split('\n')[0]}
-MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/5761,https://www.playgwent.com/decks/9873,,https://youtu.be/NJnObo5kR34,,`
+MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/57610000,https://www.playgwent.com/decks/98730000,,https://youtu.be/NJnObo5kR34,,`
 
     // Act
     const [main, alt] = parseShinmiriSheet(csv)
@@ -374,8 +404,8 @@ MO,Arachas Swarm,Hive Mind Portal,https://www.playgwent.com/en/decks/5761,https:
     // Arrange: row 2 has a chip (title in the CSV) then another deck's video; row 3 a plain link left of the deck
     const csv = [
       'Название,Ссылка,Видео,Ещё видео',
-      'Накер,https://www.playgwent.com/ru/decks/369b,"GWENT | гайд - YouTube",https://youtu.be/BBBBBBBBBBB',
-      'https://youtu.be/CCCCCCCCCCC,Огроиды,https://www.playgwent.com/ru/decks/3898,',
+      'Накер,https://www.playgwent.com/ru/decks/369b0000,"GWENT | гайд - YouTube",https://youtu.be/BBBBBBBBBBB',
+      'https://youtu.be/CCCCCCCCCCC,Огроиды,https://www.playgwent.com/ru/decks/38980000,',
     ].join('\n')
     const links = new Map([[2, [[2, 'https://youtu.be/AAAAAAAAAAA'] as [number, string]]]])
 
