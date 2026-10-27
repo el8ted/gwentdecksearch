@@ -51,14 +51,16 @@ What changed lately: [CHANGELOG.md](CHANGELOG.md).
 
 | Source | What it is |
 |---|---|
-| **Community** | Published deck guides on playgwent.com from the last 18 months, in every language, with votes and author. |
+| **Community** | Published deck guides on playgwent.com from the last 18 months, in every language, with votes and author; and the decks Gwent creators link in their YouTube video descriptions from the last 12 months, each with its video and the creator credited (▶ name). |
 | **MetallicDanny** | A Russian-language deck list ([deck list](https://docs.google.com/spreadsheets/d/1_nLQ_0y1t_3zRAwjRSPjSv4djBSRKHPyli3hNrjRgkg/edit?gid=1966172750)), including his archetype list and decks from the last 12 months of his per-patch meta reports and new-deck lists. Deck names are machine-translated into English, keeping official card names. |
 | **Shinmiri2** | A curated list of competitive decks ([deck list](https://docs.google.com/spreadsheets/d/1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM/edit?gid=1592369710)), including alternate versions and decks from the last 12 months of per-patch tabs. Alternates appear as separate decks with the same name. |
 
-Gameplay videos come from the guides themselves, from both deck lists, and from the deck links in Shinmiri2's YouTube
-video descriptions.
+Gameplay videos come from the guides themselves, from both deck lists, and from the deck links in creators' YouTube
+video descriptions (the creators are listed in [data/source/creators.json](data/source/creators.json)). Searching a
+creator finds them by their Gwent name or their channel's name.
 
-A deck listed by more than one source appears once, with every source badge. Card lists, costs and card data come
+A deck listed by more than one source appears once, with every source badge; so does a deck link whose cards match a
+deck already listed (the same deck saved twice). Two guides with the same cards stay separate. Card lists, costs and card data come
 from playgwent.com. Provisions, scraps and card counts are worked out from current card data, so they follow every
 Balance Council change.
 
@@ -66,7 +68,9 @@ Balance Council change.
 
 Deck lists belong to their authors: the playgwent.com community, MetallicDanny
 ([YouTube](https://www.youtube.com/@metallicdanny), [Twitch](https://www.twitch.tv/metallicdanny)) and Shinmiri2
-([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)). **Credits** on
+([YouTube](https://www.youtube.com/@shinmiri2101), [Twitch](https://www.twitch.tv/shinmiri2)), and the creators
+whose videos feature them, named on each deck. A creator who wants their names fixed or to opt out can use the
+**I'm a creator** issue form. **Credits** on
 the page (in the header, or at the bottom of Help on phones) links to them.
 
 The site icon was drawn by el8ted's daughter. It's licensed under a father's love: changing it would make el8ted sad

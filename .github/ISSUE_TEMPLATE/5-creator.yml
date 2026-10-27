@@ -1,0 +1,42 @@
+name: I'm a creator
+description: Your videos feature decks on Gwent Deck Search, and you want your names fixed, a channel added, or out.
+labels: [data]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gwent Deck Search reads the deck links in some creators' YouTube video descriptions, adds those decks under
+        Community with the video, and credits the creator on each deck ("▶ name"). Search finds a creator by their
+        Gwent name or their channel's name. Use this form to correct that, or to opt out: your channel then isn't
+        read, and your name comes off the decks it added.
+  - type: dropdown
+    id: request
+    attributes:
+      label: Request
+      options:
+        - Fix my names (Gwent name or channel)
+        - Add my channel
+        - Opt out
+    validations:
+      required: true
+  - type: input
+    id: channel
+    attributes:
+      label: Your YouTube channel
+      description: Its link, e.g. https://www.youtube.com/@yourchannel
+    validations:
+      required: true
+  - type: input
+    id: gwent-name
+    attributes:
+      label: Your Gwent (playgwent.com) name
+      description: Exactly as in the game or on your community guides, so your guides and videos are found together.
+  - type: input
+    id: language
+    attributes:
+      label: Your game client's language
+      description: The language your videos show the cards in (e.g. English, Polish), if not English.
+  - type: textarea
+    id: details
+    attributes:
+      label: Details

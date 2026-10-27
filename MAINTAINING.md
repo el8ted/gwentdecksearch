@@ -94,13 +94,13 @@ tab says so; turn it back on there.
 pnpm scrape
 ```
 
-This runs four steps, which can also run on their own:
+This runs four steps (cards, videos, decks, then the build), which can also run on their own:
 
 | Step | What it does |
 |---|---|
 | `pnpm scrape:cards` | Card data, names and game terms in all 11 languages (~33 requests). Only changes after the monthly Balance Council. |
+| `pnpm scrape:videos` | New uploads on the channels in `data/source/creators.json`, whose descriptions link decks (about one request per channel; a full read of every channel is ~800 of the API's 10,000 daily units). Runs before `scrape:decks`, which adds those decks. Needs `YOUTUBE_API_KEY`: a repository secret for the weekly update, and a `.env` file (`YOUTUBE_API_KEY=…`, gitignored) for local runs. Without it, videos are skipped with a warning. |
 | `pnpm scrape:decks` | Deck links from every source, then fetches only decks not stored yet. Translates new non-English deck names (MyMemory, which has a daily quota; leftovers wait for the next run). |
-| `pnpm scrape:videos` | New uploads on Shinmiri2's YouTube channel, whose descriptions link their decks (1–2 requests). Needs `YOUTUBE_API_KEY`: a repository secret for the weekly update, and a `.env` file (`YOUTUBE_API_KEY=…`, gitignored) for local runs. Without it, videos are skipped with a warning. |
 | `pnpm build:data` | Offline. Rebuilds `data/decks.json`, `data/decklist.md` and the language packs from `data/source/`. |
 
 Then review before committing:
@@ -120,6 +120,19 @@ Only with the author's permission (the **Suggest a feature or deck source** issu
   their guides together;
 - the sheet in `SHEETS` (`scripts/lib/entries.ts`), with a parser in `scripts/lib/sources.ts`;
 - a colour (`.s-<source>` in `src/styles.css`) and a line under **Where the decks come from** in `README.md`.
+
+## Creators
+
+`data/source/creators.json` lists the creators whose YouTube channels are read for decks: their Gwent names (the first
+is shown on decks; every name, and each channel's title, finds them in search) and their channels, each with the
+language its videos show cards in (`en` unless known otherwise). No permission is needed: the site credits them and
+sends viewers to their videos.
+
+- **New guide authors' channels:** `pnpm creators` (needs `YOUTUBE_API_KEY`) adds any channel whose guide videos (3 or
+  more) are all one author's. It never changes an existing entry; review what it adds.
+- **Anyone else:** add an entry by hand (channel ID from the channel page or the API; Gwent name if known).
+- **Fixes and opt-outs** come through the **I'm a creator** issue form. To opt out, set `"skip": true`: the channel
+  isn't read, so its decks and credits drop out at the next scrape.
 
 ## Publishing a release
 
