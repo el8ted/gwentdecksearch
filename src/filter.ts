@@ -128,15 +128,22 @@ export function authorKey(name: string): string {
   return name.toLowerCase()
 }
 
-/** A deck's authors: a list's owner counts too, since the list is theirs. */
+/**
+ * A deck's people: the guide's author, the owner of each list that has it (the list is theirs), and the creators
+ * whose videos feature it. Each is credited for what they did; none is claimed to have built the deck.
+ */
 function deckAuthors(deck: Deck): string[] {
-  return [deck.author, ...deck.sources.filter((s) => s !== 'community').map((s) => SOURCE_AUTHORS[s])]
+  return [
+    deck.author,
+    ...deck.sources.filter((s) => s !== 'community').map((s) => SOURCE_AUTHORS[s]),
+    ...(deck.featured ?? []),
+  ]
     .filter((a) => a !== undefined)
     .map(authorKey)
 }
 
 /**
- * Display names by {@link authorKey}: a list owner's playgwent name, else the first guide's spelling.
+ * Display names by {@link authorKey}: a list owner's playgwent name, else the first guide's or video's spelling.
  *
  * @param decks - Indexed decks
  * @returns Name by key
@@ -144,7 +151,8 @@ function deckAuthors(deck: Deck): string[] {
 export function authorNames(decks: IndexedDeck[]): Map<string, string> {
   const names = new Map(Object.values(SOURCE_AUTHORS).map((n) => [authorKey(n), n]))
   for (const { deck } of decks)
-    if (deck.author && !names.has(authorKey(deck.author))) names.set(authorKey(deck.author), deck.author)
+    for (const name of [deck.author, ...(deck.featured ?? [])])
+      if (name && !names.has(authorKey(name))) names.set(authorKey(name), name)
   return names
 }
 

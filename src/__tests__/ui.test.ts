@@ -355,6 +355,23 @@ describe('deckRow', () => {
     expect(html).toContain('<span class="badge shared">2/3 cards in common</span>')
   })
 
+  it('credits the creators who feature a deck in a video, leaving out the author and list owners already shown', () => {
+    // Arrange: a1 is on shinmiri2's list
+    const deck = {
+      ...a1,
+      deck: { ...a1.deck, votes: 3, author: 'Avajar', featured: ['shinmiri2', 'Jim_Wolverine', 'avajar', 'Qcento'] },
+    }
+    const plain = { ...a1, deck: { ...a1.deck, featured: ['shinmiri2'] } }
+
+    // Act
+    const [html, none] = [deck, plain].map((d) => deckRow(d, DATA, new Set(), false, new Set(), loc))
+
+    // Assert
+    expect(html).toContain('<span class="featured" title="In a video by Jim_Wolverine, Qcento">')
+    expect(html).toContain('</svg>Jim_Wolverine +1</span>')
+    expect(none).not.toContain('class="featured"')
+  })
+
   it.each([
     ['en', 'en', '', '\nGuide written in English'],
     ['ru', 'en', '<span class="lang" title="Guide written in Russian">RU</span>', ''],

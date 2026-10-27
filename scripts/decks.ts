@@ -1,5 +1,5 @@
 /**
- * Deck refresh: collects the current deck links from every source, fetches only decks the store doesn't have
+ * Deck refresh: collects the current deck links from every source (creators' videos as `pnpm scrape:videos` stored them), fetches only decks the store doesn't have
  * (published decks never change), and translates new non-English names. Writes data/source/entries.json,
  * deck-store.json and translations.json; then run `pnpm build:data`.
  *
@@ -8,12 +8,14 @@
 import { writeFile } from 'node:fs/promises'
 import { consola } from 'consola'
 import { buildDataset, glossaryFor } from './lib/build.ts'
+import type { Creator } from './lib/creators.ts'
 import { refreshStore, translateNames } from './lib/deck-refresh.ts'
 import { collectEntries } from './lib/entries.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
 import type { StoredDeck } from './lib/store.ts'
 import { markRefreshed, readJson, STORE_PATHS, writeJson } from './lib/store.ts'
 import { myMemory } from './lib/translate.ts'
+import { type StoredVideo, videoEntries } from './lib/youtube.ts'
 
 const get = createPoliteFetch({
   'www.playgwent.com': 1_000,
@@ -21,9 +23,16 @@ const get = createPoliteFetch({
   'api.mymemory.translated.net': 1_000,
 })
 
-const { entries, listed } = await collectEntries(get, get.bytes, new Date())
+const now = new Date()
+const collected = await collectEntries(get, get.bytes, now)
+// Creators' videos come last, so a deck a guide or list already names keeps that name (run scrape:videos first).
+const videos = await readJson<Record<string, Record<string, StoredVideo>>>(STORE_PATHS.videos, {})
+const fromVideos = videoEntries(videos, await readJson<Creator[]>(STORE_PATHS.creators, []), now)
+const entries = [...collected.entries, ...fromVideos]
 await writeJson(STORE_PATHS.entries, entries)
-consola.info(`${entries.length} deck links (${listed} guides listed)`)
+consola.info(
+  `${entries.length} deck links (${collected.listed} guides listed; ${new Set(fromVideos.map((e) => e.url)).size} from creators' videos)`,
+)
 
 const store = await readJson<Record<string, StoredDeck>>(STORE_PATHS.decks, {})
 const texts = await readJson<Record<string, string>>(STORE_PATHS.guideText, {})
@@ -51,6 +60,7 @@ const { dataset } = buildDataset({
   terms: {},
   tags: {},
   videos: {},
+  creators: [],
   categories,
   translations,
   scrapedAt: '',

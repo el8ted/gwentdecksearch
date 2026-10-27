@@ -472,6 +472,21 @@ describe('author matching', () => {
   })
 })
 
+describe('creators in videos', () => {
+  it('count as authors of the decks their videos feature, named as the build credits them', () => {
+    // Arrange
+    const [first, ...rest] = DATA.decks
+    const decks = indexDecks({ ...DATA, decks: [{ ...first, featured: ['Jim_Wolverine'] }, ...rest] })
+
+    // Act
+    const found = matchDecks(decks, state({ picks: ['@jim_wolverine'] }))
+
+    // Assert
+    expect(ids(found)).toEqual([first.id])
+    expect(authorNames(decks).get('jim_wolverine')).toBe('Jim_Wolverine')
+  })
+})
+
 describe('budgetOf', () => {
   it('steps 1, 2, then 3 or more on each side of exact', () => {
     // Act

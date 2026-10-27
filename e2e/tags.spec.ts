@@ -83,3 +83,21 @@ test('an author is suggested by name, spacing and case ignored, and lists their 
   await expect(page).toHaveURL(/#c=%40metallicdanny$/)
   await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@metallicdanny'] })} `))
 })
+
+test("a creator is suggested by their channel's name too, and lists their guides and the decks their videos feature", async ({
+  page,
+  open,
+}) => {
+  // Arrange: alkso's channel is "Electric 000"
+  await open()
+  const input = page.locator('#card-input')
+
+  // Act
+  await input.fill('electric 0')
+  await page.locator('[data-tag="@alkso"]').click()
+
+  // Assert
+  await expect(page.locator('#chips li')).toHaveText(['alkso'])
+  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@alkso'] })} `))
+  await expect(page.locator('.deck .featured').first()).toBeVisible()
+})

@@ -3,6 +3,10 @@ import { type BuildInput, buildDataset, DEFAULT_STRATAGEM } from '../build.ts'
 import type { DeckEntry } from '../sources.ts'
 import type { CatalogCard } from '../store.ts'
 
+const CREATORS = [
+  { gwent: ['shinmiri2'], channels: [{ id: 'UCZhWZdKjn0e3ctyVZxsMkKQ', title: 'shinmiri2', lang: 'en' }] },
+]
+
 const card = (c: Partial<CatalogCard> & Pick<CatalogCard, 'name' | 'type'>): CatalogCard => ({
   faction: 'NE',
   provisions: 0,
@@ -45,6 +49,7 @@ const input = (i: Partial<BuildInput> = {}): BuildInput => ({
   terms: {},
   tags: {},
   videos: {},
+  creators: CREATORS,
   categories: {},
   translations: {},
   scrapedAt: '2026-10-14T00:00:00.000Z',
@@ -100,6 +105,38 @@ describe('buildDataset', () => {
     // Assert
     expect(dataset.decks.map((d) => [d.name, d.sources])).toEqual([
       ['First', ['community', 'metallic-danny', 'shinmiri2']],
+    ])
+  })
+
+  it('merges a plain deck link into a deck with the same cards under another hash, but keeps two guides apart', () => {
+    // Arrange: three saves of DECK's cards (h1, h2, h3), cards in another order on h2
+    const URL_C = 'https://www.playgwent.com/decks/cccc'
+    const guide = (id: number, author: string) => ({ id, modified: '', votes: 1, author })
+    const entries = [
+      entry(URL_A, { name: 'Guide A', source: 'community', guide: guide(1, 'a') }),
+      entry(URL_C, { name: 'Guide C', source: 'community', guide: guide(2, 'c') }),
+      entry(URL_B, {
+        name: 'From a video',
+        source: 'metallic-danny',
+        video: { url: 'https://youtu.be/v', lang: 'ru' },
+      }),
+    ]
+    const store = {
+      [URL_A]: DECK,
+      [URL_B]: { ...DECK, hash: 'h2', cards: [...DECK.cards].reverse() },
+      [URL_C]: { ...DECK, hash: 'h3' },
+    }
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { v: { published: '2026-01-01T00:00:00Z', title: 'V', decks: [URL_B] } },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, store, videos }))
+
+    // Assert
+    expect(dataset.decks.map((d) => [d.name, d.sources, d.featured, d.video?.url])).toEqual([
+      ['Guide A', ['community', 'metallic-danny'], ['shinmiri2'], 'https://youtu.be/v'],
+      ['Guide C', ['community'], undefined, undefined],
     ])
   })
 
@@ -162,8 +199,8 @@ describe('buildDataset', () => {
     // Arrange: DECK's code is h1; the newer upload links it through another address
     const videos = {
       UCZhWZdKjn0e3ctyVZxsMkKQ: {
-        older: { published: '2026-01-01T00:00:00Z', decks: [URL_A] },
-        newer: { published: '2026-05-01T00:00:00Z', decks: ['https://www.playgwent.com/decks/h1'] },
+        older: { published: '2026-01-01T00:00:00Z', title: 'Old', decks: [URL_A] },
+        newer: { published: '2026-05-01T00:00:00Z', title: 'New', decks: ['https://www.playgwent.com/decks/h1'] },
       },
     }
 
@@ -172,6 +209,32 @@ describe('buildDataset', () => {
 
     // Assert
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/newer', lang: 'en' })
+  })
+
+  it('credits every creator whose video links the deck, newest first, and ships their other names', () => {
+    // Arrange: DECK's code is h1
+    const creators = [
+      ...CREATORS,
+      { gwent: ['alkso'], channels: [{ id: 'UC2', title: 'Electric 000', lang: 'ru' }] },
+      { channels: [{ id: 'UC3', title: 'Unused', lang: 'en' }] },
+      { gwent: ['Gone'], channels: [{ id: 'UC4', title: 'Gone TV', lang: 'en' }], skip: true },
+    ]
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { a: { published: '2026-01-01T00:00:00Z', title: 'A', decks: [URL_A] } },
+      UC2: {
+        b: { published: '2026-05-01T00:00:00Z', title: 'B', decks: [URL_A] },
+        c: { published: '2026-06-01T00:00:00Z', title: 'C', decks: ['https://www.playgwent.com/decks/h1'] },
+      },
+      UC4: { d: { published: '2026-07-01T00:00:00Z', title: 'D', decks: [URL_A] } },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ videos, creators }))
+
+    // Assert
+    expect(dataset.decks[0].featured).toEqual(['alkso', 'shinmiri2'])
+    expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/c', lang: 'ru' })
+    expect(dataset.aliases).toEqual({ alkso: ['Electric 000'] })
   })
 
   it("records a guide's language: detected, else declared; padding has none", () => {
@@ -243,7 +306,8 @@ describe('buildDataset', () => {
   it('names non-English decks from translations, else the glossary, and treats Cyrillic English names as Russian', () => {
     // Arrange
     const entries = [entry(URL_A, { name: 'Рой', lang: 'en' }), entry(URL_B, { name: 'Химера колода', lang: 'ru' })]
-    const store = { [URL_A]: DECK, [URL_B]: { ...DECK, hash: 'h2' } }
+    const other: [number, number][] = [...DECK.cards.slice(0, 2), [100, 1]]
+    const store = { [URL_A]: DECK, [URL_B]: { ...DECK, hash: 'h2', cards: other } }
     const cardNames = { ru: { 100: 'Химера' } }
     const translations = { ru: { Рой: 'Swarm' } }
 

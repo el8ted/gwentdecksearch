@@ -1,6 +1,14 @@
-import { budgetSide, type cardChanges, deckBody, type IndexedDeck, MIN_DECK_CARDS, provisionStatus } from '../filter.ts'
+import {
+  authorKey,
+  budgetSide,
+  type cardChanges,
+  deckBody,
+  type IndexedDeck,
+  MIN_DECK_CARDS,
+  provisionStatus,
+} from '../filter.ts'
 import type { Locale } from '../i18n.ts'
-import { type Dataset, type Deck, SOURCE_NAMES, type Source } from '../types.ts'
+import { type Dataset, type Deck, SOURCE_AUTHORS, SOURCE_NAMES, type Source } from '../types.ts'
 import { esc, newTabLink } from './dom.ts'
 import { icon } from './icons.ts'
 
@@ -104,6 +112,26 @@ const glyph = (symbol: string, word: string) =>
 /** A language's short code for a badge: `pt-BR` → `PT`. */
 export const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
 
+/**
+ * Who features the deck in a video, after its sources and votes: the newest video's creator, "+n" for more, all of
+ * them in the tooltip. The guide's author and the lists' owners already show, so they aren't repeated.
+ *
+ * @param deck - The deck
+ * @param loc - Locale
+ * @returns The badge, or nothing
+ */
+function featuredBadge(deck: Deck, loc: Locale): string {
+  const shown = new Set(
+    [deck.author, ...deck.sources.flatMap((s) => (s === 'community' ? [] : [SOURCE_AUTHORS[s]]))].map(
+      (n) => n && authorKey(n),
+    ),
+  )
+  const names = (deck.featured ?? []).filter((n) => !shown.has(authorKey(n)))
+  if (!names.length) return ''
+  const more = names.length > 1 ? ` +${names.length - 1}` : ''
+  return `<span class="featured" title="${esc(loc.t('deck.videoBy', { names: names.join(', ') }))}">${icon('play')}${esc(names[0])}${more}</span>`
+}
+
 /** The video link and the guide's language, before the deck's buttons; one badge when both are the same language. */
 function deckLinks(deck: Dataset['decks'][number], name: string, loc: Locale): string {
   const guideTip = deck.guideLang && loc.t('deck.guideLang', { lang: loc.langName(deck.guideLang) })
@@ -163,7 +191,7 @@ export function deckRow(
         deck.votes === undefined
           ? ''
           : `<span class="votes" title="${esc(loc.t('deck.votesTip'))}">${icon('votes')} ${deck.votes}${deck.author ? ` · ${esc(deck.author)}` : ''}</span>`
-      }${
+      }${featuredBadge(deck, loc)}${
         deck.updated === undefined
           ? ''
           : `<time class="updated" datetime="${esc(deck.updated)}" title="${esc(loc.t('deck.updatedTip'))}">${esc(loc.date(deck.updated))}</time>`

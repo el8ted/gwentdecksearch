@@ -18,7 +18,8 @@ data/
 │   ├── card-names.json     card names in the 10 other languages
 │   ├── terms.json          official game terms in the 10 other languages
 │   ├── tags.json           deck-builder tag names, all 11 languages
-│   ├── videos.json         YouTube uploads that link a deck
+│   ├── creators.json       creators: Gwent names and YouTube channels (hand-kept)
+│   ├── videos.json         creators' YouTube uploads that link a deck
 │   ├── translations.json   English names for non-English deck names (hand-fixable)
 │   ├── categories.json     extra glossary for translating deck names (hand-kept)
 │   └── refreshed.json      when each refresh last ran
@@ -38,12 +39,12 @@ for hand edits is `translations.json`.
 playgwent card search ─┐
 playgwent deck builder ─┴─ pnpm scrape:cards ──► cards.json, card-names.json, terms.json, tags.json
                                                                               │
-playgwent guide listing ─┐                                                    │
+creators.json ─► creators' YouTube ─ pnpm scrape:videos ─► videos.json ───────┤
+                                                               │              │
+playgwent guide listing ─┐                                     ▼              │
 Shinmiri2's sheet ───────┼─ pnpm scrape:decks ─► entries.json ──┐             │
-MetallicDanny's sheet ───┘   (fetches only new decks)  deck-store.json ──────┤
-                             (translates new names)  translations.json ──────┤
-                                                                              │
-Shinmiri2's YouTube ──────── pnpm scrape:videos ─► videos.json ──────────────┤
+MetallicDanny's sheet ───┤   (fetches only new decks)  deck-store.json ──────┤
+videos.json (12 months) ─┘   (translates new names)  translations.json ──────┤
                                                                               ▼
                                                      pnpm build:data (offline)
                                                                               │
@@ -55,8 +56,8 @@ Shinmiri2's YouTube ──────── pnpm scrape:videos ─► videos.js
                                      ▼ dist/app.iife.js   ▼ dist/i18n/
 ```
 
-`pnpm scrape` runs all four steps in order. The scheduled GitHub Action refreshes decks and videos every Saturday,
-and cards around each month's end, then builds.
+`pnpm scrape` runs all four steps in order, videos before decks (creators' videos add decks). The scheduled GitHub
+Action refreshes videos and decks every Saturday, and cards around each month's end, then builds.
 
 ## How the app uses it
 
@@ -79,7 +80,8 @@ Written by the scrapers, except where noted. All are JSON with sorted keys, so d
 ### `entries.json`: every deck link
 
 An array, one object per link a source lists. The order matters: community guides first, then Shinmiri2, then
-MetallicDanny. When two sources list the same deck, **the first entry names it** and every source is kept.
+MetallicDanny, then the decks in creators' videos (source `community`, named after the video, newest first). When two
+sources list the same deck, **the first entry names it** and every source is kept.
 
 ```json
 {
@@ -156,19 +158,32 @@ English card names are in `cards.json`; English terms come from the site's own p
 `terms.json` covers the few phrases where the site uses playgwent's official wording (faction names, "Stratagem",
 "Provisions"…), which then override the site's own translation.
 
-### `videos.json`: channel uploads
+### `creators.json`: creators (hand-kept)
 
-Channel ID → video ID → the deck links in that video's description. Read through the YouTube Data API (needs
-`YOUTUBE_API_KEY`); each run adds only new uploads.
+An array, one object per creator (a person, or a group channel): their Gwent names (the first is shown) and their
+YouTube channels, each with the language its videos show cards in. `pnpm creators` adds guide authors' channels (a
+channel whose guide videos are all one author's); everything else is by hand. `"skip": true` means the channel isn't
+read: an opt-out, or a channel that never links decks.
+
+```json
+{ "gwent": ["alkso"], "channels": [{ "id": "UCOLPgExXbTm3vCphQ27cy_w", "title": "Electric 000", "lang": "en" }] }
+```
+
+### `videos.json`: creators' uploads
+
+Channel ID → video ID → the upload's date, title and the deck links in its description, for every channel in
+`creators.json`. Read through the YouTube Data API (needs `YOUTUBE_API_KEY`); each run reads only uploads newer than
+the newest stored. Only uploads that link a deck are kept, plus each channel's newest (where the next run stops).
 
 ```json
 "UCZhWZdKjn0e3ctyVZxsMkKQ": {
-  "-6jRkb1iCrs": { "published": "2026-02-12T12:00:37Z", "decks": ["https://www.playgwent.com/decks/5b44…"] }
+  "-6jRkb1iCrs": { "published": "2026-02-12T12:00:37Z", "title": "GWENT | …", "decks": ["https://www.playgwent.com/decks/5b44…"] }
 }
 ```
 
-A deck's video is chosen in this order: the guide's own embedded video, then a video its list links, then the
-newest channel upload whose description links the same deck code.
+The deck links in uploads from the last 12 months become entries (above). A deck's video is chosen in this order: the
+guide's own embedded video, then a video its list links, then the newest channel upload whose description links the
+same deck code. Every creator whose upload links the deck is credited on it (`featured`).
 
 ### `translations.json`: English deck names (hand-fixable)
 
@@ -225,6 +240,7 @@ header, and the name of the release.
 | `original` | The source's own name and language, for visitors using that language. |
 | `stats` | Computed from today's `cards.json`: `provisions` excludes the leader; `scraps` counts only the fetched copies. |
 | `guideLang` | Guides with real text only: the detected language, else the author's setting. Filler text ("text text text") gets none. |
+| `featured` | The creators whose videos link the deck (shown names), newest video first. |
 | `cards` | As fetched, with the default stratagem added when playgwent left it out. |
 
 ### `i18n/{lang}.js`: language packs
@@ -302,7 +318,10 @@ Each step prints warnings (the run carries on) or stops with an error (nothing i
 ## Quirks worth knowing
 
 - **Deck codes repeat across sources.** The same list can be a guide, a Shinmiri2 row and a MetallicDanny row. It's one
-  deck with three sources; its name comes from the first entry.
+  deck with three sources; its name comes from the first entry. A plain deck link (not a guide) whose cards match a
+  deck already listed joins it too, so the same deck saved twice shows once.
+- **A video credits, it doesn't claim.** A deck in a creator's video may be someone else's: `featured` says who shows
+  it, `author` who wrote the guide.
 - **The default stratagem is invisible upstream.** playgwent omits Tactical Advantage from a deck's card list, so a
   stored deck may have no stratagem; the build adds it.
 - **Costs are always today's.** A deck published two patches ago is shown with current costs, which is what makes

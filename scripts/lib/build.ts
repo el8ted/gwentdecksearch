@@ -1,12 +1,13 @@
 import { LANGUAGES } from '../../src/i18n.ts'
 import { type Card, type Dataset, type Deck, SOURCE_NAMES, SOURCES, type Source, type Video } from '../../src/types.ts'
 import { rarityOf } from './cards.ts'
+import { type Creator, creatorAliases, creatorName } from './creators.ts'
 import type { GuideInfo } from './guide.ts'
 import type { DeckEntry } from './sources.ts'
 import type { CatalogCard, StoredDeck } from './store.ts'
 import { TERM_KEYS } from './terms.ts'
 import { addTerm, type Glossary, translateName } from './translate.ts'
-import { CHANNELS, type StoredVideo } from './youtube.ts'
+import { readChannels, type StoredVideo } from './youtube.ts'
 
 /** Tactical Advantage: playgwent leaves the default stratagem out of a deck's card list. */
 export const DEFAULT_STRATAGEM = 202140
@@ -25,8 +26,10 @@ export interface BuildInput {
   tags: Record<string, Record<string, string>>
   /** Per language: localized category (list) → English. */
   categories: Record<string, Record<string, string>>
-  /** YouTube uploads by channel ID, then video ID. */
+  /** YouTube uploads that link a deck, by channel ID, then video ID. */
   videos: Record<string, Record<string, StoredVideo>>
+  /** The creator registry: whose channels those are. */
+  creators: Creator[]
   /** Per language: original deck name → English (hand-edited or machine-translated). */
   translations: Record<string, Record<string, string>>
   scrapedAt: string
@@ -103,7 +106,8 @@ function appCard(
 /**
  * Builds the dataset, the merged deck list and the language packs from the committed stores.
  *
- * Decks are deduped by playgwent hash: the first entry names a deck, and every source listing it is kept. Stats
+ * Decks are deduped by playgwent hash, and a plain deck link also by its cards (the same list saved twice): the first
+ * entry names a deck, and every source and creator listing it is kept. Stats
  * (provisions, scraps, card and unit counts) come from the current card table, so they follow balance changes.
  *
  * @param input - The stores
@@ -116,6 +120,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
   const used: Record<number, Card> = {}
   const decks: Deck[] = []
   const byHash = new Map<string, Deck>()
+  // Card list (leader and stratagem included) → the first deck with it.
+  const byList = new Map<string, Deck>()
   const urlSources = new Map<string, Set<Source>>()
   // A deck's video is the first one any source links, in entry order.
   const urlVideo = new Map<string, Video>()
@@ -129,15 +135,19 @@ export function buildDataset(input: BuildInput): BuildOutput {
     return s && !('missing' in s) ? s.hash : url.match(/\/decks\/([^/]+)$/)?.[1]
   }
   const channelVideo = new Map<string, Video>()
-  for (const channel of CHANNELS) {
-    const uploads = Object.entries(input.videos[channel.id] ?? {}).sort((a, b) =>
-      b[1].published.localeCompare(a[1].published),
+  // Who features each deck code, newest video first: credit for the video, not a claim to the deck.
+  const featuredBy = new Map<string, string[]>()
+  const uploads = readChannels(input.creators)
+    .flatMap(({ channel, creator }) =>
+      Object.entries(input.videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel, creator })),
     )
-    for (const [id, { decks }] of uploads) {
-      for (const code of decks.map(codeOf)) {
-        if (code && !channelVideo.has(code))
-          channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
-      }
+    .sort((a, b) => b.v.published.localeCompare(a.v.published))
+  for (const { id, v, channel, creator } of uploads) {
+    for (const code of v.decks.map(codeOf)) {
+      if (!code) continue
+      if (!channelVideo.has(code)) channelVideo.set(code, { url: `https://youtu.be/${id}`, lang: channel.lang })
+      const names = featuredBy.get(code) ?? []
+      if (!names.includes(creatorName(creator))) featuredBy.set(code, [...names, creatorName(creator)])
     }
   }
   const seen = new Set<string>()
@@ -170,10 +180,19 @@ export function buildDataset(input: BuildInput): BuildOutput {
     const video: Video | undefined = stored.guide?.video
       ? { url: stored.guide.video, lang: summary.guideLang ?? entry.lang }
       : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
-    const known = byHash.get(stored.hash)
+    // The same saved deck, or (for a plain deck link, not a guide) the same cards saved under another hash: one deck,
+    // with every source and creator. Guides stay apart: each has its own author, votes and text.
+    const list = copies
+      .map(([id, n]) => `${id}x${n}`)
+      .sort()
+      .join(',')
+    const known = byHash.get(stored.hash) ?? (entry.guide ? undefined : byList.get(list))
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
       known.video ??= video
+      const featured = [...new Set([...(known.featured ?? []), ...(featuredBy.get(stored.hash) ?? [])])]
+      if (featured.length) known.featured = featured
+      byHash.set(stored.hash, known)
       continue
     }
     const count = (t: Card['type']) => copies.filter(([id]) => catalog[id].type === t).length
@@ -199,6 +218,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
       ...summary,
       ...(video && { video }),
+      ...(featuredBy.has(stored.hash) && { featured: featuredBy.get(stored.hash) }),
       cards: copies,
     }
     // Some guides tagged English carry Russian names.
@@ -213,6 +233,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       deck.original = { lang, name: entry.name }
     }
     byHash.set(stored.hash, deck)
+    if (!byList.has(list)) byList.set(list, deck)
     decks.push(deck)
   }
 
@@ -242,8 +263,16 @@ export function buildDataset(input: BuildInput): BuildOutput {
     packs[lang] = `;(globalThis.GDS_I18N ??= {})[${JSON.stringify(lang)}] = ${pack}\n`
   }
 
+  // Other names of the creators the decks credit, as guide author or in a video.
+  const credited = new Set(decks.flatMap((d) => [d.author, ...(d.featured ?? [])]).map((n) => n?.toLowerCase()))
+  const aliases = Object.fromEntries(
+    input.creators
+      .filter((c) => !c.skip && credited.has(creatorName(c).toLowerCase()) && creatorAliases(c).length)
+      .map((c) => [creatorName(c), creatorAliases(c)]),
+  )
+
   return {
-    dataset: { scrapedAt: input.scrapedAt, cards: used, tags, decks },
+    dataset: { scrapedAt: input.scrapedAt, cards: used, tags, decks, ...(Object.keys(aliases).length && { aliases }) },
     decklist: decklistMarkdown(decks, used),
     packs,
     warnings,

@@ -1209,7 +1209,8 @@ html {
 /* Names come from deck authors: one with a long unbroken run (e.g. "Shieldwall2111…") must wrap, not widen the page. */
 .deck-name,
 .deck-sub,
-.votes {
+.votes,
+.featured {
   overflow-wrap: anywhere;
 }
 .deck-name {
@@ -1257,6 +1258,7 @@ html {
   color: color-mix(in srgb, var(--fc) 45%, #000);
 }
 .votes,
+.featured,
 .updated {
   font-size: 0.78rem;
   color: var(--muted);
@@ -1786,6 +1788,7 @@ html {
 /* An icon before text gets a little room; inside a flex row (pills, chips) the row's gap does it. */
 .note > .icon,
 .votes > .icon,
+.featured > .icon,
 .src > .icon,
 [data-icon]:not(:last-child) {
   margin-inline-end: 0.3em;

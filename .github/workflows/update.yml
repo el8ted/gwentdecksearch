@@ -44,12 +44,12 @@ jobs:
       - name: Refresh
         env:
           WHAT: ${{ inputs.what || (github.event.schedule == '43 5 * * 6' && 'decks' || 'cards') }}
-          # Channel videos; without it they're skipped with a warning (see scripts/videos.ts).
+          # Creators' videos (read before decks: they add decks); without it they're skipped with a warning.
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           echo "Refreshing: $WHAT"
           if [ "$WHAT" != decks ]; then pnpm scrape:cards; fi
-          if [ "$WHAT" != cards ]; then pnpm scrape:decks && pnpm scrape:videos; fi
+          if [ "$WHAT" != cards ]; then pnpm scrape:videos && pnpm scrape:decks; fi
           pnpm build:data
       # Only a deck or card change is worth a release. Fails (and emails you) if a source lost more than a quarter of
       # its decks, e.g. a sheet made private: the live site keeps its data until someone looks.
