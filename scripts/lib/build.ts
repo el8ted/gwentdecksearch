@@ -106,7 +106,8 @@ function appCard(
 /**
  * Builds the dataset, the merged deck list and the language packs from the committed stores.
  *
- * Decks are deduped by playgwent hash: the first entry names a deck, and every source listing it is kept. Stats
+ * Decks are deduped by playgwent hash, and a plain deck link also by its cards (the same list saved twice): the first
+ * entry names a deck, and every source and creator listing it is kept. Stats
  * (provisions, scraps, card and unit counts) come from the current card table, so they follow balance changes.
  *
  * @param input - The stores
@@ -119,6 +120,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
   const used: Record<number, Card> = {}
   const decks: Deck[] = []
   const byHash = new Map<string, Deck>()
+  // Card list (leader and stratagem included) → the first deck with it.
+  const byList = new Map<string, Deck>()
   const urlSources = new Map<string, Set<Source>>()
   // A deck's video is the first one any source links, in entry order.
   const urlVideo = new Map<string, Video>()
@@ -177,10 +180,19 @@ export function buildDataset(input: BuildInput): BuildOutput {
     const video: Video | undefined = stored.guide?.video
       ? { url: stored.guide.video, lang: summary.guideLang ?? entry.lang }
       : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
-    const known = byHash.get(stored.hash)
+    // The same saved deck, or (for a plain deck link, not a guide) the same cards saved under another hash: one deck,
+    // with every source and creator. Guides stay apart: each has its own author, votes and text.
+    const list = copies
+      .map(([id, n]) => `${id}x${n}`)
+      .sort()
+      .join(',')
+    const known = byHash.get(stored.hash) ?? (entry.guide ? undefined : byList.get(list))
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
       known.video ??= video
+      const featured = [...new Set([...(known.featured ?? []), ...(featuredBy.get(stored.hash) ?? [])])]
+      if (featured.length) known.featured = featured
+      byHash.set(stored.hash, known)
       continue
     }
     const count = (t: Card['type']) => copies.filter(([id]) => catalog[id].type === t).length
@@ -221,6 +233,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       deck.original = { lang, name: entry.name }
     }
     byHash.set(stored.hash, deck)
+    if (!byList.has(list)) byList.set(list, deck)
     decks.push(deck)
   }
 

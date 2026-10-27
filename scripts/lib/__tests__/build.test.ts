@@ -108,6 +108,38 @@ describe('buildDataset', () => {
     ])
   })
 
+  it('merges a plain deck link into a deck with the same cards under another hash, but keeps two guides apart', () => {
+    // Arrange: three saves of DECK's cards (h1, h2, h3), cards in another order on h2
+    const URL_C = 'https://www.playgwent.com/decks/cccc'
+    const guide = (id: number, author: string) => ({ id, modified: '', votes: 1, author })
+    const entries = [
+      entry(URL_A, { name: 'Guide A', source: 'community', guide: guide(1, 'a') }),
+      entry(URL_C, { name: 'Guide C', source: 'community', guide: guide(2, 'c') }),
+      entry(URL_B, {
+        name: 'From a video',
+        source: 'metallic-danny',
+        video: { url: 'https://youtu.be/v', lang: 'ru' },
+      }),
+    ]
+    const store = {
+      [URL_A]: DECK,
+      [URL_B]: { ...DECK, hash: 'h2', cards: [...DECK.cards].reverse() },
+      [URL_C]: { ...DECK, hash: 'h3' },
+    }
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { v: { published: '2026-01-01T00:00:00Z', title: 'V', decks: [URL_B] } },
+    }
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, store, videos }))
+
+    // Assert
+    expect(dataset.decks.map((d) => [d.name, d.sources, d.featured, d.video?.url])).toEqual([
+      ['Guide A', ['community', 'metallic-danny'], ['shinmiri2'], 'https://youtu.be/v'],
+      ['Guide C', ['community'], undefined, undefined],
+    ])
+  })
+
   it("takes a deck's first linked video from any entry for it, same link or same hash", () => {
     // Arrange: URL_B is the same deck (hash) as URL_A
     const later = { url: 'https://youtu.be/BBBBBBBBBBB', lang: 'ru' }
@@ -274,7 +306,8 @@ describe('buildDataset', () => {
   it('names non-English decks from translations, else the glossary, and treats Cyrillic English names as Russian', () => {
     // Arrange
     const entries = [entry(URL_A, { name: 'Рой', lang: 'en' }), entry(URL_B, { name: 'Химера колода', lang: 'ru' })]
-    const store = { [URL_A]: DECK, [URL_B]: { ...DECK, hash: 'h2' } }
+    const other: [number, number][] = [...DECK.cards.slice(0, 2), [100, 1]]
+    const store = { [URL_A]: DECK, [URL_B]: { ...DECK, hash: 'h2', cards: other } }
     const cardNames = { ru: { 100: 'Химера' } }
     const translations = { ru: { Рой: 'Swarm' } }
 
