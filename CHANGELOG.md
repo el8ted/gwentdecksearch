@@ -13,6 +13,7 @@ the release tag and starts a new Unreleased section. -->
   Gwent name or their channel's name. **Credits** links the list of creators.
 - Pasting a deck link with text stuck to its end, as some video descriptions have it (`…/decks/9ae2…(Dwarf`), now
   finds the deck.
+- An author's chip in Search shows its person icon centred, not riding high.
 
 ## 2026-10-24.02
 

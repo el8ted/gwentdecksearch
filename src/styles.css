@@ -949,6 +949,7 @@ html {
 /* The name toggles wanted/excluded, so it reads as text until hovered. */
 .chip .chip-name {
   display: inline-flex;
+  align-items: center;
   gap: 0.3rem;
   padding: 0;
   font: inherit;
