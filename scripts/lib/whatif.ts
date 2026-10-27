@@ -214,6 +214,8 @@ export function whatifReport(
       ? `${changes.length} candidates, each counted on its own: a poll lists options, not what passes.`
       : `${changes.length} changes.`,
   )
+  // A Rank column of "extra" on every row says nothing: shown only when some change is ranked.
+  const ranked = !poll && changes.some((c) => c.rank !== undefined)
   // The last four half-years any deck is dated in, oldest first: the trend columns.
   const halves = [...new Set(data.decks.map(halfYear))]
     .filter((h) => h !== 'undated')
@@ -238,7 +240,7 @@ export function whatifReport(
     const moves = category.kind === 'provisions'
     const cols = [
       'Change',
-      ...(poll ? [] : ['Rank']),
+      ...(ranked ? ['Rank'] : []),
       'Card',
       'Faction',
       'Decks',
@@ -259,7 +261,7 @@ export function whatifReport(
       const n = counts(decks, [c])
       const cells = [
         what(c),
-        ...(poll ? [] : [rankOf(c)]),
+        ...(ranked ? [rankOf(c)] : []),
         cardName(data, c.id, lang),
         data.catalog[c.id].faction,
         decks.length,
@@ -272,7 +274,11 @@ export function whatifReport(
     for (const c of detail ? rows : []) {
       const card = data.catalog[c.id]
       const decks = decksOf(c)
-      out.push('', `### ${rankOf(c)}: ${cardName(data, c.id, lang)} (${card.faction} ${card.type}): ${what(c)}`, '')
+      out.push(
+        '',
+        `### ${ranked ? `${rankOf(c)}: ` : ''}${cardName(data, c.id, lang)} (${card.faction} ${card.type}): ${what(c)}`,
+        '',
+      )
       out.push(`In ${decks.length} decks.`)
       if (decks.length) out.push('', ...table(decks, [c]), '', profile(data, decks, lang))
     }

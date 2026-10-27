@@ -175,10 +175,22 @@ describe('whatifReport', () => {
 
   it("shows a unit's power before and after", () => {
     // Act
-    const report = whatifReport(DATA, [change(104, POWER_DOWN)])
+    const report = whatifReport(DATA, [change(104, POWER_DOWN), change(101, POWER_DOWN, 1)])
 
     // Assert
     expect(report).toContain('| 6 → 5 | extra | Kolgrim |')
+  })
+
+  it('leaves out the Rank column and the rank in headings when nothing is ranked', () => {
+    // Act
+    const report = whatifReport(DATA, [change(104, POWER_DOWN), change(100, PROV_UP)], 'en', { detail: true })
+
+    // Assert
+    expect(report).toContain('| Change | Card | Faction | Decks |')
+    expect(report).toContain('| 6 → 5 | Kolgrim |')
+    expect(report).toContain('### Kolgrim (NG unit): 6 → 5')
+    expect(report).not.toContain('extra')
+    expect(report).toContain('## All 2 changes together')
   })
 
   it('leaves the leader blank when no deck runs the card', () => {

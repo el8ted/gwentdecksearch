@@ -21,6 +21,7 @@
     "kegs": "node scripts/kegs.ts",
     "whatif": "node scripts/whatif.ts",
     "poll": "node scripts/poll.ts",
+    "predictions": "node scripts/predictions.ts",
     "package": "node scripts/package.ts",
     "export": "node scripts/export.ts",
     "check": "biome check .",
