@@ -372,6 +372,18 @@ describe('deckRow', () => {
     expect(none).not.toContain('class="featured"')
   })
 
+  it("leaves out a channel whose confirmed Gwent ID already shows as the deck's list owner", () => {
+    // Arrange: a1 is on shinmiri2's list; "Shin TV" is shinmiri2's channel
+    const deck = { ...a1, deck: { ...a1.deck, featured: ['Shin TV'] } }
+    const data = { ...DATA, aliases: { 'Shin TV': ['shinmiri2'] } }
+
+    // Act
+    const html = deckRow(deck, data, new Set(), false, new Set(), loc)
+
+    // Assert
+    expect(html).not.toContain('class="featured"')
+  })
+
   it.each([
     ['en', 'en', '', '\nGuide written in English'],
     ['ru', 'en', '<span class="lang" title="Guide written in Russian">RU</span>', ''],

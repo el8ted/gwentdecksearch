@@ -53,7 +53,7 @@ Where you start depends on what you have in hand; after that, every search goes 
 | **Cards or tags you like** | Add them in Search. Switch to **Any** to see decks with at least one of them, best matches first. |
 | **Cards you'd rather not play** | Type `-` before a name: `-golden` leaves out every Golden Nekker deck. |
 | **A faction and leader in mind** | Pick them, then look at **Most common** for the usual cards. |
-| **A favourite creator** | Type their name in Search (**✎**), their Gwent name or their YouTube channel's, or pick their list under **Source**. |
+| **A favourite creator** | Type their name in Search (**✎**): their YouTube channel's name, or their Gwent name. Or pick their list under **Source**. |
 | **Time to play, not build** | **▶ Has video** and the **Spare** and **Exact** steps: decks that fit today, with a video. Add your language if you like, but [other languages can still help](#common-questions). |
 
 ![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](screenshots/deck-to-build.png)
@@ -129,8 +129,9 @@ The Search box finds two more kinds of pick, shown after the cards:
   at least one such card. They're the tags of the game's deck builder, one per tag however the card text words it, so
   "Orders" or "Beasts" finds the same tag. An expanded deck highlights the cards that carry it.
 - **Authors** (**✎**): a creator's name keeps their decks: the community guides they wrote, their deck list
-  (Shinmiri2, MetallicDanny), and the decks their YouTube videos show. Type their Gwent name or their channel's name
-  (alkso's channel is Electric 000: either finds alkso). Case and spaces don't matter, and at most three authors are
+  (Shinmiri2, MetallicDanny), and the decks their YouTube videos show, credited by the channel's name. Where a
+  creator's Gwent name is confirmed, it finds the same decks (U47 and raghav47i, for example). Case and spaces don't
+  matter, and at most three authors are
   suggested.
 
 Only tags and authors that some remaining deck has are suggested. Every pick counts for **All** and **Any**, and picks
@@ -317,7 +318,7 @@ Your choice is remembered; on a first visit the page follows your browser's lang
 - **Deck names** are shown as their authors wrote them when they're in your language, and machine-translated into
   English otherwise.
 - **The Search box** finds cards and tags by their name in your language or in English, and authors by their playgwent
-  name or their YouTube channel's name.
+  name or their YouTube channel's name (a Gwent name only where it's confirmed).
 - **Shared links** keep the language if `?lang=` is in the address, for example `?lang=ru`.
 
 ![The page in Russian with the language menu open](screenshots/languages.png)

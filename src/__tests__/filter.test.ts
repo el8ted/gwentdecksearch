@@ -487,6 +487,30 @@ describe('creators in videos', () => {
   })
 })
 
+describe('author groups', () => {
+  it("treat a channel's name and its confirmed Gwent IDs as one author, both ways", () => {
+    // Arrange: the first deck is in Electric 000's video; the second deck's guide is alkso's
+    const [first, second, ...rest] = DATA.decks
+    const data = {
+      ...DATA,
+      decks: [{ ...first, featured: ['Electric 000'] }, { ...second, author: 'alkso' }, ...rest],
+      aliases: { 'Electric 000': ['alkso', 'RGT_Makstron'] },
+    }
+    const decks = indexDecks(data)
+
+    // Act
+    const [byId, byChannel, byInGame] = ['@alkso', '@electric 000', '@rgt_makstron'].map((p) =>
+      ids(matchDecks(decks, state({ picks: [p] }))),
+    )
+
+    // Assert
+    expect(byId).toEqual([first.id, second.id])
+    expect(byChannel).toEqual(byId)
+    expect(byInGame).toEqual(byId)
+    expect(authorNames(decks, data.aliases).get('rgt_makstron')).toBe('RGT_Makstron')
+  })
+})
+
 describe('budgetOf', () => {
   it('steps 1, 2, then 3 or more on each side of exact', () => {
     // Act

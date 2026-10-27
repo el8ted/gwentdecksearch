@@ -160,13 +160,14 @@ English card names are in `cards.json`; English terms come from the site's own p
 
 ### `creators.json`: creators (hand-kept)
 
-An array, one object per creator (a person, or a group channel): their Gwent names (the first is shown) and their
-YouTube channels, each with the language its videos show cards in. `pnpm creators` adds guide authors' channels (a
-channel whose guide videos are all one author's); everything else is by hand. `"skip": true` means the channel isn't
-read: an opt-out, or a channel that never links decks.
+An array, one object per creator (a person, or a group channel): their YouTube channels, each with the language its
+videos show cards in (the first channel's title is the name decks credit), and `gwent`: Gwent IDs (in-game or
+playgwent names) **confirmed** to be theirs, by the creator or from their videos. Never guessed: a guide author
+embedding a channel's videos doesn't make it theirs. `pnpm creators` adds channels only; IDs go in by hand.
+`"skip": true` means the channel isn't read: an opt-out, or a channel with nothing recent.
 
 ```json
-{ "gwent": ["alkso"], "channels": [{ "id": "UCOLPgExXbTm3vCphQ27cy_w", "title": "Electric 000", "lang": "en" }] }
+{ "gwent": ["alkso", "RGT_Makstron"], "channels": [{ "id": "UCOLPgExXbTm3vCphQ27cy_w", "title": "Electric 000", "lang": "ru" }] }
 ```
 
 ### `videos.json`: creators' uploads
@@ -211,14 +212,14 @@ header, and the name of the release.
   "cards": { "122105": { "name": "Lined Pockets", "type": "leader", "faction": "SY", "provisions": 15, "tags": […] } },
   "tags": { "c12": "Beast", "devotion": "Devotion", … },
   "decks": [ … ],
-  "aliases": { "alkso": ["Electric 000"], … }
+  "aliases": { "U47": ["raghav47i"], … }
 }
 ```
 
 - `cards` holds only cards some deck uses, with only the fields the app needs. `tags` holds the English name of every
   tag on those cards.
-- `aliases` holds, for each creator the decks credit, their other names (another Gwent name, their channels' titles)
-  from `creators.json`, so Search finds them by any of them.
+- `aliases` holds, for each creator the decks credit (by channel name), their confirmed Gwent IDs and other channels
+  from `creators.json`. Search treats all of a creator's names as one author.
 - `decks` holds each deck once (by deck code):
 
 ```json

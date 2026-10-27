@@ -123,14 +123,19 @@ Only with the author's permission (the **Suggest a feature or deck source** issu
 
 ## Creators
 
-`data/source/creators.json` lists the creators whose YouTube channels are read for decks: their Gwent names (the first
-is shown on decks; every name, and each channel's title, finds them in search) and their channels, each with the
-language its videos show cards in (`en` unless known otherwise). No permission is needed: the site credits them and
-sends viewers to their videos.
+`data/source/creators.json` lists the creators whose YouTube channels are read for decks: their channels (decks credit
+the channel's name, their brand), each with the language its videos show cards in (`en` unless known otherwise), and
+their **confirmed** Gwent IDs, which search treats as the same author. No permission is needed: the site credits them
+and sends viewers to their videos.
 
-- **New guide authors' channels:** `pnpm creators` (needs `YOUTUBE_API_KEY`) adds any channel whose guide videos (3 or
-  more) are all one author's. It never changes an existing entry; review what it adds.
-- **Anyone else:** add an entry by hand (channel ID from the channel page or the API; Gwent name if known).
+- **Gwent IDs are never guessed.** Add one only when the creator says so (the issue form) or you've read it in their
+  own video. A guide author embedding a channel's videos proves nothing: alkso's guides embed Electric 000, whose
+  videos show RGT_Makstron (both turned out to be the same person, but only a check could say so).
+- **New channels:** `pnpm creators` (needs `YOUTUBE_API_KEY`) adds channels whose videos one guide author embeds (3 or
+  more), channel only. It never changes an existing entry; review what it adds.
+- **Checking IDs:** `pnpm creators --check` lists, per creator, the guide authors the data ties to them (guides their
+  channel links, guides embedding their videos) and which of those aren't confirmed: check those in a video.
+- **Anyone else:** add an entry by hand (channel ID from the channel page or the API).
 - **Fixes and opt-outs** come through the **I'm a creator** issue form. To opt out, set `"skip": true`: the channel
   isn't read, so its decks and credits drop out at the next scrape.
 

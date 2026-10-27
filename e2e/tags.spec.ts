@@ -84,20 +84,21 @@ test('an author is suggested by name, spacing and case ignored, and lists their 
   await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@metallicdanny'] })} `))
 })
 
-test("a creator is suggested by their channel's name too, and lists their guides and the decks their videos feature", async ({
+test("a creator's channel name and confirmed Gwent ID find the same decks: their guides and their videos", async ({
   page,
   open,
 }) => {
-  // Arrange: alkso's channel is "Electric 000"
+  // Arrange: U47's confirmed Gwent ID is raghav47i, who also writes guides
   await open()
   const input = page.locator('#card-input')
 
   // Act
-  await input.fill('electric 0')
-  await page.locator('[data-tag="@alkso"]').click()
+  await input.fill('u47')
+  await page.locator('[data-tag="@u47"]').click()
 
   // Assert
-  await expect(page.locator('#chips li')).toHaveText(['alkso'])
-  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${expectedCount({ picks: ['@alkso'] })} `))
-  await expect(page.locator('.deck .featured').first()).toBeVisible()
+  await expect(page.locator('#chips li')).toHaveText(['U47'])
+  const count = expectedCount({ picks: ['@u47'] })
+  expect(count).toBe(expectedCount({ picks: ['@raghav47i'] }))
+  await expect(page.locator('#result-head')).toHaveText(new RegExp(`^${count} `))
 })

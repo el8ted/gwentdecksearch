@@ -9,8 +9,8 @@ the release tag and starts a new Unreleased section. -->
 ## Unreleased
 
 - Decks from Gwent creators' YouTube videos are now in the list, under **Community**, each with its video. A deck
-  shows who features it in a video (▶ name), and searching a creator finds their guides, lists and videos by their
-  Gwent name or their channel's name. **Credits** links the list of creators.
+  shows the channel that features it in a video (▶ name), and searching a creator finds their guides, lists and
+  videos by their channel's name, or by their Gwent name where it's confirmed. **Credits** links the list of creators.
 - Pasting a deck link with text stuck to its end, as some video descriptions have it (`…/decks/9ae2…(Dwarf`), now
   finds the deck.
 - An author's chip in Search shows its person icon centred, not riding high.

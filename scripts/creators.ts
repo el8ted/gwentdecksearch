@@ -1,16 +1,18 @@
 /**
- * Creator registry update: finds community guide authors' YouTube channels (a channel whose guide videos all belong
- * to one author, see `seedCreators`) and adds them to data/source/creators.json, so `pnpm scrape:videos` reads them
- * and search finds the author by their channel's name too. Entries already there are never changed: review what it
- * adds, and fix names, languages or `skip` by hand. Needs `YOUTUBE_API_KEY` (from `.env` locally).
+ * Creator registry update: finds YouTube channels whose videos a community guide author embeds (see `seedCreators`)
+ * and adds them, channel only, to data/source/creators.json, so `pnpm scrape:videos` reads them. Entries already there
+ * are never changed; Gwent IDs are never guessed. Review what it adds; set languages, `skip` or confirmed IDs by hand.
+ * `--check` changes nothing and prints, per creator, the guide authors the data ties to them and which of those
+ * aren't confirmed IDs: check those in a video. Needs `YOUTUBE_API_KEY` (from `.env` locally).
  *
- * Run: `pnpm creators`.
+ * Run: `pnpm creators [--check]`.
  */
 import { consola } from 'consola'
-import { type Creator, creatorName, type GuideVideo, seedCreators } from './lib/creators.ts'
+import { type Creator, creatorEvidence, creatorName, type GuideVideo, seedCreators } from './lib/creators.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
 import type { DeckEntry } from './lib/sources.ts'
 import { readJson, STORE_PATHS, type StoredDeck, writeJson } from './lib/store.ts'
+import type { StoredVideo } from './lib/youtube.ts'
 
 const key = process.env.YOUTUBE_API_KEY
 if (!key) {
@@ -41,6 +43,26 @@ for (let i = 0; i < ids.length; i += 50) {
     const guide = guides.get(id)
     if (guide) videos.push({ ...guide, channel: snippet.channelId, channelTitle: snippet.channelTitle })
   }
+}
+if (process.argv.includes('--check')) {
+  const stored = await readJson<Record<string, Record<string, StoredVideo>>>(STORE_PATHS.videos, {})
+  const links = Object.fromEntries(
+    Object.entries(stored).map(([id, ups]) => [id, Object.values(ups).flatMap((v) => v.decks)]),
+  )
+  const guideAuthor = new Map(entries.flatMap((e) => (e.guide ? [[e.url, e.guide.author] as const] : [])))
+  const top = (list: [string, number][]) =>
+    list
+      .slice(0, 3)
+      .map(([a, n]) => `${a} ${n}`)
+      .join(', ') || '—'
+  for (const c of registry.filter((c) => !c.skip)) {
+    const { linked, embedding, toCheck } = creatorEvidence(c, links, guideAuthor, videos)
+    console.log(
+      `${creatorName(c)} [${(c.gwent ?? []).join(', ') || 'no ID'}]: links guides by ${top(linked)}; embedded by ${top(embedding)}` +
+        (toCheck.length ? `; CHECK ${toCheck.join(', ')}` : ''),
+    )
+  }
+  process.exit(0)
 }
 const added = seedCreators(videos, registry)
 await writeJson(STORE_PATHS.creators, [...registry, ...added])
