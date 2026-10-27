@@ -49,7 +49,8 @@ const SHEETS = [
     links: true,
   },
 ] as const
-const sheetCsv = (id: string, gid: string) =>
+/** A sheet tab's CSV export URL. */
+export const sheetCsv = (id: string, gid: string) =>
   `https://docs.google.com/spreadsheets/d/${id}/export?format=csv&gid=${gid}`
 
 /** Fetches a URL's body. */

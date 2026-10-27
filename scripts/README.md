@@ -54,9 +54,9 @@ Provision decrease
 - Only units have power: a power change on a special, artifact or leader stops the run.
 - A card can be on one power list and one provision list, not on both lists of either.
 - The report is a table per ballot list (power increase, power decrease, provision increase, provision decrease), a
-  row per change: the change (`5 → 6`), its rank, the card and its faction, the decks running it, its most common
-  leader (a leader's own row shows 100%), and its decks in each of the last four half-years (so a live archetype and
-  a fading one look different). The provision tables also count the decks that cross today's limit either way. For
+  row per change: the change (`5 → 6`), its rank (no column when nothing is ranked), the card and its faction, the
+  decks running it, its most common leader (a leader's own row shows 100%), and its decks in each of the last four
+  half-years (so a live archetype and a fading one look different). The provision tables also count the decks that cross today's limit either way. For
   a ballot, a short section follows with all the changes together and the decks hit by two or more. `--detail` adds
   a section per change, under its list's table: every effect (still within, still over), and the decks' factions,
   leaders and half-years in full.
@@ -102,6 +102,28 @@ pnpm whatif data/cache/polls/bc37-ideas-2026-10-22.txt
   both lists of a kind (a power increase or decrease), each candidate is counted on its own, and there is no
   all-together total, since they won't all pass. Candidates are unranked, so the tables drop the Rank column and
   sort each list by the decks a card is in, most first.
+
+## `pnpm predictions <sheet link> [--out <file>]`
+
+Before a Balance Council vote, some streamers publish a Google Sheet of the changes they expect to pass, merged from
+their own and other groups' recommendations: a column per ballot list (`-1 power`, `+1 power`, `-1 prov`, `+1 prov`),
+each cell `<faction> <card> (<who recommended it>)`. `pnpm predictions` reads the tab the link points to and writes it
+as a ballot for `pnpm whatif`, so you can see what the predicted patch would do to the published decks:
+
+```sh
+pnpm predictions "https://docs.google.com/spreadsheets/d/…/edit?gid=…"
+pnpm whatif data/cache/polls/predicted-changes-2026-10-27.txt
+```
+
+- The file goes to `data/cache/polls/` like a poll's, named after the title above the header row and the day it was
+  read; `--out` puts it elsewhere.
+- Each column is read down to its first blank cell. The faction code is dropped (the report shows each card's own);
+  who recommended the card, with their stars, stays as a comment beside it, and the sheet's legend (`MD = …`) goes in
+  the file's header. Other columns (a side table of counts per faction) are skipped and listed. Bold doesn't come
+  through the export.
+- Names are resolved and asked about as `pnpm poll` does.
+- It's a ballot, not a poll (no `Poll` line): the sheet predicts what passes, so the report ends with all the changes
+  together. Every card is unranked, so there's no Rank column, and each list keeps the sheet's order.
 
 ## `pnpm package <card…> [--min <n>]` · `pnpm package tag:<tag>`
 
@@ -159,6 +181,6 @@ only where it helps, and check the subreddit's rules on links and self-promotion
 ## Code
 
 Each script is a thin command line in this folder over pure, tested functions in `lib/`: `analysis.ts` holds the
-shared loading and name lookup; `whatif.ts`, `poll.ts`, `packages.ts`, `export.ts` (with `export-readme.ts`),
+shared loading and name lookup; `whatif.ts`, `poll.ts`, `predictions.ts`, `packages.ts`, `export.ts` (with `export-readme.ts`),
 `kegs.ts` and `reddit.ts` the reports; `ask.ts` the prompts for names that aren't one card. Tests are in
 `lib/__tests__/`; the example ballot above is tested against the real data, so it can't go stale unnoticed.

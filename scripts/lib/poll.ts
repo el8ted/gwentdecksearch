@@ -1,12 +1,21 @@
+import { mkdir, writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { consola } from 'consola'
 import { type AnalysisData, cardLookup, slug } from './analysis.ts'
+import { askNames, canAsk } from './ask.ts'
 import { CATEGORIES, type Category } from './whatif.ts'
 
-/** A Balance Council poll read from a Google Form: its title, and the candidate cards for each ballot list. */
+/**
+ * A Balance Council poll read from a Google Form (or a predictions sheet): its title, and the candidate cards for
+ * each ballot list.
+ */
 export interface Poll {
   title: string
   lists: { category: Category; options: string[] }[]
   /** Questions that aren't one of the ballot's lists (an intro, a nickname box), left out. */
   skipped: string[]
+  /** Lines for the file's header, e.g. a sheet's legend of who recommended what. */
+  notes?: string[]
 }
 
 /**
@@ -27,10 +36,16 @@ export function isFormUrl(url: string): boolean {
   }
 }
 
-// "Power + / Siła +", "Provisions – / Koszt –", "…support for Power Increase?"
-const listOf = (title: string): Category | undefined => {
+/**
+ * The ballot list a question or column title names: "Power + / Siła +", "Provisions – / Koszt –", "…support for Power
+ * Increase?", "-1 prov".
+ *
+ * @param title - The title
+ * @returns The list, or `undefined` if it names none (or both directions)
+ */
+export function listOf(title: string): Category | undefined {
   const t = title.toLowerCase()
-  const kind = /provision/.test(t) ? 'provisions' : /power/.test(t) ? 'power' : undefined
+  const kind = /\bprov/.test(t) ? 'provisions' : /power/.test(t) ? 'power' : undefined
   const up = /increase|\+/.test(t)
   const down = /decrease|[-–−]/.test(t.replace(/[a-z]-[a-z]/g, ''))
   if (!kind || up === down) return undefined
@@ -92,14 +107,22 @@ export function optionLines(option: string, data: Pick<AnalysisData, 'catalog' |
   return [note(bare.split('/')[0].trim() || option)]
 }
 
+/** How a ballot file is written: what it was read from ("form", "sheet"), and whether it's a poll. */
+export interface BallotOptions {
+  source?: string
+  /** A `Poll` line, so `pnpm whatif` counts each candidate on its own; off for a list of what's expected to pass. */
+  poll?: boolean
+}
+
 /**
- * The ballot file for a poll: a `Poll` line, so `pnpm whatif` counts each candidate on its own (a card can be on both
- * lists of a kind, and there's no all-together total), then each list with every option, unranked.
+ * The ballot file for a poll: by default a `Poll` line, so `pnpm whatif` counts each candidate on its own (a card can
+ * be on both lists of a kind, and there's no all-together total), then each list with every option, unranked.
  *
  * @param poll - From {@link parseForm}
  * @param url - Where it was read from
  * @param date - When (`YYYY-MM-DD`)
  * @param data - Catalog and names
+ * @param options - The source's name for the header, and whether to write the `Poll` line
  * @returns The file's text
  */
 export function pollBallot(
@@ -107,12 +130,14 @@ export function pollBallot(
   url: string,
   date: string,
   data: Pick<AnalysisData, 'catalog' | 'names'>,
+  { source = 'form', poll: isPoll = true }: BallotOptions = {},
 ): string {
   const out = [
     `# ${poll.title}`,
-    `# Read from ${url} on ${date}: every option, unranked. Notes from the form are kept as comments.`,
+    `# Read from ${url} on ${date}: every option, unranked. Notes from the ${source} are kept as comments.`,
+    ...(poll.notes ?? []).map((n) => `# ${n}`),
     '# A name that isn’t one card: pnpm whatif asks which (in a terminal), or write its full name or ID.',
-    'Poll',
+    ...(isPoll ? ['Poll'] : []),
   ]
   for (const { category, options } of poll.lists)
     out.push('', category.name, ...options.flatMap((o) => optionLines(o, data)))
@@ -128,4 +153,31 @@ export function pollBallot(
  */
 export function pollFileName(title: string, date: string): string {
   return `${slug(title) || 'poll'}-${date}.txt`
+}
+/**
+ * Writes a poll's ballot file, the end of `pnpm poll` and `pnpm predictions`: names that aren't one card are asked
+ * about first when there's a terminal, else left for `pnpm whatif`. Logs the lists and the command to run next.
+ *
+ * @param poll - The poll
+ * @param url - Where it was read from
+ * @param data - Catalog and names
+ * @param options - As for {@link pollBallot}, plus `out`: the file (default `data/cache/polls/<title>-<date>.txt`)
+ * @returns The file written
+ */
+export async function saveBallot(
+  poll: Poll,
+  url: string,
+  data: Pick<AnalysisData, 'catalog' | 'names'>,
+  { out, ...options }: BallotOptions & { out?: string } = {},
+): Promise<string> {
+  const date = new Date().toISOString().slice(0, 10)
+  const file = out ?? join('data/cache/polls', pollFileName(poll.title, date))
+  const ballot = pollBallot(poll, url, date, data, options)
+  const text = canAsk() ? (await askNames(ballot, data, 'en')).text : ballot
+  await mkdir(dirname(file), { recursive: true })
+  await writeFile(file, text)
+  const counts = poll.lists.map((l) => `${l.category.name} ${l.options.length}`).join(', ')
+  if (poll.skipped.length) consola.info(`Skipped what isn't a ballot list: ${poll.skipped.join(' · ')}`)
+  consola.success(`${poll.title}: ${counts}. Wrote ${file}\nNext: pnpm whatif "${file}"`)
+  return file
 }

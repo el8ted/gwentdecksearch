@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import { isFormUrl, optionLines, parseForm, pollBallot, pollFileName } from '../poll.ts'
+import { mkdtemp, readFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { consola } from 'consola'
+import { describe, expect, it, vi } from 'vitest'
+import { isFormUrl, listOf, optionLines, parseForm, pollBallot, pollFileName, saveBallot } from '../poll.ts'
 import { CATEGORIES } from '../whatif.ts'
 import { DATA } from './analysis-data.ts'
 
@@ -18,6 +22,20 @@ describe('isFormUrl', () => {
     expect(isFormUrl('https://docs.google.com/spreadsheets/d/abc')).toBe(false)
     expect(isFormUrl('http://docs.google.com/forms/d/e/abc/viewform')).toBe(false)
     expect(isFormUrl('not a link')).toBe(false)
+  })
+})
+
+describe('listOf', () => {
+  it("reads a predictions sheet's column headers too, and nothing that names no list or both directions", () => {
+    // Act / Assert
+    expect(['-1 power', '+1 power ', '-1 prov', '+1 prov'].map(listOf)).toEqual([
+      POWER_DOWN,
+      POWER_UP,
+      PROV_DOWN,
+      PROV_UP,
+    ])
+    expect(listOf('Buff Brackets')).toBeUndefined()
+    expect(listOf('Power +/-')).toBeUndefined()
   })
 })
 
@@ -92,5 +110,24 @@ describe('pollBallot and pollFileName', () => {
     expect(pollFileName(poll.title, '2026-10-22')).toBe('shinmiri-s-lerio-s-bc37-ideas-2026-10-22.txt')
     expect(pollFileName('Ça va?', '2026-10-22')).toBe('ca-va-2026-10-22.txt')
     expect(pollFileName('!!!', '2026-10-22')).toBe('poll-2026-10-22.txt')
+  })
+})
+describe('saveBallot', () => {
+  it('writes the ballot where asked, with or without the Poll line, and says what to run next', async () => {
+    // Arrange
+    const success = vi.spyOn(consola, 'success').mockImplementation(() => {})
+    const info = vi.spyOn(consola, 'info').mockImplementation(() => {})
+    const dir = await mkdtemp(join(tmpdir(), 'poll-'))
+    const poll = { title: 'P', lists: [{ category: POWER_UP, options: ['Kolgrim'] }], skipped: ['Nickname'] }
+
+    // Act
+    const asPoll = await saveBallot(poll, 'https://forms.gle/x', DATA, { out: join(dir, 'a', 'poll.txt') })
+    const asBallot = await saveBallot({ ...poll, skipped: [] }, 'u', DATA, { out: join(dir, 'b.txt'), poll: false })
+
+    // Assert
+    expect(await readFile(asPoll, 'utf8')).toContain('Poll\n\nPower increase\n- Kolgrim\n')
+    expect(await readFile(asBallot, 'utf8')).not.toMatch(/^Poll$/m)
+    expect(info).toHaveBeenCalledOnce()
+    expect(success).toHaveBeenCalledWith(expect.stringContaining(`Power increase 1. Wrote ${asPoll}`))
   })
 })

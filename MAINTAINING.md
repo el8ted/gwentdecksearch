@@ -179,7 +179,7 @@ Done once, in the repo's **Settings**:
 
 ## Helper scripts
 
-`pnpm whatif`, `pnpm poll`, `pnpm package`, `pnpm kegs`, `pnpm export` and `pnpm reddit` read the local data: what a
-Balance Council ballot or poll does to the published decks, the decks built around a card or tag, keg values, the
+`pnpm whatif`, `pnpm poll`, `pnpm predictions`, `pnpm package`, `pnpm kegs`, `pnpm export` and `pnpm reddit` read the local data: what a
+Balance Council ballot, poll or predictions sheet does to the published decks, the decks built around a card or tag, keg values, the
 decks as spreadsheets, and a reply for a deck shared on Reddit. The site doesn't need
 them. See [scripts/README.md](scripts/README.md).

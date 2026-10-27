@@ -7,13 +7,10 @@
  * Run: `pnpm poll <form link> [--out <file>]`. Writes data/cache/polls/<title>-<date>.txt (local only) unless `--out`
  * says otherwise, then prints the `pnpm whatif` command to run on it.
  */
-import { mkdir, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
 import { consola } from 'consola'
 import { cliArgs, readAnalysisData } from './lib/analysis.ts'
-import { askNames, canAsk } from './lib/ask.ts'
 import { createPoliteFetch } from './lib/polite-fetch.ts'
-import { isFormUrl, parseForm, pollBallot, pollFileName } from './lib/poll.ts'
+import { isFormUrl, parseForm, saveBallot } from './lib/poll.ts'
 
 const USAGE = 'pnpm poll <Google Form link (docs.google.com/forms/… or forms.gle/…)> [--out <file>]'
 const {
@@ -27,13 +24,4 @@ if (!url || !isFormUrl(url)) {
 // Google's robots.txt allows /forms with a one-second crawl delay.
 const get = createPoliteFetch({ 'docs.google.com': 1_000, 'forms.gle': 1_000 })
 const poll = parseForm(await get(url))
-const date = new Date().toISOString().slice(0, 10)
-const file = out ?? join('data/cache/polls', pollFileName(poll.title, date))
-const data = await readAnalysisData()
-const ballot = pollBallot(poll, url, date, data)
-const text = canAsk() ? (await askNames(ballot, data, 'en')).text : ballot
-await mkdir(dirname(file), { recursive: true })
-await writeFile(file, text)
-const counts = poll.lists.map((l) => `${l.category.name} ${l.options.length}`).join(', ')
-if (poll.skipped.length) consola.info(`Skipped questions that aren't a ballot list: ${poll.skipped.join(' · ')}`)
-consola.success(`${poll.title}: ${counts}. Wrote ${file}\nNext: pnpm whatif "${file}"`)
+await saveBallot(poll, url, await readAnalysisData(), { out })
