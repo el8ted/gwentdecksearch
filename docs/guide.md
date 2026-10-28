@@ -53,7 +53,7 @@ Where you start depends on what you have in hand; after that, every search goes 
 | **Cards or tags you like** | Add them in Search. Switch to **Any** to see decks with at least one of them, best matches first. |
 | **Cards you'd rather not play** | Type `-` before a name: `-golden` leaves out every Golden Nekker deck. |
 | **A faction and leader in mind** | Pick them, then look at **Most common** for the usual cards. |
-| **A favourite creator** | Type their name in Search (**✎**): their YouTube channel's name, or their Gwent name. Or pick their list under **Source**. |
+| **A favourite creator** | Type their name in Search (**✎**): their YouTube channel's name, or their Gwent name where it's confirmed. Or pick their list under **Source**. |
 | **Time to play, not build** | **▶ Has video** and the **Spare** and **Exact** steps: decks that fit today, with a video. Add your language if you like, but [other languages can still help](#common-questions). |
 
 ![Skellige with the Devotion tag and the author Shinmiri2 picked: his Skellige decks that use Devotion](screenshots/deck-to-build.png)

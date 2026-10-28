@@ -18,7 +18,7 @@ data/
 │   ├── card-names.json     card names in the 10 other languages
 │   ├── terms.json          official game terms in the 10 other languages
 │   ├── tags.json           deck-builder tag names, all 11 languages
-│   ├── creators.json       creators: Gwent names and YouTube channels (hand-kept)
+│   ├── creators.json       creators: YouTube channels and confirmed Gwent IDs (hand-kept)
 │   ├── videos.json         creators' YouTube uploads that link a deck
 │   ├── translations.json   English names for non-English deck names (hand-fixable)
 │   ├── categories.json     extra glossary for translating deck names (hand-kept)
@@ -184,7 +184,7 @@ the newest stored. Only uploads that link a deck are kept, plus each channel's n
 
 The deck links in uploads from the last 12 months become entries (above). A deck's video is chosen in this order: the
 guide's own embedded video, then a video its list links, then the newest channel upload whose description links the
-same deck code. Every creator whose upload links the deck is credited on it (`featured`).
+same deck code. Every creator whose upload links the deck is credited on it by channel name (`featured`).
 
 ### `translations.json`: English deck names (hand-fixable)
 
@@ -244,7 +244,7 @@ header, and the name of the release.
 | `original` | The source's own name and language, for visitors using that language. |
 | `stats` | Computed from today's `cards.json`: `provisions` excludes the leader; `scraps` counts only the fetched copies. |
 | `guideLang` | Guides with real text only: the detected language, else the author's setting. Filler text ("text text text") gets none. |
-| `featured` | The creators whose videos link the deck (shown names), newest video first. |
+| `featured` | The creators whose videos link the deck, by channel name, newest video first. |
 | `cards` | As fetched, with the default stratagem added when playgwent left it out. |
 
 ### `i18n/{lang}.js`: language packs

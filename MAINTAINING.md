@@ -129,7 +129,8 @@ their **confirmed** Gwent IDs, which search treats as the same author. No permis
 and sends viewers to their videos.
 
 - **Gwent IDs are never guessed.** Add one only when the creator says so (the issue form) or you've read it in their
-  own video. A guide author embedding a channel's videos proves nothing: alkso's guides embed Electric 000, whose
+  own video, in the game's own interface: a name drawn over the video can be an overlay (RYL YZA's videos show
+  "RYLYZA" that way; a clear video shows LYNNKORA). A guide author embedding a channel's videos proves nothing: alkso's guides embed Electric 000, whose
   videos show RGT_Makstron (both turned out to be the same person, but only a check could say so).
 - **New channels:** `pnpm creators` (needs `YOUTUBE_API_KEY`) adds channels whose videos one guide author embeds (3 or
   more), channel only. It never changes an existing entry; review what it adds.
