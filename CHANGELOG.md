@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+## 2026-10-27
+
 - Decks from Gwent creators' YouTube videos are now in the list, under **Community**, each with its video. A deck
   shows the channel that features it in a video (▶ name), and searching a creator finds their guides, lists and
   videos by their channel's name, or by their Gwent name where it's confirmed. **Credits** links the list of creators.
