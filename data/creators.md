@@ -10,33 +10,33 @@ Creators can fix their names or opt out with the
 | Channel | Gwent ID | Cards in | Decks |
 |---|---|---|---:|
 | [Dosen Casual Gamer](https://www.youtube.com/channel/UCKKHVP4M8kpfQez1HUPO5bQ) | DosenCasualGamer | EN | 316 |
-| [Gaming Genius](https://www.youtube.com/channel/UCtiGK48LB7tHIesiUpkTigA) | Gaming_Genius | EN | 270 |
-| [shinmiri2](https://www.youtube.com/channel/UCZhWZdKjn0e3ctyVZxsMkKQ) | shinmiri2 | EN | 255 |
+| [Gaming Genius](https://www.youtube.com/channel/UCtiGK48LB7tHIesiUpkTigA) | Gaming_Genius | EN | 272 |
+| [shinmiri2](https://www.youtube.com/channel/UCZhWZdKjn0e3ctyVZxsMkKQ) | shinmiri2 | EN | 264 |
+| [Metallic Danny](https://www.youtube.com/channel/UCSd7Hn8MDbilJqdpfc7UyFg) | MetallicDanny | RU | 201 |
 | [Jim_Wolverine](https://www.youtube.com/channel/UCfTtcS6gPVcSeZXvgnFSKsA) | Jim_Wolverine | EN | 184 |
-| [GWENT TWENTY-FOUR-SEVEN](https://www.youtube.com/channel/UCTdhZ9O54w5axDQlKuL3-bA) | stellinka | EN | 175 |
-| [Independent Coalition / EVIL DECKS CLUB](https://www.youtube.com/channel/UCxC5FnHirVaT3grT3JNXrrw) |  | RU | 167 |
-| [Metallic Danny](https://www.youtube.com/channel/UCSd7Hn8MDbilJqdpfc7UyFg) | MetallicDanny | RU | 166 |
+| [Independent Coalition / EVIL DECKS CLUB](https://www.youtube.com/channel/UCxC5FnHirVaT3grT3JNXrrw) |  | RU | 183 |
+| [GWENT TWENTY-FOUR-SEVEN](https://www.youtube.com/channel/UCTdhZ9O54w5axDQlKuL3-bA) | stellinka | EN | 181 |
 | [ほぴこの部屋](https://www.youtube.com/channel/UC_WFeh202P_GpCyyINByzSg) |  | JA | 148 |
-| [Qcento](https://www.youtube.com/channel/UCDvxjEa8yz5FlQLwH5F05rQ) | Qcento | EN | 136 |
-| [Lerio Gwent](https://www.youtube.com/channel/UCewUUVi09AEPKhBjZrlX8Gw) | lerio2 | PL | 103 |
+| [Qcento](https://www.youtube.com/channel/UCDvxjEa8yz5FlQLwH5F05rQ) | Qcento | EN | 144 |
+| [Lerio Gwent](https://www.youtube.com/channel/UCewUUVi09AEPKhBjZrlX8Gw) | lerio2 | PL | 115 |
 | [Platinum Patrol](https://www.youtube.com/channel/UCyo4_TLaPLFqg0Xup1s3dBA) | IronDestroyer2 | EN | 96 |
 | [AgroeN](https://www.youtube.com/channel/UC9RLe6whI4GRm1n53ue7s_A) | AgroeNYT | PL | 86 |
-| [dauren_1992](https://www.youtube.com/channel/UCzUJq56EobxeCuseP7oCcuw) | Dauren1992 | RU | 75 |
-| [RYL YZA](https://www.youtube.com/channel/UCKwXH76BXzI0LI516HKXhKw) | LYNNKORA | EN | 63 |
-| [chinchillas-C](https://www.youtube.com/channel/UCTtSFKzGU6stXDaQF2HxL1Q) |  | EN | 60 |
-| [U47](https://www.youtube.com/channel/UC6YizcRYrZMS9-EUTegofJg) | raghav47i | EN | 55 |
-| [Lemontea4u](https://www.youtube.com/channel/UCzjcmPE9KK-nXH1C1kwqIbg) | Lemontea4u | EN | 53 |
+| [dauren_1992](https://www.youtube.com/channel/UCzUJq56EobxeCuseP7oCcuw) | Dauren1992 | RU | 78 |
+| [chinchillas-C](https://www.youtube.com/channel/UCTtSFKzGU6stXDaQF2HxL1Q) |  | EN | 66 |
+| [RYL YZA](https://www.youtube.com/channel/UCKwXH76BXzI0LI516HKXhKw) | LYNNKORA | EN | 64 |
+| [U47](https://www.youtube.com/channel/UC6YizcRYrZMS9-EUTegofJg) | raghav47i | EN | 56 |
+| [Lemontea4u](https://www.youtube.com/channel/UCzjcmPE9KK-nXH1C1kwqIbg) | Lemontea4u | EN | 54 |
 | [Gwent Gosu](https://www.youtube.com/channel/UCn_dLanqO5ATcGTOwGfd2Pw) | GOSU.. | KO | 52 |
-| [Zim's Strategy Games](https://www.youtube.com/channel/UCif6BPHEO-OgB4ExWIFuy4A) | ZimOfFarSig | EN | 47 |
-| [Kungfoorabbit](https://www.youtube.com/channel/UC15Irsr70j7j_oVsHia_6Zg) | kungfoorabbit | EN | 44 |
+| [Zim's Strategy Games](https://www.youtube.com/channel/UCif6BPHEO-OgB4ExWIFuy4A) | ZimOfFarSig | EN | 49 |
+| [Kungfoorabbit](https://www.youtube.com/channel/UC15Irsr70j7j_oVsHia_6Zg) | kungfoorabbit | EN | 47 |
+| [Cosmos Zero (Gwent)](https://www.youtube.com/channel/UCivsDAr_4S0oOcY7wZtXnJA) | Cosmos_Zero | FR | 40 |
 | [GWENT-s2k](https://www.youtube.com/channel/UCRtttPk7StrC3ybgTLLjaRg) | -Mohammed- | EN | 40 |
 | [Damidiat](https://www.youtube.com/channel/UCEMZ1hnJ-mM1M0Zt7Id7APQ) | Med_Amine_Okbi | EN | 37 |
-| [Cosmos Zero (Gwent)](https://www.youtube.com/channel/UCivsDAr_4S0oOcY7wZtXnJA) | Cosmos_Zero | FR | 29 |
 | [LucasLegends](https://www.youtube.com/channel/UC4GbguUyAaDADedJ9JkmRHg) | LucasLegends | EN | 24 |
-| [DeagleLas](https://www.youtube.com/channel/UCwXoOaSpGdNpFxdcGf0cCYg) |  | EN | 22 |
-| [Asensis](https://www.youtube.com/channel/UCg6VQopVhNbzu70tucqGvFA) | A5EN5I5 | PL | 15 |
+| [DeagleLas](https://www.youtube.com/channel/UCwXoOaSpGdNpFxdcGf0cCYg) |  | EN | 23 |
+| [Asensis](https://www.youtube.com/channel/UCg6VQopVhNbzu70tucqGvFA) | A5EN5I5 | PL | 18 |
+| [Morelse](https://www.youtube.com/channel/UCnPJGbgtbe4Tjq9JzWNZEbQ) |  | EN | 16 |
 | [GAMIXEL](https://www.youtube.com/channel/UC2jolfXQXrZofOZUGlr4oNg) | GAMIXEL | FR | 14 |
-| [Morelse](https://www.youtube.com/channel/UCnPJGbgtbe4Tjq9JzWNZEbQ) |  | EN | 14 |
 | [Kerpeten96](https://www.youtube.com/channel/UCWpzUmchsHjHcW5iZzsbiuQ) | Kerpeten96 | EN | 13 |
 | [Liar Fire](https://www.youtube.com/channel/UCZbbjiLQ6893dfg5utbBkJg) | LiarFire | EN | 10 |
 | [Taverna de Rivia](https://www.youtube.com/channel/UC1LoNd1dp3ifVIb4MKsEt7w) |  | PT-BR | 10 |

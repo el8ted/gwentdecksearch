@@ -149,6 +149,6 @@ test('decks are in alphabetical order of the names on screen, in the page langua
 
   // Assert
   expect(names.filter((n) => /\p{Script=Cyrillic}/u.test(n)).length).toBeGreaterThan(20)
-  const unordered = names.findIndex((n, i) => i > 0 && names[i - 1].localeCompare(n) > 0)
+  const unordered = names.findIndex((n, i) => i > 0 && names[i - 1].localeCompare(n, 'ru') > 0)
   expect(unordered, `"${names[unordered - 1]}" before "${names[unordered]}"`).toBe(-1)
 })

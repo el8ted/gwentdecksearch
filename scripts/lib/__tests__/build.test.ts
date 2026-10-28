@@ -140,6 +140,36 @@ describe('buildDataset', () => {
     ])
   })
 
+  it('keeps guides on the same deck code apart, the oldest under the code, and merges a plain link into it', () => {
+    // Arrange: two guides saved with the same deck (h1), the newer listed first, then a plain link to that deck
+    const URL_G1 = 'https://www.playgwent.com/decks/guides/1'
+    const URL_G2 = 'https://www.playgwent.com/decks/guides/2'
+    const guide = (id: number, author: string) => ({ id, modified: '', votes: 1, author })
+    const entries = [
+      entry(URL_G2, { name: 'Copy', source: 'community', guide: guide(2, 'b') }),
+      entry(URL_G1, { name: 'Original', source: 'community', guide: guide(1, 'a') }),
+      entry(URL_A, { name: 'Listed', source: 'shinmiri2' }),
+    ]
+    const store = { [URL_G1]: DECK, [URL_G2]: DECK, [URL_A]: DECK }
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, store }))
+
+    // Assert
+    expect(dataset.decks.map((d) => [d.id, d.name, d.author, d.sources])).toEqual([
+      ['h1-2', 'Copy', 'b', ['community']],
+      ['h1', 'Original', 'a', ['community', 'shinmiri2']],
+    ])
+  })
+
+  it('writes a deck name with a line break on one row of the deck list', () => {
+    // Act
+    const { decklist } = buildDataset(input({ entries: [entry(URL_A, { name: 'Two\nlines' })] }))
+
+    // Assert
+    expect(decklist).toContain('| Two lines |')
+  })
+
   it("takes a deck's first linked video from any entry for it, same link or same hash", () => {
     // Arrange: URL_B is the same deck (hash) as URL_A
     const later = { url: 'https://youtu.be/BBBBBBBBBBB', lang: 'ru' }

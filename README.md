@@ -61,7 +61,7 @@ credit the channel by its name; searching it finds the creator, and so does thei
 maintainer has confirmed it. Names are never guessed.
 
 A deck listed by more than one source appears once, with every source badge; so does a deck link whose cards match a
-deck already listed (the same deck saved twice). Two guides with the same cards stay separate. Card lists, costs and card data come
+deck already listed (the same deck saved twice). Two guides with the same cards stay separate, even when they share a deck code. Card lists, costs and card data come
 from playgwent.com. Provisions, scraps and card counts are worked out from current card data, so they follow every
 Balance Council change.
 
