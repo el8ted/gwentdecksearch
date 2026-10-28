@@ -100,7 +100,7 @@ export interface Deck {
   guideLang?: string
   /** A gameplay video one of the sources links. */
   video?: Video
-  /** Creators whose videos link this deck (their shown names), newest video first. */
+  /** Creators whose videos link this deck, by channel name, newest video first. */
   featured?: string[]
   /** `[cardId, copies]`, including the leader and stratagem. */
   cards: [cardId: number, copies: number][]
@@ -113,6 +113,6 @@ export interface Dataset {
   /** English name of every tag on {@link cards}. */
   tags: Record<TagKey, string>
   decks: Deck[]
-  /** Creators' other names (another Gwent name, a channel's title) by the name they're shown by, so search finds both. */
+  /** Creators' confirmed Gwent IDs (and any other channel) by channel name: search treats them as one author. */
   aliases?: Record<string, string[]>
 }

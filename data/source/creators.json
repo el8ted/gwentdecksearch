@@ -193,8 +193,7 @@
         "lang": "en",
         "title": "DeagleLas"
       }
-    ],
-    "gwent": ["DarkAly"]
+    ]
   },
   {
     "channels": [
@@ -244,8 +243,7 @@
         "lang": "en",
         "title": "Morelse"
       }
-    ],
-    "gwent": ["Morelse"]
+    ]
   },
   {
     "channels": [
@@ -325,7 +323,7 @@
         "title": "Electric 000"
       }
     ],
-    "gwent": ["alkso"]
+    "gwent": ["alkso","RGT_Makstron"]
   },
   {
     "channels": [
@@ -354,8 +352,7 @@
         "lang": "pt-BR",
         "title": "Taverna de Rivia"
       }
-    ],
-    "gwent": ["JorgedoTaverna"]
+    ]
   },
   {
     "channels": [
@@ -374,8 +371,7 @@
         "lang": "pl",
         "title": "TaGraJestZbugowana"
       }
-    ],
-    "gwent": ["tagrajestzbugowana"]
+    ]
   },
   {
     "channels": [
@@ -385,7 +381,8 @@
         "title": "ArteiroGamer"
       }
     ],
-    "gwent": ["Arteirin"]
+    "gwent": ["Arteirin"],
+    "skip": true
   },
   {
     "channels": [
@@ -395,7 +392,8 @@
         "title": "Highredrose"
       }
     ],
-    "gwent": ["Highredrose"]
+    "gwent": ["Highredrose"],
+    "skip": true
   },
   {
     "channels": [
@@ -405,7 +403,8 @@
         "title": "Pavel Andreev"
       }
     ],
-    "gwent": ["Pahan95"]
+    "gwent": ["Pahan95"],
+    "skip": true
   },
   {
     "channels": [
@@ -415,7 +414,8 @@
         "title": "Phantasmat"
       }
     ],
-    "gwent": ["Phantasmat"]
+    "gwent": ["Phantasmat"],
+    "skip": true
   },
   {
     "channels": [
@@ -425,7 +425,8 @@
         "title": "M1rushkaa"
       }
     ],
-    "gwent": ["M1rushkaa"]
+    "gwent": ["M1rushkaa"],
+    "skip": true
   },
   {
     "channels": [
@@ -435,7 +436,8 @@
         "title": "Ferrummortis"
       }
     ],
-    "gwent": ["FerrumMortis"]
+    "gwent": ["FerrumMortis"],
+    "skip": true
   },
   {
     "channels": [
@@ -445,7 +447,8 @@
         "title": "D4C playing"
       }
     ],
-    "gwent": ["裸ノ大将"]
+    "gwent": ["裸ノ大将"],
+    "skip": true
   },
   {
     "channels": [
@@ -455,6 +458,7 @@
         "title": "Morkoltuk"
       }
     ],
-    "gwent": ["Mist3er665"]
+    "gwent": ["Mist3er665"],
+    "skip": true
   }
 ]

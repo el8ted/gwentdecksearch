@@ -20,7 +20,7 @@ export const STRATAGEMS = ofType('stratagem')
 /** Guide and video languages any deck has, in the language menu's order: fixed, like the other pills. */
 export const LANGS = LANGUAGES.filter((l) => decks.some((e) => e.langs.has(l)))
 /** Author display names by key. */
-export const AUTHORS = authorNames(decks)
+export const AUTHORS = authorNames(decks, data.aliases)
 
 const BY_ID = new Map(decks.map((e) => [e.deck.id, e]))
 /** The deck with this ID; `undefined` for none (an unset filter) or an ID not in the data. */

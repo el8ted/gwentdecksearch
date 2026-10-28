@@ -18,7 +18,7 @@ data/
 │   ├── card-names.json     card names in the 10 other languages
 │   ├── terms.json          official game terms in the 10 other languages
 │   ├── tags.json           deck-builder tag names, all 11 languages
-│   ├── creators.json       creators: Gwent names and YouTube channels (hand-kept)
+│   ├── creators.json       creators: YouTube channels and confirmed Gwent IDs (hand-kept)
 │   ├── videos.json         creators' YouTube uploads that link a deck
 │   ├── translations.json   English names for non-English deck names (hand-fixable)
 │   ├── categories.json     extra glossary for translating deck names (hand-kept)
@@ -160,13 +160,14 @@ English card names are in `cards.json`; English terms come from the site's own p
 
 ### `creators.json`: creators (hand-kept)
 
-An array, one object per creator (a person, or a group channel): their Gwent names (the first is shown) and their
-YouTube channels, each with the language its videos show cards in. `pnpm creators` adds guide authors' channels (a
-channel whose guide videos are all one author's); everything else is by hand. `"skip": true` means the channel isn't
-read: an opt-out, or a channel that never links decks.
+An array, one object per creator (a person, or a group channel): their YouTube channels, each with the language its
+videos show cards in (the first channel's title is the name decks credit), and `gwent`: Gwent IDs (in-game or
+playgwent names) **confirmed** to be theirs, by the creator or from their videos. Never guessed: a guide author
+embedding a channel's videos doesn't make it theirs. `pnpm creators` adds channels only; IDs go in by hand.
+`"skip": true` means the channel isn't read: an opt-out, or a channel with nothing recent.
 
 ```json
-{ "gwent": ["alkso"], "channels": [{ "id": "UCOLPgExXbTm3vCphQ27cy_w", "title": "Electric 000", "lang": "en" }] }
+{ "gwent": ["alkso", "RGT_Makstron"], "channels": [{ "id": "UCOLPgExXbTm3vCphQ27cy_w", "title": "Electric 000", "lang": "ru" }] }
 ```
 
 ### `videos.json`: creators' uploads
@@ -183,7 +184,7 @@ the newest stored. Only uploads that link a deck are kept, plus each channel's n
 
 The deck links in uploads from the last 12 months become entries (above). A deck's video is chosen in this order: the
 guide's own embedded video, then a video its list links, then the newest channel upload whose description links the
-same deck code. Every creator whose upload links the deck is credited on it (`featured`).
+same deck code. Every creator whose upload links the deck is credited on it by channel name (`featured`).
 
 ### `translations.json`: English deck names (hand-fixable)
 
@@ -211,14 +212,14 @@ header, and the name of the release.
   "cards": { "122105": { "name": "Lined Pockets", "type": "leader", "faction": "SY", "provisions": 15, "tags": […] } },
   "tags": { "c12": "Beast", "devotion": "Devotion", … },
   "decks": [ … ],
-  "aliases": { "alkso": ["Electric 000"], … }
+  "aliases": { "U47": ["raghav47i"], … }
 }
 ```
 
 - `cards` holds only cards some deck uses, with only the fields the app needs. `tags` holds the English name of every
   tag on those cards.
-- `aliases` holds, for each creator the decks credit, their other names (another Gwent name, their channels' titles)
-  from `creators.json`, so Search finds them by any of them.
+- `aliases` holds, for each creator the decks credit (by channel name), their confirmed Gwent IDs and other channels
+  from `creators.json`. Search treats all of a creator's names as one author.
 - `decks` holds each deck once (by deck code):
 
 ```json
@@ -243,7 +244,7 @@ header, and the name of the release.
 | `original` | The source's own name and language, for visitors using that language. |
 | `stats` | Computed from today's `cards.json`: `provisions` excludes the leader; `scraps` counts only the fetched copies. |
 | `guideLang` | Guides with real text only: the detected language, else the author's setting. Filler text ("text text text") gets none. |
-| `featured` | The creators whose videos link the deck (shown names), newest video first. |
+| `featured` | The creators whose videos link the deck, by channel name, newest video first. |
 | `cards` | As fetched, with the default stratagem added when playgwent left it out. |
 
 ### `i18n/{lang}.js`: language packs

@@ -211,7 +211,7 @@ describe('buildDataset', () => {
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/newer', lang: 'en' })
   })
 
-  it('credits every creator whose video links the deck, newest first, and ships their other names', () => {
+  it('credits every creator whose video links the deck by channel name, newest first, and ships their confirmed IDs', () => {
     // Arrange: DECK's code is h1
     const creators = [
       ...CREATORS,
@@ -232,9 +232,26 @@ describe('buildDataset', () => {
     const { dataset } = buildDataset(input({ videos, creators }))
 
     // Assert
-    expect(dataset.decks[0].featured).toEqual(['alkso', 'shinmiri2'])
+    expect(dataset.decks[0].featured).toEqual(['Electric 000', 'shinmiri2'])
     expect(dataset.decks[0].video).toEqual({ url: 'https://youtu.be/c', lang: 'ru' })
-    expect(dataset.aliases).toEqual({ alkso: ['Electric 000'] })
+    expect(dataset.aliases).toEqual({ 'Electric 000': ['alkso'] })
+  })
+
+  it("credits first the creator whose video the deck shows, even when another's upload is newer", () => {
+    // Arrange: the list links shinmiri2's older video; Electric 000's newer upload links the deck too
+    const creators = [...CREATORS, { channels: [{ id: 'UC2', title: 'Electric 000', lang: 'ru' }] }]
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { old: { published: '2026-01-01T00:00:00Z', title: 'A', decks: [URL_A] } },
+      UC2: { new: { published: '2026-06-01T00:00:00Z', title: 'B', decks: [URL_A] } },
+    }
+    const entries = [entry(URL_A, { video: { url: 'https://youtu.be/old', lang: 'en' } })]
+
+    // Act
+    const { dataset } = buildDataset(input({ entries, videos, creators }))
+
+    // Assert
+    expect(dataset.decks[0].video?.url).toBe('https://youtu.be/old')
+    expect(dataset.decks[0].featured).toEqual(['shinmiri2', 'Electric 000'])
   })
 
   it("records a guide's language: detected, else declared; padding has none", () => {

@@ -6,9 +6,10 @@ body:
     attributes:
       value: |
         Gwent Deck Search reads the deck links in some creators' YouTube video descriptions, adds those decks under
-        Community with the video, and credits the creator on each deck ("▶ name"). Search finds a creator by their
-        Gwent name or their channel's name. Use this form to correct that, or to opt out: your channel then isn't
-        read, and your name comes off the decks it added.
+        Community with the video, and credits your channel by its name on each deck ("▶ name"). Your Gwent name is
+        added only once confirmed (this form confirms it); search then finds your guides and videos under either
+        name. Use this form to give or correct your Gwent name, or to opt out: your channel then isn't read, and its
+        name comes off the decks it added.
   - type: dropdown
     id: request
     attributes:

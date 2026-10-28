@@ -1,5 +1,5 @@
 import { CONFIG } from '../config.ts'
-import { authorKey, DECK_URL } from '../filter.ts'
+import { DECK_URL } from '../filter.ts'
 import type { Locale } from '../i18n.ts'
 import { fold, loose, matchRank } from '../search.ts'
 import type { Dataset } from '../types.ts'
@@ -53,8 +53,8 @@ const URL_START = /^(?:http|www\.|playgwent)/i
  * Wires an accessible combobox for adding cards and tags. Both match by their name in the current language or in
  * English (many players know English names). Local prefix matches rank first, then local substring, then
  * English; ties go to tags, then to whatever is in more decks. A tag also matches a query that starts with its
- * name, so "Beasts" or "Orders" finds Beast or Order. Authors match from the start of their name or of a creator's
- * other name (a channel's title), case and spacing ignored, and come after cards.
+ * name, so "Beasts" or "Orders" finds Beast or Order. Authors match from the start of their name (a creator's
+ * channel name and confirmed Gwent IDs are each a name), case and spacing ignored, and come after cards.
  *
  * @param options - Elements, data and callbacks
  * @returns `refresh()`, to re-filter after the candidates change, and `clear()`, to empty the box
@@ -75,8 +75,6 @@ export function createAutocomplete({
   deckFor,
   onDeck,
 }: AutocompleteOptions) {
-  // A creator's other names (a channel's title, another Gwent name) find them too.
-  const aliases = new Map(Object.entries(data.aliases ?? {}).map(([name, other]) => [authorKey(name), other]))
   // A number is a card ID, `@…` an author, any other string a tag key.
   let items: (number | string)[] = []
   let active = 0
@@ -134,7 +132,7 @@ export function createAutocomplete({
     const aq = loose(q)
     const authors: typeof scored = aq
       ? [...authorCandidates()]
-          .filter(([key]) => [key, ...(aliases.get(key) ?? [])].some((n) => loose(n).startsWith(aq)))
+          .filter(([key]) => loose(key).startsWith(aq))
           .sort((a, b) => b[1] - a[1])
           .slice(0, CONFIG.maxAuthorSuggestions)
           .map(([key, count]) => [`@${key}`, 0, count])

@@ -1,4 +1,5 @@
 import {
+  authorGroups,
   authorKey,
   budgetSide,
   type cardChanges,
@@ -113,20 +114,25 @@ const glyph = (symbol: string, word: string) =>
 export const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
 
 /**
- * Who features the deck in a video, after its sources and votes: the newest video's creator, "+n" for more, all of
- * them in the tooltip. The guide's author and the lists' owners already show, so they aren't repeated.
+ * Who features the deck in a video, by channel name, after its sources and votes: the newest video's creator, "+n"
+ * for more, all of them in the tooltip. A creator already shown as the guide's author or a list's owner (under any
+ * of their confirmed names) isn't repeated.
  *
  * @param deck - The deck
+ * @param data - For creators' other names
  * @param loc - Locale
  * @returns The badge, or nothing
  */
-function featuredBadge(deck: Deck, loc: Locale): string {
+function featuredBadge(deck: Deck, data: Dataset, loc: Locale): string {
+  const groups = authorGroups(data.aliases)
   const shown = new Set(
-    [deck.author, ...deck.sources.flatMap((s) => (s === 'community' ? [] : [SOURCE_AUTHORS[s]]))].map(
-      (n) => n && authorKey(n),
-    ),
+    [deck.author, ...deck.sources.flatMap((s) => (s === 'community' ? [] : [SOURCE_AUTHORS[s]]))]
+      .filter((n) => n !== undefined)
+      .map(authorKey),
   )
-  const names = (deck.featured ?? []).filter((n) => !shown.has(authorKey(n)))
+  const names = (deck.featured ?? []).filter(
+    (n) => !(groups.get(authorKey(n)) ?? [authorKey(n)]).some((k) => shown.has(k)),
+  )
   if (!names.length) return ''
   const more = names.length > 1 ? ` +${names.length - 1}` : ''
   return `<span class="featured" title="${esc(loc.t('deck.videoBy', { names: names.join(', ') }))}">${icon('play')}${esc(names[0])}${more}</span>`
@@ -191,7 +197,7 @@ export function deckRow(
         deck.votes === undefined
           ? ''
           : `<span class="votes" title="${esc(loc.t('deck.votesTip'))}">${icon('votes')} ${deck.votes}${deck.author ? ` · ${esc(deck.author)}` : ''}</span>`
-      }${featuredBadge(deck, loc)}${
+      }${featuredBadge(deck, data, loc)}${
         deck.updated === undefined
           ? ''
           : `<time class="updated" datetime="${esc(deck.updated)}" title="${esc(loc.t('deck.updatedTip'))}">${esc(loc.date(deck.updated))}</time>`

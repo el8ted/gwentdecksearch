@@ -129,30 +129,52 @@ export function authorKey(name: string): string {
 }
 
 /**
- * A deck's people: the guide's author, the owner of each list that has it (the list is theirs), and the creators
- * whose videos feature it. Each is credited for what they did; none is claimed to have built the deck.
+ * Each author key's group: a creator's channel name and their confirmed Gwent IDs ({@link Dataset.aliases}) are one
+ * author, so searching any of them finds what's credited under the others (`@alkso` finds Electric 000's videos).
+ *
+ * @param aliases - Other names by channel name
+ * @returns Every key of the group, by each of its keys; a key in no group isn't listed
  */
-function deckAuthors(deck: Deck): string[] {
-  return [
+export function authorGroups(aliases: Record<string, string[]> = {}): Map<string, string[]> {
+  const groups = new Map<string, string[]>()
+  for (const [name, others] of Object.entries(aliases)) {
+    const keys = [...new Set([name, ...others].map(authorKey))]
+    for (const key of keys) groups.set(key, keys)
+  }
+  return groups
+}
+
+/**
+ * A deck's people: the guide's author, the owner of each list that has it (the list is theirs), and the creators
+ * whose videos feature it, each with every name of their {@link authorGroups} group. Each is credited for what they
+ * did; none is claimed to have built the deck.
+ */
+function deckAuthors(deck: Deck, groups: Map<string, string[]>): string[] {
+  const keys = [
     deck.author,
     ...deck.sources.filter((s) => s !== 'community').map((s) => SOURCE_AUTHORS[s]),
     ...(deck.featured ?? []),
   ]
     .filter((a) => a !== undefined)
     .map(authorKey)
+  return [...new Set(keys.flatMap((k) => groups.get(k) ?? [k]))]
 }
 
 /**
- * Display names by {@link authorKey}: a list owner's playgwent name, else the first guide's or video's spelling.
+ * Display names by {@link authorKey}: a list owner's playgwent name, else the first guide's or video's spelling, else
+ * a creator's other name as the registry spells it.
  *
  * @param decks - Indexed decks
+ * @param aliases - Creators' other names by channel name ({@link Dataset.aliases})
  * @returns Name by key
  */
-export function authorNames(decks: IndexedDeck[]): Map<string, string> {
+export function authorNames(decks: IndexedDeck[], aliases: Record<string, string[]> = {}): Map<string, string> {
   const names = new Map(Object.values(SOURCE_AUTHORS).map((n) => [authorKey(n), n]))
-  for (const { deck } of decks)
-    for (const name of [deck.author, ...(deck.featured ?? [])])
-      if (name && !names.has(authorKey(name))) names.set(authorKey(name), name)
+  const spell = (name: string | undefined) => {
+    if (name && !names.has(authorKey(name))) names.set(authorKey(name), name)
+  }
+  for (const { deck } of decks) for (const name of [deck.author, ...(deck.featured ?? [])]) spell(name)
+  for (const name of Object.values(aliases).flat()) spell(name)
   return names
 }
 
@@ -178,6 +200,7 @@ export function listKey(cards: [number, number][]): string {
  * @throws {Error} If a deck lacks a leader or stratagem (the scraper guarantees both)
  */
 export function indexDecks(data: Dataset): IndexedDeck[] {
+  const groups = authorGroups(data.aliases)
   // Card list → first deck with it, so guides of the same list find each other.
   const lists = new Map<string, string>()
   return data.decks.map((deck) => {
@@ -194,7 +217,8 @@ export function indexDecks(data: Dataset): IndexedDeck[] {
     const key = listKey(deck.cards)
     if (!lists.has(key)) lists.set(key, deck.id)
     const list = lists.get(key) as string
-    return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors: new Set(deckAuthors(deck)), list }
+    const authors = new Set(deckAuthors(deck, groups))
+    return { deck, leader, stratagem, faction, budget, ids, tags, langs, authors, list }
   })
 }
 
