@@ -56,7 +56,7 @@ What changed lately: [CHANGELOG.md](CHANGELOG.md).
 | **Shinmiri2** | A curated list of competitive decks ([deck list](https://docs.google.com/spreadsheets/d/1h4m0zhPOiW2Tyaj26kGIvPdSXgtmgerR5uu7vBHM-BM/edit?gid=1592369710)), including alternate versions and decks from the last 12 months of per-patch tabs. Alternates appear as separate decks with the same name. |
 
 Gameplay videos come from the guides themselves, from both deck lists, and from the deck links in creators' YouTube
-video descriptions (the creators are listed in [data/source/creators.json](data/source/creators.json)). Those decks
+video descriptions (the creators are listed, with links to their channels, in [data/creators.md](data/creators.md)). Those decks
 credit the channel by its name; searching it finds the creator, and so does their Gwent name once the creator or the
 maintainer has confirmed it. Names are never guessed.
 

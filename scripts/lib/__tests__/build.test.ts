@@ -237,6 +237,27 @@ describe('buildDataset', () => {
     expect(dataset.aliases).toEqual({ 'Electric 000': ['alkso'] })
   })
 
+  it('writes the creators page: channels linked, confirmed IDs, decks credited, most first, skipped ones left out', () => {
+    // Arrange
+    const creators = [
+      { channels: [{ id: 'UC2', title: 'Coalition | RU', lang: 'ru' }] },
+      ...CREATORS,
+      { gwent: ['Gone'], channels: [{ id: 'UC4', title: 'Gone TV', lang: 'en' }], skip: true },
+    ]
+    const videos = {
+      UCZhWZdKjn0e3ctyVZxsMkKQ: { a: { published: '2026-01-01T00:00:00Z', title: 'A', decks: [URL_A] } },
+    }
+
+    // Act
+    const { creators: page } = buildDataset(input({ videos, creators }))
+
+    // Assert
+    expect(page).toContain(
+      '| [shinmiri2](https://www.youtube.com/channel/UCZhWZdKjn0e3ctyVZxsMkKQ) | shinmiri2 | EN | 1 |\n| [Coalition \\| RU](https://www.youtube.com/channel/UC2) |  | RU | 0 |\n',
+    )
+    expect(page).not.toContain('Gone')
+  })
+
   it("credits first the creator whose video the deck shows, even when another's upload is newer", () => {
     // Arrange: the list links shinmiri2's older video; Electric 000's newer upload links the deck too
     const creators = [...CREATORS, { channels: [{ id: 'UC2', title: 'Electric 000', lang: 'ru' }] }]
