@@ -187,6 +187,18 @@ describe('matchDecks', () => {
 })
 
 describe('matchDecks card matching', () => {
+  it('sorts names in the page language', () => {
+    // Arrange: Ä sorts with A in German, after Z in Swedish
+    const nameOf = (d: Deck) => (d.id === 'a1' ? 'Ärm' : 'Zed')
+
+    // Act
+    const [de, sv] = ['de', 'sv'].map((lang) => ids(matchDecks(DECKS, state(), undefined, nameOf, lang)))
+
+    // Assert
+    expect(de[0]).toBe('a1')
+    expect(sv.at(-1)).toBe('a1')
+  })
+
   it('requires every selected card by default, sorted by name then id', () => {
     // Arrange
     const s = state({ picks: [101, 102] })
@@ -640,6 +652,18 @@ describe('craftList', () => {
       [103, 1],
       [100, 1],
     ])
+  })
+
+  it('orders names of the same rarity in the page language', () => {
+    // Arrange: 100 and 103 tie on decks and rarity; Ä sorts with A in German, after Z in Swedish
+    const nameOf = (id: number) => ({ 100: 'Ärm', 103: 'Zed' })[id] ?? CARDS[id].name
+
+    // Act
+    const [de, sv] = ['de', 'sv'].map((lang) => craftList(DECKS, [102, 101], CARDS, nameOf, lang).map((r) => r.id))
+
+    // Assert
+    expect(de).toEqual([100, 103])
+    expect(sv).toEqual([103, 100])
   })
 
   it('breaks ties legendary first, then by name in the page language', () => {

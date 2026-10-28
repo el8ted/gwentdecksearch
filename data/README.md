@@ -221,7 +221,7 @@ header, and the name of the release.
   tag on those cards.
 - `aliases` holds, for each creator the decks credit (by channel name), their confirmed Gwent IDs and other channels
   from `creators.json`. Search treats all of a creator's names as one author.
-- `decks` holds each deck once (by deck code):
+- `decks` holds each deck once (by deck code; guides sharing a code are each listed):
 
 ```json
 {
@@ -241,6 +241,7 @@ header, and the name of the release.
 
 | Field | How it's made |
 |---|---|
+| `id` | The deck code. A guide sharing its code with an older guide gets `{code}-{guide number}`, so both are listed. |
 | `name` | English: the original if it was English, else `translations.json`. A guide published without a name gets its leader's name. |
 | `original` | The source's own name and language, for visitors using that language. |
 | `stats` | Computed from today's `cards.json`: `provisions` excludes the leader; `scraps` counts only the fetched copies. |
