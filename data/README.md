@@ -25,11 +25,12 @@ data/
 │   └── refreshed.json      when each refresh last ran
 ├── decks.json            OUTPUT: the dataset bundled into the app
 ├── decklist.md           OUTPUT: every deck in one table, for review
+├── creators.md           OUTPUT: the creators page Credits links to
 ├── i18n/{lang}.js        OUTPUT: language packs the app loads on demand
 └── cache/                local only (gitignored); see "The cache folder"
 ```
 
-**Rule of thumb:** `source/` is what the outside world said; the three outputs are rebuilt from it by
+**Rule of thumb:** `source/` is what the outside world said; the outputs are rebuilt from it by
 `pnpm build:data`, offline, every time. Never edit an output by hand: the next build overwrites it. The one input meant
 for hand edits is `translations.json`.
 
@@ -50,7 +51,7 @@ videos.json (12 months) ─┘   (translates new names)  translations.json ─�
                                                                               │
                                      ┌────────────────────┬───────────────────┤
                                      ▼                    ▼                   ▼
-                                decks.json          i18n/{lang}.js       decklist.md
+                                decks.json          i18n/{lang}.js       decklist.md, creators.md
                                      │                    │
                        pnpm build ───┤ bundled into       │ copied to
                                      ▼ dist/app.iife.js   ▼ dist/i18n/
@@ -256,6 +257,11 @@ the names of the cards in use, and tag names. Anything missing falls back to Eng
 
 Every deck in one Markdown table (faction, leader, name, original name, code, sources, votes). Not used by the app:
 it's for reading a refresh's result at a glance, or diffing it in a pull request.
+
+### `creators.md`: the creators page
+
+The page the site's **Credits** links to: every creator in `creators.json` not marked `skip`, each channel linked,
+with their confirmed Gwent IDs, the game language their videos show, and how many decks credit them, most first.
 
 ## The cache folder
 
