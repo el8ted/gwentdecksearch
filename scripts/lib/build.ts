@@ -143,6 +143,12 @@ export function buildDataset(input: BuildInput): BuildOutput {
       Object.entries(input.videos[channel.id] ?? {}).map(([id, v]) => ({ id, v, channel, creator })),
     )
     .sort((a, b) => b.v.published.localeCompare(a.v.published))
+  // Whose upload each video is, so the creator of the video a deck shows is credited first.
+  const uploadCreator = new Map(uploads.map(({ id, creator }) => [`https://youtu.be/${id}`, creatorName(creator)]))
+  const shownFirst = (names: string[], video: Video | undefined) => {
+    const own = video && uploadCreator.get(video.url)
+    return own && names.includes(own) ? [own, ...names.filter((n) => n !== own)] : names
+  }
   for (const { id, v, channel, creator } of uploads) {
     for (const code of v.decks.map(codeOf)) {
       if (!code) continue
@@ -189,7 +195,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
       known.video ??= video
       const featured = [...new Set([...(known.featured ?? []), ...(featuredBy.get(stored.hash) ?? [])])]
-      if (featured.length) known.featured = featured
+      if (featured.length) known.featured = shownFirst(featured, known.video)
       byHash.set(stored.hash, known)
       continue
     }
@@ -216,7 +222,7 @@ export function buildDataset(input: BuildInput): BuildOutput {
       ...(entry.guide && { votes: entry.guide.votes, author: entry.guide.author }),
       ...summary,
       ...(video && { video }),
-      ...(featuredBy.has(stored.hash) && { featured: featuredBy.get(stored.hash) }),
+      ...(featuredBy.has(stored.hash) && { featured: shownFirst(featuredBy.get(stored.hash) ?? [], video) }),
       cards: copies,
     }
     // Some guides tagged English carry Russian names.
