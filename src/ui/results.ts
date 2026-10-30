@@ -113,6 +113,13 @@ const glyph = (symbol: string, word: string) =>
 /** A language's short code for a badge: `pt-BR` → `PT`. */
 export const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
 
+// Built once per dataset, not once per deck row.
+const GROUPS = new WeakMap<Dataset, ReturnType<typeof authorGroups>>()
+const groupsOf = (data: Dataset) => {
+  if (!GROUPS.has(data)) GROUPS.set(data, authorGroups(data.aliases))
+  return GROUPS.get(data) as ReturnType<typeof authorGroups>
+}
+
 /**
  * Who features the deck in a video, by channel name, after its sources and votes: the newest video's creator, "+n"
  * for more, all of them in the tooltip. A creator already shown as the guide's author or a list's owner (under any
@@ -124,7 +131,7 @@ export const langCode = (lang: string) => lang.split('-')[0].toUpperCase()
  * @returns The badge, or nothing
  */
 function featuredBadge(deck: Deck, data: Dataset, loc: Locale): string {
-  const groups = authorGroups(data.aliases)
+  const groups = groupsOf(data)
   const shown = new Set(
     [deck.author, ...deck.sources.flatMap((s) => (s === 'community' ? [] : [SOURCE_AUTHORS[s]]))]
       .filter((n) => n !== undefined)

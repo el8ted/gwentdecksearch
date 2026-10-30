@@ -97,6 +97,12 @@ jobs:
       # File this release's changelog entries under its tag, leaving Unreleased empty for the next changes.
       - name: Update CHANGELOG.md
         run: |
+          # main may have moved on since the tag: lines added after it aren't in this release, so leave them for the next.
+          git fetch -q --depth=1 origin "refs/tags/$TAG:refs/tags/$TAG"
+          if ! git diff --quiet "$TAG" HEAD -- CHANGELOG.md; then
+            echo "::warning::CHANGELOG.md changed on main since $TAG; not filing, the next release will."
+            exit 0
+          fi
           node scripts/release-notes.ts file "$TAG"
           if git diff --quiet CHANGELOG.md; then exit 0; fi
           git config user.name 'github-actions[bot]'
