@@ -236,7 +236,7 @@ const COLUMNS = `## Columns
 
 | Column | Meaning |
 |---|---|
-| deck_id | playgwent's deck hash; joins with deck-cards.csv |
+| deck_id | playgwent's deck hash (\`{hash}-{guide number}\` for a guide sharing an older guide's hash); joins with deck-cards.csv |
 | url | The deck or guide on playgwent.com |
 | name, original_name, original_lang | The name in English; the author's own name and language, when it wasn't English |
 | faction, leader_id, leader, stratagem_id, stratagem | Faction code (MO, NG, NR, SK, ST, SY), leader and stratagem |

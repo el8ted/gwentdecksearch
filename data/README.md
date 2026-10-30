@@ -122,7 +122,7 @@ stay here but aren't built.
 
 | Field | Meaning |
 |---|---|
-| `hash` | The deck code. Two links with the same code are the same deck, listed once. |
+| `hash` | The deck code. Two deck links with the same code are the same deck, listed once; guides sharing a code are each listed (see `id` below). |
 | `cards` | `[card ID, copies]` exactly as playgwent returned them, in no guaranteed order (find the leader and stratagem by their `type` in `cards.json`). playgwent leaves out the default stratagem (Tactical Advantage, 202140); the build adds it back. |
 | `modified`, `guideModified` | The deck's own date, and the guide listing's date when it was fetched. A different listing date on the next run means the guide was edited. |
 | `guide` | Guides only: word counts (`unique` = distinct words), images, the language the text reads as (when the detector is sure) and the first YouTube video it embeds or links. The guide's text itself isn't kept here. |
@@ -221,7 +221,7 @@ header, and the name of the release.
   tag on those cards.
 - `aliases` holds, for each creator the decks credit (by channel name), their confirmed Gwent IDs and other channels
   from `creators.json`. Search treats all of a creator's names as one author.
-- `decks` holds each deck once (by deck code):
+- `decks` holds each deck once (by deck code; guides sharing a code are each listed):
 
 ```json
 {
@@ -241,6 +241,7 @@ header, and the name of the release.
 
 | Field | How it's made |
 |---|---|
+| `id` | The deck code. A guide sharing its code with an older guide gets `{code}-{guide number}`, so both are listed. |
 | `name` | English: the original if it was English, else `translations.json`. A guide published without a name gets its leader's name. |
 | `original` | The source's own name and language, for visitors using that language. |
 | `stats` | Computed from today's `cards.json`: `provisions` excludes the leader; `scraps` counts only the fetched copies. |

@@ -186,7 +186,7 @@ export function renderFilters() {
 /** Draws what's under the filters: the deck list or the Craft list, for the decks that match. */
 export function renderResults() {
   const { state, loc } = session
-  const matches = matchDecks(decks, state, undefined, (d) => deckName(d, loc))
+  const matches = matchDecks(decks, state, undefined, (d) => deckName(d, loc), loc.lang)
   session.matchCount = matches.length
   // A link shown to copy by hand is for the search it was made from.
   els.shareFallback.hidden = true
@@ -304,7 +304,7 @@ function renderPanel(matches: IndexedDeck[], picked: number[]) {
   }
   els.panelHead.textContent = loc.t('freq.inDecks', { n: matches.length })
   els.bars.innerHTML = barsHtml(
-    cardFrequency(matches, picked, data.cards, view.freq, loc.card),
+    cardFrequency(matches, picked, data.cards, view.freq, loc.card, loc.lang),
     matches.length,
     data,
     loc,
@@ -321,7 +321,7 @@ function renderCraft(matches: IndexedDeck[], picked: number[]) {
   const { state, view, loc } = session
   const { t } = loc
   els.resultHead.textContent = t('craft.head', { n: matches.length })
-  const rows = craftList(matches, picked, data.cards, loc.card)
+  const rows = craftList(matches, picked, data.cards, loc.card, loc.lang)
   // With no faction picked the top is mostly neutral cards; say why, since that's the advice.
   const top = rows.slice(0, CONFIG.craftNeutralSample)
   const neutral =

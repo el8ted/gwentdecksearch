@@ -159,6 +159,13 @@ export function buildDataset(input: BuildInput): BuildOutput {
       if (!names.includes(creatorName(creator))) featuredBy.set(code, [...names, creatorName(creator)])
     }
   }
+  // Each deck code's oldest guide keeps the code as its ID, so a newer guide copying it doesn't change older links.
+  const codeOwner = new Map<string, number>()
+  for (const { url, guide } of entries) {
+    const s = store[url]
+    if (!guide || !s || 'missing' in s) continue
+    codeOwner.set(s.hash, Math.min(codeOwner.get(s.hash) ?? guide.id, guide.id))
+  }
   const seen = new Set<string>()
   const glossaries = new Map<string, Glossary>()
   const tagNames = input.tags.en ?? {}
@@ -190,9 +197,10 @@ export function buildDataset(input: BuildInput): BuildOutput {
       ? { url: stored.guide.video, lang: summary.guideLang ?? entry.lang }
       : (urlVideo.get(entry.url) ?? channelVideo.get(stored.hash))
     // The same saved deck, or (for a plain deck link, not a guide) the same cards saved under another hash: one deck,
-    // with every source and creator. Guides stay apart: each has its own author, votes and text.
+    // with every source and creator. Guides stay apart, even on the same deck code: each has its own author, votes
+    // and text.
     const list = listKey(copies)
-    const known = byHash.get(stored.hash) ?? (entry.guide ? undefined : byList.get(list))
+    const known = entry.guide ? undefined : (byHash.get(stored.hash) ?? byList.get(list))
     if (known) {
       known.sources = SOURCES.filter((s) => known.sources.includes(s) || urlSources.get(entry.url)?.has(s))
       known.video ??= video
@@ -210,7 +218,11 @@ export function buildDataset(input: BuildInput): BuildOutput {
     const nonLeader = copies.filter(([id]) => id !== leader)
     const deck: Deck = {
       name: entry.name,
-      id: stored.hash,
+      // A guide sharing its deck code with an older guide gets its own ID, so each can be listed, opened and linked.
+      id:
+        entry.guide && (byHash.has(stored.hash) || codeOwner.get(stored.hash) !== entry.guide.id)
+          ? `${stored.hash}-${entry.guide.id}`
+          : stored.hash,
       url: entry.url,
       ...(stored.guideModified && { updated: stored.guideModified }),
       stats: {
@@ -238,7 +250,8 @@ export function buildDataset(input: BuildInput): BuildOutput {
         translateName(entry.name, glossaries.get(lang) ?? new Map(), lang).text
       deck.original = { lang, name: entry.name }
     }
-    byHash.set(stored.hash, deck)
+    // Plain links with this code join the deck that carries it as its ID.
+    if (deck.id === stored.hash) byHash.set(stored.hash, deck)
     if (!byList.has(list)) byList.set(list, deck)
     decks.push(deck)
   }
@@ -287,12 +300,14 @@ export function buildDataset(input: BuildInput): BuildOutput {
   }
 }
 
+/** Text made safe for a Markdown table cell: `|` escaped, and line breaks (some deck names have them) as spaces. */
+const cell = (s: string) => s.replaceAll('|', '\\|').replace(/\s*[\r\n]+\s*/g, ' ')
+
 /**
  * The creators page the site's Credits links to: every creator whose channels are read (not `skip`), each channel
  * linked, with their confirmed Gwent IDs and how many decks credit them, most first.
  */
 function creatorsMarkdown(creators: Creator[], decks: Deck[]): string {
-  const cell = (s: string) => s.replaceAll('|', '\\|')
   const credited = (name: string) => decks.filter((d) => d.featured?.includes(name)).length
   const rows = creators
     .filter((c) => !c.skip)
@@ -326,7 +341,6 @@ language the videos show; "Decks" counts the decks that credit the channel.
 /** The merged deck list for review: one table row per deck, by faction, leader and name. */
 function decklistMarkdown(decks: Deck[], cards: Record<number, Card>): string {
   const leaderOf = (d: Deck) => d.cards.find(([id]) => cards[id].type === 'leader')?.[0] ?? 0
-  const cell = (s: string) => s.replaceAll('|', '\\|')
   const rows = decks
     .map((d) => ({ d, faction: cards[leaderOf(d)].faction, leader: cards[leaderOf(d)].name }))
     .sort(

@@ -8,6 +8,11 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- Guides built on the same saved deck are each listed now, with their own author, votes and video: about 170
+  guides, many by players who'd used another's deck code, were hidden behind the first.
+- Deck names and the card lists sort in the page's language, not your browser's (Ä with A in German, after Z in
+  Swedish).
+
 ## 2026-10-27
 
 - Decks from Gwent creators' YouTube videos are now in the list, under **Community**, each with its video. A deck
