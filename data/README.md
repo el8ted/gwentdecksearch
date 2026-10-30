@@ -122,7 +122,7 @@ stay here but aren't built.
 
 | Field | Meaning |
 |---|---|
-| `hash` | The deck code. Two links with the same code are the same deck, listed once. |
+| `hash` | The deck code. Two deck links with the same code are the same deck, listed once; guides sharing a code are each listed (see `id` below). |
 | `cards` | `[card ID, copies]` exactly as playgwent returned them, in no guaranteed order (find the leader and stratagem by their `type` in `cards.json`). playgwent leaves out the default stratagem (Tactical Advantage, 202140); the build adds it back. |
 | `modified`, `guideModified` | The deck's own date, and the guide listing's date when it was fetched. A different listing date on the next run means the guide was edited. |
 | `guide` | Guides only: word counts (`unique` = distinct words), images, the language the text reads as (when the detector is sure) and the first YouTube video it embeds or links. The guide's text itself isn't kept here. |
