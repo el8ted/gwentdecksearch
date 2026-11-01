@@ -18,7 +18,8 @@ see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Checks
 
-Run before committing; CI runs the same on every push and pull request (`.github/workflows/ci.yml`):
+Run before committing; CI runs the same on every push and pull request (`.github/workflows/ci.yml`), except that its
+browser tests are Chromium only, so run Firefox yourself before pushing:
 
 ```bash
 pnpm check        # lint and formatting (pnpm check:fix to fix)
