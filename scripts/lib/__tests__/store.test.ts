@@ -1,8 +1,14 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import * as fs from 'node:fs/promises'
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { readJson, writeJson } from '../store.ts'
+
+vi.mock('node:fs/promises', async (original) => {
+  const real = await original<typeof import('node:fs/promises')>()
+  return { ...real, rename: vi.fn(real.rename) }
+})
 
 let dir: string
 
@@ -11,6 +17,33 @@ beforeEach(async () => {
 })
 
 describe('writeJson', () => {
+  it('replaces the file and leaves no temporary file behind', async () => {
+    // Arrange
+    const path = join(dir, 'a.json')
+    await writeJson(path, { v: 1 })
+
+    // Act
+    await writeJson(path, { v: 2 })
+
+    // Assert
+    expect(JSON.parse(await readFile(path, 'utf8'))).toEqual({ v: 2 })
+    expect(await readdir(dir)).toEqual(['a.json'])
+  })
+
+  it('keeps the existing file when the write is interrupted before the rename', async () => {
+    // Arrange
+    const path = join(dir, 'a.json')
+    await writeJson(path, { v: 1 })
+    vi.mocked(fs.rename).mockRejectedValueOnce(new Error('interrupted'))
+
+    // Act
+    const attempt = writeJson(path, { v: 2 })
+
+    // Assert
+    await expect(attempt).rejects.toThrow('interrupted')
+    expect(JSON.parse(await readFile(path, 'utf8'))).toEqual({ v: 1 })
+  })
+
   it('sorts nested keys, keeps array order and ends with a newline', async () => {
     // Arrange
     const path = join(dir, 'sub', 'a.json')
