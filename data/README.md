@@ -271,8 +271,8 @@ with their confirmed Gwent IDs, the game language their videos show, and how man
 - `guide-text.json` holds each guide's plain text, written by the deck refresh. It's there so guide measures can be
   recomputed without refetching every guide. Safe to delete; it fills again as guides are fetched.
 - Other folders there (`card-search/`, `decks/`, `guides/`, `listing/`, `mt/`, `sheets/`, …) are left over from an
-  earlier version of the scraper. Nothing writes them now. **Known issue:** `scripts/card-art.py` still reads
-  `data/cache/card-search/`, so on a fresh clone it can't find its input.
+  earlier version of the scraper. Nothing writes them now. `scripts/card-art.py` reads `card-search/`, so it
+  can't run on a fresh clone; that is deliberate while the card catalog is frozen (see MAINTAINING.md, Generated files).
 
 ## Decoding: recipes
 
