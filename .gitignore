@@ -3,6 +3,7 @@ dist
 gwent-deck-data
 coverage
 data/cache
+*.tmp
 .playwright-mcp
 .pi
 .idea

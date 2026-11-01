@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import type { Card } from '../../src/types.ts'
 import type { GuideInfo } from './guide.ts'
@@ -111,6 +111,9 @@ export async function writeJson(path: string, value: unknown): Promise<boolean> 
   const text = `${format(sortKeys(value))}\n`
   if ((await readFile(path, 'utf8').catch(() => undefined)) === text) return false
   await mkdir(dirname(path), { recursive: true })
-  await writeFile(path, text)
+  // Single writer, so a fixed name is safe; a partial write never replaces a good store.
+  const tmp = `${path}.tmp`
+  await writeFile(tmp, text)
+  await rename(tmp, path)
   return true
 }
