@@ -7,6 +7,15 @@ import { extractTagNames, extractTerms } from './terms.ts'
 // The default search omits leaders, hence the second query.
 const QUERIES = ['limit=2000&offset=0', 'type=1&limit=200&offset=0']
 
+/** The catalog is frozen (development has stopped): any change in card count is a bad response, not a patch. */
+export function catalogCount(prev: number, next: number): void {
+  if (prev && next !== prev) {
+    throw new Error(
+      `Card catalog went ${prev} -> ${next}; keeping the old store. If cards really changed, edit data/source/cards.json by hand and rerun`,
+    )
+  }
+}
+
 /** Current card data from playgwent: the catalog, localized card names and official terms. */
 export interface CardData {
   cards: Record<number, CatalogCard>
