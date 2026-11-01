@@ -21,7 +21,8 @@ type Cell = string | number | undefined
  */
 export function csv(header: string[], rows: Cell[][]): string {
   const cell = (v: Cell) => {
-    const s = v === undefined ? '' : String(v)
+    // Names come from other people: a string starting like a formula would run in a spreadsheet.
+    const s = typeof v === 'string' && /^[@=+\t\r]/.test(v) ? `'${v}` : v === undefined ? '' : String(v)
     return /[",\r\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s
   }
   return `\uFEFF${[header, ...rows].map((r) => r.map(cell).join(',')).join('\r\n')}\r\n`
