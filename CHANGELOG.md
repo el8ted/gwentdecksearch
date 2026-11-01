@@ -8,6 +8,8 @@ the release tag and starts a new Unreleased section. -->
 
 ## Unreleased
 
+- Clearing the last faction pill no longer drops your chosen leader.
+
 ## 2026-10-27.02
 
 - Guides built on the same saved deck are each listed now, with their own author, votes and video: about 170
