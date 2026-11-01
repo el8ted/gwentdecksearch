@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fetchCardData } from '../card-refresh.ts'
+import { catalogCount, fetchCardData } from '../card-refresh.ts'
 
 const KEYS = [
   ...[0, 1, 2, 3, 4, 5, 6].map((i) => `faction_name_${i}`),
@@ -56,5 +56,17 @@ describe('fetchCardData', () => {
     expect(data.tags.en).toEqual({ c12: 'Beast-en', order: 'Order-en' })
     // zh-cn's builder leaves ability names blank: they come from its card text instead.
     expect(data.tags['zh-cn']).toEqual({ c12: 'Beast-zh-cn', order: 'zh-cn-ord' })
+  })
+})
+
+describe('catalogCount', () => {
+  it('accepts an unchanged count and a first run with no previous store', () => {
+    expect(() => catalogCount(1261, 1261)).not.toThrow()
+    expect(() => catalogCount(0, 1261)).not.toThrow()
+  })
+
+  it('rejects any change in the card count', () => {
+    expect(() => catalogCount(1261, 1260)).toThrow('1261 -> 1260')
+    expect(() => catalogCount(1261, 900)).toThrow(/keeping the old store/)
   })
 })
