@@ -24,6 +24,8 @@ export const COMMUNITY_WINDOW_MONTHS = 18
  */
 export const SHEET_WINDOW_MONTHS = 12
 const LISTING_PAGE = 500
+// shortcut: fixed cap, raise it if the guide count ever outgrows it. The 18-month window is ~7 pages today.
+const MAX_LISTING_PAGES = 30
 const GUIDE_API = 'https://www.playgwent.com/en/decks/api/guides'
 // Order matters: the first entry for a deck names it. Shinmiri2 precedes MetallicDanny because MetallicDanny's
 // names are machine-translated from Russian; display order is SOURCES, not this.
@@ -78,8 +80,9 @@ export async function collectEntries(
 ): Promise<{ entries: DeckEntry[]; listed: number }> {
   const sinceIso = monthsBefore(now, windows.community).toISOString()
   const listed: ListedGuide[] = []
-  for (let offset = 0; ; offset += LISTING_PAGE) {
-    const body = await get(`${GUIDE_API}/offset/${offset}/limit/${LISTING_PAGE}`)
+  for (let n = 0; ; n++) {
+    if (n === MAX_LISTING_PAGES) throw new Error(`The guide listing did not end after ${n} pages`)
+    const body = await get(`${GUIDE_API}/offset/${n * LISTING_PAGE}/limit/${LISTING_PAGE}`)
     const page: ListedGuide[] = JSON.parse(body).guides
     listed.push(...page)
     if (page.length < LISTING_PAGE || page.every((g) => g.modified < sinceIso)) break

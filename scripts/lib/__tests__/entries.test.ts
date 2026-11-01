@@ -94,6 +94,21 @@ describe('collectEntries', () => {
     expect(requested.some((u) => u.endsWith('gid=102'))).toBe(false)
   })
 
+  it('stops with an error when the API keeps serving the same recent page', async () => {
+    // Arrange: every offset answers with the same full page of recent guides
+    const page = JSON.stringify({
+      guides: Array.from({ length: 500 }, (_, i) => guide(i, '2026-10-01T00:00:00+00:00')),
+    })
+    const get = async (url: string) =>
+      url.includes('/api/guides/') ? page : url.endsWith('/htmlview') ? TABS : 'header\n'
+
+    // Act
+    const run = collectEntries(get, noLinks, NOW)
+
+    // Assert
+    await expect(run).rejects.toThrow('did not end after 30 pages')
+  })
+
   it('pages through the guide listing until a page is short', async () => {
     // Arrange: a full page of recent guides, then one more
     const requested: string[] = []
