@@ -16,6 +16,22 @@ test('a faction filter updates the hash and survives a reload', async ({ page, o
   await expect(head).toHaveText(new RegExp(`^${expectedCount({ factions: ['MO'] })} `))
 })
 
+test('clearing the last faction pill keeps the chosen leader', async ({ page, open }) => {
+  // Arrange
+  await open('#l=122105&f=SY')
+  const head = page.locator('#result-head')
+  const count = expectedCount({ factions: ['SY'], leader: 122105 })
+  await expect(head).toHaveText(new RegExp(`^${count} `))
+
+  // Act
+  await page.locator('[data-faction="SY"]').click()
+
+  // Assert
+  await expect(page).toHaveURL(/#l=122105$/)
+  await expect(page.locator('[data-leader="122105"]')).toHaveAttribute('aria-pressed', 'true')
+  await expect(head).toHaveText(new RegExp(`^${expectedCount({ leader: 122105 })} `))
+})
+
 test('sources start unpicked; picking one, then another, widens the list, and unpicking all shows every deck', async ({
   page,
   open,

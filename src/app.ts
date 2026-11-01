@@ -26,9 +26,9 @@ import { deckName } from './ui/results.ts'
 export function update(next: Partial<FilterState>, { push = false } = {}) {
   const { state } = session
   const before = encodeState(state)
-  // A leader outside the new factions would be a filter with no visible pill.
+  // A leader outside the new factions would be a filter with no visible pill; no factions means no faction filter.
   const leader = state.leader
-  if (next.factions && leader !== undefined && !next.factions.includes(data.cards[leader].faction)) {
+  if (next.factions?.length && leader !== undefined && !next.factions.includes(data.cards[leader].faction)) {
     next = { ...next, leader: undefined }
   }
   session.state = { ...state, ...next }
