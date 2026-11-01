@@ -3,8 +3,8 @@
 - Stratagems: card art cropped to a square, src/icons/s-{id}.webp.
 - Leaders: the game's ability icon, src/icons/l-{id}.webp.
 
-Reads data/cache/card-search/{all,leaders}.json (run `pnpm scrape:cards` first) and needs Pillow.
-Run again when CDPR adds a leader or stratagem.
+Reads data/cache/card-search/{all,leaders}.json and needs Pillow. Dormant: the card catalog is frozen and
+`pnpm scrape:cards` no longer writes those files; restore that before running this for a new leader or stratagem.
 
     python3 scripts/card-art.py && pnpm check:fix
 """
