@@ -35,6 +35,16 @@ describe('csv', () => {
   })
 })
 
+describe('csv formula guard', () => {
+  it('marks strings that start like a formula as text, and leaves numbers alone', () => {
+    // Act
+    const text = csv(['a', 'b', 'c'], [['=HYPERLINK(1,2)', '+45', -45]])
+
+    // Assert
+    expect(text).toBe('\uFEFFa,b,c\r\n"\'=HYPERLINK(1,2)",\'+45,-45\r\n')
+  })
+})
+
 describe('decksCsv and deckCardsCsv', () => {
   it("lists each deck with its leader, provisions against today's limit and video, and its cards by role", () => {
     // Act
