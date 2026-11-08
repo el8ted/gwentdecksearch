@@ -9,6 +9,7 @@ the release tag and starts a new Unreleased section. -->
 ## Unreleased
 
 - Clearing the last faction pill no longer drops your chosen leader.
+- CSV export: deck names that start like a spreadsheet formula (`=`, `+`, `@`) get a leading apostrophe, so they show as text.
 
 ## 2026-10-27.02
 
