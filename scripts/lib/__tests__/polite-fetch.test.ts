@@ -131,6 +131,19 @@ describe('createPoliteFetch', () => {
     expect(sleep).toHaveBeenCalledWith(7000)
   })
 
+  it('fails at once when Retry-After is over a minute', async () => {
+    // Arrange
+    fetchMock.mockResolvedValueOnce(respond(429, '', { 'retry-after': '86400' }))
+    const get = createPoliteFetch(delays)
+
+    // Act
+    const act = get(URL_A)
+
+    // Assert
+    await expect(act).rejects.toThrow('Retry-After 86400s is too long')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
   it('backs off on network errors and gives up after three retries', async () => {
     // Arrange
     fetchMock.mockRejectedValue(new Error('ECONNRESET'))

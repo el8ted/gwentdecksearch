@@ -4,6 +4,8 @@ import { consola } from 'consola'
 const USER_AGENT = 'gwent-deck-search (personal, non-commercial)'
 const BACKOFF_MS = [5_000, 10_000, 20_000]
 const TIMEOUT_MS = 30_000
+// A longer Retry-After (MyMemory sends 86400 once its daily quota is spent) fails at once instead of stalling the run.
+const MAX_RETRY_AFTER_MS = 60_000
 
 /** Raised for a 404 or similar permanent failure; the run continues without that page. */
 export class NotFoundError extends Error {}
@@ -16,7 +18,8 @@ export type HostDelays = Record<string, number>
  *
  * - One request in flight at a time, with a minimum gap per host (`delays`); unknown hosts are refused.
  * - An honest User-Agent naming the tool.
- * - On 429 or 5xx: honor `Retry-After`, else back off 5 s, 10 s, 20 s; after that, throw. Any other failure
+ * - On 429 or 5xx: honor `Retry-After` up to a minute (longer throws at once), else back off 5 s, 10 s, 20 s; after
+ *   that, throw. Any other failure
  *   throws at once (the scraper then stops; the stores keep what was fetched).
  * - Only fetch URLs the site's robots.txt allows (playgwent's blocks only GPTBot). Nothing here enforces this:
  *   check robots.txt before adding a new host or path.
@@ -60,6 +63,7 @@ export function createPoliteFetch(delays: HostDelays, headers: Record<string, st
       if (!retryable || attempt >= BACKOFF_MS.length) throw new Error(`${reason} for ${url}`)
       const retryAfter = res instanceof Error ? Number.NaN : Number(res.headers.get('retry-after'))
       const wait = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : BACKOFF_MS[attempt]
+      if (wait > MAX_RETRY_AFTER_MS) throw new Error(`${reason} for ${url}; Retry-After ${wait / 1000}s is too long`)
       consola.warn(`${reason} for ${url}; retrying in ${wait / 1000}s`)
       await sleep(wait)
     }
