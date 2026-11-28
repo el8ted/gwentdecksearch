@@ -26,6 +26,8 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # A normal run takes under 10 minutes; without this a stalled one holds the concurrency group for 6 hours.
+    timeout-minutes: 30
     permissions:
       contents: write
     outputs:
