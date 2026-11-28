@@ -1,6 +1,534 @@
 [
   {
     "guide": {
+      "author": "GAMIXEL",
+      "id": 409021,
+      "modified": "2026-11-28T15:30:09+00:00",
+      "votes": 1
+    },
+    "lang": "fr",
+    "name": "Batist Go ahead !",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409021"
+  },
+  {
+    "guide": {
+      "author": "LoriV2",
+      "id": 409013,
+      "modified": "2026-11-28T13:48:45+00:00",
+      "votes": 0
+    },
+    "lang": "pl",
+    "name": "Kukuryny",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409013"
+  },
+  {
+    "guide": {
+      "author": "궨트에타라신지",
+      "id": 409018,
+      "modified": "2026-11-28T06:28:23+00:00",
+      "votes": 0
+    },
+    "lang": "ko",
+    "name": "투생식 환대2",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409018"
+  },
+  {
+    "guide": {
+      "author": "궨트에타라신지",
+      "id": 409016,
+      "modified": "2026-11-28T06:20:03+00:00",
+      "votes": 0
+    },
+    "lang": "ko",
+    "name": "투생식 환대",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409016"
+  },
+  {
+    "guide": {
+      "author": "궨트에타라신지",
+      "id": 409015,
+      "modified": "2026-11-28T06:18:45+00:00",
+      "votes": 0
+    },
+    "lang": "ko",
+    "name": "메아리투생",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409015"
+  },
+  {
+    "guide": {
+      "author": "2gAmeArt",
+      "id": 409012,
+      "modified": "2026-11-27T18:23:07+00:00",
+      "votes": 0
+    },
+    "lang": "ru",
+    "name": "Лавк плоды контроль",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409012"
+  },
+  {
+    "guide": {
+      "author": "olly3864_",
+      "id": 409011,
+      "modified": "2026-11-27T17:53:31+00:00",
+      "votes": 0
+    },
+    "lang": "en",
+    "name": "Onslaught",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409011"
+  },
+  {
+    "guide": {
+      "author": "Deyfre",
+      "id": 409008,
+      "modified": "2026-11-27T16:11:51+00:00",
+      "votes": 0
+    },
+    "lang": "en",
+    "name": "Northern Witchers",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409008"
+  },
+  {
+    "guide": {
+      "author": "Alxemus",
+      "id": 409009,
+      "modified": "2026-11-27T15:43:14+00:00",
+      "votes": 0
+    },
+    "lang": "en",
+    "name": "Elf Trap",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409009"
+  },
+  {
+    "guide": {
+      "author": "Deyfre",
+      "id": 199681,
+      "modified": "2026-11-27T15:10:05+00:00",
+      "votes": 3
+    },
+    "lang": "pl",
+    "name": "Safe Kolgrim (super outdated)",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/199681"
+  },
+  {
+    "guide": {
+      "author": "0RenRen0",
+      "id": 409007,
+      "modified": "2026-11-27T13:27:52+00:00",
+      "votes": 0
+    },
+    "lang": "ja",
+    "name": "ヴィー複製継戦デッキ",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409007"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 409002,
+      "modified": "2026-11-27T02:14:07+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Enxame de Aracnas",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/409002"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408993,
+      "modified": "2026-11-26T21:03:27+00:00",
+      "votes": 2
+    },
+    "lang": "pt-BR",
+    "name": "ada",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408993"
+  },
+  {
+    "guide": {
+      "author": "chillking1234",
+      "id": 408836,
+      "modified": "2026-11-26T20:49:26+00:00",
+      "votes": 0
+    },
+    "lang": "ru",
+    "name": "Королевское вдохновение",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408836"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408991,
+      "modified": "2026-11-26T15:12:11+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Nekker",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408991"
+  },
+  {
+    "guide": {
+      "author": "GOSU..",
+      "id": 408990,
+      "modified": "2026-11-26T14:55:23+00:00",
+      "votes": 1
+    },
+    "lang": "ko",
+    "name": "ADA (아다)",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408990"
+  },
+  {
+    "guide": {
+      "author": "The_Jack_Sparrow",
+      "id": 408989,
+      "modified": "2026-11-26T12:51:22+00:00",
+      "votes": 1
+    },
+    "lang": "en",
+    "name": "Renfri's Ogroids",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408989"
+  },
+  {
+    "guide": {
+      "author": "MetallicDanny",
+      "id": 408978,
+      "modified": "2026-11-25T16:28:29+00:00",
+      "votes": 3
+    },
+    "lang": "ru",
+    "name": "🏹Амбуш Эльфы | Ambush Elves",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408978"
+  },
+  {
+    "guide": {
+      "author": "Feli10",
+      "id": 408974,
+      "modified": "2026-11-25T09:49:09+00:00",
+      "votes": 0
+    },
+    "lang": "de",
+    "name": "Haudegen-Schwarm – Mobilmachung | Engine-Deck",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408974"
+  },
+  {
+    "guide": {
+      "author": "Tch_me",
+      "id": 408972,
+      "modified": "2026-11-25T07:32:23+00:00",
+      "votes": 0
+    },
+    "lang": "ru",
+    "name": "Сладкие ИНскеты",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408972"
+  },
+  {
+    "guide": {
+      "author": "90andramed",
+      "id": 408967,
+      "modified": "2026-11-25T00:04:16+00:00",
+      "votes": 1
+    },
+    "lang": "ru",
+    "name": "Ведьмачья сила",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408967"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408964,
+      "modified": "2026-11-24T21:41:49+00:00",
+      "votes": 0
+    },
+    "lang": "pt-BR",
+    "name": "Esconderijo Secreto",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408964"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408961,
+      "modified": "2026-11-24T17:55:50+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "construto",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408961"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408960,
+      "modified": "2026-11-24T17:53:34+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "nekker",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408960"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408959,
+      "modified": "2026-11-24T17:52:33+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Melitele",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408959"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408957,
+      "modified": "2026-11-24T17:47:28+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "sigvald",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408957"
+  },
+  {
+    "guide": {
+      "author": "0RenRen0",
+      "id": 408956,
+      "modified": "2026-11-24T14:44:01+00:00",
+      "votes": 0
+    },
+    "lang": "ja",
+    "name": "デッキ圧縮コルグリムデッキ",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408956"
+  },
+  {
+    "guide": {
+      "author": "DavkaKwiat",
+      "id": 406794,
+      "modified": "2026-11-24T13:10:43+00:00",
+      "votes": 0
+    },
+    "lang": "pl",
+    "name": "aglais krasnal nekker",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/406794"
+  },
+  {
+    "guide": {
+      "author": "DavkaKwiat",
+      "id": 406792,
+      "modified": "2026-11-24T08:45:41+00:00",
+      "votes": 0
+    },
+    "lang": "en",
+    "name": "driady",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/406792"
+  },
+  {
+    "guide": {
+      "author": "DavkaKwiat",
+      "id": 406799,
+      "modified": "2026-11-24T08:44:03+00:00",
+      "votes": 0
+    },
+    "lang": "pl",
+    "name": "aglais przemieszczenie",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/406799"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408953,
+      "modified": "2026-11-23T22:57:11+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Fome Opressora",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408953"
+  },
+  {
+    "guide": {
+      "author": "Summeroid",
+      "id": 408952,
+      "modified": "2026-11-23T20:49:27+00:00",
+      "votes": 1
+    },
+    "lang": "ru",
+    "name": "RANDOM BULLSHIT GO",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408952"
+  },
+  {
+    "guide": {
+      "author": "Qcento",
+      "id": 408949,
+      "modified": "2026-11-23T17:32:48+00:00",
+      "votes": 3
+    },
+    "lang": "en",
+    "name": "BRINGING BACK AN ABSOLUTE BANGER",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408949"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408831,
+      "modified": "2026-11-23T15:57:09+00:00",
+      "votes": 2
+    },
+    "lang": "pt-BR",
+    "name": "Chacina",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408831"
+  },
+  {
+    "guide": {
+      "author": "kszaczasty",
+      "id": 408945,
+      "modified": "2026-11-23T15:44:01+00:00",
+      "votes": 1
+    },
+    "lang": "en",
+    "name": "Ursine Ritual",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408945"
+  },
+  {
+    "guide": {
+      "author": "0RenRen0",
+      "id": 408943,
+      "modified": "2026-11-23T14:26:05+00:00",
+      "votes": 0
+    },
+    "lang": "ja",
+    "name": "調和デッキ",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408943"
+  },
+  {
+    "guide": {
+      "author": "GAMIXEL",
+      "id": 408941,
+      "modified": "2026-11-23T12:24:24+00:00",
+      "votes": 2
+    },
+    "lang": "fr",
+    "name": "Cain'Mil Aen Seidhe !!!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408941"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408939,
+      "modified": "2026-11-23T03:06:31+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Zelo Inspirado",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408939"
+  },
+  {
+    "guide": {
+      "author": "coapaparaco",
+      "id": 408935,
+      "modified": "2026-11-22T20:28:13+00:00",
+      "votes": 3
+    },
+    "lang": "en",
+    "name": "Waylay trap disco sensation",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408935"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408936,
+      "modified": "2026-11-22T20:20:11+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "nekker",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408936"
+  },
+  {
+    "guide": {
+      "author": "MetallicDanny",
+      "id": 408931,
+      "modified": "2026-11-22T15:30:43+00:00",
+      "votes": 6
+    },
+    "lang": "ru",
+    "name": "🩹GN Self-Wound|Накер Исцеления🐻",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408931"
+  },
+  {
+    "guide": {
+      "author": "_OnlyOne_",
+      "id": 408925,
+      "modified": "2026-11-21T16:18:49+00:00",
+      "votes": 0
+    },
+    "lang": "ru",
+    "name": "Натиск",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408925"
+  },
+  {
+    "guide": {
+      "author": "_OnlyOne_",
+      "id": 408924,
+      "modified": "2026-11-21T16:11:15+00:00",
+      "votes": 0
+    },
+    "lang": "ru",
+    "name": "Двойная игра",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408924"
+  },
+  {
+    "guide": {
+      "author": "curinga75",
+      "id": 408921,
+      "modified": "2026-11-21T15:31:28+00:00",
+      "votes": 1
+    },
+    "lang": "pt-BR",
+    "name": "Angra dos Piratas",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/guides/408921"
+  },
+  {
+    "guide": {
       "author": "GOSU..",
       "id": 408917,
       "modified": "2026-11-21T10:36:55+00:00",
@@ -13,10 +541,10 @@
   },
   {
     "guide": {
-      "author": "Jekazwer",
+      "author": "Summeroid",
       "id": 408916,
       "modified": "2026-11-21T07:25:13+00:00",
-      "votes": 2
+      "votes": 1
     },
     "lang": "ru",
     "name": "Mobilization",
@@ -40,7 +568,7 @@
       "author": "matroskingoo",
       "id": 408906,
       "modified": "2026-11-20T18:24:20+00:00",
-      "votes": 1
+      "votes": 0
     },
     "lang": "en",
     "name": "Турма",
@@ -52,7 +580,7 @@
       "author": "matroskingoo",
       "id": 408905,
       "modified": "2026-11-20T18:10:34+00:00",
-      "votes": 1
+      "votes": 0
     },
     "lang": "en",
     "name": "Lavk assimilation",
@@ -70,18 +598,6 @@
     "name": "лилит огр",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/408904"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
-      "id": 408903,
-      "modified": "2026-11-20T16:45:15+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Ada",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/408903"
   },
   {
     "guide": {
@@ -112,7 +628,7 @@
       "author": "Gintonic38",
       "id": 408896,
       "modified": "2026-11-20T00:15:15+00:00",
-      "votes": -1
+      "votes": 0
     },
     "lang": "en",
     "name": "MILL! 😈 IT'S FUN TO BE EVIL!",
@@ -124,7 +640,7 @@
       "author": "MeTpoNoM",
       "id": 408895,
       "modified": "2026-11-19T20:33:30+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "ru",
     "name": "Боевой транс",
@@ -145,10 +661,10 @@
   },
   {
     "guide": {
-      "author": "Your_Step_Father",
+      "author": "The_Jack_Sparrow",
       "id": 408893,
       "modified": "2026-11-19T16:52:16+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "en",
     "name": "Pure RNG Assimilate |",
@@ -158,21 +674,9 @@
   {
     "guide": {
       "author": "curinga75",
-      "id": 408890,
-      "modified": "2026-11-19T15:34:27+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Nekker",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/408890"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
       "id": 408889,
       "modified": "2026-11-19T15:22:46+00:00",
-      "votes": 2
+      "votes": 3
     },
     "lang": "pt-BR",
     "name": "Construto",
@@ -184,7 +688,7 @@
       "author": "curinga75",
       "id": 408888,
       "modified": "2026-11-19T15:21:12+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "pt-BR",
     "name": "assimilar",
@@ -256,7 +760,7 @@
       "author": "GeneralGustard",
       "id": 408881,
       "modified": "2026-11-18T19:29:57+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "en",
     "name": "Dragons (heavy Control)",
@@ -280,7 +784,7 @@
       "author": "GOSU..",
       "id": 408876,
       "modified": "2026-11-18T13:16:33+00:00",
-      "votes": 1
+      "votes": 0
     },
     "lang": "ko",
     "name": "King of Beggars, Cleaver (거지왕초,클리버)",
@@ -304,7 +808,7 @@
       "author": "Qcento",
       "id": 408875,
       "modified": "2026-11-18T00:15:35+00:00",
-      "votes": 1
+      "votes": 3
     },
     "lang": "en",
     "name": "THIS CLASSIC NEVER GETS OLD",
@@ -316,7 +820,7 @@
       "author": "90andramed",
       "id": 408874,
       "modified": "2026-11-17T23:40:14+00:00",
-      "votes": -1
+      "votes": 0
     },
     "lang": "ru",
     "name": "Бродяги с большака",
@@ -412,7 +916,7 @@
       "author": "Qcento",
       "id": 408854,
       "modified": "2026-11-16T22:36:25+00:00",
-      "votes": 7
+      "votes": 8
     },
     "lang": "en",
     "name": "Q GOES TO THE MASQUERADE",
@@ -470,18 +974,6 @@
   {
     "guide": {
       "author": "curinga75",
-      "id": 408842,
-      "modified": "2026-11-16T04:00:11+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Fome Opressora",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/408842"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
       "id": 408841,
       "modified": "2026-11-16T03:54:44+00:00",
       "votes": 3
@@ -502,18 +994,6 @@
     "name": "deception",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/408838"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
-      "id": 408831,
-      "modified": "2026-11-15T16:59:54+00:00",
-      "votes": 2
-    },
-    "lang": "pt-BR",
-    "name": "Chacina",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/408831"
   },
   {
     "guide": {
@@ -604,7 +1084,7 @@
       "author": "MAKRUK",
       "id": 408813,
       "modified": "2026-11-14T18:03:43+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "en",
     "name": "SCOIA'TAEL 4-Trap Elf Deck",
@@ -757,18 +1237,6 @@
   },
   {
     "guide": {
-      "author": "curinga75",
-      "id": 408773,
-      "modified": "2026-11-11T18:02:35+00:00",
-      "votes": 0
-    },
-    "lang": "pt-BR",
-    "name": "Esconderijo Secreto",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/408773"
-  },
-  {
-    "guide": {
       "author": "LesnoyTigr",
       "id": 408771,
       "modified": "2026-11-11T16:52:38+00:00",
@@ -808,7 +1276,7 @@
       "author": "MetallicDanny",
       "id": 408766,
       "modified": "2026-11-11T15:52:22+00:00",
-      "votes": 3
+      "votes": 5
     },
     "lang": "ru",
     "name": "👾Beer Ruehin | Пивной Рюхин🐝",
@@ -892,7 +1360,7 @@
       "author": "북부의마지막희망",
       "id": 408745,
       "modified": "2026-11-10T16:36:33+00:00",
-      "votes": 0
+      "votes": 1
     },
     "lang": "ko",
     "name": "자연의 선물",
@@ -1072,7 +1540,7 @@
       "author": "MetallicDanny",
       "id": 408714,
       "modified": "2026-11-08T15:34:47+00:00",
-      "votes": 8
+      "votes": 10
     },
     "lang": "ru",
     "name": "🐱Koschey Thrive | Кащей Симбиоз🐂",
@@ -1276,7 +1744,7 @@
       "author": "MetallicDanny",
       "id": 408673,
       "modified": "2026-11-06T15:23:27+00:00",
-      "votes": 10
+      "votes": 12
     },
     "lang": "ru",
     "name": "🕍Девоушен Храм | Dev Temple🗡️",
@@ -1456,7 +1924,7 @@
       "author": "MetallicDanny",
       "id": 408631,
       "modified": "2026-11-03T17:49:47+00:00",
-      "votes": 14
+      "votes": 17
     },
     "lang": "ru",
     "name": "⛓️Пораба Иво | Enslave Ivo✊",
@@ -1684,7 +2152,7 @@
       "author": "MetallicDanny",
       "id": 408573,
       "modified": "2026-10-29T18:00:12+00:00",
-      "votes": 13
+      "votes": 15
     },
     "lang": "ru",
     "name": "🤵 Аристократы | Aristocrats 🤢",
@@ -2092,7 +2560,7 @@
       "author": "MetallicDanny",
       "id": 408481,
       "modified": "2026-10-23T16:51:42+00:00",
-      "votes": 9
+      "votes": 11
     },
     "lang": "ru",
     "name": "😱Shupe SY | Лавк Синдикат💰",
@@ -2320,7 +2788,7 @@
       "author": "MetallicDanny",
       "id": 408423,
       "modified": "2026-10-19T16:24:35+00:00",
-      "votes": 9
+      "votes": 11
     },
     "lang": "ru",
     "name": "🎯GN Arbalests | Арбалетчики🛡️",
@@ -2764,7 +3232,7 @@
       "author": "MetallicDanny",
       "id": 408334,
       "modified": "2026-10-13T09:17:01+00:00",
-      "votes": 9
+      "votes": 11
     },
     "lang": "ru",
     "name": "🥟GN Traps | Накер Ловушки🧝",
@@ -3064,7 +3532,7 @@
       "author": "MetallicDanny",
       "id": 408263,
       "modified": "2026-10-08T15:57:37+00:00",
-      "votes": 21
+      "votes": 23
     },
     "lang": "ru",
     "name": "🏰Toussaint | Туссент🍷",
@@ -3220,7 +3688,7 @@
       "author": "MetallicDanny",
       "id": 408226,
       "modified": "2026-10-06T15:41:25+00:00",
-      "votes": 15
+      "votes": 17
     },
     "lang": "ru",
     "name": "🐜Mid Organic | Мид Органика🕸️",
@@ -3868,7 +4336,7 @@
       "author": "lerio2",
       "id": 408107,
       "modified": "2026-09-28T07:44:48+00:00",
-      "votes": 13
+      "votes": 14
     },
     "lang": "en",
     "name": "Protectors Otkell w/Lugos | Sep 2026",
@@ -4384,7 +4852,7 @@
       "author": "MetallicDanny",
       "id": 407956,
       "modified": "2026-09-19T05:59:39+00:00",
-      "votes": 29
+      "votes": 28
     },
     "lang": "ru",
     "name": "🥩Deathwish | Завещания📜",
@@ -7552,7 +8020,7 @@
       "author": "MetallicDanny",
       "id": 407305,
       "modified": "2026-08-07T14:30:23+00:00",
-      "votes": 19
+      "votes": 18
     },
     "lang": "ru",
     "name": "🏺 Adda Shupe | Адда Лавк 🧞‍♂️",
@@ -8080,7 +8548,7 @@
       "author": "raghav47i",
       "id": 406128,
       "modified": "2026-08-03T14:41:57+00:00",
-      "votes": 21
+      "votes": 20
     },
     "lang": "en",
     "name": "Fulmar rain ft. Otkell & melusine",
@@ -9949,174 +10417,6 @@
   },
   {
     "guide": {
-      "author": "DavkaKwiat",
-      "id": 406806,
-      "modified": "2026-07-10T11:36:02+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "wpierdalam wija",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406806"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406805,
-      "modified": "2026-07-10T11:35:43+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "inspiracja meve",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406805"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406802,
-      "modified": "2026-07-10T11:33:47+00:00",
-      "votes": -1
-    },
-    "lang": "pl",
-    "name": "niszczenie jednostek bez jednostek",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406802"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406801,
-      "modified": "2026-07-10T11:33:23+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "pułapki",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406801"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406798,
-      "modified": "2026-07-10T11:32:19+00:00",
-      "votes": -1
-    },
-    "lang": "pl",
-    "name": "elfy",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406798"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406797,
-      "modified": "2026-07-10T11:31:59+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "przemieszczenie nekker",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406797"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406796,
-      "modified": "2026-07-10T11:31:22+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "rębacze",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406796"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406795,
-      "modified": "2026-07-10T11:31:03+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "smoki i bomba",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406795"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406793,
-      "modified": "2026-07-10T11:30:20+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "piraci",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406793"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406792,
-      "modified": "2026-07-10T11:29:58+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "driady",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406792"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406790,
-      "modified": "2026-07-10T11:28:20+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "Rycerzyki",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406790"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406789,
-      "modified": "2026-07-10T11:27:51+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "Pojedynki",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406789"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406788,
-      "modified": "2026-07-10T11:26:55+00:00",
-      "votes": 1
-    },
-    "lang": "pl",
-    "name": "lodowisko",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406788"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 406786,
-      "modified": "2026-07-10T11:25:22+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "Wzmocnienie przeciwnika",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406786"
-  },
-  {
-    "guide": {
       "author": "Leeroybrownboy",
       "id": 406787,
       "modified": "2026-07-10T11:21:43+00:00",
@@ -10720,7 +11020,7 @@
       "author": "icetelar",
       "id": 406677,
       "modified": "2026-07-01T14:32:21+00:00",
-      "votes": 7
+      "votes": 6
     },
     "lang": "ru",
     "name": "ЦИНТРИЙСКИЕ ГИГАЧАДЫ",
@@ -11497,18 +11797,6 @@
   },
   {
     "guide": {
-      "author": "curinga75",
-      "id": 406541,
-      "modified": "2026-06-22T23:48:53+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Viraxas Kimbolt",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406541"
-  },
-  {
-    "guide": {
       "author": "Boleyn",
       "id": 406535,
       "modified": "2026-06-22T22:43:38+00:00",
@@ -11542,18 +11830,6 @@
     "name": "Ламповый компас х)",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/406529"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
-      "id": 406530,
-      "modified": "2026-06-22T15:36:48+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Melitele",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406530"
   },
   {
     "guide": {
@@ -12532,7 +12808,7 @@
       "author": "MetallicDanny",
       "id": 406342,
       "modified": "2026-06-12T05:40:09+00:00",
-      "votes": 17
+      "votes": 16
     },
     "lang": "ru",
     "name": "🗡️ Sihil NG | Сигилль НГ☀️",
@@ -13234,18 +13510,6 @@
     "name": "Королевское вдохновение",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/406206"
-  },
-  {
-    "guide": {
-      "author": "GAMIXEL",
-      "id": 406204,
-      "modified": "2026-06-04T19:34:35+00:00",
-      "votes": 7
-    },
-    "lang": "fr",
-    "name": "We Are Unique 2026",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/406204"
   },
   {
     "guide": {
@@ -14653,18 +14917,6 @@
   },
   {
     "guide": {
-      "author": "curinga75",
-      "id": 405857,
-      "modified": "2026-05-14T00:06:21+00:00",
-      "votes": 1
-    },
-    "lang": "pt-BR",
-    "name": "Frutos de Ysgith",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/405857"
-  },
-  {
-    "guide": {
       "author": "Bighomer",
       "id": 405854,
       "modified": "2026-05-13T22:20:35+00:00",
@@ -15082,18 +15334,6 @@
     "name": "Bruxos",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/405752"
-  },
-  {
-    "guide": {
-      "author": "DavkaKwiat",
-      "id": 405746,
-      "modified": "2026-05-05T09:53:30+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "deszcz",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/405746"
   },
   {
     "guide": {
@@ -16114,18 +16354,6 @@
     "name": "Мадук Драконы",
     "source": "community",
     "url": "https://www.playgwent.com/decks/guides/405563"
-  },
-  {
-    "guide": {
-      "author": "curinga75",
-      "id": 405553,
-      "modified": "2026-04-24T00:19:30+00:00",
-      "votes": 0
-    },
-    "lang": "pt-BR",
-    "name": "Angra dos Piratas",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/405553"
   },
   {
     "guide": {
@@ -22873,10 +23101,10 @@
   },
   {
     "guide": {
-      "author": "SaNvAnTeR",
+      "author": "GwentPlayer526433",
       "id": 404188,
       "modified": "2026-01-29T17:22:26+00:00",
-      "votes": 1
+      "votes": 2
     },
     "lang": "en",
     "name": "тцк бусики , НА СМЕРТЬ , НА СМЕРТЬ",
@@ -22885,10 +23113,10 @@
   },
   {
     "guide": {
-      "author": "SaNvAnTeR",
+      "author": "GwentPlayer526433",
       "id": 404184,
       "modified": "2026-01-29T16:32:23+00:00",
-      "votes": 0
+      "votes": 1
     },
     "lang": "ru",
     "name": "Тцк бусики выезжают",
@@ -22897,10 +23125,10 @@
   },
   {
     "guide": {
-      "author": "SaNvAnTeR",
+      "author": "GwentPlayer526433",
       "id": 404181,
       "modified": "2026-01-29T15:35:59+00:00",
-      "votes": 0
+      "votes": 1
     },
     "lang": "ru",
     "name": "бусики тцк",
@@ -23728,7 +23956,7 @@
       "author": "Babyjosus",
       "id": 404028,
       "modified": "2026-01-17T09:55:29+00:00",
-      "votes": 4
+      "votes": 3
     },
     "lang": "en",
     "name": "ng constructs",
@@ -24868,7 +25096,7 @@
       "author": "MetallicDanny",
       "id": 403846,
       "modified": "2026-01-05T14:42:01+00:00",
-      "votes": 42
+      "votes": 43
     },
     "lang": "ru",
     "name": "🦎Salamanders | Саламандры",
@@ -24988,7 +25216,7 @@
       "author": "MetallicDanny",
       "id": 403820,
       "modified": "2026-01-03T06:10:15+00:00",
-      "votes": 25
+      "votes": 26
     },
     "lang": "ru",
     "name": "🦅Witchers NR | Ведьмаки Севера",
@@ -25420,7 +25648,7 @@
       "author": "MetallicDanny",
       "id": 403755,
       "modified": "2025-12-29T07:21:59+00:00",
-      "votes": 67
+      "votes": 69
     },
     "lang": "ru",
     "name": "❄️Wild Hunt | Дикая Охота",
@@ -26104,7 +26332,7 @@
       "author": "MetallicDanny",
       "id": 403606,
       "modified": "2025-12-20T09:30:33+00:00",
-      "votes": 22
+      "votes": 23
     },
     "lang": "ru",
     "name": "🤺Dev Knight | Рыцари Преданность⚜️",
@@ -27292,7 +27520,7 @@
       "author": "Qcento",
       "id": 403337,
       "modified": "2025-12-03T15:23:24+00:00",
-      "votes": 6
+      "votes": 7
     },
     "lang": "en",
     "name": "HEIST IS INCREDIBLE IF LEFT UNCHECKED",
@@ -28252,7 +28480,7 @@
       "author": "kungfoorabbit",
       "id": 403139,
       "modified": "2025-11-21T14:31:21+00:00",
-      "votes": 2
+      "votes": 3
     },
     "lang": "en",
     "name": "TUGO THE ENGINE",
@@ -36736,7 +36964,7 @@
       "author": "MetallicDanny",
       "id": 401537,
       "modified": "2025-08-06T05:09:27+00:00",
-      "votes": 28
+      "votes": 29
     },
     "lang": "ru",
     "name": "💀Erland Curseds | Эрланд Проклятые",
@@ -41352,438 +41580,6 @@
     "url": "https://www.playgwent.com/decks/guides/400473"
   },
   {
-    "guide": {
-      "author": "ColdHarbinger",
-      "id": 400472,
-      "modified": "2025-05-28T14:16:13+00:00",
-      "votes": 0
-    },
-    "lang": "en",
-    "name": "Thrive, but with Control",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400472"
-  },
-  {
-    "guide": {
-      "author": "FRILANT",
-      "id": 400460,
-      "modified": "2025-05-27T20:23:16+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "raid",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400460"
-  },
-  {
-    "guide": {
-      "author": "FRILANT",
-      "id": 400458,
-      "modified": "2025-05-27T20:18:56+00:00",
-      "votes": 0
-    },
-    "lang": "en",
-    "name": "Raids",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400458"
-  },
-  {
-    "guide": {
-      "author": "SweatyBettty",
-      "id": 400455,
-      "modified": "2025-05-27T17:50:01+00:00",
-      "votes": 0
-    },
-    "lang": "en",
-    "name": "Engine deck with thinning",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400455"
-  },
-  {
-    "guide": {
-      "author": "HAE6AL",
-      "id": 400440,
-      "modified": "2025-05-26T21:32:58+00:00",
-      "votes": 0
-    },
-    "lang": "ru",
-    "name": "Обстрел спермой",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400440"
-  },
-  {
-    "guide": {
-      "author": "SirVlad7",
-      "id": 400435,
-      "modified": "2025-05-26T16:25:32+00:00",
-      "votes": 0
-    },
-    "lang": "en",
-    "name": "Hunger with dagon",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400435"
-  },
-  {
-    "guide": {
-      "author": "stellinka",
-      "id": 400434,
-      "modified": "2025-05-26T15:59:50+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "Jackpot 052025",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400434"
-  },
-  {
-    "guide": {
-      "author": "JorgedoTaverna",
-      "id": 400433,
-      "modified": "2025-05-26T13:36:09+00:00",
-      "votes": 0
-    },
-    "lang": "pt-BR",
-    "name": "Frutos de Ysgith",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400433"
-  },
-  {
-    "guide": {
-      "author": "LiarFire",
-      "id": 400418,
-      "modified": "2025-05-26T00:58:51+00:00",
-      "votes": 2
-    },
-    "lang": "en",
-    "name": "Battle Medics",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400418"
-  },
-  {
-    "guide": {
-      "author": "stellinka",
-      "id": 400429,
-      "modified": "2025-05-25T16:55:03+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "Ursine Ritual 052025",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400429"
-  },
-  {
-    "guide": {
-      "author": "alkso",
-      "id": 400425,
-      "modified": "2025-05-25T10:26:39+00:00",
-      "votes": 0
-    },
-    "lang": "ru",
-    "name": "Гнев моря",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400425"
-  },
-  {
-    "guide": {
-      "author": "LYNNKORA",
-      "id": 400402,
-      "modified": "2025-05-25T03:21:34+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "RENFRI INVIGORATED",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400402"
-  },
-  {
-    "guide": {
-      "author": "fsocietyy.",
-      "id": 400421,
-      "modified": "2025-05-24T19:59:38+00:00",
-      "votes": -1
-    },
-    "lang": "pl",
-    "name": "Royal Inspiration",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400421"
-  },
-  {
-    "guide": {
-      "author": "turbohrack",
-      "id": 400420,
-      "modified": "2025-05-24T19:06:05+00:00",
-      "votes": 0
-    },
-    "lang": "ru",
-    "name": "Бодрость",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400420"
-  },
-  {
-    "guide": {
-      "author": "Po_prostu_damianek",
-      "id": 400417,
-      "modified": "2025-05-24T16:27:59+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "OP WAMPIRY",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400417"
-  },
-  {
-    "guide": {
-      "author": "Po_prostu_damianek",
-      "id": 400415,
-      "modified": "2025-05-24T16:25:57+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "OP WAMPIRY",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400415"
-  },
-  {
-    "guide": {
-      "author": "stellinka",
-      "id": 400412,
-      "modified": "2025-05-24T14:07:06+00:00",
-      "votes": 5
-    },
-    "lang": "en",
-    "name": "Jugglers PRO RANK",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400412"
-  },
-  {
-    "guide": {
-      "author": "裸ノ大将",
-      "id": 400409,
-      "modified": "2025-05-24T07:21:16+00:00",
-      "votes": -1
-    },
-    "lang": "ja",
-    "name": "Nights/Blizzard.",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400409"
-  },
-  {
-    "guide": {
-      "author": "_Herjolf_",
-      "id": 400408,
-      "modified": "2025-05-23T23:13:20+00:00",
-      "votes": 0
-    },
-    "lang": "pl",
-    "name": "Hojny Nilfgaard",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400408"
-  },
-  {
-    "guide": {
-      "author": "sellinsouls",
-      "id": 400407,
-      "modified": "2025-05-23T21:35:15+00:00",
-      "votes": -1
-    },
-    "lang": "en",
-    "name": "Jackpot",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400407"
-  },
-  {
-    "guide": {
-      "author": "Dauren1992",
-      "id": 400399,
-      "modified": "2025-05-23T14:41:58+00:00",
-      "votes": 4
-    },
-    "lang": "ru",
-    "name": "Коварные обольстительницы / Sly Seductress",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400399"
-  },
-  {
-    "guide": {
-      "author": "MixTornado",
-      "id": 400396,
-      "modified": "2025-05-23T11:00:13+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "Vampire 90%",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400396"
-  },
-  {
-    "guide": {
-      "author": "kimseunghoon",
-      "id": 63343,
-      "modified": "2025-05-23T08:53:32+00:00",
-      "votes": 2
-    },
-    "lang": "ko",
-    "name": "대검사 바람~",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/63343"
-  },
-  {
-    "guide": {
-      "author": "stellinka",
-      "id": 400387,
-      "modified": "2025-05-22T16:49:23+00:00",
-      "votes": 10
-    },
-    "lang": "en",
-    "name": "devo nr 052025",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400387"
-  },
-  {
-    "guide": {
-      "author": "GrimScull",
-      "id": 400382,
-      "modified": "2025-05-22T08:17:42+00:00",
-      "votes": -1
-    },
-    "lang": "en",
-    "name": "Advent of the White Frost",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400382"
-  },
-  {
-    "guide": {
-      "author": "GrimScull",
-      "id": 400381,
-      "modified": "2025-05-22T08:13:49+00:00",
-      "votes": 1
-    },
-    "lang": "en",
-    "name": "Monster Book of Monsters",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400381"
-  },
-  {
-    "guide": {
-      "author": "GrimScull",
-      "id": 400380,
-      "modified": "2025-05-22T08:04:54+00:00",
-      "votes": 0
-    },
-    "lang": "en",
-    "name": "Strength of Giants",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400380"
-  },
-  {
-    "guide": {
-      "author": "Satra12",
-      "id": 400361,
-      "modified": "2025-05-22T07:16:23+00:00",
-      "votes": 0
-    },
-    "lang": "ru",
-    "name": "Дикая охота",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400361"
-  },
-  {
-    "guide": {
-      "author": "Reout",
-      "id": 400369,
-      "modified": "2025-05-22T04:29:07+00:00",
-      "votes": 3
-    },
-    "lang": "en",
-    "name": "Boost and poison",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400369"
-  },
-  {
-    "guide": {
-      "author": "MamaMetalikaWlyxa",
-      "id": 400379,
-      "modified": "2025-05-22T03:57:20+00:00",
-      "votes": -2
-    },
-    "lang": "ru",
-    "name": "КОЛОДА ДЛЯ ЖОСКОГО ФЛЕКСА, НЕ ДЛЯ БИДЛА!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400379"
-  },
-  {
-    "guide": {
-      "author": "KURIL_Bambuk",
-      "id": 400311,
-      "modified": "2025-05-22T00:41:31+00:00",
-      "votes": 3
-    },
-    "lang": "en",
-    "name": "Єбала та ти шо",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400311"
-  },
-  {
-    "guide": {
-      "author": "zkarwolf",
-      "id": 400375,
-      "modified": "2025-05-21T22:51:11+00:00",
-      "votes": 2
-    },
-    "lang": "en",
-    "name": "Golden Nekker - Relicts",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400375"
-  },
-  {
-    "guide": {
-      "author": "anthodso",
-      "id": 400367,
-      "modified": "2025-05-21T20:25:58+00:00",
-      "votes": 4
-    },
-    "lang": "fr",
-    "name": "Lippy Infinite Drummond Triss Finisher",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400367"
-  },
-  {
-    "guide": {
-      "author": "stellinka",
-      "id": 400372,
-      "modified": "2025-05-21T18:14:31+00:00",
-      "votes": 2
-    },
-    "lang": "en",
-    "name": "Force of Nature 052025",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400372"
-  },
-  {
-    "guide": {
-      "author": "_OnlyOne_",
-      "id": 400368,
-      "modified": "2025-05-21T15:54:51+00:00",
-      "votes": 2
-    },
-    "lang": "ru",
-    "name": "Тайник",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400368"
-  },
-  {
-    "guide": {
-      "author": "N1ghtWay",
-      "id": 400364,
-      "modified": "2025-05-21T13:54:44+00:00",
-      "votes": 3
-    },
-    "lang": "en",
-    "name": "Power of the Sea",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/guides/400364"
-  },
-  {
     "lang": "en",
     "name": "Glustyworp Acid Spit Insect Engines",
     "source": "shinmiri2",
@@ -42905,9 +42701,9 @@
   },
   {
     "lang": "en",
-    "name": "Spotter Spam",
+    "name": "Spotter Spam Battle Stations",
     "source": "shinmiri2",
-    "url": "https://www.playgwent.com/decks/5db5c6c1ed48402c5a38c342c46dda3a",
+    "url": "https://www.playgwent.com/decks/1017ccae170a008ed43d0182b65743d1",
     "video": {
       "lang": "en",
       "url": "https://youtu.be/pqUEPI1t1lE"
@@ -42915,9 +42711,15 @@
   },
   {
     "lang": "en",
-    "name": "Spotter Spam",
+    "name": "Spotter Spam Battle Stations",
     "source": "shinmiri2",
-    "url": "https://www.playgwent.com/decks/471421ce6cf05f43483a2ffa44d05181"
+    "url": "https://www.playgwent.com/decks/022586eb7fba7cf35d92ff866a18bc99"
+  },
+  {
+    "lang": "en",
+    "name": "Spotter Spam no BS",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/51995123482221afc8255947156966b0"
   },
   {
     "lang": "en",
@@ -43419,7 +43221,11 @@
     "lang": "en",
     "name": "Enemy Wide Boost Leo",
     "source": "shinmiri2",
-    "url": "https://www.playgwent.com/decks/18cf3e38e6ba28e1e52fce1f804a8818"
+    "url": "https://www.playgwent.com/decks/18cf3e38e6ba28e1e52fce1f804a8818",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/kKx4nb0_2Fg"
+    }
   },
   {
     "lang": "en",
@@ -44635,6 +44441,12 @@
   },
   {
     "lang": "en",
+    "name": "Melusine 2x rez Selfwound",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/guides/408949"
+  },
+  {
+    "lang": "en",
     "name": "Lippy Cerys",
     "source": "shinmiri2",
     "url": "https://www.playgwent.com/decks/69db577ac46f9f1458d1f4a18e973da1"
@@ -44754,6 +44566,16 @@
     "name": "Traps Devotion Gambit Isengrim",
     "source": "shinmiri2",
     "url": "https://www.playgwent.com/decks/782398d64fd3cfc0a264f0ba8c38bc3e"
+  },
+  {
+    "lang": "en",
+    "name": "Traps Devotion Feign Death",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/17570439a60d388be5e51e52899ac6fd",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/agAE2L0Qw-U"
+    }
   },
   {
     "lang": "en",
@@ -45544,7 +45366,7 @@
     "url": "https://www.playgwent.com/decks/61c30fc1e409fe74965190a7e7e5d8e8",
     "video": {
       "lang": "en",
-      "url": "https://youtu.be/TWA1vSwc9DA"
+      "url": "https://youtu.be/O_e7Djd3FA4"
     }
   },
   {
@@ -46129,6 +45951,12 @@
   },
   {
     "lang": "en",
+    "name": "Temple Devo Cursed",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/769eb88f1e801bb101d136d2ff5d78ea"
+  },
+  {
+    "lang": "en",
     "name": "Temple Devo Siege",
     "source": "shinmiri2",
     "url": "https://www.playgwent.com/decks/6b8f8fbdbf167e40b60e8a22f7662f85",
@@ -46179,6 +46007,16 @@
     "video": {
       "lang": "en",
       "url": "https://youtu.be/FqExNoxawc8"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Cockatrice Hen Gaidth Striga",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/0ef641f1078cda4e12097ad6c1660e57",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/9j2AQjPVLMA"
     }
   },
   {
@@ -46245,7 +46083,11 @@
     "lang": "en",
     "name": "Enemy Wide Boost Leo",
     "source": "shinmiri2",
-    "url": "https://www.playgwent.com/decks/18cf3e38e6ba28e1e52fce1f804a8818"
+    "url": "https://www.playgwent.com/decks/18cf3e38e6ba28e1e52fce1f804a8818",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/kKx4nb0_2Fg"
+    }
   },
   {
     "lang": "en",
@@ -46261,6 +46103,26 @@
     "video": {
       "lang": "en",
       "url": "https://youtu.be/9hIPeebjFnY"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "2x Justice Filavandrel",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/fc372da0917628c564d6aea020802a2e",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/O_e7Djd3FA4"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Traps Devotion Feign Death",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/17570439a60d388be5e51e52899ac6fd",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/agAE2L0Qw-U"
     }
   },
   {
@@ -46324,6 +46186,12 @@
     "name": "Renfri Handbuff Ithlinne",
     "source": "shinmiri2",
     "url": "https://www.playgwent.com/decks/cbd5f5bf1aa97d2d69cc023c6d2ec56c"
+  },
+  {
+    "lang": "en",
+    "name": "Armor Dwarves Aglais",
+    "source": "shinmiri2",
+    "url": "https://www.playgwent.com/decks/7d3d2fb42d7fb60a11ee0cc6a5d1aef9"
   },
   {
     "lang": "en",
@@ -64500,6 +64368,436 @@
     "name": "Горожане",
     "source": "metallic-danny",
     "url": "https://www.playgwent.com/decks/guides/396206"
+  },
+  {
+    "lang": "en",
+    "name": "2X JUSTICE OAK | BC RECOMMENDATIONS IN DESCRIPTION",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/fc372da0917628c564d6aea020802a2e",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/O_e7Djd3FA4"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Assimilate Weekly Series With More Fascinting Nilfgaard Matches",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/1ffa4a006399780d645d552035420c35",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/Y_aeBfvw260"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Monsters vs NR card game",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/7a8c7298a3e0ca1315e8d5d576e7d77d",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/FZ_UrTAdsLw"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "PRO : Why Does NO ONE Play This POWERFUL NG Deck?",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/022586eb7fba7cf35d92ff866a18bc99",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/RuaOubOQtDc"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "; Self-wond Lippy Deck",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/2224f7a6eb8c4ca7d29c8e0121c29d47",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/8pF-zqb0VFE"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Keltullis Is Your Biggest Threat - Remove Her or Suffer the Consequences!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/2496816a920e24dba26d27e21e69dbeb",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/JvW9S95AER4"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "TRAPS FEIGN DEATH | BC RECOMMENDATIONS IN DESCRIPTION",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/17570439a60d388be5e51e52899ac6fd",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/agAE2L0Qw-U"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Syndicate Full of Salamandra | Poisoning Everyone With Roland And Salamander Finisher",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/52098e1894ac8fb7ebc7412d9ba87db3",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/e9XpyIOWcwQ"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "RNG Luck for the Win",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/70e68f0ef21b39bf00520db8a5f0983a",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/4hNzKbjyqYo"
+    }
+  },
+  {
+    "lang": "ru",
+    "name": "Гвинт Гайд. Двойной Камби. Guide. Double kambi",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/254662f388673c6381ec0dd66a6c531b",
+    "video": {
+      "lang": "ru",
+      "url": "https://youtu.be/faWDJdO5uec"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Svalblod & Ragh Nar Roog - A Brutal Pirate Combo That Strikes Fear!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/39286bb4e932c61c25a6ee53e73f3a94",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/LgUEr1WqlbQ"
+    }
+  },
+  {
+    "lang": "ja",
+    "name": "【勝率爆上がり】『メリテレの神殿』を入れるだけで勝てる理由！",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/e14398288dc16fde6afe37ff35cd9ca8",
+    "video": {
+      "lang": "ja",
+      "url": "https://youtu.be/5kXb68EFuhU"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Nilfgaard Random Pile Improvise - Adapt - Overcome Series | Opponents Are Doomed",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/f64bef33644a420d9428bc0db4b8570a",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/kn5fnAgH7iM"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Nilfgaard Random Pile Improvise - Adapt - Overcome Series | Opponents Are Doomed",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/e57d7106e3dea6030ed32c459d868a9b",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/kn5fnAgH7iM"
+    }
+  },
+  {
+    "lang": "ru",
+    "name": "Гвинт Гайд. Витольд и Аглайиса. Guide. Vitold",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/c0389d1ce74ba29288fb0c400b03fc6f",
+    "video": {
+      "lang": "ru",
+      "url": "https://youtu.be/GkyVC4lME60"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Toxic MEME Pointslam is BACK",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/bed56acd1e4802b85b5d451ad4063762",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/ZnO5PHh_hiU"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Welcome To Toxic Salamander Poison Party - Mirror Match Just Made My Day!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/81645095b183f66f37b11023b8030e24",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/QLlOye20pYE"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Monster Dragons Deck | First Match Is Mind Blowing | Please Think Ahead Before Play",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/56484a6ff25ec5343b13a39493e367ae",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/lQjTcmSV_24"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Assimilate and Stealing are Synonym words",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/097d98c593ddb07a1ca836d4eb071f98",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/vfZs_LiH-lY"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Joachim Status Party - Turning Every Status Into Pure Value!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/c440bbf735299aa65d166a9e0e0176a7",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/8nWKkU_Uqkw"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "COCKATRICE BEASTS CONTROL | BC POLL IN DESCRIPTION",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/0ef641f1078cda4e12097ad6c1660e57",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/9j2AQjPVLMA"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Semi Unitless Scoia`Tael Traps | Learn How To Play Wisely And Not Overreacting",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/9c4a4e954aaded3bba0d58682b1d99c6",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/6Xbpa_5jOuo"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Semi Unitless Scoia`Tael Traps | Learn How To Play Wisely And Not Overreacting",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/c2c4a46b6833173e082f9015ea19ba48",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/6Xbpa_5jOuo"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Semi Unitless Scoia`Tael Traps | Learn How To Play Wisely And Not Overreacting",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/52b31a2565c08c744af4b4177ac907c3",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/6Xbpa_5jOuo"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Przeklęte Potwory - MO ‐ Skorupa",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/c87bba44731bfc58e6bc41c4a6ac0f4c",
+    "video": {
+      "lang": "pl",
+      "url": "https://youtu.be/liY327B3KEk"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Dagur & Semi Witcher Combo - Turning Every Damage Into Instant Points!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/32e9ff0636edee0b7b74d743260bc385",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/pJe2kEuxb78"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "ONE DRAGON INSANE POINTS NO ANSWERS",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/17b26a7a8e2ef76a1e78e784d727d9ef",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/XQeBEp7KBKI"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "SOME MATCHUPS CAN'T HANDLE MILVA",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/fa41f29e6669a0c31ddb6f57eaa473d6",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/QqVwTWgoavU"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "CURSED ADDA DRAUG TEMPLE | BC POLL IN DESCRIPTION",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/769eb88f1e801bb101d136d2ff5d78ea",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/S6YrhGIm4Ho"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "KELTULLIS WILL TAKE THE THRONE! 😈 DRACARYS!!!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/41a76c27aa5e9c45a7b3fbfac971fffa",
+    "video": {
+      "lang": "ru",
+      "url": "https://youtu.be/sZHZ0Lwa2Qg"
+    }
+  },
+  {
+    "lang": "ru",
+    "name": "Гвинт Гайд. Буря и Белобрысые. Guide. Buryabrisiy",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/52845e826c2d9ae8e6fbabc0e87c7401",
+    "video": {
+      "lang": "ru",
+      "url": "https://youtu.be/Ocpu9Fh8wh0"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Skellige High Risk With Various Echo Cards And Flaminica Finisher",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/978a4ad36e961f2d6babe2ed4d38cafe",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/QHv5mBTCgig"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Golden Nekker Hand-Buff STREAKING Through 2500!!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/86d83734323e61d52dbde5f6f7a6f591",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/4f-Tb5koxi0"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Buffed Ivo with Sihil",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/75497e37b90adaa91d1698c0be8b20cf",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/tRMwyEhM2HI"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Back to My Favorite Mill Deck After a While - No Mercy This Time!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/1dd138286ae1008d8b5dbef0322d8b99",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/VaZ3hsQVY-c"
+    }
+  },
+  {
+    "lang": "ja",
+    "name": "【海賊の強化】その答えは、『アーマー』管理に『イリス：影』採用するだった！",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/002bf2a42aaaa198aadcdbd8461ce886",
+    "video": {
+      "lang": "ja",
+      "url": "https://youtu.be/VR3_4zqBr8o"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Vampires Demand Blood | Great Engine And Some Point Slam For The Win",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/468279e4468115ac95e97cf2253bb00e",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/ER4fpbBgJ9U"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "ENEMY WIDE BOOST NG IS A BANGER! BC POLL IN DESCRIPTION",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/18cf3e38e6ba28e1e52fce1f804a8818",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/kKx4nb0_2Fg"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Scoiatael symbiosis vs NR Card Game",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/fba67b73b46d3e6d156873bae745c18e",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/9QXvLrkG0Jw"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Scoiatael symbiosis vs NR Card Game",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/44fc194e1952bc2660029427e1ea7f74",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/9QXvLrkG0Jw"
+    }
+  },
+  {
+    "lang": "ru",
+    "name": "Гвинт Гайд. Лара и бабушки с котом. Guide. Lara babka kot",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/229fa26411ecff0293ff647b1fa55a0b",
+    "video": {
+      "lang": "ru",
+      "url": "https://youtu.be/EBXOCshGNo4"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Deadeye Combos",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/d050b17f14812fafed35edef3f09689c",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/X3tqtWNkKcU"
+    }
+  },
+  {
+    "lang": "en",
+    "name": "Northern Witcher Swarm - Featuring Ragh Nar Roog & Keldar!",
+    "source": "community",
+    "url": "https://www.playgwent.com/decks/efd4d46dde7a38af83bcaf422d4b8e10",
+    "video": {
+      "lang": "en",
+      "url": "https://youtu.be/BX1Biz6vL6c"
+    }
   },
   {
     "lang": "en",
@@ -86599,556 +86897,6 @@
     "video": {
       "lang": "en",
       "url": "https://youtu.be/bkKKCZ4-ENU"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs NR Card Game25112521",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9ae2612fe4d76c47a0d5ef1b1a65fa01",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/jNVc6Fpp-m8"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs NR Card Game25112521",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/e62f626bf74ba4953353d459e96f95ee",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/jNVc6Fpp-m8"
-    }
-  },
-  {
-    "lang": "ja",
-    "name": "シンジケートの『タッターウィング』も整ってるわ！",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/bcc4455aaddad4e4de73c3ff75afe8c5",
-    "video": {
-      "lang": "ja",
-      "url": "https://youtu.be/QCGR6fto54o"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Perfect Consistent Midrange Nilfgaard Deck To Climb The Ladder",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/bee6ddfcba1f1a11ca3d09ec40f304db",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/Qkbej3Ss78k"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Simple Might! Ogroid Monsters vs NR card game25112316",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/ab20dde92c33ffa7b6cbeff715600c3b",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/R3BHSWDsdCA"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Simple Might! Ogroid Monsters vs NR card game25112316",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9dda9302f283c86c132a3c9db6ddc93f",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/R3BHSWDsdCA"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Unitless NR is So Toxic",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/fca12c440a4793558048605ef1f33db4",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/6ImDtgfipXw"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Temple & Immune Erland - Everyone Loves a Giant Erland Nuke!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/06d57fff28456727a6046e4da9f622db",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/RdDrkY-OTrU"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "ALLGOD FALSE CIRI COMBO FEELS OP | BC RECOMMENDATIONS IN DESCRIPTION",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/5f75143aceb711205be36cd1d67b16e9",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/9vIp8CQrxBU"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "ALLGOD FALSE CIRI COMBO FEELS OP | BC RECOMMENDATIONS IN DESCRIPTION",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/a877c577f69d383943bf436521e0fc86",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/9vIp8CQrxBU"
-    }
-  },
-  {
-    "lang": "ja",
-    "name": "はい！整いました。最強です。",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/22fecfe8f51db9969dbb96dede1aab18",
-    "video": {
-      "lang": "ja",
-      "url": "https://youtu.be/FGBRRWjPrgc"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Skellige Pirates The Bully And Destroyer",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9ce8f9cd40d00e6e30801571e8afc007",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/GVXMXjmGtcI"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "HEYMAEY PROTECTS OTKELL, BALANCE COUNCIL RECOMMENDATIONS IN DESCRIPTION",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/ccd306fd02badcc749d4b044209775b4",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/Vpyc_r-_fQ0"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Hyperthin Melitele",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/0e4c1863238b590ffe4d5c586b8cd577",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/0kJcMirE1wQ"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Underrated Decoy Doing the Lord’s Work for Trap Gang!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/85ea77ac95e0b2d059d62e01f23c9fe1",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/NhbJbuFbmYg"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Skellige witcher Renfri vs Card Game25112218",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/29b171cdcd338c663f49718a51d9d03d",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/7Cgq6zG4Smk"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "My Favorite Ultra Risky Meme Did Community Service Match | Full of Echo Cards",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/8e8e2fd71f115da015be4cb3405e608b",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/9fkAzWHSpN8"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Assimilate Tactics in Toussaint!? (Nilfgaard Deck)",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/1dc1228645914a7b992515ac4a8201b4",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/okB3egLGalY"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Thiccccc Erland and NR Engines",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/959c39d8b18a068bac6d143e620d20dc",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/jvhasIzgJWE"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Harmony Relict Experiment - Gezras Leads the Swarm!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/58d4fa42121e43cabf8b05962840804a",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/6L5yMjdwwrA"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Fat Kolgrim Deck",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/44e366d352669b51bbff87e8098f8aa3",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/JEzgjxHXlk4"
-    }
-  },
-  {
-    "lang": "ja",
-    "name": "どぉ〜れ！見せてやるかな！",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/19f42016acf38a3f5a342d53443e03e7",
-    "video": {
-      "lang": "ja",
-      "url": "https://youtu.be/VGkLIpCcAF0"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "The Most Evil Nilfgaard Deck | Almost Unitless Bombing Army",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/252e2b70f1847d8942bd5e5bd2b7acf8",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/-l4XdISHx2M"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "The Most Evil Nilfgaard Deck | Almost Unitless Bombing Army",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9b54b199f61210109421422076f81a24",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/-l4XdISHx2M"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Gwintowe Wyzwania : Szkoła Gryfa - NR - Insurekcja",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/f80f511be68efb20405c6bc3a1865969",
-    "video": {
-      "lang": "pl",
-      "url": "https://youtu.be/7d4jeDg_6Ic"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs Card Game25112017",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9ae2612fe4d76c47a0d5ef1b1a65fa01",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/gmbCCy5kyWg"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs Card Game25112017",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/e62f626bf74ba4953353d459e96f95ee",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/gmbCCy5kyWg"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Hold My Elephant Deck",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/14a64eed6b5ffc7f42617576e2388b07",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/-F4Ry3GfS-U"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Hybrid Skellige Control",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/b928cfa8c7107b1b68e0ceb172657901",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/F8k3Fzf3aX8"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Twisted Yennefer & Vivienne Swarm - Simple Setup Effortless Wins!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/89da4668693a3eff06fd8249f2e10b5a",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/7NxaSiWtyFo"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "I CAN'T STOP PLAYING SHUPE LIPPY, BC RECOMMENDATIONS IN DESCRIPTION",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/cc34363896b2f57cc446ffb833c28d2b",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/qQePTUkrUpA"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Brutal Witch Hunter Giving Bounty To Enemy | Portal Summoning Vigilates",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/61987842a7801b7d4c0e188ec6562f1f",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/8xBMO3ib1ms"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Queen & Prince inspired NR shieldwall vs Syndicate Monsters Skellige witcher CardGame25112410",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9304f1b312a2c5e32d39592f741d3605",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/2_s7PAaUaIE"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Hyperthin Melitele is Insane",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/22fd864ec95d0d7865bec8673bfe83ad",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/Y38hr3KfJwI"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Abducted Ivar Tactics - The Control Deck I Always Trust!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/6d100dbbc84032440345e3d08ca9f432",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/gKxbuVHpV8o"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Cultists are unplayable",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/5a9988882cda4b5db5690ecbaf86f906",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/GTLVcjN-kpw"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Simple Might! Ogroid Monsters vs card game25112119",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/ab20dde92c33ffa7b6cbeff715600c3b",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/MoWo4ex0NJc"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Simple Might! Ogroid Monsters vs card game25112119",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9dda9302f283c86c132a3c9db6ddc93f",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/MoWo4ex0NJc"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "The Famous Spellatael Deck | Alzur And Francesca The Beauty Meme",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/99164f587eabf0d57d77763fc2c8314f",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/bg38Nlo5xF4"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Gwintowe Wyzwania : Triki z Afryki xD - NR - Mobilizacja",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/5a9834bf413e1bd2d869469bf691520d",
-    "video": {
-      "lang": "pl",
-      "url": "https://youtu.be/yypSrHE9FSY"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "vs Top 11 player(High MMR)! Skellige witcher Renfri vs witcher Card Game25112210",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/29b171cdcd338c663f49718a51d9d03d",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/UKVu-PE-EM4"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Madoc's Dragons Deck",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/a854b38a9938005b87ac8b0e2a3c2aca",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/-QdwY0AuRO0"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Vampire & Witcher Collab Easy Setup Effortless Wins!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/50b0b62f3ec7940fa67e140f42f20134",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/Z9D0iIAGRZg"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "INSPIRED SHIELDWALL IS STILL AMAZING | BC POLL IN DESCRIPTION",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9304f1b312a2c5e32d39592f741d3605",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/xRqC6KQ4mbo"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Lippy The Builder Deck (5 point loss against Vampires, close but fun game)",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/5a9988882cda4b5db5690ecbaf86f906",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/LeWL642C86E"
-    }
-  },
-  {
-    "lang": "ja",
-    "name": "今期！『プロランク昇格』のデッキを置いておきます。",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/28b6c96f4982947403cf70c8169bcc29",
-    "video": {
-      "lang": "ja",
-      "url": "https://youtu.be/F1HqXeP5uzY"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Weekly Assimilate Series Always Top Notch | Giving Up Round 1 Is My Secret Way To Win",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/ae45cbd6e2d3642916f125bbb9c602b0",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/KOJ9KL_rlgo"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "This Deck Always Outperfroms My Expectations! (Syndicate Hidden Cache Deck)",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/c2c4a97770497b66dc5522638349ef48",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/wk0duxaniJ8"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs Card Game25112011",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/9ae2612fe4d76c47a0d5ef1b1a65fa01",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/ZjmdN5IjDSw"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Dwarf power! Scoiatael dwarf vs Card Game25112011",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/e62f626bf74ba4953353d459e96f95ee",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/ZjmdN5IjDSw"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "VIY IS BACK IN THE META FOR MONSTERS",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/96052adf2cde32a7b17e17d93922e75a",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/zzAoN8KVh3s"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Ethreal in Scoiatael??",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/388bc8d064d48adbb433fd17f1a3118c",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/r-Ob0mLWQeo"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Tibor - The Most Ruthless Killing Machine in Nilfgaard!",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/e3ca36916b01cd9590ea4e21381173b4",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/_k-LbqjBn6I"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "Skellige witcher Renfri vs Card Game25112012",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/29b171cdcd338c663f49718a51d9d03d",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/DL0Ipu4bSTY"
-    }
-  },
-  {
-    "lang": "en",
-    "name": "IT'S SHUPE FRIDAY! NG SHUPE ALE",
-    "source": "community",
-    "url": "https://www.playgwent.com/decks/a31a1d168117c52d40133f64fdbcb1f0",
-    "video": {
-      "lang": "en",
-      "url": "https://youtu.be/pPUZLuFNHCg"
     }
   }
 ]
